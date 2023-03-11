@@ -1,0 +1,44 @@
+.ds-category {
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+/* .header-left .header-left {} */
+
+.ds-category .header-right {
+    text-align: right;
+}
+
+.group_btn button {
+    margin: 10px 5px 0 5px;
+}
+
+.ds-category .header-content {
+    padding: 10px 10px 10px 10px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+    color: #000;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+.ds-category .header-content .header-title {
+    color: #f77643;
+}
+
+.ds-category .header-center {
+    display: flex;
+    align-items: center;
+}
+
+.ds-category .header-title {
+    margin-bottom: 0;
+    text-transform: uppercase;
+}
+
+.ds-category .body-page {
+    padding-bottom: 10px;
+}
