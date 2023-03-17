@@ -27,8 +27,7 @@ export class IdeaController {
   @Get(':idea_id')
   async getIdeaDetail(
     @UserData() userData: IUserData,
-    @Param('idea_id')
-    idea_id: number,
+    @Param('idea_id') idea_id: number,
   ) {
     return await this.ideaService.getIdeaDetail(idea_id, userData.user_id);
   }
@@ -74,13 +73,12 @@ export class IdeaController {
     return this.ideaService.updateIdea(userData, idea_id, body);
   }
 
-  @Get(':idea_id/comments/:parent_id')
-  async getIdeaComments(
-    @UserData() userData: IUserData,
-    @Param('idea_id')
-    idea_id: number,
+  @Get(':idea_id/comments?')
+  async getIdeaCommentsByParent(
+    @Param('idea_id') idea_id: number,
+    @Query('parent_id') parent_id: number,
   ) {
-    return await this.ideaService.getIdeaDetail(idea_id, userData.user_id);
+    return await this.ideaService.getIdeaCommentsByParent(idea_id, parent_id);
   }
 
   @Get('semester/download/:semester_id')

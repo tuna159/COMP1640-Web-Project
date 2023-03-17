@@ -3,6 +3,7 @@ import { IdeaFile } from '@core/database/mysql/entity/file.entity';
 import { IUserData } from '@core/interface/default.interface';
 import sendMailNodemailer from '@helper/nodemailer';
 import { CategoryIdeaService } from '@modules/category-idea/category-idea.service';
+import { CommentService } from '@modules/comment/comment.service';
 import { IdeaFileService } from '@modules/idea-file/idea-file.service';
 import { ReactionService } from '@modules/reaction/reaction.service';
 import { SemesterService } from '@modules/semester/semester.service';
@@ -39,6 +40,7 @@ export class IdeaService {
     private readonly categoryIdeaService: CategoryIdeaService,
     private readonly ideaFileService: IdeaFileService,
     private readonly reactionService: ReactionService,
+    private readonly commentService: CommentService,
     private readonly connection: Connection,
   ) {}
 
@@ -474,6 +476,29 @@ export class IdeaService {
     await ideaRepository.update(conditions, value);
   }
 
+  async getIdeaCommentsByParent(
+    idea_id: number, 
+    parent_id: number, 
+    entityManager?: EntityManager,
+  ) {
+    const ideaRepository = entityManager
+      ? entityManager.getRepository<Idea>('idea')
+      : this.ideaRepository;
+
+    const idea = await ideaRepository.findOne({
+      where: { idea_id: idea_id },
+    });
+
+    if (!idea) {
+      throw new HttpException(
+        ErrorMessage.IDEA_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return this.commentService.getIdeaCommentsByParent(idea_id, parent_id);
+  }
+
   downloadIdeasBySemester(
     userData: IUserData,
     semester_id: number,
@@ -552,7 +577,5 @@ export class IdeaService {
     //     HttpStatus.BAD_REQUEST,
     //   );
     // }
-
-    
   }
 }

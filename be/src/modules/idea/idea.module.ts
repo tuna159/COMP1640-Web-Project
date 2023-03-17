@@ -7,7 +7,7 @@ import { SemesterModule } from '@modules/semester/semester.module';
 import { CategoryIdeaModule } from '@modules/category-idea/category-idea.module';
 import { IdeaFileModule } from '@modules/idea-file/idea-file.module';
 import { ReactionModule } from '@modules/reaction/reaction.module';
-import { UserModule } from '@modules/user/user.module';
+import { CommentModule } from '@modules/comment/comment.module';
 
 @Module({
   controllers: [IdeaController],
@@ -18,7 +18,7 @@ import { UserModule } from '@modules/user/user.module';
     CategoryIdeaModule,
     IdeaFileModule,
     ReactionModule,
-    UserModule,
+    CommentModule,
   ],
   exports: [IdeaService],
 })
