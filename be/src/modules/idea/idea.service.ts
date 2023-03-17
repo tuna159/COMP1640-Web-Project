@@ -1,4 +1,5 @@
 import { CategoryIdea } from '@core/database/mysql/entity/categoryIdea.entity';
+import { Comment } from '@core/database/mysql/entity/comment.entity';
 import { IdeaFile } from '@core/database/mysql/entity/file.entity';
 import { IUserData } from '@core/interface/default.interface';
 import sendMailNodemailer from '@helper/nodemailer';
@@ -11,9 +12,11 @@ import { HttpException, HttpStatus, Injectable, StreamableFile } from '@nestjs/c
 import type { Response, Request } from 'express';
 import * as send from 'send';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EIsDelete } from 'enum';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
 import { EIdeaFilter } from 'enum/idea.enum';
+import { VAddComment } from 'global/dto/addComment.dto';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateReactionDto } from 'global/dto/reaction.dto';
 import { VUpdateIdeaDto } from 'global/dto/update-idea.dto';
@@ -40,8 +43,8 @@ export class IdeaService {
     private readonly categoryIdeaService: CategoryIdeaService,
     private readonly ideaFileService: IdeaFileService,
     private readonly reactionService: ReactionService,
-    private readonly commentService: CommentService,
     private readonly connection: Connection,
+    private readonly commentService: CommentService,
   ) {}
 
   async getIdeaDetail(
@@ -577,5 +580,57 @@ export class IdeaService {
     //     HttpStatus.BAD_REQUEST,
     //   );
     // }
+  }
+
+  async createComment(userData: IUserData, idea_id: number, body: VAddComment) {
+    if (!body.content) {
+      throw new HttpException(
+        ErrorMessage.INVALID_PARAM,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (body.content === '' || body.content === null) {
+      throw new HttpException(
+        ErrorMessage.INVALID_PARAM,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const isExist = await this.checkIdeaPost({
+      idea_id,
+      is_deleted: EIsDelete.NOT_DELETE,
+    });
+
+    if (!isExist) {
+      throw new HttpException(
+        ErrorMessage.IDEA_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const ideaComment = await this.connection.transaction(async (manager) => {
+      const ideaCommentParams = new Comment();
+      ideaCommentParams.idea_id = idea_id;
+      ideaCommentParams.author_id = userData.user_id;
+      ideaCommentParams.content = body.content;
+
+      await this.commentService.addIdeaComment(ideaCommentParams, manager);
+    });
+    return ideaComment;
+  }
+
+  async checkIdeaPost(
+    fieldList: DeepPartial<Idea>,
+    entityManager?: EntityManager,
+  ) {
+    const ideaRepository = entityManager
+      ? entityManager.getRepository<Idea>('idea')
+      : this.ideaRepository;
+
+    const idea = await ideaRepository.findOne(fieldList);
+
+    if (idea) {
+      return idea;
+    } else {
+      return false;
+    }
   }
 }
