@@ -8,6 +8,7 @@ import { CategoryIdeaModule } from '@modules/category-idea/category-idea.module'
 import { IdeaFileModule } from '@modules/idea-file/idea-file.module';
 import { ReactionModule } from '@modules/reaction/reaction.module';
 import { CommentModule } from '@modules/comment/comment.module';
+import { UserModule } from '@modules/user/user.module';
 
 @Module({
   controllers: [IdeaController],
@@ -19,6 +20,7 @@ import { CommentModule } from '@modules/comment/comment.module';
     IdeaFileModule,
     ReactionModule,
     CommentModule,
+    UserModule,
   ],
   exports: [IdeaService],
 })
