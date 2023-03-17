@@ -22,12 +22,12 @@ import { AppService } from './app.service';
 import { configuration, EConfiguration } from './config/configuration.config';
 import { DepartmentModule } from './modules/department/department.module';
 import { CategoryModule } from './modules/category/category.module';
-import { SemesterModule } from './modules/semester/semester.module';
 import { CategoryIdeaModule } from '@modules/category-idea/category-idea.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { UserDetailModule } from './modules/user-detail/user-detail.module';
 import { ReactionModule } from './modules/reaction/reaction.module';
 import { MeModule } from './modules/me/me.module';
+import { EventModule } from './modules/event/event.module';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -65,12 +65,12 @@ import { MeModule } from './modules/me/me.module';
     IdeaModule,
     DepartmentModule,
     CategoryModule,
-    SemesterModule,
     CategoryIdeaModule,
     UploadModule,
     UserDetailModule,
     ReactionModule,
     MeModule,
+    EventModule,
   ],
   controllers: [AppController],
   providers: [

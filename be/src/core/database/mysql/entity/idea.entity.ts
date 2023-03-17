@@ -13,7 +13,7 @@ import { CategoryIdea } from './categoryIdea.entity';
 import { Comment } from './comment.entity';
 import { IdeaFile } from './file.entity';
 import { Reaction } from './reaction.entity';
-import { Semester } from './semester.entity';
+import { Event } from './event.entity';
 import { User } from './user.entity';
 
 @Entity('idea')
@@ -24,8 +24,8 @@ export class Idea {
   @Column('uuid', { name: 'user_id' })
   user_id: string;
 
-  @Column({ name: 'semester_id', type: 'int', unsigned: true })
-  semester_id: number;
+  @Column({ name: 'event_id', type: 'int', unsigned: true })
+  event_id: number;
 
   @Column({ name: 'title', type: 'varchar', length: 100 })
   title: string;
@@ -64,11 +64,11 @@ export class Idea {
   @JoinColumn({ name: 'user_id', referencedColumnName: 'user_id' })
   user: User;
 
-  @ManyToOne(() => Semester, (semester) => semester.ideas, {
+  @ManyToOne(() => Event, (event) => event.ideas, {
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'semester_id', referencedColumnName: 'semester_id' })
-  semester: Semester;
+  @JoinColumn({ name: 'event_id', referencedColumnName: 'event_id' })
+  event: Event;
 
   @OneToMany(() => Comment, (comment) => comment.idea)
   comments: Comment[];
