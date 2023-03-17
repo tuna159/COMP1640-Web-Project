@@ -22,6 +22,7 @@ import { VCreateReactionDto } from 'global/dto/reaction.dto';
 import { VUpdateIdeaDto } from 'global/dto/update-idea.dto';
 import { IdeaService } from './idea.service';
 import type { Response, Request } from 'express';
+import { VUpdateCommentDto } from 'global/dto/comment.dto';
 
 @Controller('idea')
 export class IdeaController {
@@ -121,5 +122,15 @@ export class IdeaController {
     @Param('comment_id') comment_id: number,
   ) {
     return this.ideaService.deleteComment(userData, idea_id, comment_id);
+  }
+
+  @Put('/:idea_id/comments/:comment_id')
+  updateComment(
+    @UserData() userData: IUserData,
+    @Param('idea_id') idea_id: number,
+    @Param('comment_id') comment_id: number,
+    @Body() body: VUpdateCommentDto,
+  ) {
+    return this.ideaService.updateComment(userData, idea_id, comment_id, body);
   }
 }
