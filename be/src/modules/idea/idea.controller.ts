@@ -113,4 +113,13 @@ export class IdeaController {
   ) {
     return await this.ideaService.createComment(userData, idea_id, body);
   }
+
+  @Delete('/:idea_id/comments/:comment_id')
+  deleteComment(
+    @UserData() userData: IUserData,
+    @Param('idea_id') idea_id: number,
+    @Param('comment_id') comment_id: number,
+  ) {
+    return this.ideaService.deleteComment(userData, idea_id, comment_id);
+  }
 }

@@ -32,6 +32,15 @@ export class Comment {
   content: string;
 
   @Column({
+    name: 'is_anonymous',
+    type: 'tinyint',
+    unsigned: true,
+    default: 0,
+    comment: '0: not anonymous, 1: anonymous',
+  })
+  is_anonymous: number;
+
+  @Column({
     name: 'is_deleted',
     type: 'tinyint',
     width: 1,
