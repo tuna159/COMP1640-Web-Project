@@ -740,6 +740,6 @@ export class IdeaService {
       );
     }
 
-    return this.commentService.deleteComment(comment_id);
+    return this.commentService.deleteComment(userData, comment_id);
   }
 }

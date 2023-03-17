@@ -1,7 +1,9 @@
 import { Comment } from '@core/database/mysql/entity/comment.entity';
+import { IUserData } from '@core/interface/default.interface';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EIsDelete } from 'enum';
+import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
 import { DeepPartial, EntityManager, Repository } from 'typeorm';
 
@@ -76,6 +78,7 @@ export class CommentService {
     }
 
     async deleteComment(
+        userData: IUserData,
         comment_id: number,
         entityManager?: EntityManager,
     ) {
@@ -90,6 +93,14 @@ export class CommentService {
         if(!comment || comment.is_deleted == EIsDelete.DELETED) {
             throw new HttpException(
                 ErrorMessage.COMMENT_NOT_EXIST,
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+
+        if(userData.role_id == EUserRole.STAFF 
+            && userData.user_id != comment.author_id) {
+            throw new HttpException(
+                ErrorMessage.COMMENT_DELETE_PERMISSION,
                 HttpStatus.BAD_REQUEST,
             );
         }
