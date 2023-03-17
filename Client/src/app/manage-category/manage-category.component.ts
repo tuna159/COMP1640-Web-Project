@@ -16,7 +16,6 @@ import { AuthenticationService } from '../auth/services/authentication.service';
 
 
 export class ManageCategoryComponent implements OnInit {
-  breadcrumb: any[];
   cols: Array<any> = [];
   listData: any[] = [];
   displayXoa: boolean;
@@ -31,11 +30,6 @@ export class ManageCategoryComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.breadcrumb = [
-      { label: 'Tổng quan', url: '/home' },
-      { label: 'Tổ', url: '' },
-      { label: 'Danh sách category', url: '' },
-    ];
 
     this.cols = [
       { field: 'Stt', header: 'STT', width: '50px', textAlign: 'center' },

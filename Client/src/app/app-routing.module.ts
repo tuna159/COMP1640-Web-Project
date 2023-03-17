@@ -40,6 +40,12 @@ const routes: Routes = [
         component: ManageCategoryComponent
     },
     {
+        path: 'manage/semester',
+        canActivate: [AuthGuard],
+        // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
+        component: ManageSemesterComponent
+    },
+    {
         path: 'view/profile',
         canActivate: [AuthGuard],
         // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)

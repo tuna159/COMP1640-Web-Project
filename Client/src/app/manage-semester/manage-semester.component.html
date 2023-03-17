@@ -1,1 +1,91 @@
-<p>manage-semester works!</p>
+<div class="ds-category">
+
+    <div class="col-md-12 body-page">
+        <div class="row">
+            <div class="col-md-6"></div>
+            <div class="col-md-6">
+                <div class="row text-right">
+                    <div class="col-md-12 mt-10">
+                        <div class="group_btn" [style]="{'float': 'right'}">
+                            <span class="p-input-icon-right">
+                                <i class="pi pi-search"></i>
+                                <!--<input pInputText type="text" class="input-search"
+                                    (input)="myTab.filterGlobal($event.target.value, 'contains')"
+                                    placeholder="Tìm kiếm trong danh sách" style="margin-left: 7.5px;" />-->
+                            </span>
+                            <button pButton type="button" (click)="addSemester()" label="Add" icon="pi pi-plus"
+                            style="background-color:#f97c39; width: 120px !important; height: 30px !important; margin-left: 5px; border: 0px"></button>
+                            <button pButton type="button" label="Xóa" icon="pi pi-trash"
+                                style="background-color:red; width: 120px !important; height: 30px !important; margin-left: 5px; border: 0px" (click)="showDialogXoaN()"></button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 20px">
+            <div class="col-md-12">
+                <p-table #myTab [columns]="cols" [value]="listData" [tableStyle]="{ 'min-width': '50rem' }"
+                    [(selection)]="listSelectedData" dataKey="category_id" [rowHover]="true" [scrollable]="true"
+                    [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
+                    [globalFilterFields]="['Stt','name',]">
+                    <ng-template pTemplate="header" let-columns>
+                        <tr>
+                            <th style="width: 2rem" class="text-center">
+                                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                            </th>
+                            <th *ngFor="let col of columns"
+                                [ngStyle]="{ 'text-align': 'center', 'min-width': col.width }">
+                                {{ col.header }}
+                            </th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-category>
+                        <tr>
+                            <td style="width: 2rem" class="text-center">
+                                <p-tableCheckbox [value]="category"></p-tableCheckbox>
+                            </td>
+                            <td style="text-align: center">{{category.Stt}}</td>
+                            <td style="text-align: center">{{category.name}}</td>
+                            <td style="text-align: center">{{category.created_date | date:'mediumDate'}}</td>
+                            <td style="text-align: center">{{category.first_closure_date | date:'mediumDate'}}</td>
+                            <td style="text-align: center">{{category.final_closure_date | date:'mediumDate'}}</td>
+                            <td style="text-align: center">
+                                <span>
+                                    <button pButton icon="pi pi-pencil" class="ui-button-primary edit-button" (click)="chinhSua(category)"></button>
+                                    <button pButton icon="pi pi-trash" class="ui-button-danger delete-button"
+                                        style="margin-left: 5px" (click)="showDialogXoa(category)"></button>
+                                </span>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+    <p-toast position="bottom-right"></p-toast>
+</div>
+
+<!-- Xác nhận xóa semester-->
+<p-dialog header="Xác nhận" [(visible)]="displayXoa" [modal]="true" [responsive]="true" [closable]="false"
+    [style]="{width: '20%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
+    <p>Bạn có chắc chắn xóa tổ này không?</p>
+    <p-footer>
+        <button type="button" pButton icon="pi pi-close" (click)="displayXoa=false" label="Hủy" class="btn btn-light"
+            style="width:72px; height:38px"></button>
+            <button type="button" pButton icon="pi pi-close" (click)="xoaTo()" label="OK" class="btn btn-primary"
+            style="width:72px; height:38px"></button>
+    </p-footer>
+</p-dialog>
+
+<!-- Xác nhận xóa nhiều semester-->
+<p-dialog header="Xác nhận" [(visible)]="displayXoaN" [modal]="true" [responsive]="true" [closable]="false"
+    [style]="{width: '20%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
+    <p>Bạn có chắc chắn xóa các tổ này không?</p>
+    <p-footer>
+        <button type="button" pButton icon="pi pi-close" (click)="displayXoaN = false" label="Hủy" class="btn btn-light"
+            style="width:72px; height:38px"></button>
+            <button type="button" pButton icon="pi pi-close" (click)="xoaNTo()" label="OK" class="btn btn-primary"
+            style="width:72px; height:38px"></button>
+    </p-footer>
+</p-dialog>

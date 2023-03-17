@@ -5,16 +5,23 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
+  Req,
+  Res,
+  StreamableFile,
 } from '@nestjs/common';
 import { EIdeaFilter } from 'enum/idea.enum';
+import { VAddComment } from 'global/dto/addComment.dto';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateReactionDto } from 'global/dto/reaction.dto';
 import { VUpdateIdeaDto } from 'global/dto/update-idea.dto';
 import { IdeaService } from './idea.service';
+import type { Response, Request } from 'express';
 
 @Controller('idea')
 export class IdeaController {
@@ -23,8 +30,7 @@ export class IdeaController {
   @Get(':idea_id')
   async getIdeaDetail(
     @UserData() userData: IUserData,
-    @Param('idea_id')
-    idea_id: number,
+    @Param('idea_id') idea_id: number,
   ) {
     return await this.ideaService.getIdeaDetail(idea_id, userData.user_id);
   }
@@ -70,12 +76,41 @@ export class IdeaController {
     return this.ideaService.updateIdea(userData, idea_id, body);
   }
 
-  @Get(':idea_id/comments/:parent_id')
-  async getIdeaComments(
+  @Get(':idea_id/comments?')
+  async getIdeaCommentsByParent(
+    @Param('idea_id') idea_id: number,
+    @Query('parent_id') parent_id: number,
+  ) {
+    return await this.ideaService.getIdeaCommentsByParent(idea_id, parent_id);
+  }
+
+  @Get('semester/download/:semester_id')
+  downloadIdeasBySemester(
     @UserData() userData: IUserData,
-    @Param('idea_id')
+    @Param('semester_id') semester_id: number,
+    @Res({ passthrough: true }) res: Response,
+    @Req() req: Request,
+  ) {
+    return "hello";
+    // res.set({
+    //   'Content-Type': 'application/json',
+    //   'Content-Disposition': 'attachment; filename="package.json"',
+    // })
+    return this.ideaService.downloadIdeasBySemester(userData, semester_id, res, req);
+  }
+
+  @Post('/:idea_id/comments')
+  async handleAddComment(
+    @UserData() userData: IUserData,
+    @Body() body: VAddComment,
+    @Param(
+      'idea_id',
+      new ParseIntPipe({
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+      }),
+    )
     idea_id: number,
   ) {
-    return await this.ideaService.getIdeaDetail(idea_id, userData.user_id);
+    return await this.ideaService.createComment(userData, idea_id, body);
   }
 }

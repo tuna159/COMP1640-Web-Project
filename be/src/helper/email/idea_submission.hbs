@@ -1,13 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta property="og:title" content="Your GIC Account Has Been Created!" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="light dark" />
-    <meta name="supported-color-schemes" content="light dark" />
-
-    <title>Your GIC Account Has Been Created!</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <title>Your GIC Account Has Been Created!</title>
     <style type="text/css">
       :root {
         color-scheme: light dark;
@@ -235,7 +233,7 @@
       div.messageDiv,
       p.defaultText,
       span.defaultText {
-        color: #000000;
+        color: #000000 !important;
       }
 
       div.tpl-content-highlight {
@@ -328,7 +326,7 @@
         div.messageDiv,
         p.defaultText,
         span.defaultText {
-          color: #ffffff;
+          color: #ffffff !important;
         }
       }
 
@@ -519,10 +517,97 @@
           padding: 0;
         }
       }
+
+      .post-container {
+        margin-top: 30.0px !important;
+        margin-bottom: 60.0px !important;
+      }
+
+      .post-header {
+        display: flex !important;
+        margin-bottom: 16.0px !important;
+      }
+
+      .post-username {
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        display: block !important;
+        line-height: 1.0 !important;
+      }
+
+      .post-avatar {
+        border-radius: 50% !important;
+        margin-right: 12px !important;
+      }
+
+      .post-content {
+        font-size: 14px !important; 
+        font-weight: 500 !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+                line-clamp: 4; 
+        -webkit-box-orient: vertical;
+        margin-bottom: 0 !important;
+      }
+
+      .post-read_more {
+        text-decoration: none !important;
+        line-height: 1.0 !important;
+        font-size: 14.0px !important;
+        color:#168de9 !important;
+      }
+
+      .post-date,
+      .post-department {
+        font-size: 13.5px !important; 
+        font-weight: 500 !important;
+      }
+
+      .post-content,
+      .post-title {
+        line-height: 1.4 !important;
+      }
+
+      .post-title {
+        font-size: 16.0px;
+        color: black;
+      }
+
+      .post-date,
+      .post-department,
+      .post-separator {
+        color: #989898 !important;
+        line-height: 1.0 !important;
+      }
+
+      .post-separator {
+        font-size: 16px !important; 
+        font-weight: 600 !important;
+      }
+
+      .post-tags {
+        padding: 0px !important;
+        list-style-type: none !important;
+        margin: 0 !important;
+        margin-top: 12.0px !important;
+      }
+
+      .post-tags li {
+        display: inline-block !important;
+        background-color: #00cef6 !important;
+        padding: 4.0px 8.0px !important;
+        border-radius: 8.0px !important;
+        line-height: 1.0 !important;
+        margin: 0 !important;
+        margin-right: 4.0px !important;
+        color: white !important;
+        font-size: 13.0px !important;
+      }
     </style>
-  </head>
-  <!-- BEGIN TEMPLATE // -->
-  <body
+</head>
+<body
     leftmargin="0"
     marginwidth="0"
     topmargin="0"
@@ -667,7 +752,7 @@
                       id="templateBody"
                     >
                       <tr>
-                        <td
+                        <!-- <td
                           valign="top"
                           class="axContentHeader"
                           style="
@@ -679,7 +764,7 @@
                           "
                         >
                           <h4>Welcome to GIC</h4>
-                        </td>
+                        </td> -->
                       </tr>
                       <tr>
                         <td
@@ -724,34 +809,40 @@
                                           "
                                           class="contentBody"
                                         >
-                                          <div style="text-align: center">
-                                            <img
-                                              style="
-                                                max-width: 100%;
-                                                height: auto;
-                                                border-radius: 12px;
-                                              "
-                                              src="https://vietnix.vn/wp-content/uploads/2022/08/big-idea.webp"
-                                              alt="Account Created"
-                                            />
+                                          <p
+                                            class="defaultText"
+                                            style="font-size: 16px; font-weight: 700; margin: 0;"
+                                          >
+                                            Hi {{receiverUsername}},
+                                          </p>
+                                          <p
+                                            class="defaultText"
+                                            style="font-size: 14px; font-weight: 500;"
+                                          >
+                                            A staff has posted an idea to your department. Let check it now.
+                                          </p>
+
+                                          <div class="post-container">
+                                            <div class="post-header">
+                                              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeeUl9IZDN97pBQNgeunx6dD1df-4g7vkPFw&usqp=CAU" alt="avatar", width="40.0" height="40.0" class="post-avatar">
+                                              <div>
+                                                  <span class="post-username defaultText">{{staffUsername}}</span>
+                                                  <span class="post-date">{{createdDate}}</span>
+                                                  <span class="post-separator"><sup>.</sup></span>
+                                                  <span class="post-date">{{createdTime}}</span>
+                                                  <span class="post-separator"><sup>.</sup></span>
+                                                  <span class="post-department">{{department}}</span>
+                                              </div>
+                                            </div>
+                                            <h4 class="post-title defaultText">{{ideaTitle}}</h4>
+                                            <p class="post-content defaultText">{{ideaContent}}</p>
+                                            <a class="post-read_more" href="#" target="_blank">Read More »</a>
+                                            <ul class="post-tags">
+                                            {{#categories}}
+                                              <li>{{this}}</li>
+                                            {{/categories}}
+                                            </ul>
                                           </div>
-
-                                          <p
-                                            class="defaultText"
-                                            style="font-size: 14px"
-                                          >
-                                            Congratulations, your GIC
-                                            Account has been successfully created. You're now an important part of a large community. You can post ideas related to any educational topic. Your ideas will be collected and contribute to the development of the University of Greenwich Vietnam in the future. We feel extremely grateful and appreciated to receive your great ideas. Let go ahead and post your first idea. 
-                                          </p>
-
-                                          <p
-                                            class="defaultText"
-                                            style="font-size: 14px; "
-                                          >
-                                            <span style="font-weight: 700;">
-                                              Your default password is: 123456</span>.
-                                            Please access <a href="#" style="text-decoration: none; color: #009cd9;">the system</a> and change your password as soon as possible.
-                                          </p>
 
                                           <div
                                             class="lnk-btn"
@@ -836,7 +927,7 @@
                                                             "
                                                             target="_blank"
                                                           >
-                                                            Get Started Now
+                                                            Check It Now
                                                           </a>
                                                         </td>
                                                       </tr>
