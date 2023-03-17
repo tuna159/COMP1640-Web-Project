@@ -1,10 +1,12 @@
 import { CategoryIdea } from '@core/database/mysql/entity/categoryIdea.entity';
 import { IdeaFile } from '@core/database/mysql/entity/file.entity';
 import { IUserData } from '@core/interface/default.interface';
+import sendMailNodemailer from '@helper/nodemailer';
 import { CategoryIdeaService } from '@modules/category-idea/category-idea.service';
 import { IdeaFileService } from '@modules/idea-file/idea-file.service';
 import { ReactionService } from '@modules/reaction/reaction.service';
 import { SemesterService } from '@modules/semester/semester.service';
+import { UserService } from '@modules/user/user.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EUserRole } from 'enum/default.enum';
@@ -13,6 +15,7 @@ import { EIdeaFilter } from 'enum/idea.enum';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateReactionDto } from 'global/dto/reaction.dto';
 import { VUpdateIdeaDto } from 'global/dto/update-idea.dto';
+import * as moment from 'moment';
 import { Idea } from 'src/core/database/mysql/entity/idea.entity';
 import {
   Repository,
@@ -22,6 +25,7 @@ import {
   getManager,
   SelectQueryBuilder,
 } from 'typeorm';
+import { utc } from 'moment';
 
 @Injectable()
 export class IdeaService {
@@ -32,6 +36,7 @@ export class IdeaService {
     private readonly categoryIdeaService: CategoryIdeaService,
     private readonly ideaFileService: IdeaFileService,
     private readonly reactionService: ReactionService,
+    private readonly userService: UserService,
     private readonly connection: Connection,
   ) {}
 
@@ -257,6 +262,44 @@ export class IdeaService {
 
         return idea;
       });
+
+      const result = await this.ideaRepository
+        .createQueryBuilder('idea')
+        .select('staff_detail.nick_name as staff_nick_name, manager_detail.nick_name as manager_nick_name, manager.email as manager_email, department.name as department, idea.created_at')
+        .innerJoin('idea.user', 'staff')
+        .innerJoin('staff.userDetail', 'staff_detail')
+        .innerJoin('staff.department', 'department')
+        .innerJoin('department.manager', 'manager')
+        .innerJoin('manager.userDetail', 'manager_detail')
+        .where('idea.idea_id = :idea_id', { idea_id: data.idea_id! })
+        .getRawOne();
+
+      const ideaCategories = await this.categoryIdeaService.getCategoriesByIdea(data.idea_id!);
+      const categories = ideaCategories.map(c => {
+        return c.category.name;
+      });
+
+      const email = result["manager_email"];
+      const receiverUsername = result["manager_nick_name"];
+      const staffUsername = result["staff_nick_name"];
+      const department = result["department"];
+      const ideaTitle = data.title!;
+      const ideaContent = data.content!;
+      const date = new Date(result["created_at"]);
+      const createdTime = date.toLocaleTimeString();
+      let month = date.getMonth() + "";
+      if(month.length == 1) {
+        month = 0 + month;
+      }
+      const txtDate = date.getFullYear() + "-" + month + "-" + date.getDate();
+      const createdDate = moment(txtDate, "YYYY-MM-DD").format("MMM DD, YYYY");
+      sendMailNodemailer(
+        email,
+        'GIC - Idea Submission',
+        'idea_submission.hbs',
+        { receiverUsername, staffUsername, createdDate,
+          createdTime, department, ideaTitle, ideaContent, categories},
+      );
     } catch (error) {
       console.log(error);
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
