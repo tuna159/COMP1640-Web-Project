@@ -6,8 +6,9 @@ import { CategoryIdeaService } from '@modules/category-idea/category-idea.servic
 import { IdeaFileService } from '@modules/idea-file/idea-file.service';
 import { ReactionService } from '@modules/reaction/reaction.service';
 import { SemesterService } from '@modules/semester/semester.service';
-import { UserService } from '@modules/user/user.service';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, StreamableFile } from '@nestjs/common';
+import type { Response, Request } from 'express';
+import * as send from 'send';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
@@ -15,7 +16,10 @@ import { EIdeaFilter } from 'enum/idea.enum';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateReactionDto } from 'global/dto/reaction.dto';
 import { VUpdateIdeaDto } from 'global/dto/update-idea.dto';
+import { join } from 'path';
+import * as fs from 'fs';
 import * as moment from 'moment';
+import {stringify} from 'csv-stringify';
 import { Idea } from 'src/core/database/mysql/entity/idea.entity';
 import {
   Repository,
@@ -25,7 +29,6 @@ import {
   getManager,
   SelectQueryBuilder,
 } from 'typeorm';
-import { utc } from 'moment';
 
 @Injectable()
 export class IdeaService {
@@ -36,7 +39,6 @@ export class IdeaService {
     private readonly categoryIdeaService: CategoryIdeaService,
     private readonly ideaFileService: IdeaFileService,
     private readonly reactionService: ReactionService,
-    private readonly userService: UserService,
     private readonly connection: Connection,
   ) {}
 
@@ -470,5 +472,87 @@ export class IdeaService {
       : this.ideaRepository;
 
     await ideaRepository.update(conditions, value);
+  }
+
+  downloadIdeasBySemester(
+    userData: IUserData,
+    semester_id: number,
+    res: Response,
+    req: Request,
+    entityManager?: EntityManager,
+  ) {
+    const ideaRepository = entityManager
+      ? entityManager.getRepository<Idea>('idea')
+      : this.ideaRepository;
+
+    if (userData.role_id != EUserRole.QA_MANAGER) {
+      throw new HttpException(
+        ErrorMessage.DATA_DOWNLOAD_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const temp = join(process.cwd(), 'package.json');
+    send(req, temp).pipe(res);
+    return;
+    // const temp = fs.createReadStream(join(process.cwd(), 'package.json'));
+    // return new StreamableFile(temp);
+
+    // const semester = await this.semesterService.getSemesterById(semester_id);
+    
+    // if(!semester) {
+    //   throw new HttpException(
+    //     ErrorMessage.SEMESTER_NOT_EXIST,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
+
+    // if(semester.final_closure_date) {
+    //   throw new HttpException(
+    //     ErrorMessage.DATA_DOWNLOAD_DATE_TIME,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
+    
+    const data = [
+      [ 'John Doe', 30, 'New York' ],
+      [ 'Jane Smith', 25, 'San Francisco' ],
+      [ 'Bob Johnson', 40, 'Los Angeles' ],
+    ];
+    
+    const fileName = "data.csv";
+    const path = join(process.cwd(), 'src', fileName);
+    
+    const writableStream = fs.createWriteStream(path);
+    const columns = [
+      "name",
+      "age",
+      "city",
+    ];
+    
+    // try {
+      const stringifier = stringify({ header: true, columns: columns });
+      data.forEach(d => {
+        stringifier.write(d);
+      });
+
+      // stringifier.pipe(res);
+
+      res.set({
+        'Content-Type': 'text/csv',
+        'Content-Disposition': 'attachment; filename="data.csv"',
+      })
+      // res.sendFile(path);
+      const file = fs.createReadStream(path);
+      // file.pipe(res);
+      res.send(file.pipe(res));
+      // return new StreamableFile(file);
+    // } catch (error) {
+    //   throw new HttpException(
+    //     ErrorMessage.DATA_DOWNLOAD_FAILED,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
+
+    
   }
 }
