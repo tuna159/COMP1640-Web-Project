@@ -9,12 +9,16 @@ import {
   Post,
   Put,
   Query,
+  Req,
+  Res,
+  StreamableFile,
 } from '@nestjs/common';
 import { EIdeaFilter } from 'enum/idea.enum';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateReactionDto } from 'global/dto/reaction.dto';
 import { VUpdateIdeaDto } from 'global/dto/update-idea.dto';
 import { IdeaService } from './idea.service';
+import type { Response, Request } from 'express';
 
 @Controller('idea')
 export class IdeaController {
@@ -77,5 +81,20 @@ export class IdeaController {
     idea_id: number,
   ) {
     return await this.ideaService.getIdeaDetail(idea_id, userData.user_id);
+  }
+
+  @Get('semester/download/:semester_id')
+  downloadIdeasBySemester(
+    @UserData() userData: IUserData,
+    @Param('semester_id') semester_id: number,
+    @Res({ passthrough: true }) res: Response,
+    @Req() req: Request,
+  ) {
+    return "hello";
+    // res.set({
+    //   'Content-Type': 'application/json',
+    //   'Content-Disposition': 'attachment; filename="package.json"',
+    // })
+    return this.ideaService.downloadIdeasBySemester(userData, semester_id, res, req);
   }
 }
