@@ -101,8 +101,6 @@ export class AuthService {
       );
     }
 
-    sendMailNodemailer(body.email);
-
     const userParams = new User();
     userParams.email = body.email;
     userParams.password = await handleBCRYPTHash(body.password);
@@ -121,7 +119,15 @@ export class AuthService {
 
       return await this.userService.findUserByUserId(newUser.user_id, manager);
     });
-    // const data = await this.returnResponseAuth(user);
+    
+    sendMailNodemailer(
+      body.email,
+      'Your GIC Account Has Been Created!',
+      'signup_success.hbs',
+      {
+        "username": user.userDetail.nick_name ?? user.userDetail.full_name,
+      },
+    );
 
     return {
       // token: data.token,

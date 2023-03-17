@@ -1,12 +1,15 @@
 import { CategoryIdea } from '@core/database/mysql/entity/categoryIdea.entity';
 import { IdeaFile } from '@core/database/mysql/entity/file.entity';
 import { IUserData } from '@core/interface/default.interface';
+import sendMailNodemailer from '@helper/nodemailer';
 import { CategoryIdeaService } from '@modules/category-idea/category-idea.service';
 import { CommentService } from '@modules/comment/comment.service';
 import { IdeaFileService } from '@modules/idea-file/idea-file.service';
 import { ReactionService } from '@modules/reaction/reaction.service';
 import { SemesterService } from '@modules/semester/semester.service';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, StreamableFile } from '@nestjs/common';
+import type { Response, Request } from 'express';
+import * as send from 'send';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
@@ -14,6 +17,10 @@ import { EIdeaFilter } from 'enum/idea.enum';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateReactionDto } from 'global/dto/reaction.dto';
 import { VUpdateIdeaDto } from 'global/dto/update-idea.dto';
+import { join } from 'path';
+import * as fs from 'fs';
+import * as moment from 'moment';
+import {stringify} from 'csv-stringify';
 import { Idea } from 'src/core/database/mysql/entity/idea.entity';
 import {
   Repository,
@@ -259,6 +266,44 @@ export class IdeaService {
 
         return idea;
       });
+
+      const result = await this.ideaRepository
+        .createQueryBuilder('idea')
+        .select('staff_detail.nick_name as staff_nick_name, manager_detail.nick_name as manager_nick_name, manager.email as manager_email, department.name as department, idea.created_at')
+        .innerJoin('idea.user', 'staff')
+        .innerJoin('staff.userDetail', 'staff_detail')
+        .innerJoin('staff.department', 'department')
+        .innerJoin('department.manager', 'manager')
+        .innerJoin('manager.userDetail', 'manager_detail')
+        .where('idea.idea_id = :idea_id', { idea_id: data.idea_id! })
+        .getRawOne();
+
+      const ideaCategories = await this.categoryIdeaService.getCategoriesByIdea(data.idea_id!);
+      const categories = ideaCategories.map(c => {
+        return c.category.name;
+      });
+
+      const email = result["manager_email"];
+      const receiverUsername = result["manager_nick_name"];
+      const staffUsername = result["staff_nick_name"];
+      const department = result["department"];
+      const ideaTitle = data.title!;
+      const ideaContent = data.content!;
+      const date = new Date(result["created_at"]);
+      const createdTime = date.toLocaleTimeString();
+      let month = date.getMonth() + "";
+      if(month.length == 1) {
+        month = 0 + month;
+      }
+      const txtDate = date.getFullYear() + "-" + month + "-" + date.getDate();
+      const createdDate = moment(txtDate, "YYYY-MM-DD").format("MMM DD, YYYY");
+      sendMailNodemailer(
+        email,
+        'GIC - Idea Submission',
+        'idea_submission.hbs',
+        { receiverUsername, staffUsername, createdDate,
+          createdTime, department, ideaTitle, ideaContent, categories},
+      );
     } catch (error) {
       console.log(error);
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
@@ -452,5 +497,85 @@ export class IdeaService {
     }
 
     return this.commentService.getIdeaCommentsByParent(idea_id, parent_id);
+  }
+
+  downloadIdeasBySemester(
+    userData: IUserData,
+    semester_id: number,
+    res: Response,
+    req: Request,
+    entityManager?: EntityManager,
+  ) {
+    const ideaRepository = entityManager
+      ? entityManager.getRepository<Idea>('idea')
+      : this.ideaRepository;
+
+    if (userData.role_id != EUserRole.QA_MANAGER) {
+      throw new HttpException(
+        ErrorMessage.DATA_DOWNLOAD_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const temp = join(process.cwd(), 'package.json');
+    send(req, temp).pipe(res);
+    return;
+    // const temp = fs.createReadStream(join(process.cwd(), 'package.json'));
+    // return new StreamableFile(temp);
+
+    // const semester = await this.semesterService.getSemesterById(semester_id);
+    
+    // if(!semester) {
+    //   throw new HttpException(
+    //     ErrorMessage.SEMESTER_NOT_EXIST,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
+
+    // if(semester.final_closure_date) {
+    //   throw new HttpException(
+    //     ErrorMessage.DATA_DOWNLOAD_DATE_TIME,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
+    
+    const data = [
+      [ 'John Doe', 30, 'New York' ],
+      [ 'Jane Smith', 25, 'San Francisco' ],
+      [ 'Bob Johnson', 40, 'Los Angeles' ],
+    ];
+    
+    const fileName = "data.csv";
+    const path = join(process.cwd(), 'src', fileName);
+    
+    const writableStream = fs.createWriteStream(path);
+    const columns = [
+      "name",
+      "age",
+      "city",
+    ];
+    
+    // try {
+      const stringifier = stringify({ header: true, columns: columns });
+      data.forEach(d => {
+        stringifier.write(d);
+      });
+
+      // stringifier.pipe(res);
+
+      res.set({
+        'Content-Type': 'text/csv',
+        'Content-Disposition': 'attachment; filename="data.csv"',
+      })
+      // res.sendFile(path);
+      const file = fs.createReadStream(path);
+      // file.pipe(res);
+      res.send(file.pipe(res));
+      // return new StreamableFile(file);
+    // } catch (error) {
+    //   throw new HttpException(
+    //     ErrorMessage.DATA_DOWNLOAD_FAILED,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
   }
 }

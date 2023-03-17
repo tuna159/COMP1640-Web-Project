@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
 import { VUpdateSemesterDto } from 'global/dto/semester.dto';
-import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { EntityManager, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import moment = require('moment');
 
 @Injectable()
@@ -15,7 +15,10 @@ export class SemesterService {
     private readonly semesterRepository: Repository<Semester>,
   ) {}
 
-  async getAllSemesters() {
+  async getAllSemesters(entityManager?: EntityManager) {
+    const semesterRepository = entityManager
+      ? entityManager.getRepository<Semester>('semester')
+      : this.semesterRepository;
     return await this.semesterRepository.find();
   }
 
@@ -32,6 +35,34 @@ export class SemesterService {
     return await this.semesterRepository.findOne({
       semester_id: semester_id,
     });
+  }
+
+  async createSemester(userData: IUserData, body: VUpdateSemesterDto) {
+    if (userData.role_id != EUserRole.ADMIN) {
+      throw new HttpException(
+        ErrorMessage.YOU_DO_NOT_HAVE_PERMISSION_TO_UPDATE_SEMESTER,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    
+
+    const startDate = moment(body.first_closure_date);
+    const endDate = moment(body.final_closure_date);
+
+    if (startDate > endDate) {
+      throw new HttpException(
+        ErrorMessage.THE_START_DATE_NEEDS_TO_BE_LESS_THAN_THE_END_DATE,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const semesterParam = new Semester();
+    semesterParam.name = body.name;
+    semesterParam.final_closure_date = new Date(body?.final_closure_date);
+    semesterParam.first_closure_date = new Date(body?.first_closure_date);
+
+    return await this.semesterRepository.save(semesterParam);
   }
 
   async updateSemester(
@@ -86,7 +117,8 @@ export class SemesterService {
     return;
   }
 
-  async deleteSemester(semester_id: number) {
-    return await this.semesterRepository.delete({ semester_id });
+  async deleteSemester(semester_id: number, ) {
+    await this.semesterRepository.delete({ semester_id });
+    return;
   }
 }

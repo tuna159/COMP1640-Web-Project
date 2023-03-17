@@ -20,9 +20,9 @@ export class HomeComponent implements OnInit{
   nodes1: any[];
   apiUrl = 'http://localhost:3009/api/idea?sorting_setting=RECENT_IDEAS';
   constructor(private dialogService: DialogService, private http: HttpClient, 
-    private authService: AuthenticationService, private router: Router) { 
+    private authService: AuthenticationService, private router: Router, private messageService: MessageService) { 
     this.getAllIdeas();
-    this.getAllCategory()
+    // this.getAllCategory()
   }
 
 
@@ -34,14 +34,14 @@ export class HomeComponent implements OnInit{
         console.log(this.listIdea)
       })
     }
-  getAllCategory() {
-    this.http.get<any>("http://localhost:3009/api/categories", {headers: {
-      Authorization: 'Bearer ' + this.authService.getToken()}
-    }).subscribe((res:any)=>{
-      this.listCategory = res.data;
-      console.log(this.listCategory)
-    })
-  }
+  // getAllCategory() {
+  //   this.http.get<any>("http://localhost:3009/api/categories", {headers: {
+  //     Authorization: 'Bearer ' + this.authService.getToken()}
+  //   }).subscribe((res:any)=>{
+  //     this.listCategory = res.data;
+  //     console.log(this.listCategory)
+  //   })
+  // }
   ngOnInit(): void {
     
   }
@@ -58,7 +58,13 @@ export class HomeComponent implements OnInit{
             height: '90%',
             contentStyle: {"max-height": "800px", "overflow": "auto"},
             baseZIndex: 10000,
-            // data: hs
+    });
+    this.ref.onClose.subscribe(() => {
+      this.showMessage('success', 'Post successfully')
   });
+  }
+
+  showMessage(severity: string, detail: string) {
+    this.messageService.add({ severity: severity, summary: 'Thông báo:', detail: detail });
   }
 }

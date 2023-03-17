@@ -28,6 +28,9 @@ export class AuthenticationService {
     public getToken(): any {
         return this.userSubject.value.data.token;
     }
+    public getUserID(): any {
+        return this.userSubject.value.data.user_id;
+    }
 
     public login(username: string, password: string) {
         return this.http.post<any>('http://localhost:3009/api/user/login', { "email": username,"password": password }).pipe(

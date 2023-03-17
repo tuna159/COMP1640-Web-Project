@@ -1,1 +1,124 @@
-<p>profile works!</p>
+<div style="width: 80%; margin-left: auto; margin-right: auto;">
+    <p>Your Info</p>
+    <p-card>
+        <div style="display: flex;">
+            <p-avatar size="xlarge" shape="circle" image="user.png"></p-avatar>
+            <p style="width: 50%; margin-left: 5%;">Personalize your account with a photo. Your profile picture will appear at the top of the app
+                ideas section.</p>
+        </div>
+        
+
+    </p-card>
+
+    <p-card >
+        <div style="display: flex; justify-content: space-between;">
+            <p>Profile Info</p>
+            <p-button label="Edit your info" (click)="openNew()" styleClass="p-button-link"></p-button>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+            <p style="min-width: 10%;">Full Name</p>
+            <p style="min-width: 20%;">{{name}}</p>
+            <p style="min-width: 50%;">Your name will be displayed on the idea if you want</p>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+            <p style="min-width: 10%;">Gender</p>
+            <p style="min-width: 20%;">{{gender}}</p>
+            <p style="min-width: 50%;"></p>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+            <p style="min-width: 10%;">BirthDay</p>
+            <p style="min-width: 20%;">{{date| date:'mediumDate'}}</p>
+            <p style="min-width: 50%;"></p>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+            <p style="min-width: 10%;">Phone</p>
+            <p style="min-width: 20%;">08*****932</p>
+            <p style="min-width: 50%;"></p>
+        </div>
+    </p-card>
+
+    <p-card  >
+        <div style="display: flex; justify-content: space-between;">
+            <p>Account Info</p>
+            <p-button label="Edit account info" styleClass="p-button-link"(click)="openNewAccount()" ></p-button>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+            <p style="min-width: 10%;">Email</p>
+            <p style="min-width: 20%;">sonhan@gmail.com</p>
+            <p style="min-width: 50%;"></p>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+            <p style="min-width: 10%;">Password</p>
+            <p style="min-width: 20%;">*************</p>
+            <p style="min-width: 50%;"></p>
+        </div>
+    </p-card>
+</div>
+
+<p-dialog [(visible)]="profileDialog" [style]="{width: '500px'}" header="Your Profile Info" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="field">
+            <p-avatar [image]="url" shape="circle"
+                size="xlarge"></p-avatar>
+            <input type="file" (change)="onselectFile($event)">
+        </div>
+        
+        <div class="field">
+            <label for="name">Full Name</label>
+            <input type="text" pInputText id="name" required autofocus />
+            <small class="p-error" *ngIf="profileSubmitted">Name is required.</small>
+        </div>
+        <div class="field">
+            <label class="mb-3">Gender</label>
+            <div class="formgrid grid">
+                <div class="field-radiobutton col-6">
+                    <p-radioButton id="gender1" name="Gender" value="Male"
+                        ></p-radioButton>
+                    <label for="category1">Male</label>
+                </div>
+                <div class="field-radiobutton col-6">
+                    <p-radioButton id="gender2" name="Gender" value="Female"
+                        ></p-radioButton>
+                    <label for="category2">Female</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="phone">Phone</label>
+            <p-inputNumber [(ngModel)]="Phone" mode="decimal" inputId="withoutgrouping" [useGrouping]="false">
+            </p-inputNumber>
+        </div>
+        <div class="field col-12 md:col-4">
+            <label for="birthDay">BirthDay</label>
+            <p-calendar inputId="basic" [(ngModel)]="date"></p-calendar>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="accountDialog" [style]="{width: '500px'}" header="Account Info" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="field">
+            <label for="name">Password</label>
+            <p-password [(ngModel)]="password" [toggleMask]="true"></p-password>
+        </div>
+        <div class="field">
+            <label for="name">Confirm Password</label>
+            <p-password [(ngModel)]="confirmPass" [toggleMask]="true"></p-password>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"></button>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

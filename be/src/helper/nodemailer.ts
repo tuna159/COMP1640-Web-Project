@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { Logger } from '@nestjs/common';
 import * as fs from 'fs';
+import Handlebars from 'handlebars';
 import * as nodemailer from 'nodemailer';
 import * as path from 'path';
 
@@ -13,7 +14,12 @@ const logger = new Logger('Nodemailer');
 //   to: string;
 // }
 
-export default function sendMailNodemailer(to: string) {
+export default function sendMailNodemailer(
+  to: string,
+  subject: string,
+  emailFileName: String,
+  data: {},
+) {
   const password = process.env.NODEMAILER_PASSWORD;
   const email = process.env.NODEMAILER_EMAIL;
   // const fromName = process.env.NODEMAILER_FROM_NAME;
@@ -28,15 +34,16 @@ export default function sendMailNodemailer(to: string) {
     },
   });  
 
-  const filePath = path.join(process.cwd(), './src/helper/email/email_content.html');
-  const emailContent = fs.readFileSync(filePath, 'utf-8');
-  const subject = 'Your GIC Account Has Been Created!';
+  const filePath = path.join(process.cwd(), './src/helper/email/' + emailFileName);
+  const source = fs.readFileSync(filePath, 'utf-8');
+  const template = Handlebars.compile(source);
+  const result = template(data);
 
   const options = {
     from: email,
     to: to,
     subject: subject,
-    html: emailContent,
+    html: result,
   };
 
   return transporter

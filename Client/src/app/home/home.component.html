@@ -62,7 +62,7 @@
                                                                 styleclass="mr-2" size="xlarge"
                                                                 shape="circle"></p-avatar>
                                                         <p></p>
-                                                        <button pButton pRipple type="button" label="{{l.user.first_name}}" class="p-button-text p-button-plain" (click)="UserDetail(l.user.user_id)"></button>                                             
+                                                        <button pButton pRipple type="button" label="{{l.user.full_name}}" class="p-button-text p-button-plain" (click)="UserDetail(l.user.user_id)"></button>                                             
                                                 </div>
                                                 <div class="col-9" style="position: static;">
 
@@ -97,5 +97,5 @@
                 <a href="#" style="position: fixed; top: 90%; left: 90%;">
                         <img src="../../assets/images/post.png">
                 </a>
-
+                <p-toast position="bottom-right"></p-toast>
         </div>

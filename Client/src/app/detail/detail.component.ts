@@ -37,8 +37,6 @@ export class DetailComponent {
               this.content = result.data.content;
               this.date = result.data.date;
           });
-          // this.http.get<any[]>(`http://api.tvmaze.com/shows/${this.showId}/cast`)
-          // .subscribe((data: any[]) => this.casts = data);
   }
   }
   ngOnInit(): void {
