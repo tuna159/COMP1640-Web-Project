@@ -1,7 +1,10 @@
 import { Comment } from '@core/database/mysql/entity/comment.entity';
-import { Injectable } from '@nestjs/common';
+import { IUserData } from '@core/interface/default.interface';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EIsDelete } from 'enum';
+import { EUserRole } from 'enum/default.enum';
+import { ErrorMessage } from 'enum/error';
 import { DeepPartial, EntityManager, Repository } from 'typeorm';
 
 @Injectable()
@@ -72,5 +75,43 @@ export class CommentService {
         ? entityManager.getRepository<Comment>('comment')
         : this.commentRepository;
       return await commentRepository.save(value);
+    }
+
+    async deleteComment(
+        userData: IUserData,
+        comment_id: number,
+        entityManager?: EntityManager,
+    ) {
+        const commentRepository = entityManager
+            ? entityManager.getRepository<Comment>('comment')
+            : this.commentRepository;
+
+        const comment = await commentRepository.findOne({
+            where: { comment_id },
+        })
+
+        if(!comment || comment.is_deleted == EIsDelete.DELETED) {
+            throw new HttpException(
+                ErrorMessage.COMMENT_NOT_EXIST,
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+
+        if(userData.role_id == EUserRole.STAFF 
+            && userData.user_id != comment.author_id) {
+            throw new HttpException(
+                ErrorMessage.COMMENT_DELETE_PERMISSION,
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+
+        const result = await commentRepository.update(
+            { comment_id },
+            { is_deleted: EIsDelete.DELETED },
+        );
+
+        return {
+            affected: result.affected!
+        };
     }
 }

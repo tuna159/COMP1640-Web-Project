@@ -642,9 +642,9 @@ export class IdeaService {
       comment.content = body.content;
       const newComment = await this.commentService.addIdeaComment(comment);
       
-      // if(userData.user_id !== idea.user_id) {
-      //   return newComment;
-      // }
+      if(userData.user_id !== idea.user_id) {
+        return newComment;
+      }
       
       const email = idea.user["email"];
       // temporary solution
@@ -718,5 +718,28 @@ export class IdeaService {
     } else {
       return false;
     }
+  }
+
+  async deleteComment(userData: IUserData, idea_id: number, comment_id: number) {
+    if (userData.role_id != EUserRole.STAFF 
+      && userData.role_id != EUserRole.QA_COORDINATOR) {
+      throw new HttpException(
+        ErrorMessage.COMMENT_DELETE_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const idea = await this.ideaRepository.findOne({
+      where: { idea_id },
+    });
+
+    if (!idea) {
+      throw new HttpException(
+        ErrorMessage.IDEA_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return this.commentService.deleteComment(userData, comment_id);
   }
 }
