@@ -114,4 +114,41 @@ export class CommentService {
             affected: result.affected!
         };
     }
+
+    async updateComment(
+        author_id: string,
+        comment_id: number,
+        value: DeepPartial<Comment>,
+        entityManager?: EntityManager,
+    ) {
+        const commentRepository = entityManager
+            ? entityManager.getRepository<Comment>('comment')
+            : this.commentRepository;
+
+        const comment = await commentRepository.findOne({
+            where: { comment_id },
+        })
+        
+        if(!comment || comment.is_deleted == EIsDelete.DELETED) {
+            throw new HttpException(
+                ErrorMessage.COMMENT_NOT_EXIST,
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+        if(author_id != comment.author_id) {
+            throw new HttpException(
+                ErrorMessage.COMMENT_UPDATE_PERMISSION,
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+        
+        const result = await commentRepository.update(
+            { comment_id },
+            { content: value.content! },
+        );
+
+        return {
+            affected: result.affected!
+        };
+    }
 }

@@ -34,6 +34,7 @@ import {
   SelectQueryBuilder,
 } from 'typeorm';
 import { UserService } from '@modules/user/user.service';
+import { VUpdateCommentDto } from 'global/dto/comment.dto';
 
 @Injectable()
 export class IdeaService {
@@ -741,5 +742,32 @@ export class IdeaService {
     }
 
     return this.commentService.deleteComment(userData, comment_id);
+  }
+
+  async updateComment(
+    userData: IUserData, 
+    idea_id: number, 
+    comment_id: number,
+    body: VUpdateCommentDto,
+  ) {
+    if (userData.role_id != EUserRole.STAFF) {
+      throw new HttpException(
+        ErrorMessage.COMMENT_UPDATE_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const idea = await this.ideaRepository.findOne({
+      where: { idea_id },
+    });
+
+    if (!idea) {
+      throw new HttpException(
+        ErrorMessage.IDEA_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return this.commentService.updateComment(userData.user_id, comment_id, body);
   }
 }
