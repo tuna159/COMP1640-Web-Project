@@ -1,6 +1,14 @@
 import { UserData } from '@core/decorator/user.decorator';
 import { IUserData } from '@core/interface/default.interface';
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { VUpdateEventDto } from 'global/dto/event.dto';
 import { EventService } from './event.service';
 
@@ -28,10 +36,9 @@ export class EventController {
   }
 
   @Post()
-  createEvent( @Body() event: VUpdateEventDto, @UserData() userData: IUserData) {
+  createEvent(@Body() event: VUpdateEventDto, @UserData() userData: IUserData) {
     return this.eventService.createEvent(userData, event);
   }
-
 
   @Delete(':id')
   deleteEvent(@Param('id') id: string) {

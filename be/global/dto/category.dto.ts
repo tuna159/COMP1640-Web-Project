@@ -1,5 +1,5 @@
-import { IsString, MaxLength, MinLength } from "class-validator";
-import { ErrorMessage } from "enum/error";
+import { IsString, MaxLength, MinLength } from 'class-validator';
+import { ErrorMessage } from 'enum/error';
 
 export class VCreateCategoryDto {
   @IsString()

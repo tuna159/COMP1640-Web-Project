@@ -1,4 +1,3 @@
-import { User } from '@core/database/mysql/entity/user.entity';
 import { UserDetail } from '@core/database/mysql/entity/userDetail.entity';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -36,8 +35,7 @@ export class UserDetailService {
     });
   }
 
-  async updateUserDetail (user_id: string, body: VMeDetail,){
-    
+  async updateUserDetail(user_id: string, body: VMeDetail) {
     const meParams = new UserDetail();
     if (!body) {
       throw new HttpException(
@@ -48,7 +46,7 @@ export class UserDetailService {
     meParams.full_name = body.full_name;
     meParams.birthday = body.birthdate;
     meParams.gender = body.gender;
-    await this.userDetailRepository.update({user_id}, meParams)
+    await this.userDetailRepository.update({ user_id }, meParams);
     return;
   }
 }

@@ -5,7 +5,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
 import { VUpdateEventDto } from 'global/dto/event.dto';
-import { EntityManager, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import {
+  EntityManager,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+  Repository,
+} from 'typeorm';
 import moment = require('moment');
 
 @Injectable()
@@ -44,8 +49,6 @@ export class EventService {
         HttpStatus.BAD_REQUEST,
       );
     }
-
-    
 
     const startDate = moment(body.first_closure_date);
     const endDate = moment(body.final_closure_date);
@@ -110,14 +113,11 @@ export class EventService {
     eventParam.final_closure_date = new Date(body?.final_closure_date);
     eventParam.first_closure_date = new Date(body?.first_closure_date);
 
-    await this.eventRepository.update(
-      { event_id: event_id },
-      eventParam,
-    );
+    await this.eventRepository.update({ event_id: event_id }, eventParam);
     return;
   }
 
-  async deleteEvent(event_id: number, ) {
+  async deleteEvent(event_id: number) {
     await this.eventRepository.delete({ event_id });
     return;
   }

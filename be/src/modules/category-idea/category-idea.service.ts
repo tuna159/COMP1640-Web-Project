@@ -11,7 +11,6 @@ export class CategoryIdeaService {
   ) {}
 
   async getCategoriesByIdea(idea_id: number, entityManager?: EntityManager) {
-    const cate = [];
     const categoryIdeaRepository = entityManager
       ? entityManager.getRepository<CategoryIdea>('category_idea')
       : this.categoryIdeaRepository;

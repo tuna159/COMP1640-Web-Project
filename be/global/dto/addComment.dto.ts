@@ -1,4 +1,11 @@
-import { IsString, IsOptional, MaxLength, Max, Min, IsInt } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  MaxLength,
+  Max,
+  Min,
+  IsInt,
+} from 'class-validator';
 
 export class VAddComment {
   @IsOptional()

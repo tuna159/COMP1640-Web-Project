@@ -1,5 +1,4 @@
-import { Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
-import { Column } from 'typeorm/decorator/columns/Column';
+import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { Category } from './category.entity';
 import { Idea } from './idea.entity';
 

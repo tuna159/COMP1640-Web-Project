@@ -32,9 +32,12 @@ export default function sendMailNodemailer(
       user: email,
       pass: password,
     },
-  });  
+  });
 
-  const filePath = path.join(process.cwd(), './src/helper/email/' + emailFileName);
+  const filePath = path.join(
+    process.cwd(),
+    './src/helper/email/' + emailFileName,
+  );
   const source = fs.readFileSync(filePath, 'utf-8');
   const template = Handlebars.compile(source);
   const result = template(data);

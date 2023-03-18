@@ -119,13 +119,13 @@ export class AuthService {
 
       return await this.userService.findUserByUserId(newUser.user_id, manager);
     });
-    
+
     sendMailNodemailer(
       body.email,
       'Your GIC Account Has Been Created!',
       'signup_success.hbs',
       {
-        "username": user.userDetail.nick_name ?? user.userDetail.full_name,
+        username: user.userDetail.nick_name ?? user.userDetail.full_name,
       },
     );
 
