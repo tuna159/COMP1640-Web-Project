@@ -1,106 +1,154 @@
-<div style="width: 80%; margin-left: auto; margin-right: auto;">
-    <p>Your Info</p>
-    <p-card>
-        <div style="display: flex;">
-            <p-avatar size="xlarge" shape="circle" image="user.png"></p-avatar>
-            <p style="width: 50%; margin-left: 5%;">Personalize your account with a photo. Your profile picture will appear at the top of the app
-                ideas section.</p>
-        </div>
-        
+<div class="menu-bar" style="position: fixed; width: 100%; top: 0%; left: 0%;">
+    <app-header-home></app-header-home>
+</div>
+<br>
+<br>
 
-    </p-card>
+<div class="row">
 
-    <p-card >
-        <div style="display: flex; justify-content: space-between;">
-            <p>Profile Info</p>
-            <p-button label="Edit your info" (click)="openNew()" styleClass="p-button-link"></p-button>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-            <p style="min-width: 10%;">Full Name</p>
-            <p style="min-width: 20%;">{{name}}</p>
-            <p style="min-width: 50%;">Your name will be displayed on the idea if you want</p>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-            <p style="min-width: 10%;">Gender</p>
-            <p style="min-width: 20%;">{{gender}}</p>
-            <p style="min-width: 50%;"></p>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-            <p style="min-width: 10%;">BirthDay</p>
-            <p style="min-width: 20%;">{{date| date:'mediumDate'}}</p>
-            <p style="min-width: 50%;"></p>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-            <p style="min-width: 10%;">Phone</p>
-            <p style="min-width: 20%;">08*****932</p>
-            <p style="min-width: 50%;"></p>
-        </div>
-    </p-card>
+    <app-menu></app-menu>
 
-    <p-card  >
-        <div style="display: flex; justify-content: space-between;">
-            <p>Account Info</p>
-            <p-button label="Edit account info" styleClass="p-button-link"(click)="openNewAccount()" ></p-button>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-            <p style="min-width: 10%;">Email</p>
-            <p style="min-width: 20%;">sonhan@gmail.com</p>
-            <p style="min-width: 50%;"></p>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-            <p style="min-width: 10%;">Password</p>
-            <p style="min-width: 20%;">*************</p>
-            <p style="min-width: 50%;"></p>
-        </div>
-    </p-card>
+    <div style="width: 80%; margin-left: auto; margin-right: auto; margin-top: 3.5%;">
+        <p style="font-weight: bold; font-size: 24px;">Your Info</p>
+        <p-card>
+            <div style="display: flex;">
+                <p-avatar size="xlarge" shape="circle" image="user.png"></p-avatar>
+                <p style="width: 50%; margin-left: 5%;">Personalize your account with a photo. Your profile picture will
+                    appear at the top of the app
+                    ideas section.</p>
+            </div>
+
+
+        </p-card>
+
+        <p-card>
+            <div style="display: flex; justify-content: space-between;">
+                <p>Profile Info</p>
+                <p-button label="Edit your info" (click)="openNew()" styleClass="p-button-link"></p-button>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <p style="min-width: 10%;">Full Name</p>
+                <p style="min-width: 20%;">{{name}}</p>
+                <p style="min-width: 50%;">Your name will be displayed on the idea if you want</p>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <p style="min-width: 10%;">Gender</p>
+                <p style="min-width: 20%;">{{gender}}</p>
+                <p style="min-width: 50%;"></p>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <p style="min-width: 10%;">BirthDay</p>
+                <p style="min-width: 20%;">{{date| date:'mediumDate'}}</p>
+                <p style="min-width: 50%;"></p>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <p style="min-width: 10%;">Phone</p>
+                <p style="min-width: 20%;">08*****932</p>
+                <p style="min-width: 50%;"></p>
+            </div>
+        </p-card>
+
+        <p-card>
+            <div style="display: flex; justify-content: space-between;">
+                <p>Account Info</p>
+                <p-button label="Edit account info" styleClass="p-button-link" (click)="openNewAccount()"></p-button>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <p style="min-width: 10%;">Email</p>
+                <p style="min-width: 20%;">sonhan@gmail.com</p>
+                <p style="min-width: 50%;"></p>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <p style="min-width: 10%;">Password</p>
+                <p style="min-width: 20%;">*************</p>
+                <p style="min-width: 50%;"></p>
+            </div>
+        </p-card>
+    </div>
 </div>
 
-<p-dialog [(visible)]="profileDialog" [style]="{width: '500px'}" header="Your Profile Info" [modal]="true"
-    styleClass="p-fluid">
-    <ng-template pTemplate="content">
-        <div class="field">
-            <p-avatar [image]="url" shape="circle"
-                size="xlarge"></p-avatar>
-            <input type="file" (change)="onselectFile($event)">
-        </div>
+
+
+    <p-dialog [(visible)]="profileDialog" [style]="{width: '500px'}" header="Your Profile Info" [modal]="true"
+        styleClass="p-fluid">
         
-        <div class="field">
-            <label for="name">Full Name</label>
-            <input type="text" pInputText id="name" required autofocus />
-            <small class="p-error" *ngIf="profileSubmitted">Name is required.</small>
-        </div>
-        <div class="field">
-            <label class="mb-3">Gender</label>
-            <div class="formgrid grid">
-                <div class="field-radiobutton col-6">
-                    <p-radioButton id="gender1" name="Gender" value="Male"
-                        ></p-radioButton>
-                    <label for="category1">Male</label>
-                </div>
-                <div class="field-radiobutton col-6">
-                    <p-radioButton id="gender2" name="Gender" value="Female"
-                        ></p-radioButton>
-                    <label for="category2">Female</label>
+        <form [formGroup]="formGroup">
+
+            <div class="field" style="display: flex;">
+                <p-avatar [image]="url" shape="circle" size="xlarge"></p-avatar>
+                <label for="files" class="btn" style="height: 40px; width: 30%; margin-top: 3%; margin-left: 5%; border-width: 1px; border-color: black;">Select Image</label>
+                <input type="file" id="files" (change)="onselectFile($event)"
+                    style="margin-top: auto; margin-bottom: auto; margin-left: 5%; display: none;" required>
+
+
+            </div>
+
+            <div class="field" style="margin-top: 5%;">
+                <label for="name">Full Name</label>
+                <input type="text" pInputText id="name" formControlName="name" required autofocus
+                    [ngClass]="(formGroup.controls.name.invalid && (formGroup.controls.name.dirty || formGroup.controls.name.touched)) ? 'ng-invalid ng-dirty' : ''">
+
+                <div class="form-group mb-2"
+                    [hidden]="formGroup.controls.name.valid|| formGroup.controls.name.untouched">
+                    <span
+                        *ngIf="formGroup.controls.name.hasError('required') || formGroup.controls.name.hasError('blankString') "
+                        class="error-message-span" style="color: #FD0B0B; font-size: small;">
+                        Vui lòng nhập Full Name
+                    </span>
                 </div>
             </div>
-        </div>
+            <div class="field" style="margin-top: 5%;" >
+                <label class="mb-3">Gender</label>
+                <div class="formgrid grid">
+                    <div class="field-radiobutton col-6" style="display: flex;">
+                        <input type="radio" id="gender1" name="Gender" value="Male" [(ngModel)]="formGroup.controls.gender" checked style="height: 20px; width: 20px;">
+                        <label for="Male" style="margin-bottom: 0; margin-left: 5%;">Male</label>
+                    </div>
+                    <div class="field-radiobutton col-6" style="display: flex; margin-top: 3%;">
+                        <input type="radio" id="gender1" name="Gender" value="Male" [(ngModel)]="formGroup.controls.gender" style="height: 20px; width: 20px;">
+                        <label for="Female" style="margin-bottom: 0; margin-left: 5%;">Female</label>
+                    </div>
+                </div>
+            </div>
 
-        <div class="field">
-            <label for="phone">Phone</label>
-            <p-inputNumber [(ngModel)]="Phone" mode="decimal" inputId="withoutgrouping" [useGrouping]="false">
-            </p-inputNumber>
-        </div>
-        <div class="field col-12 md:col-4">
-            <label for="birthDay">BirthDay</label>
-            <p-calendar inputId="basic" [(ngModel)]="date"></p-calendar>
-        </div>
-    </ng-template>
+            <div class="field" style="margin-top: 5%;">
+                <label for="phone">Phone</label>
+                <input type="number" pInputText required [(ngModel)]="Phone" mode="decimal" inputId="withoutgrouping" formControlName="phone"
+                [ngClass]="(formGroup.controls.phone.invalid && (formGroup.controls.phone.dirty || formGroup.controls.phone.touched)) ? 'ng-invalid ng-dirty' : ''"
+                >
 
-    <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"></button>
-    </ng-template>
-</p-dialog>
+                <div class="form-group mb-2" [hidden]="formGroup.controls.phone.valid|| formGroup.controls.phone.untouched">
+                    <span *ngIf="formGroup.controls.phone.hasError('required') || formGroup.controls.phone.hasError('blankString') "
+                        class="error-message-span" style="color: #FD0B0B; font-size: small;">
+                        Vui lòng nhập Phone
+                    </span>
+                </div>
+                
+            </div>
+            <div class="field" style="margin-top: 5%;">
+                <label for="birthDay">BirthDay</label>
+                <p-calendar formControlName="birthday" inputId="basic" [(ngModel)]="date" [required]
+                [ngClass]="(formGroup.controls.birthday.invalid && (formGroup.controls.birthday.dirty || formGroup.controls.birthday.touched)) ? 'ng-invalid ng-dirty' : ''"
+                ></p-calendar>
+
+                <div class="form-group mb-2" [hidden]="formGroup.controls.birthday.valid|| formGroup.controls.birthday.untouched">
+                    <span *ngIf="formGroup.controls.birthday.hasError('required') || formGroup.controls.birthday.hasError('blankString') "
+                        class="error-message-span" style="color: #FD0B0B; font-size: small;">
+                        Vui lòng nhập birthday
+                    </span>
+                </div>
+            </div>
+
+        </form>
+
+        <ng-template pTemplate="footer">
+            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                (click)="hideDialog()"></button>
+            <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"></button>
+        </ng-template>
+        
+    </p-dialog>
+
 
 <p-dialog [(visible)]="accountDialog" [style]="{width: '500px'}" header="Account Info" [modal]="true"
     styleClass="p-fluid">
