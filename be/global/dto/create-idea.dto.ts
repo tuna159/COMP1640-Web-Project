@@ -42,8 +42,4 @@ export class VCreateIdeaDto {
   @IsOptional()
   @IsNumber()
   is_anonymous: number;
-
-  // @IsOptional()
-  // @IsNumber()
-  // semester_id: number;
 }

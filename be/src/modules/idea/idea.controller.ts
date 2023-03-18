@@ -36,7 +36,7 @@ export class IdeaController {
   }
 
   @Get('?')
-  getIdeasByCurrentSemester(
+  getIdeasByCurrentEvent(
     @Query('sorting_setting') sorting_setting: EIdeaFilter,
   ) {
     return this.ideaService.getAllIdeas(null, null, null, sorting_setting);
@@ -84,10 +84,10 @@ export class IdeaController {
     return await this.ideaService.getIdeaCommentsByParent(idea_id, parent_id);
   }
 
-  @Get('semester/download/:semester_id')
-  downloadIdeasBySemester(
+  @Get('event/download/:event_id')
+  downloadIdeasByEvent(
     @UserData() userData: IUserData,
-    @Param('semester_id') semester_id: number,
+    @Param('event_id') event_id: number,
     @Res({ passthrough: true }) res: Response,
     @Req() req: Request,
   ) {
@@ -96,7 +96,7 @@ export class IdeaController {
     //   'Content-Type': 'application/json',
     //   'Content-Disposition': 'attachment; filename="package.json"',
     // })
-    return this.ideaService.downloadIdeasBySemester(userData, semester_id, res, req);
+    return this.ideaService.downloadIdeasByEvent(userData, event_id, res, req);
   }
 
   @Post('/:idea_id/comments')

@@ -7,7 +7,7 @@ import { CategoryIdeaService } from '@modules/category-idea/category-idea.servic
 import { CommentService } from '@modules/comment/comment.service';
 import { IdeaFileService } from '@modules/idea-file/idea-file.service';
 import { ReactionService } from '@modules/reaction/reaction.service';
-import { SemesterService } from '@modules/semester/semester.service';
+import { EventService } from '@modules/event/event.service';
 import { HttpException, HttpStatus, Injectable, StreamableFile } from '@nestjs/common';
 import type { Response, Request } from 'express';
 import * as send from 'send';
@@ -39,7 +39,7 @@ export class IdeaService {
   constructor(
     @InjectRepository(Idea)
     private readonly ideaRepository: Repository<Idea>,
-    private readonly semesterService: SemesterService,
+    private readonly eventService: EventService,
     private readonly categoryIdeaService: CategoryIdeaService,
     private readonly ideaFileService: IdeaFileService,
     private readonly reactionService: ReactionService,
@@ -85,7 +85,7 @@ export class IdeaService {
   }
 
   async getAllIdeas(
-    semester_id?: number,
+    event_id?: number,
     department_id?: number,
     category_id?: number,
     sorting_setting?: EIdeaFilter,
@@ -95,9 +95,9 @@ export class IdeaService {
       ? entityManager.getRepository<Idea>('idea')
       : this.ideaRepository;
 
-    if (semester_id == null) {
-      const currentSemester = await this.semesterService.getCurrentSemester();
-      semester_id = currentSemester.semester_id;
+    if (event_id == null) {
+      const currentEvent = await this.eventService.getCurrentEvent();
+      event_id = currentEvent.event_id;
     }
 
     let ideaQueryBuilder: SelectQueryBuilder<any>;
@@ -110,7 +110,7 @@ export class IdeaService {
         .innerJoinAndSelect('user.userDetail', 'user_detail')
         .innerJoinAndSelect('user.department', 'department')
         .leftJoin('idea.reactions', 'reaction')
-        .where('idea.semester_id = :semester_id', { semester_id })
+        .where('idea.event_id = :event_id', { event_id })
         .groupBy('idea.idea_id')
         .orderBy('total', 'DESC');
 
@@ -134,7 +134,7 @@ export class IdeaService {
         .innerJoinAndSelect('user.userDetail', 'user_detail')
         .innerJoinAndSelect('user.department', 'department')
         .leftJoin('idea.comments', 'comment')
-        .where('idea.semester_id = :semester_id', { semester_id })
+        .where('idea.event_id = :event_id', { event_id })
         .groupBy('idea.idea_id');
 
       if (sorting_setting == EIdeaFilter.MOST_VIEWED_IDEAS) {
@@ -217,13 +217,13 @@ export class IdeaService {
     }
     try {
       data = await this.connection.transaction(async (manager) => {
-        const currentSemester = await this.semesterService.getCurrentSemester();
+        const currentEvent = await this.eventService.getCurrentEvent();
         const ideaParams = new Idea();
         ideaParams.user_id = userData.user_id;
         ideaParams.title = body.title;
         ideaParams.content = body.content;
         ideaParams.is_anonymous = body.is_anonymous;
-        ideaParams.semester_id = currentSemester.semester_id;
+        ideaParams.event_id = currentEvent.event_id;
 
         const idea = await this.saveIdea(ideaParams, manager);
 
@@ -398,13 +398,13 @@ export class IdeaService {
 
     try {
       await this.connection.transaction(async (manager) => {
-        const currentSemester = await this.semesterService.getCurrentSemester();
+        const currentEvent = await this.eventService.getCurrentEvent();
         const ideaParams = new Idea();
         ideaParams.user_id = userData.user_id;
         ideaParams.title = body.title;
         ideaParams.content = body.content;
         ideaParams.is_anonymous = body.is_anonymous;
-        ideaParams.semester_id = currentSemester.semester_id;
+        ideaParams.event_id = currentEvent.event_id;
 
         const idea = await this.updateIdeaCurrent(
           {
@@ -502,9 +502,9 @@ export class IdeaService {
     return this.commentService.getIdeaCommentsByParent(idea_id, parent_id);
   }
 
-  downloadIdeasBySemester(
+  downloadIdeasByEvent(
     userData: IUserData,
-    semester_id: number,
+    event_id: number,
     res: Response,
     req: Request,
     entityManager?: EntityManager,
@@ -525,16 +525,16 @@ export class IdeaService {
     // const temp = fs.createReadStream(join(process.cwd(), 'package.json'));
     // return new StreamableFile(temp);
 
-    // const semester = await this.semesterService.getSemesterById(semester_id);
+    // const event = await this.eventService.getEventById(event_id);
     
-    // if(!semester) {
+    // if(!event) {
     //   throw new HttpException(
-    //     ErrorMessage.SEMESTER_NOT_EXIST,
+    //     ErrorMessage.event_NOT_EXIST,
     //     HttpStatus.BAD_REQUEST,
     //   );
     // }
 
-    // if(semester.final_closure_date) {
+    // if(event.final_closure_date) {
     //   throw new HttpException(
     //     ErrorMessage.DATA_DOWNLOAD_DATE_TIME,
     //     HttpStatus.BAD_REQUEST,

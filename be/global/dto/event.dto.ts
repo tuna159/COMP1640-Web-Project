@@ -1,6 +1,6 @@
 import { IsDateString, IsString } from 'class-validator';
 
-export class VUpdateSemesterDto {
+export class VUpdateEventDto {
   @IsString()
   name: string;
 
