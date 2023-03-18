@@ -95,7 +95,7 @@ export class UserService {
         user_id: userId,
         is_deleted: EIsDelete.NOT_DELETE,
       },
-      relations: ['userDetail'],
+      relations: ['userDetail', 'department'],
     });
   }
 

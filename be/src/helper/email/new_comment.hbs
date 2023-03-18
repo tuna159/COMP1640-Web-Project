@@ -520,7 +520,6 @@
 
       .post-container {
         margin-top: 30.0px !important;
-        margin-bottom: 60.0px !important;
       }
 
       .post-header {
@@ -604,6 +603,81 @@
         margin-right: 4.0px !important;
         color: white !important;
         font-size: 13.0px !important;
+      }
+
+      /* comment */
+      .comment-container {
+        padding: 12.0px !important;
+        border-radius: 12.0px !important;
+        background-color: rgb(241, 241, 241) !important;
+        margin-bottom: 30.0px !important;
+        width: 100%;
+        margin-top: 16.0px !important;
+      }
+
+      .comment-header {
+        display: flex !important;
+        margin-bottom: 8.0px !important;
+      }
+
+      .comment-username {
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        display: block !important;
+        line-height: 1.0 !important;
+      }
+
+      .comment-avatar {
+        border-radius: 50% !important;
+        margin-right: 12px !important;
+      }
+
+      .comment-content {
+        font-size: 13px !important; 
+        font-weight: 500 !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        line-clamp: 3; 
+        -webkit-box-orient: vertical;
+        margin-bottom: 0 !important;
+        line-height: 1.3 !important;
+        margin-top: 0 !important;
+      }
+
+      .comment-read_more {
+        text-decoration: none !important;
+        line-height: 1.0 !important;
+        font-size: 13.0px !important;
+        color:#168de9 !important;
+      }
+
+      .comment-date,
+      .comment-department {
+        font-size: 12.5px !important; 
+        font-weight: 500 !important;
+      }
+
+      .comment-date,
+      .comment-department,
+      .comment-separator {
+        color: #989898 !important;
+        line-height: 1.0 !important;
+      }
+
+      .comment-separator {
+        font-size: 16px !important; 
+        font-weight: 600 !important;
+      }
+
+      .comment-indicator {
+        width: 19px !important; 
+        height: 40px !important;
+        border-left: 2px solid rgb(202, 202, 202) !important;
+        border-bottom: 2px solid rgb(202, 202, 202) !important;
+        border-bottom-left-radius: 10px !important;
+        margin-top: 2px !important
       }
     </style>
 </head>
@@ -813,25 +887,25 @@
                                             class="defaultText"
                                             style="font-size: 16px; font-weight: 700; margin: 0;"
                                           >
-                                            Hi {{receiverUsername}},
+                                            Hi {{ideaAuthorUsername}},
                                           </p>
                                           <p
                                             class="defaultText"
                                             style="font-size: 14px; font-weight: 500;"
                                           >
-                                            A staff has posted an idea to your department. Let check it now.
+                                            A staff has added a comment to your idea. Let check it now.
                                           </p>
 
                                           <div class="post-container">
                                             <div class="post-header">
                                               <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeeUl9IZDN97pBQNgeunx6dD1df-4g7vkPFw&usqp=CAU" alt="avatar", width="40.0" height="40.0" class="post-avatar">
                                               <div>
-                                                  <span class="post-username defaultText">{{staffUsername}}</span>
-                                                  <span class="post-date">{{createdDate}}</span>
+                                                  <span class="post-username defaultText">{{ideaAuthorUsername}}</span>
+                                                  <span class="post-date">{{ideaCreatedDate}}</span>
                                                   <span class="post-separator"><sup>.</sup></span>
-                                                  <span class="post-date">{{createdTime}}</span>
+                                                  <span class="post-date">{{ideaCreatedTime}}</span>
                                                   <span class="post-separator"><sup>.</sup></span>
-                                                  <span class="post-department">{{department}}</span>
+                                                  <span class="post-department">{{ideaDepartment}}</span>
                                               </div>
                                             </div>
                                             <h4 class="post-title defaultText">{{ideaTitle}}</h4>
@@ -842,6 +916,24 @@
                                               <li>{{this}}</li>
                                             {{/categories}}
                                             </ul>
+                                          </div>
+                                          <div style="display: flex; position: relative !important; justify-content: start;">
+                                            <div class="comment-indicator"></div>
+                                            <div class="comment-container">
+                                              <div class="comment-header">
+                                                <img src="https://www.kindpng.com/picc/m/78-786207_user-avatar-png-user-avatar-icon-png-transparent.png" alt="avatar", width="30.0" height="30.0" class="comment-avatar">
+                                                <div>
+                                                    <span class="comment-username defaultText">{{commentAuthorUsername}}</span>
+                                                    <span class="comment-date">{{commentCreatedDate}}</span>
+                                                    <span class="comment-separator"><sup>.</sup></span>
+                                                    <span class="comment-date">{{commentCreatedTime}}</span>
+                                                    <span class="comment-separator"><sup>.</sup></span>
+                                                    <span class="comment-department">{{commentDepartment}}</span>
+                                                </div>
+                                              </div>
+                                              <p class="comment-content defaultText">{{commentContent}}</p>
+                                              <a class="comment-read_more" href="#" target="_blank">Read More »</a>
+                                            </div>
                                           </div>
 
                                           <div
