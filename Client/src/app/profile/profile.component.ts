@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { MessageService } from 'primeng/api';
 import { AuthenticationService } from '../auth/services/authentication.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 
 interface Profile {
@@ -27,7 +28,7 @@ interface Account {
   providers: [MessageService, ConfirmationService]
 })
 
-export class ProfileComponent {
+export class ProfileComponent implements OnInit {
   profileDialog: boolean;
   url: string;
   accountDialog: boolean;
@@ -45,9 +46,26 @@ export class ProfileComponent {
   uploadedFiles: any[] = [];
   apiUrl:string = "http://localhost:3009/api/user/";
 
+  formGroup: FormGroup<({
+    name: FormControl<string>;
+    gender: FormControl<string>;
+    phone: FormControl<number>;
+    birthday: FormControl<string>;
+  })>;
+
   constructor(private messageService: MessageService, private confirmationService: ConfirmationService, 
     private http : HttpClient, private router: Router,private authService: AuthenticationService,) { 
     this.getDataUser();
+    
+  }
+
+  ngOnInit(): void {
+    this.formGroup = new FormGroup({
+      name: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')]),
+      gender: new FormControl(null, [Validators.required]), 
+      phone: new FormControl(null, [Validators.required]),
+      birthday: new FormControl(null, [Validators.required]),
+    });
   }
 
   getDataUser() {

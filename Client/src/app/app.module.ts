@@ -78,7 +78,7 @@ import { PostComponent } from './home/post/post.component';
         ManageCategoryComponent,
         ManageSemesterComponent,
         ManageAccountComponent,
-        PostComponent
+        PostComponent,
     ],
     providers: [MessageService],
     bootstrap: [AppComponent],

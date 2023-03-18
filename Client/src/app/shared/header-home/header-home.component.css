@@ -5,9 +5,13 @@
     border-radius: 0%;
     
 }
+
 .header{
     border-bottom-style: groove;
-    position: relative;
+    position: sticky;
+    width: 100%;
+    top: 0px;
+    margin-bottom: 1.5rem !important;
 }
 
 
@@ -35,7 +39,7 @@
 }
 
 :host ::ng-deep .p-menu {
-    position: absolute;
+    position: fixed;
     width: 30%;
 }
 

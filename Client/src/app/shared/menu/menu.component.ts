@@ -26,7 +26,7 @@ export class MenuComponent {
   
   ngOnInit() {
     this.items = [
-      { label: 'View profile', icon: 'pi pi-users' },
+      { label: 'View profile', icon: 'pi pi-users', routerLink: '/view/profile' },
       { label: 'Settings', icon: 'pi pi-fw pi-download' },
       { label: 'Log out', icon: 'pi pi-sign-out', command: () => {
         this.logout()

@@ -38,8 +38,9 @@ li {
     border-radius: 10px   ;
     height: 35rem;
     width: 15rem;
+    top: 13%;
+    position: sticky;
     margin-left: 30px;
-
 }
 
 :host ::ng-deep .p-menu {

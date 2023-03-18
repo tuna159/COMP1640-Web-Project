@@ -2,6 +2,10 @@
     background: #fff;
     border-radius: 8px;
     border: 1px solid #ccc;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 6.5%;
 }
 
 /* .header-left .header-left {} */
@@ -41,4 +45,9 @@
 
 .ds-category .body-page {
     padding-bottom: 10px;
+}
+
+:host ::ng-deep .p-table {
+    position: static !important;
+    background-color: #f77643;
 }
