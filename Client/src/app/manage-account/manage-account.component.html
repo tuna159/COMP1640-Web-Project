@@ -20,6 +20,8 @@
                                             (input)="myTab.filterGlobal($any($event.target).value, 'contains')"
                                             placeholder="Search..." style="margin-left: 7.5px; height: 30px !important;" />
                                     </span>
+                                    <button pButton type="button" (click)="openNewCategory()" label="Add" icon="pi pi-plus"
+                                        style="background-color:#f97c39; width: 120px !important; height: 30px !important; margin-left: 5px; border: 0px;"></button>
                                     <button pButton type="button" label="Xóa" icon="pi pi-trash"
                                         style="background-color:red; width: 120px !important; height: 30px !important; margin-left: 5px; border: 0px"
                                         (click)="showDialogXoaN()"></button>

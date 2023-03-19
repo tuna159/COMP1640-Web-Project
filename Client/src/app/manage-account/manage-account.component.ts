@@ -4,12 +4,14 @@ import { Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { MessageService } from 'primeng/api';
 import { AuthenticationService } from '../auth/services/authentication.service';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { CreateAccountComponent } from './create-account/create-account/create-account.component';
 
 @Component({
   selector: 'app-manage-account',
   templateUrl: './manage-account.component.html',
   styleUrls: ['./manage-account.component.css'],
-  providers: [MessageService, ConfirmationService]
+  providers: [MessageService, ConfirmationService, DialogService]
 })
 export class ManageAccountComponent {
   breadcrumb: any[];
@@ -18,11 +20,12 @@ export class ManageAccountComponent {
   displayXoa: boolean;
   displayXoaN: boolean;
   id: number;
+  ref: DynamicDialogRef;
   name: string;
   apiUrl: string = "http://localhost:3009/api/category";
   listSelectedData: Array<any> = [];
   constructor(private messageService: MessageService, private confirmationService: ConfirmationService, private router: Router,
-    private http: HttpClient, private authService: AuthenticationService) {
+    private http: HttpClient, private authService: AuthenticationService, private dialogService: DialogService) {
     this.getAllData();
   }
 
@@ -105,5 +108,15 @@ export class ManageAccountComponent {
 
   showMessage(severity: string, detail: string) {
     this.messageService.add({ severity: severity, summary: 'Thông báo:', detail: detail });
+  }
+
+  openNewCategory() {
+    this.ref = this.dialogService.open(CreateAccountComponent, {
+      header: 'Add Account',
+      width: '50%',
+      height: '80%',
+      contentStyle: { "max-height": "800px", "overflow": "auto" },
+      baseZIndex: 10000,
+    });
   }
 }

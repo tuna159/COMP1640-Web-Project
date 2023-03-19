@@ -43,7 +43,6 @@ import {MessagesModule} from 'primeng/messages';
 import { ProfileComponent } from './profile/profile.component';
 import { UpdateProfileComponent } from './update-profile/update-profile.component';
 import { ManageCategoryComponent } from './manage-category/manage-category.component';
-import { ManageSemesterComponent } from './manage-semester/manage-semester.component';
 import { ManageAccountComponent } from './manage-account/manage-account.component';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
@@ -60,6 +59,8 @@ import { CalendarModule } from 'primeng/calendar';
 import { ImageModule } from 'primeng/image'
 import { MessageService } from 'primeng/api';
 import { PostComponent } from './home/post/post.component';
+import { AddCategoryComponent } from './manage-category/add-category/add-category/add-category.component';
+import { CreateAccountComponent } from './manage-account/create-account/create-account/create-account.component';
 
 
 @NgModule({
@@ -76,9 +77,10 @@ import { PostComponent } from './home/post/post.component';
         ProfileComponent,
         UpdateProfileComponent,
         ManageCategoryComponent,
-        ManageSemesterComponent,
         ManageAccountComponent,
         PostComponent,
+        AddCategoryComponent,
+        CreateAccountComponent,
     ],
     providers: [MessageService],
     bootstrap: [AppComponent],
