@@ -20,11 +20,12 @@ export class PostComponent implements OnInit {
     { name: 'D' },
     { name: 'E' }
   ];
+  url: string;
   formGroup: FormGroup<{
     category: FormControl<string>;
     title: FormControl<string>;
     content: FormControl<string>;
-
+    checked: FormControl<boolean>;
   }>;
   constructor(private dialogService: DialogService,public ref: DynamicDialogRef, public config: DynamicDialogConfig,
     private http: HttpClient, private authService: AuthenticationService,) {
@@ -66,10 +67,21 @@ export class PostComponent implements OnInit {
       category: new FormControl(null, [Validators.required]),
       title: new FormControl(null, [Validators.required]),
       content: new FormControl(null, [Validators.required]),
+      checked: new FormControl(false, [Validators.required]),
     });
   }
 
   closeDialog() {
     this.ref.close();
+  }
+
+  onselectFile(e) {
+    if (e.target.files) {
+      var reader = new FileReader();
+      reader.readAsDataURL(e.target.files[0]);
+      reader.onload = (event: any) => {
+        this.url = event.target.result;
+      }
+    }
   }
 }
