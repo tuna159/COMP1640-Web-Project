@@ -62,6 +62,9 @@ import { PostComponent } from './home/post/post.component';
 import { AddCategoryComponent } from './manage-category/add-category/add-category/add-category.component';
 import { CreateAccountComponent } from './manage-account/create-account/create-account/create-account.component';
 
+import { ChartsComponent } from './charts/charts.component';
+// import { HighchartsChartModule } from 'highcharts-angular';
+import { ChartModule } from 'angular-highcharts';
 
 @NgModule({
     declarations: [
@@ -81,11 +84,13 @@ import { CreateAccountComponent } from './manage-account/create-account/create-a
         PostComponent,
         AddCategoryComponent,
         CreateAccountComponent,
+        ChartsComponent
     ],
     providers: [MessageService],
     bootstrap: [AppComponent],
     imports: [
         BrowserModule,
+        ChartModule,
         AppRoutingModule,
         CheckboxModule,
         CalendarModule,
@@ -102,6 +107,7 @@ import { CreateAccountComponent } from './manage-account/create-account/create-a
         FormsModule,
         TabViewModule,
         CardModule,
+        // HighchartsChartModule,
         BrowserAnimationsModule,
         DynamicDialogModule,
         DropdownModule,

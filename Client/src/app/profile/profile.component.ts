@@ -72,9 +72,10 @@ export class ProfileComponent implements OnInit {
     this.http.get<any>(this.apiUrl + this.authService.getUserID(), {headers: {
         Authorization: 'Bearer ' + this.authService.getToken()}
       }).subscribe((result: any) => {
-              this.name = result.data.full_name;
-              this.gender = result.data.gender == 1 ? "Male" : "Female";
-              this.date = result.data.birthday;
+            console.log(result);
+            this.name = result.data.full_name;
+            this.gender = result.data.gender == 1 ? "Male" : "Female";
+            this.date = result.data.birthday;
           });
 
   }

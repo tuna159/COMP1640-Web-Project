@@ -1,0 +1,47 @@
+.container {
+    width: 100%;
+
+    padding: 20px;
+    /* display: grid; */
+    /* grid-template-columns: repeat(auto-fit, minmax(350px, 500px));
+    grid-gap: 20px; */
+    place-content: center;
+    margin-top: 20px;
+}
+
+.chart {
+    margin-top: 20px;
+}
+.item {
+    padding-top: 20px;
+}
+
+::ng-deep  .p-tabview .p-tabview-nav-container .p-tabview-nav-content ul li {
+    border-left : 1px solid #ccc;
+    border-top  : 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    width       : 20%;
+    text-align  : center;
+}
+
+::ng-deep  .p-tabview .p-tabview-nav-container .p-tabview-nav-content ul li .p-tabview-nav-link {
+    justify-content: center;
+}
+
+::ng-deep  .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+    border-color: #f77643;
+    color       : #f77643;
+}
+
+::ng-deep  .p-tabview .p-tabview-panels {
+    border: 1px solid #ccc;
+}
+
+::ng-deep  .p-tabview .grid {
+    display: grid;
+    padding-bottom: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 705px));
+    grid-gap: 20px;
+    place-content: center;
+    margin-top: 30px;
+}
