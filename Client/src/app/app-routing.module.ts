@@ -1,3 +1,5 @@
+import { ManageAccountComponent } from './manage-account/manage-account.component';
+import { ChartsComponent } from './charts/charts.component';
 //app-routing.module.ts
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -8,7 +10,7 @@ import { DetailComponent } from './detail/detail.component';
 import { AuthGuard } from './shared/guard/auth.guard';
 import { ManageCategoryComponent } from './manage-category/manage-category.component';
 import { ProfileComponent } from './profile/profile.component';
-import { ManageAccountComponent } from './manage-account/manage-account.component';
+
 
 
 const routes: Routes = [
@@ -40,10 +42,22 @@ const routes: Routes = [
         component: ManageCategoryComponent
     },
     {
+        path: 'manage/account',
+        canActivate: [AuthGuard],
+        // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
+        component: ManageAccountComponent
+    },
+    {
         path: 'view/profile',
         canActivate: [AuthGuard],
         // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: ProfileComponent
+    },
+    {
+        path: 'charts',
+        // canActivate: [AuthGuard],
+        // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
+        component: ChartsComponent
     },
     // { path: '**', component: PageNotFoundComponent },
     {

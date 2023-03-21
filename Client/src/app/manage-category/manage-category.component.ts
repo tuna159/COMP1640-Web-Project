@@ -51,7 +51,7 @@ export class ManageCategoryComponent implements OnInit {
     ];
   }
   
-  async getAllData() {
+  getAllData() {
     this.http.get<any>(this.apiUrl, {headers: {
       Authorization: 'Bearer ' + this.authService.getToken()}
     }).subscribe((result: any) => {
@@ -59,11 +59,9 @@ export class ManageCategoryComponent implements OnInit {
               this.showMessage('error', result.error_message);
               return;
             }
-            console.log(result)
             this.listData = result.data.map((item, index) => Object.assign({
               Stt: index + 1,
             }, item));
-            console.log(this.listData)
         });
     
     
@@ -98,12 +96,14 @@ export class ManageCategoryComponent implements OnInit {
   async xoaTo() { 
     this.http.delete(this.apiUrl +'/'+ this.id, {headers: {
       Authorization: 'Bearer ' + this.authService.getToken()}
-    }).subscribe(() => 
-        this.showMessage('success', 'Delete success'));
-    this.displayXoa = false;
-    this.displayXoaN = false;
+    }).subscribe(() => {
+      this.showMessage('success', 'Delete success');
+      this.displayXoa = false;
+      this.displayXoaN = false;
+      
+      this.getAllData();
+    });
     
-    this.getAllData();
   }
 
   showMessage(severity: string, detail: string) {
@@ -116,9 +116,10 @@ export class ManageCategoryComponent implements OnInit {
         Authorization: 'Bearer ' + this.authService.getToken()
       }
     }).subscribe((result: any) => {
-      console.log(result);
+      this.showMessage("success", "Add success")
+      this.getAllData();
     });
-    this.getAllData();
+    
   }
 
   openNewCategory() {

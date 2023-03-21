@@ -15,14 +15,14 @@ import { PostComponent } from './post/post.component';
 export class HomeComponent implements OnInit{
   ref: DynamicDialogRef;
   listIdea = [];
-  listCategory = []
+  listDepartment = []
   selectedNode: any;
   nodes1: any[];
-  apiUrl = 'http://localhost:3009/api/idea?sorting_setting=RECENT_IDEAS';
+  apiUrl = 'http://localhost:3009/api/idea';
   constructor(private dialogService: DialogService, private http: HttpClient, 
     private authService: AuthenticationService, private router: Router, private messageService: MessageService) { 
     this.getAllIdeas();
-    // this.getAllCategory()
+    this.getAllDepartment()
   }
 
 
@@ -31,17 +31,15 @@ export class HomeComponent implements OnInit{
         Authorization: 'Bearer ' + this.authService.getToken()}
       }).subscribe((res:any)=>{
         this.listIdea = res.data;
-        console.log(this.listIdea)
       })
     }
-  // getAllCategory() {
-  //   this.http.get<any>("http://localhost:3009/api/categories", {headers: {
-  //     Authorization: 'Bearer ' + this.authService.getToken()}
-  //   }).subscribe((res:any)=>{
-  //     this.listCategory = res.data;
-  //     console.log(this.listCategory)
-  //   })
-  // }
+  getAllDepartment() {
+    this.http.get<any>("http://localhost:3009/api/department", {headers: {
+      Authorization: 'Bearer ' + this.authService.getToken()}
+    }).subscribe((res:any)=>{
+      this.listDepartment = res.data;
+    })
+  }
   ngOnInit(): void {
     
   }

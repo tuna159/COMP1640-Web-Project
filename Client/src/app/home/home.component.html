@@ -37,9 +37,9 @@
                                         </div>
 
                                         <div class="col-3" style="position: static;">
-                                                <ng-template ptemplate="filter" let-listcategory
+                                                <ng-template ptemplate="filter" let-department
                                                         let-filter="filterCallback">
-                                                        <p-dropdown [options]="listCategory"
+                                                        <p-dropdown [options]="listDepartment"
                                                                 (onChange)="filter($event.value)"
                                                                 placeholder="Category">
                                                                 <ng-template let-option ptemplate="item">
