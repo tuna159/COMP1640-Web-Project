@@ -731,7 +731,7 @@ export class IdeaService {
     }
 
     const idea = await this.ideaRepository.findOne({
-      where: { idea_id },
+      where: { idea_id, is_deleted: EIsDelete.NOT_DELETE },
     });
 
     if (!idea) {
@@ -758,7 +758,7 @@ export class IdeaService {
     }
 
     const idea = await this.ideaRepository.findOne({
-      where: { idea_id },
+      where: { idea_id, is_deleted: EIsDelete.NOT_DELETE },
     });
 
     if (!idea) {

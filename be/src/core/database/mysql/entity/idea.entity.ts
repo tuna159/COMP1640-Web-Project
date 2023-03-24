@@ -15,6 +15,7 @@ import { IdeaFile } from './file.entity';
 import { Reaction } from './reaction.entity';
 import { Event } from './event.entity';
 import { User } from './user.entity';
+import { IdeaTag } from './ideaTag.entity';
 
 @Entity('idea')
 export class Idea {
@@ -78,6 +79,9 @@ export class Idea {
 
   @OneToMany(() => CategoryIdea, (categoryIdea) => categoryIdea.idea)
   ideaCategories: CategoryIdea[];
+
+  @OneToMany(() => IdeaTag, (ideaTag) => ideaTag.idea)
+  ideaTags: IdeaTag[];
 
   @OneToMany(() => Reaction, (reaction) => reaction.idea)
   reactions: Reaction[];

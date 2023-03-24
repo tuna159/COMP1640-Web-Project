@@ -60,12 +60,6 @@ export class CommentService {
 
         return data;
     }
-
-    async getCommentsByParent(parent_id?: number, entityManager?: EntityManager) {
-      const commentRepository = entityManager
-        ? entityManager.getRepository<Comment>('comment')
-        : this.commentRepository;
-    }
   
     async addIdeaComment(
       value: DeepPartial<Comment>,
@@ -87,10 +81,10 @@ export class CommentService {
             : this.commentRepository;
 
         const comment = await commentRepository.findOne({
-            where: { comment_id },
+            where: { comment_id, is_deleted: EIsDelete.NOT_DELETE },
         })
 
-        if(!comment || comment.is_deleted == EIsDelete.DELETED) {
+        if(!comment) {
             throw new HttpException(
                 ErrorMessage.COMMENT_NOT_EXIST,
                 HttpStatus.BAD_REQUEST,
@@ -126,10 +120,10 @@ export class CommentService {
             : this.commentRepository;
 
         const comment = await commentRepository.findOne({
-            where: { comment_id },
+            where: { comment_id, is_deleted: EIsDelete.NOT_DELETE },
         })
         
-        if(!comment || comment.is_deleted == EIsDelete.DELETED) {
+        if(!comment) {
             throw new HttpException(
                 ErrorMessage.COMMENT_NOT_EXIST,
                 HttpStatus.BAD_REQUEST,
