@@ -15,7 +15,13 @@ export class Event {
   @PrimaryGeneratedColumn({ name: 'event_id', type: 'int', unsigned: true })
   event_id: number;
 
-  @Column({ name: 'department_id', type: 'int', unsigned: true, nullable: true, default: null })
+  @Column({
+    name: 'department_id',
+    type: 'int',
+    unsigned: true,
+    nullable: true,
+    default: null,
+  })
   department_id: number;
 
   @Column({ name: 'name', type: 'varchar', length: 100 })

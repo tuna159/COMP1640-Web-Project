@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EIsDelete } from 'enum';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
-import { VSignUp } from 'global/dto/signup.dto';
+import { VSignUp } from 'global/dto/createAccount';
 import { VUpdateAccount } from 'global/dto/update-account.dto';
 import { VLogin } from 'global/user/dto/login.dto';
 import { User } from 'src/core/database/mysql/entity/user.entity';
@@ -23,8 +23,8 @@ export class UserService {
     return await this.authService.login(body);
   }
 
-  async signup(userData: IUserData, body: VSignUp) {
-    return await this.authService.signup(userData, body);
+  async createAccount(userData: IUserData, body: VSignUp) {
+    return await this.authService.createAccount(userData, body);
   }
 
   async getUserByEmail(email: string, entityManager?: EntityManager) {

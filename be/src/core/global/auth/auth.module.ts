@@ -6,6 +6,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { AuthService } from './auth.service';
 import { UserModule } from 'src/modules/user/user.module';
 import { UserDetailModule } from '@modules/user-detail/user-detail.module';
+import { DepartmentModule } from '@modules/department/department.module';
 
 @Global()
 @Module({
@@ -16,6 +17,7 @@ import { UserDetailModule } from '@modules/user-detail/user-detail.module';
     PassportModule,
     JwtModule,
     UserDetailModule,
+    DepartmentModule,
   ],
   exports: [AuthService, JwtStrategy],
 })

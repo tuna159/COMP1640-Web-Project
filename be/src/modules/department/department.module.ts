@@ -1,9 +1,8 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { DepartmentService } from './department.service';
 import { DepartmentController } from './department.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Department } from '@core/database/mysql/entity/department.entity';
-import { CategoryIdeaModule } from '@modules/category-idea/category-idea.module';
 import { IdeaModule } from '@modules/idea/idea.module';
 
 @Module({
@@ -11,7 +10,8 @@ import { IdeaModule } from '@modules/idea/idea.module';
   controllers: [DepartmentController],
   imports: [
     TypeOrmModule.forFeature([Department]),
-    IdeaModule,
+    forwardRef(() => IdeaModule),
   ],
+  exports: [TypeOrmModule, DepartmentService],
 })
 export class DepartmentModule {}

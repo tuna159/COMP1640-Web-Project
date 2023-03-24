@@ -8,7 +8,12 @@ import { CommentService } from '@modules/comment/comment.service';
 import { IdeaFileService } from '@modules/idea-file/idea-file.service';
 import { ReactionService } from '@modules/reaction/reaction.service';
 import { EventService } from '@modules/event/event.service';
-import { HttpException, HttpStatus, Injectable, StreamableFile } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  StreamableFile,
+} from '@nestjs/common';
 import type { Response, Request } from 'express';
 import * as send from 'send';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -23,7 +28,7 @@ import { VUpdateIdeaDto } from 'global/dto/update-idea.dto';
 import { join } from 'path';
 import * as fs from 'fs';
 import * as moment from 'moment';
-import {stringify} from 'csv-stringify';
+import { stringify } from 'csv-stringify';
 import { Idea } from 'src/core/database/mysql/entity/idea.entity';
 import {
   Repository,
@@ -60,9 +65,9 @@ export class IdeaService {
     const ideaRepository = entityManager
       ? entityManager.getRepository<Idea>('idea')
       : this.ideaRepository;
-      
+
     const idea = await this.ideaRepository.findOne({
-      where: { 
+      where: {
         idea_id: idea_id,
         is_deleted: EIsDelete.NOT_DELETE,
       },
@@ -287,7 +292,9 @@ export class IdeaService {
 
       const result = await this.ideaRepository
         .createQueryBuilder('idea')
-        .select('staff_detail.nick_name as staff_nick_name, manager_detail.nick_name as manager_nick_name, manager.email as manager_email, department.name as department, idea.created_at')
+        .select(
+          'staff_detail.nick_name as staff_nick_name, manager_detail.nick_name as manager_nick_name, manager.email as manager_email, department.name as department, idea.created_at',
+        )
         .innerJoin('idea.user', 'staff')
         .innerJoin('staff.userDetail', 'staff_detail')
         .innerJoin('staff.department', 'department')
@@ -296,31 +303,41 @@ export class IdeaService {
         .where('idea.idea_id = :idea_id', { idea_id: data.idea_id! })
         .getRawOne();
 
-      const ideaCategories = await this.categoryIdeaService.getCategoriesByIdea(data.idea_id!);
-      const categories = ideaCategories.map(c => {
+      const ideaCategories = await this.categoryIdeaService.getCategoriesByIdea(
+        data.idea_id!,
+      );
+      const categories = ideaCategories.map((c) => {
         return c.category.name;
       });
 
-      const email = result["manager_email"];
-      const receiverUsername = result["manager_nick_name"];
-      const staffUsername = result["staff_nick_name"];
-      const department = result["department"];
+      const email = result['manager_email'];
+      const receiverUsername = result['manager_nick_name'];
+      const staffUsername = result['staff_nick_name'];
+      const department = result['department'];
       const ideaTitle = data.title!;
       const ideaContent = data.content!;
-      const date = new Date(result["created_at"]);
+      const date = new Date(result['created_at']);
       const createdTime = date.toLocaleTimeString();
-      let month = date.getMonth() + "";
-      if(month.length == 1) {
+      let month = date.getMonth() + '';
+      if (month.length == 1) {
         month = 0 + month;
       }
-      const txtDate = date.getFullYear() + "-" + month + "-" + date.getDate();
-      const createdDate = moment(txtDate, "YYYY-MM-DD").format("MMM DD, YYYY");
+      const txtDate = date.getFullYear() + '-' + month + '-' + date.getDate();
+      const createdDate = moment(txtDate, 'YYYY-MM-DD').format('MMM DD, YYYY');
       sendMailNodemailer(
         email,
         'GIC - Idea Submission',
         'idea_submission.hbs',
-        { receiverUsername, staffUsername, createdDate,
-          createdTime, department, ideaTitle, ideaContent, categories},
+        {
+          receiverUsername,
+          staffUsername,
+          createdDate,
+          createdTime,
+          department,
+          ideaTitle,
+          ideaContent,
+          categories,
+        },
       );
     } catch (error) {
       console.log(error);
@@ -495,8 +512,8 @@ export class IdeaService {
   }
 
   async getIdeaCommentsByParent(
-    idea_id: number, 
-    parent_id: number, 
+    idea_id: number,
+    parent_id: number,
     entityManager?: EntityManager,
   ) {
     const ideaRepository = entityManager
@@ -541,7 +558,7 @@ export class IdeaService {
     // return new StreamableFile(temp);
 
     // const event = await this.eventService.getEventById(event_id);
-    
+
     // if(!event) {
     //   throw new HttpException(
     //     ErrorMessage.event_NOT_EXIST,
@@ -555,40 +572,36 @@ export class IdeaService {
     //     HttpStatus.BAD_REQUEST,
     //   );
     // }
-    
+
     const data = [
-      [ 'John Doe', 30, 'New York' ],
-      [ 'Jane Smith', 25, 'San Francisco' ],
-      [ 'Bob Johnson', 40, 'Los Angeles' ],
+      ['John Doe', 30, 'New York'],
+      ['Jane Smith', 25, 'San Francisco'],
+      ['Bob Johnson', 40, 'Los Angeles'],
     ];
-    
-    const fileName = "data.csv";
+
+    const fileName = 'data.csv';
     const path = join(process.cwd(), 'src', fileName);
-    
+
     const writableStream = fs.createWriteStream(path);
-    const columns = [
-      "name",
-      "age",
-      "city",
-    ];
-    
+    const columns = ['name', 'age', 'city'];
+
     // try {
-      const stringifier = stringify({ header: true, columns: columns });
-      data.forEach(d => {
-        stringifier.write(d);
-      });
+    const stringifier = stringify({ header: true, columns: columns });
+    data.forEach((d) => {
+      stringifier.write(d);
+    });
 
-      // stringifier.pipe(res);
+    // stringifier.pipe(res);
 
-      res.set({
-        'Content-Type': 'text/csv',
-        'Content-Disposition': 'attachment; filename="data.csv"',
-      })
-      // res.sendFile(path);
-      const file = fs.createReadStream(path);
-      // file.pipe(res);
-      res.send(file.pipe(res));
-      // return new StreamableFile(file);
+    res.set({
+      'Content-Type': 'text/csv',
+      'Content-Disposition': 'attachment; filename="data.csv"',
+    });
+    // res.sendFile(path);
+    const file = fs.createReadStream(path);
+    // file.pipe(res);
+    res.send(file.pipe(res));
+    // return new StreamableFile(file);
     // } catch (error) {
     //   throw new HttpException(
     //     ErrorMessage.DATA_DOWNLOAD_FAILED,
@@ -619,7 +632,7 @@ export class IdeaService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    if(body.parent_id == null && body.level != 1) {
+    if (body.parent_id == null && body.level != 1) {
       throw new HttpException(
         ErrorMessage.INVALID_PARAM,
         HttpStatus.BAD_REQUEST,
@@ -627,7 +640,7 @@ export class IdeaService {
     }
 
     const current = new Date();
-    if(idea.event.final_closure_date < current) {
+    if (idea.event.final_closure_date < current) {
       throw new HttpException(
         ErrorMessage.FINAL_CLOSURE_DATE_UNAVAILABLE,
         HttpStatus.BAD_REQUEST,
@@ -642,60 +655,79 @@ export class IdeaService {
       comment.level = body.level;
       comment.content = body.content;
       const newComment = await this.commentService.addIdeaComment(comment);
-      
-      if(userData.user_id !== idea.user_id) {
+
+      if (userData.user_id !== idea.user_id) {
         return newComment;
       }
-      
-      const email = idea.user["email"];
+
+      const email = idea.user['email'];
       // temporary solution
       const result = await this.ideaRepository
         .createQueryBuilder('idea')
-        .select('staff_detail.nick_name as staff_nick_name, department.name as department, idea.created_at')
+        .select(
+          'staff_detail.nick_name as staff_nick_name, department.name as department, idea.created_at',
+        )
         .innerJoin('idea.user', 'staff')
         .innerJoin('staff.userDetail', 'staff_detail')
         .innerJoin('staff.department', 'department')
         .where('idea.idea_id = :idea_id', { idea_id })
         .getRawOne();
 
-      const ideaCategories = await this.categoryIdeaService.getCategoriesByIdea(idea_id);
-      const categories = ideaCategories.map(c => {
+      const ideaCategories = await this.categoryIdeaService.getCategoriesByIdea(
+        idea_id,
+      );
+      const categories = ideaCategories.map((c) => {
         return c.category.name;
       });
 
-      const ideaAuthorUsername = result["staff_nick_name"];
-      const ideaDepartment = result["department"];
+      const ideaAuthorUsername = result['staff_nick_name'];
+      const ideaDepartment = result['department'];
       const ideaTitle = idea.title;
       const ideaContent = idea.content;
-      const date = new Date(result["created_at"]);
+      const date = new Date(result['created_at']);
       const ideaCreatedTime = date.toLocaleTimeString();
-      let month = date.getMonth() + "";
-      if(month.length == 1) {
+      let month = date.getMonth() + '';
+      if (month.length == 1) {
         month = 0 + month;
       }
-      let txtDate = date.getFullYear() + "-" + month + "-" + date.getDate();
-      const ideaCreatedDate = moment(txtDate, "YYYY-MM-DD").format("MMM DD, YYYY");
+      let txtDate = date.getFullYear() + '-' + month + '-' + date.getDate();
+      const ideaCreatedDate = moment(txtDate, 'YYYY-MM-DD').format(
+        'MMM DD, YYYY',
+      );
 
-      const commentAuthor = await this.userService.findUserByUserId(userData.user_id);
+      const commentAuthor = await this.userService.findUserByUserId(
+        userData.user_id,
+      );
       const authorDetail = commentAuthor.userDetail;
       const commentCreatedTime = newComment.created_at.toLocaleTimeString();
-      month = newComment.created_at.getMonth() + "";
-      if(month.length == 1) {
+      month = newComment.created_at.getMonth() + '';
+      if (month.length == 1) {
         month = 0 + month;
       }
-      txtDate = newComment.created_at.getFullYear() + "-" + month + "-" 
-          + newComment.created_at.getDate();
-      const commentCreatedDate = moment(txtDate, "YYYY-MM-DD").format("MMM DD, YYYY");
-
-      sendMailNodemailer(
-        email,
-        'GIC - New Comment',
-        'new_comment.hbs',
-        { ideaAuthorUsername, ideaCreatedDate, ideaCreatedTime, ideaDepartment,
-          ideaTitle, ideaContent, categories, commentAuthorUsername: authorDetail.nick_name, commentCreatedDate, commentCreatedTime, 
-          commentDepartment: commentAuthor.department.name, 
-          commentContent: newComment.content},
+      txtDate =
+        newComment.created_at.getFullYear() +
+        '-' +
+        month +
+        '-' +
+        newComment.created_at.getDate();
+      const commentCreatedDate = moment(txtDate, 'YYYY-MM-DD').format(
+        'MMM DD, YYYY',
       );
+
+      sendMailNodemailer(email, 'GIC - New Comment', 'new_comment.hbs', {
+        ideaAuthorUsername,
+        ideaCreatedDate,
+        ideaCreatedTime,
+        ideaDepartment,
+        ideaTitle,
+        ideaContent,
+        categories,
+        commentAuthorUsername: authorDetail.nick_name,
+        commentCreatedDate,
+        commentCreatedTime,
+        commentDepartment: commentAuthor.department.name,
+        commentContent: newComment.content,
+      });
 
       return comment;
     } catch (error) {
@@ -721,9 +753,15 @@ export class IdeaService {
     }
   }
 
-  async deleteComment(userData: IUserData, idea_id: number, comment_id: number) {
-    if (userData.role_id != EUserRole.STAFF 
-      && userData.role_id != EUserRole.QA_COORDINATOR) {
+  async deleteComment(
+    userData: IUserData,
+    idea_id: number,
+    comment_id: number,
+  ) {
+    if (
+      userData.role_id != EUserRole.STAFF &&
+      userData.role_id != EUserRole.QA_COORDINATOR
+    ) {
       throw new HttpException(
         ErrorMessage.COMMENT_DELETE_PERMISSION,
         HttpStatus.BAD_REQUEST,
@@ -745,8 +783,8 @@ export class IdeaService {
   }
 
   async updateComment(
-    userData: IUserData, 
-    idea_id: number, 
+    userData: IUserData,
+    idea_id: number,
     comment_id: number,
     body: VUpdateCommentDto,
   ) {
@@ -768,6 +806,10 @@ export class IdeaService {
       );
     }
 
-    return this.commentService.updateComment(userData.user_id, comment_id, body);
+    return this.commentService.updateComment(
+      userData.user_id,
+      comment_id,
+      body,
+    );
   }
 }

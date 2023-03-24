@@ -10,7 +10,7 @@ import { UserDetailModule } from '@modules/user-detail/user-detail.module';
   controllers: [UserController],
   providers: [UserService],
   imports: [
-    TypeOrmModule.forFeature([User]), 
+    TypeOrmModule.forFeature([User]),
     forwardRef(() => AuthModule),
     UserDetailModule,
   ],

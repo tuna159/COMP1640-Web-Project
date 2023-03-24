@@ -13,7 +13,6 @@ import {
   Query,
   Req,
   Res,
-  StreamableFile,
 } from '@nestjs/common';
 import { EIdeaFilter } from 'enum/idea.enum';
 import { VAddComment } from 'global/dto/addComment.dto';
@@ -92,7 +91,7 @@ export class IdeaController {
     @Res({ passthrough: true }) res: Response,
     @Req() req: Request,
   ) {
-    return "hello";
+    return 'hello';
     // res.set({
     //   'Content-Type': 'application/json',
     //   'Content-Disposition': 'attachment; filename="package.json"',

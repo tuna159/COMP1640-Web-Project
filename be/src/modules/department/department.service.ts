@@ -1,6 +1,6 @@
 import { Department } from '@core/database/mysql/entity/department.entity';
 import { IdeaService } from '@modules/idea/idea.service';
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EIdeaFilter } from 'enum/idea.enum';
 import { DepartmentDto } from 'global/dto/department.dto';
@@ -11,7 +11,8 @@ export class DepartmentService {
   constructor(
     @InjectRepository(Department)
     private readonly departmentRepository: Repository<Department>,
-    private readonly ideaService: IdeaService,
+    @Inject(forwardRef(() => IdeaService))
+    private ideaService: IdeaService,
   ) {}
 
   async getAllDepartments() {
@@ -47,7 +48,12 @@ export class DepartmentService {
   }
 
   getIdeasByDepartment(department_id: number, sorting_setting: EIdeaFilter) {
-    return this.ideaService.getAllIdeas(null, department_id, null, sorting_setting);
+    return this.ideaService.getAllIdeas(
+      null,
+      department_id,
+      null,
+      sorting_setting,
+    );
   }
 
   async createDepartment(department: DepartmentDto) {
