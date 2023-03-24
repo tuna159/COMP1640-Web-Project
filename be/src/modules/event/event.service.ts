@@ -20,11 +20,32 @@ export class EventService {
     private readonly eventRepository: Repository<Event>,
   ) {}
 
-  async getAllEvents(entityManager?: EntityManager) {
+  async getAllEventsOfDeparment(
+    department_id: number,
+    entityManager?: EntityManager,
+  ) {
     const eventRepository = entityManager
       ? entityManager.getRepository<Event>('event')
       : this.eventRepository;
-    return await eventRepository.find();
+    const data = await eventRepository.find({
+      where: {
+        department_id: department_id,
+        created_date: LessThanOrEqual(new Date()),
+        final_closure_date: MoreThanOrEqual(new Date()),
+      },
+    });
+
+    const events = data.map((e) => {
+      return {
+        event_id: e.event_id,
+        name: e.name,
+        content: e.content,
+        created_date: e.created_date,
+        first_closure_date: e.first_closure_date,
+        final_closure_date: e.final_closure_date,
+      };
+    });
+    return { events, count_event: data.length };
   }
 
   async getCurrentEvent() {
