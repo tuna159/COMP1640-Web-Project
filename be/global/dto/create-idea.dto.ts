@@ -33,7 +33,8 @@ export class VCreateIdeaDto {
   @IsOptional()
   @IsArray()
   @ArrayUnique()
-  @IsString({ each: true })
+  @ValidateNested({ each: true })
+  @Type(() => VCreateTagDto)
   tag_names: VCreateTagDto[];
 
   @IsOptional()

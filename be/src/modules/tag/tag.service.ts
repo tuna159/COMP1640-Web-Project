@@ -6,28 +6,30 @@ import { EntityManager, Repository } from 'typeorm';
 
 @Injectable()
 export class TagService {
-    constructor(
-        @InjectRepository(Tag)
-        private readonly tagRepository: Repository<Tag>,
-    ) {}
+  constructor(
+    @InjectRepository(Tag)
+    private readonly tagRepository: Repository<Tag>,
+  ) {}
 
-    createTag(body: VCreateTagDto, entityManager?: EntityManager) {
-        const tagRepository = entityManager
-            ? entityManager.getRepository<Tag>('tag')
-            : this.tagRepository;
+  async createTag(name: string, entityManager?: EntityManager) {
+    const tagRepository = entityManager
+      ? entityManager.getRepository<Tag>('tag')
+      : this.tagRepository;
 
-        const newTag = new Tag();
-        newTag.name = body.name;
-        return tagRepository.save(newTag);
-    }
+    const newTag = new Tag();
+    newTag.name = name;
+    console.log(name, 11111);
 
-    getTagByName(name: string, entityManager?: EntityManager) {
-        const tagRepository = entityManager
-            ? entityManager.getRepository<Tag>('tag')
-            : this.tagRepository;
+    return await tagRepository.save(newTag);
+  }
 
-        return tagRepository.findOne({
-            where: { name },
-        });
-    }
+  async getTagByName(name: string, entityManager?: EntityManager) {
+    const tagRepository = entityManager
+      ? entityManager.getRepository<Tag>('tag')
+      : this.tagRepository;
+
+    return await tagRepository.findOne({
+      where: { name: name },
+    });
+  }
 }

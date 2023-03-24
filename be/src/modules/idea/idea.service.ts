@@ -222,7 +222,7 @@ export class IdeaService {
   }
 
   async createIdea(
-    userData: IUserData, 
+    userData: IUserData,
     body: VCreateIdeaDto,
     event_id: number,
   ) {
@@ -230,15 +230,15 @@ export class IdeaService {
     try {
       data = await this.connection.transaction(async (manager) => {
         let event = await this.eventService.getEventById(event_id);
-        if(!event) {
+        if (!event) {
           throw new HttpException(
             ErrorMessage.EVENT_NOT_EXIST,
             HttpStatus.BAD_REQUEST,
           );
         }
 
-        event = await this.eventService.checkEventToCreateIdea(event_id); 
-        if(!event) {
+        event = await this.eventService.checkEventToCreateIdea(event_id);
+        if (!event) {
           throw new HttpException(
             ErrorMessage.FIRST_CLOSURE_DATE_UNAVAILABLE,
             HttpStatus.BAD_REQUEST,
@@ -274,14 +274,16 @@ export class IdeaService {
 
         const ideaTags = [];
         const tagDto = body.tag_names;
+
         tagDto.forEach(async (dto) => {
-          const ideaTag = new IdeaTag();
-          ideaTag.idea_id = idea.idea_id;
           const tag = await this.tagService.getTagByName(dto.name);
+          const ideaTag = new IdeaTag();
           if (tag) {
+            ideaTag.idea_id = idea.idea_id;
             ideaTag.tag_id = tag.tag_id;
           } else {
-            const newTag = await this.tagService.createTag(dto);
+            const newTag = await this.tagService.createTag(dto.name);
+            ideaTag.idea_id = idea.idea_id;
             ideaTag.tag_id = newTag.tag_id;
           }
           ideaTags.push(ideaTag);
