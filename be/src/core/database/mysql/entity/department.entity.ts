@@ -6,6 +6,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Event } from './event.entity';
 import { User } from './user.entity';
 
 @Entity('department')
@@ -29,4 +30,7 @@ export class Department {
 
   @OneToMany(() => User, (user) => user.department)
   users: User[];
+
+  @OneToMany(() => Event, (event) => event.department)
+  events: Event[];
 }
