@@ -21,6 +21,7 @@ export class DepartmentService {
     private readonly departmentRepository: Repository<Department>,
     @Inject(forwardRef(() => IdeaService))
     private ideaService: IdeaService,
+    @Inject(forwardRef(() => EventService))
     private eventService: EventService,
   ) {}
 
