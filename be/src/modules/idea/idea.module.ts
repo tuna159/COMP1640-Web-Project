@@ -22,6 +22,6 @@ import { UserModule } from '@modules/user/user.module';
     CommentModule,
     UserModule,
   ],
-  exports: [IdeaService],
+  exports: [TypeOrmModule, IdeaService],
 })
 export class IdeaModule {}

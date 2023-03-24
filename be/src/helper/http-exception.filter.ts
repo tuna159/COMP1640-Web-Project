@@ -7,7 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 
-@Catch(HttpException)
+@Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
   private logger: Logger = new Logger('Exception');
   // eslint-disable-next-line @typescript-eslint/no-empty-function

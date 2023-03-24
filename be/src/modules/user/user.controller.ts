@@ -1,8 +1,16 @@
 import { UserData } from '@core/decorator/user.decorator';
 import { IUserData } from '@core/interface/default.interface';
 import { UserDetailService } from '@modules/user-detail/user-detail.service';
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
-import { VSignUp } from 'global/dto/signup.dto';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
+import { VSignUp } from 'global/dto/createAccount';
 import { VUpdateAccount } from 'global/dto/update-account.dto';
 import { VLogin } from 'global/user/dto/login.dto';
 import { Public } from 'src/core/decorator/public.decorator';
@@ -21,9 +29,9 @@ export class UserController {
     return this.userService.login(body);
   }
 
-  @Post('createAccount')
-  async signup(@UserData() userData: IUserData, @Body() body: VSignUp) {
-    return this.userService.signup(userData, body);
+  @Post('create-account')
+  async createAccount(@UserData() userData: IUserData, @Body() body: VSignUp) {
+    return this.userService.createAccount(userData, body);
   }
 
   @Get()
@@ -51,8 +59,9 @@ export class UserController {
 
   @Delete(':user_id')
   deleteUser(
-  @Param('user_id') user_id: string,
-  @UserData() userData: IUserData,) {
+    @Param('user_id') user_id: string,
+    @UserData() userData: IUserData,
+  ) {
     return this.userService.deleteUser(user_id, userData);
   }
 }

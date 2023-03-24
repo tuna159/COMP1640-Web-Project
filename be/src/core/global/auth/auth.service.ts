@@ -12,7 +12,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { EIsDelete } from 'enum';
 import { ErrorMessage } from 'enum/error';
-import { VSignUp } from 'global/dto/signup.dto';
+import { VSignUp } from 'global/dto/createAccount';
 import { VLogin } from 'global/user/dto/login.dto';
 import { handleBCRYPTCompare, handleBCRYPTHash } from 'src/helper/utils';
 import { Connection } from 'typeorm';
@@ -22,8 +22,9 @@ import { IResponseAuth } from './interface';
 import { UserDetail } from '@core/database/mysql/entity/userDetail.entity';
 import { UserDetailService } from '@modules/user-detail/user-detail.service';
 import { IUserData } from '@core/interface/default.interface';
-import { EUserRole } from 'enum/default.enum';
 import sendMailNodemailer from '@helper/nodemailer';
+import { DepartmentService } from '@modules/department/department.service';
+import { EUserRole } from 'enum/default.enum';
 
 @Injectable()
 export class AuthService {
@@ -35,6 +36,7 @@ export class AuthService {
     public jwtService: JwtService,
     private connection: Connection,
     private userDetailService: UserDetailService,
+    private deparmentService: DepartmentService,
   ) {}
 
   async getUserById(user_id: string, role_id) {
@@ -85,7 +87,7 @@ export class AuthService {
     };
   }
 
-  async signup(userData: IUserData, body: VSignUp) {
+  async createAccount(userData: IUserData, body: VSignUp) {
     const email = await this.userService.getUserByEmail(body.email);
 
     if (email) {
@@ -106,6 +108,7 @@ export class AuthService {
     userParams.password = await handleBCRYPTHash(body.password);
     userParams.role_id = body.role_id;
     userParams.is_deleted = EIsDelete.NOT_DELETE;
+    userParams.department_id = body.department_id;
 
     const user = await this.connection.transaction(async (manager) => {
       const newUser = await this.userService.createUser(userParams, manager);
