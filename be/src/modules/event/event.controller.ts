@@ -9,6 +9,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VUpdateEventDto } from 'global/dto/event.dto';
 import { EventService } from './event.service';
 
@@ -38,5 +39,13 @@ export class EventController {
   @Delete(':id')
   deleteEvent(@Param('id') id: string) {
     return this.eventService.deleteEvent(Number(id));
+  }
+
+  @Post(':event_id/ideas')
+  createIdea(
+    @UserData() userData: IUserData,
+    @Body() body: VCreateIdeaDto,
+  ) {
+    return this.eventService.createIdea(userData, body);
   }
 }

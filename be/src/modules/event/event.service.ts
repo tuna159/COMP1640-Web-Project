@@ -1,6 +1,6 @@
 import { Event } from '@core/database/mysql/entity/event.entity';
 import { IUserData } from '@core/interface/default.interface';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
@@ -12,12 +12,16 @@ import {
   Repository,
 } from 'typeorm';
 import moment = require('moment');
+import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
+import { IdeaService } from '@modules/idea/idea.service';
 
 @Injectable()
 export class EventService {
   constructor(
     @InjectRepository(Event)
     private readonly eventRepository: Repository<Event>,
+    @Inject(forwardRef(() => IdeaService))
+    private readonly ideaService: IdeaService,
   ) {}
 
   async getAllEventsOfDeparment(
@@ -141,5 +145,16 @@ export class EventService {
   async deleteEvent(event_id: number) {
     await this.eventRepository.delete({ event_id });
     return;
+  }
+
+  createIdea(userData: IUserData, body: VCreateIdeaDto) {
+    if (userData.role_id != EUserRole.STAFF) {
+      throw new HttpException(
+        ErrorMessage.YOU_DO_NOT_HAVE_PERMISSION_TO_POST_IDEA,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return this.ideaService.createIdea(userData, body);
   }
 }

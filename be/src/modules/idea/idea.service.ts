@@ -228,13 +228,6 @@ export class IdeaService {
 
   async createIdea(userData: IUserData, body: VCreateIdeaDto) {
     let data: DeepPartial<Idea>;
-
-    if (userData.role_id != EUserRole.STAFF) {
-      throw new HttpException(
-        ErrorMessage.YOU_DO_NOT_HAVE_PERMISSION_TO_POST_IDEA,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     try {
       data = await this.connection.transaction(async (manager) => {
         const currentEvent = await this.eventService.getCurrentEvent();
