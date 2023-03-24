@@ -37,7 +37,7 @@ export class EventController {
   }
 
   @Delete(':event_id')
-  deleteEvent(@Param('id') id: number) {
-    return this.eventService.deleteEvent(Number(id));
+  deleteEvent(@Param('event_id') event_id: number) {
+    return this.eventService.deleteEvent(event_id);
   }
 }
