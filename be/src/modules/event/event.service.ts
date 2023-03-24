@@ -1,10 +1,14 @@
 import { Event } from '@core/database/mysql/entity/event.entity';
 import { IUserData } from '@core/interface/default.interface';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, StreamableFile } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
 import { VUpdateEventDto } from 'global/dto/event.dto';
+import type { Response, Request } from 'express';
+import {stringify} from 'csv-stringify';
+import { join } from 'path';
+import * as fs from 'fs';
 import {
   EntityManager,
   LessThanOrEqual,
@@ -120,5 +124,73 @@ export class EventService {
   async deleteEvent(event_id: number) {
     await this.eventRepository.delete({ event_id });
     return;
+  }
+
+  downloadIdeasByEvent(
+    userData: IUserData,
+    event_id: number,
+    res: Response,
+    req: Request,
+    entityManager?: EntityManager,
+  ): StreamableFile {
+    // const ideaRepository = entityManager
+    //   ? entityManager.getRepository<Idea>('idea')
+    //   : this.ideaRepository;
+
+    if (userData.role_id != EUserRole.QA_MANAGER) {
+      throw new HttpException(
+        ErrorMessage.DATA_DOWNLOAD_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    
+    // const event = await this.eventService.getEventById(event_id);
+    // if(!event) {
+    //   throw new HttpException(
+    //     ErrorMessage.event_NOT_EXIST,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
+
+    // if(event.final_closure_date) {
+    //   throw new HttpException(
+    //     ErrorMessage.DATA_DOWNLOAD_DATE_TIME,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
+    
+    const data = [
+      [ 'John Doe', 30, 'New York' ],
+      [ 'Jane Smith', 25, 'San Francisco' ],
+      [ 'Bob Johnson', 40, 'Los Angeles' ],
+    ];
+    
+    const fileName = "data.csv";
+    const path = join(process.cwd(), 'src', fileName);
+    const writableStream = fs.createWriteStream(path);
+    const columns = [
+      "name",
+      "age",
+      "city",
+    ];
+    
+    // try {
+      const stringifier = stringify({ header: true, columns: columns });
+      data.forEach(row => {
+        stringifier.write(row);
+      });
+      stringifier.pipe(writableStream);
+    
+      const file = fs.createReadStream(path);
+      return new StreamableFile(file);
+
+
+
+    // } catch (error) {
+    //   throw new HttpException(
+    //     ErrorMessage.DATA_DOWNLOAD_FAILED,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
   }
 }

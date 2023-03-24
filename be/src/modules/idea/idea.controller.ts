@@ -11,9 +11,6 @@ import {
   Post,
   Put,
   Query,
-  Req,
-  Res,
-  StreamableFile,
 } from '@nestjs/common';
 import { EIdeaFilter } from 'enum/idea.enum';
 import { VAddComment } from 'global/dto/addComment.dto';
@@ -21,7 +18,6 @@ import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateReactionDto } from 'global/dto/reaction.dto';
 import { VUpdateIdeaDto } from 'global/dto/update-idea.dto';
 import { IdeaService } from './idea.service';
-import type { Response, Request } from 'express';
 import { VUpdateCommentDto } from 'global/dto/comment.dto';
 
 @Controller('idea')
@@ -83,21 +79,6 @@ export class IdeaController {
     @Query('parent_id') parent_id: number,
   ) {
     return await this.ideaService.getIdeaCommentsByParent(idea_id, parent_id);
-  }
-
-  @Get('event/download/:event_id')
-  downloadIdeasByEvent(
-    @UserData() userData: IUserData,
-    @Param('event_id') event_id: number,
-    @Res({ passthrough: true }) res: Response,
-    @Req() req: Request,
-  ) {
-    return "hello";
-    // res.set({
-    //   'Content-Type': 'application/json',
-    //   'Content-Disposition': 'attachment; filename="package.json"',
-    // })
-    return this.ideaService.downloadIdeasByEvent(userData, event_id, res, req);
   }
 
   @Post('/:idea_id/comments')

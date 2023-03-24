@@ -8,8 +8,12 @@ import {
   Param,
   Post,
   Put,
+  Req,
+  Res,
+  StreamableFile,
 } from '@nestjs/common';
 import { VUpdateEventDto } from 'global/dto/event.dto';
+import type { Response, Request } from 'express';
 import { EventService } from './event.service';
 
 @Controller('event')
@@ -43,5 +47,19 @@ export class EventController {
   @Delete(':id')
   deleteEvent(@Param('id') id: string) {
     return this.eventService.deleteEvent(Number(id));
+  }
+
+  @Get(':event_id/download')
+  downloadIdeasByEvent(
+    @UserData() userData: IUserData,
+    @Param('event_id') event_id: number,
+    @Res({ passthrough: true }) res: Response,
+    @Req() req: Request,
+  ): StreamableFile {
+    res.set({
+      'Content-Type': 'application/json',
+      'Content-Disposition': 'attachment; filename="package.json"',
+    })
+    return this.eventService.downloadIdeasByEvent(userData, event_id, res, req);
   }
 }
