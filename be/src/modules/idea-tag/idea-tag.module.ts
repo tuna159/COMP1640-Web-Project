@@ -7,6 +7,7 @@ import { IdeaTagService } from './idea-tag.service';
 @Module({
   imports: [TypeOrmModule.forFeature([IdeaTag])],
   controllers: [IdeaTagController],
-  providers: [IdeaTagService]
+  providers: [IdeaTagService],
+  exports: [IdeaTagService],
 })
 export class IdeaTagModule {}

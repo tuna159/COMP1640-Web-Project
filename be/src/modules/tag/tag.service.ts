@@ -20,4 +20,14 @@ export class TagService {
         newTag.name = body.name;
         return tagRepository.save(newTag);
     }
+
+    getTagByName(name: string, entityManager?: EntityManager) {
+        const tagRepository = entityManager
+            ? entityManager.getRepository<Tag>('tag')
+            : this.tagRepository;
+
+        return tagRepository.findOne({
+            where: { name },
+        });
+    }
 }

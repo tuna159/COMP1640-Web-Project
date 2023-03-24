@@ -45,7 +45,8 @@ export class EventController {
   createIdea(
     @UserData() userData: IUserData,
     @Body() body: VCreateIdeaDto,
+    @Param('event_id') event_id: number,
   ) {
-    return this.eventService.createIdea(userData, body);
+    return this.eventService.createIdea(userData, body, event_id);
   }
 }
