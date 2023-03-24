@@ -76,7 +76,7 @@ export class EventService {
 
     if (startDate > endDate) {
       throw new HttpException(
-        ErrorMessage.THE_START_DATE_NEEDS_TO_BE_LESS_THAN_THE_END_DATE,
+        ErrorMessage.FIRST_CLOSURE_DATE_NEEDS_TO_BE_LESS_THAN_FINAL_CLOSURE_DATE,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -109,22 +109,26 @@ export class EventService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    const createDate = moment(event.created_date);
+    const firstclosureDate = moment(body.first_closure_date);
+    const finalclosureDate = moment(body.final_closure_date);
 
-    const startDate = moment(body.first_closure_date);
-    const endDate = moment(body.final_closure_date);
-
-    if (startDate > endDate) {
+    if (firstclosureDate > finalclosureDate) {
       throw new HttpException(
-        ErrorMessage.THE_START_DATE_NEEDS_TO_BE_LESS_THAN_THE_END_DATE,
+        ErrorMessage.FIRST_CLOSURE_DATE_NEEDS_TO_BE_LESS_THAN_FINAL_CLOSURE_DATE,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const createDate = moment(event.created_date);
-
-    if (createDate > startDate) {
+    if (createDate > firstclosureDate) {
       throw new HttpException(
-        ErrorMessage.THE_CREATE_DATE_NEEDS_TO_BE_LESS_THAN_THE_START_DATE,
+        ErrorMessage.CREATE_DATE_NEEDS_TO_BE_LESS_THAN_THE_START_DATE,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (createDate > finalclosureDate) {
+      throw new HttpException(
+        ErrorMessage.CREATE_DATE_NEEDS_TO_BE_LESS_THAN_FINAL_CLOSURE_DATE,
         HttpStatus.BAD_REQUEST,
       );
     }
