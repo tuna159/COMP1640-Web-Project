@@ -129,8 +129,6 @@ export class EventService {
   downloadIdeasByEvent(
     userData: IUserData,
     event_id: number,
-    res: Response,
-    req: Request,
     entityManager?: EntityManager,
   ): StreamableFile {
     // const ideaRepository = entityManager
@@ -159,30 +157,30 @@ export class EventService {
     //   );
     // }
     
-    const data = [
-      [ 'John Doe', 30, 'New York' ],
-      [ 'Jane Smith', 25, 'San Francisco' ],
-      [ 'Bob Johnson', 40, 'Los Angeles' ],
-    ];
+    // const data = [
+    //   [ 'John Doe', 30, 'New York' ],
+    //   [ 'Jane Smith', 25, 'San Francisco' ],
+    //   [ 'Bob Johnson', 40, 'Los Angeles' ],
+    // ];
     
     const fileName = "data.csv";
     const path = join(process.cwd(), 'src', fileName);
-    const writableStream = fs.createWriteStream(path);
-    const columns = [
-      "name",
-      "age",
-      "city",
-    ];
+    // const writableStream = fs.createWriteStream(path);
+    // const columns = [
+    //   "name",
+    //   "age",
+    //   "city",
+    // ];
     
     // try {
-      const stringifier = stringify({ header: true, columns: columns });
-      data.forEach(row => {
-        stringifier.write(row);
-      });
-      stringifier.pipe(writableStream);
+      // const stringifier = stringify({ header: true, columns: columns });
+      // data.forEach(row => {
+      //   stringifier.write(row);
+      // });
+      // stringifier.pipe(writableStream);
     
-      const file = fs.createReadStream(path);
-      return new StreamableFile(file);
+      const readStream = fs.createReadStream(path);
+      return new StreamableFile(readStream);
 
 
 

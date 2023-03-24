@@ -54,12 +54,11 @@ export class EventController {
     @UserData() userData: IUserData,
     @Param('event_id') event_id: number,
     @Res({ passthrough: true }) res: Response,
-    @Req() req: Request,
   ): StreamableFile {
     res.set({
-      'Content-Type': 'application/json',
-      'Content-Disposition': 'attachment; filename="package.json"',
+      'Content-Type': 'text/csv',
+      'Content-Disposition': 'attachment; filename="data.csv"',
     })
-    return this.eventService.downloadIdeasByEvent(userData, event_id, res, req);
+    return this.eventService.downloadIdeasByEvent(userData, event_id);
   }
 }
