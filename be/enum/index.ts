@@ -1,4 +1,4 @@
 export enum EIsDelete {
-  NOT_DELETE = 0,
+  NOT_DELETED = 0,
   DELETED = 1,
 }

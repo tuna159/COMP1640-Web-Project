@@ -9,28 +9,31 @@ import {
   ArrayMaxSize,
   MaxLength,
   IsOptional,
-  IsNumber,
+  IsEnum,
 } from 'class-validator';
+import { EIsDelete } from 'enum';
 import { ErrorMessage } from 'enum/error';
 import { VFile } from './file.dto';
 
 export class VCreateIdeaDto {
   @IsString()
   @MinLength(1, { message: ErrorMessage.MIN_LENGTH_1 })
-  @MaxLength(70)
+  @MaxLength(1000)
   title: string;
 
-  @IsOptional()
   @IsString()
-  @MaxLength(800)
+  @MinLength(1, { message: ErrorMessage.MIN_LENGTH_1 })
+  @MaxLength(5000)
   content: string;
+
+  @IsInt()
+  category_id: number;
 
   @IsOptional()
   @IsArray()
-  @ArrayMaxSize(3)
   @ArrayUnique()
-  @IsInt({ each: true })
-  category_ids: Array<number>;
+  @IsString({ each: true })
+  tag_names: Array<string>;
 
   @IsOptional()
   @IsArray()
@@ -40,6 +43,6 @@ export class VCreateIdeaDto {
   files: VFile[];
 
   @IsOptional()
-  @IsNumber()
-  is_anonymous: number;
+  @IsEnum(EIsDelete)
+  is_anonymous: EIsDelete;
 }
