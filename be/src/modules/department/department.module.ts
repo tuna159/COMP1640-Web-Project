@@ -4,6 +4,7 @@ import { DepartmentController } from './department.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Department } from '@core/database/mysql/entity/department.entity';
 import { IdeaModule } from '@modules/idea/idea.module';
+import { EventModule } from '@modules/event/event.module';
 
 @Module({
   providers: [DepartmentService],
@@ -11,6 +12,7 @@ import { IdeaModule } from '@modules/idea/idea.module';
   imports: [
     TypeOrmModule.forFeature([Department]),
     forwardRef(() => IdeaModule),
+    EventModule,
   ],
   exports: [TypeOrmModule, DepartmentService],
 })

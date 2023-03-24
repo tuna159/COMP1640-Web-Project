@@ -16,11 +16,6 @@ import { EventService } from './event.service';
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
-  @Get()
-  async getAllEvents() {
-    return await this.eventService.getAllEvents();
-  }
-
   @Get(':id')
   getEventById(@Param('id') id: string) {
     return this.eventService.getEventById(Number(id));

@@ -1,7 +1,15 @@
 import { Department } from '@core/database/mysql/entity/department.entity';
+import { EventService } from '@modules/event/event.service';
 import { IdeaService } from '@modules/idea/idea.service';
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ErrorMessage } from 'enum/error';
 import { EIdeaFilter } from 'enum/idea.enum';
 import { DepartmentDto } from 'global/dto/department.dto';
 import { Repository } from 'typeorm';
@@ -13,6 +21,7 @@ export class DepartmentService {
     private readonly departmentRepository: Repository<Department>,
     @Inject(forwardRef(() => IdeaService))
     private ideaService: IdeaService,
+    private eventService: EventService,
   ) {}
 
   async getAllDepartments() {
@@ -27,11 +36,21 @@ export class DepartmentService {
   }
 
   async getDepartmentById(department_id: number) {
-    const department = await this.departmentRepository.findOne(department_id);
-    return {
-      department_id: department.department_id,
-      name: department.name,
-    };
+    return await this.departmentRepository.findOne(department_id);
+  }
+
+  async getEventByDepartment(department_id: number) {
+    const department = await this.getDepartmentById(department_id);
+    console.log(department);
+
+    if (!department) {
+      throw new HttpException(
+        ErrorMessage.DEPARMENT_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return await this.eventService.getAllEventsOfDeparment(department_id);
   }
 
   getIdeasByDepartmentAndCategory(

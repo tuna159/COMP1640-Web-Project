@@ -28,6 +28,11 @@ export class DepartmentController {
     return this.departmentService.getDepartmentById(department_id);
   }
 
+  @Get(':department_id/events')
+  getEventByDepartment(@Param('department_id') department_id: number) {
+    return this.departmentService.getEventByDepartment(department_id);
+  }
+
   @Get(':department_id/ideas?')
   getIdeasByDepartment(
     @Param('department_id') department_id: number,
