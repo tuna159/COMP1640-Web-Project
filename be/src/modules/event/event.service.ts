@@ -1,6 +1,12 @@
 import { Event } from '@core/database/mysql/entity/event.entity';
 import { IUserData } from '@core/interface/default.interface';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
@@ -14,7 +20,7 @@ import {
 import moment = require('moment');
 import { VCreateEventDto } from 'global/dto/createEvent.dto.';
 import { DepartmentService } from '@modules/department/department.service';
-import e = require('express');
+import { IdeaService } from '@modules/idea/idea.service';
 
 @Injectable()
 export class EventService {
@@ -22,6 +28,8 @@ export class EventService {
     @InjectRepository(Event)
     private readonly eventRepository: Repository<Event>,
     private departmentService: DepartmentService,
+    @Inject(forwardRef(() => IdeaService))
+    private ideaService: IdeaService,
   ) {}
 
   async getAllEventsOfDeparment(
@@ -161,6 +169,22 @@ export class EventService {
   }
 
   async deleteEvent(event_id: number) {
+    const checkAllIdea = await this.ideaService.checkAllIdeabyEvent(event_id);
+    const checkIdea = await this.getEventById(event_id);
+    if (!checkIdea) {
+      throw new HttpException(
+        ErrorMessage.EVENT_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (checkAllIdea.length != 0) {
+      throw new HttpException(
+        ErrorMessage.CAN_NOT_DELETE_EVENT,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     await this.eventRepository.delete({ event_id });
     return;
   }

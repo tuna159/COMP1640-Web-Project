@@ -1,6 +1,7 @@
 import { Event } from '@core/database/mysql/entity/event.entity';
 import { DepartmentModule } from '@modules/department/department.module';
-import { Module } from '@nestjs/common';
+import { IdeaModule } from '@modules/idea/idea.module';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventController } from './event.controller';
 import { EventService } from './event.service';
@@ -8,7 +9,11 @@ import { EventService } from './event.service';
 @Module({
   controllers: [EventController],
   providers: [EventService],
-  imports: [TypeOrmModule.forFeature([Event]), DepartmentModule],
+  imports: [
+    TypeOrmModule.forFeature([Event]),
+    DepartmentModule,
+    forwardRef(() => IdeaModule),
+  ],
   exports: [TypeOrmModule, EventService],
 })
 export class EventModule {}
