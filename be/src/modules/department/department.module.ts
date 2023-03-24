@@ -12,7 +12,7 @@ import { EventModule } from '@modules/event/event.module';
   imports: [
     TypeOrmModule.forFeature([Department]),
     forwardRef(() => IdeaModule),
-    EventModule,
+    forwardRef(() => EventModule),
   ],
   exports: [TypeOrmModule, DepartmentService],
 })

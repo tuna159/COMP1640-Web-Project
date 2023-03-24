@@ -4,7 +4,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
-import { VUpdateEventDto } from 'global/dto/event.dto';
+import { VUpdateEventDto } from 'global/dto/updateEvent.dto';
 import {
   EntityManager,
   LessThanOrEqual,
@@ -12,12 +12,15 @@ import {
   Repository,
 } from 'typeorm';
 import moment = require('moment');
+import { VCreateEventDto } from 'global/dto/createEvent.dto.';
+import { DepartmentService } from '@modules/department/department.service';
 
 @Injectable()
 export class EventService {
   constructor(
     @InjectRepository(Event)
     private readonly eventRepository: Repository<Event>,
+    private departmentService: DepartmentService,
   ) {}
 
   async getAllEventsOfDeparment(
@@ -63,7 +66,7 @@ export class EventService {
     });
   }
 
-  async createEvent(userData: IUserData, body: VUpdateEventDto) {
+  async createEvent(userData: IUserData, body: VCreateEventDto) {
     if (userData.role_id != EUserRole.ADMIN) {
       throw new HttpException(
         ErrorMessage.YOU_DO_NOT_HAVE_PERMISSION_TO_UPDATE_EVENT,
@@ -81,8 +84,21 @@ export class EventService {
       );
     }
 
+    const department = await this.departmentService.getDepartmentById(
+      body.department_id,
+    );
+
+    if (!department) {
+      throw new HttpException(
+        ErrorMessage.DEPARMENT_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const eventParam = new Event();
     eventParam.name = body.name;
+    eventParam.content = body.content;
+    eventParam.department_id = body.department_id;
     eventParam.final_closure_date = new Date(body?.final_closure_date);
     eventParam.first_closure_date = new Date(body?.first_closure_date);
 
