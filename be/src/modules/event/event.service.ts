@@ -14,6 +14,7 @@ import {
 import moment = require('moment');
 import { VCreateEventDto } from 'global/dto/createEvent.dto.';
 import { DepartmentService } from '@modules/department/department.service';
+import e = require('express');
 
 @Injectable()
 export class EventService {
@@ -151,6 +152,7 @@ export class EventService {
 
     const eventParam = new Event();
     eventParam.name = body.name;
+    eventParam.content = body.content;
     eventParam.final_closure_date = new Date(body?.final_closure_date);
     eventParam.first_closure_date = new Date(body?.first_closure_date);
 

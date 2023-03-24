@@ -1,8 +1,14 @@
-import { IsDateString, IsString } from 'class-validator';
+import { IsDateString, IsString, MinLength } from 'class-validator';
+import { ErrorMessage } from 'enum/error';
 
 export class VUpdateEventDto {
   @IsString()
+  @MinLength(1, { message: ErrorMessage.MIN_LENGTH_1 })
   name: string;
+
+  @IsString()
+  @MinLength(1, { message: ErrorMessage.MIN_LENGTH_1 })
+  content: string;
 
   @IsDateString()
   first_closure_date: Date;
