@@ -9,6 +9,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { EIsDelete } from 'enum';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateEventDto } from 'global/dto/createEvent.dto.';
 import { VUpdateIdeaDto } from 'global/dto/update-idea.dto';
@@ -60,5 +61,16 @@ export class EventController {
     @Body() body: VUpdateIdeaDto,
   ) {
     return this.eventService.updateIdea(userData, event_id, idea_id, body);
+  }
+  
+  @Delete(':event_id/idea/:idea_id')
+  deleteIdea(
+    @Param('event_id') event_id: number,
+    @Param('idea_id') idea_id: number,
+    @UserData() userData: IUserData,
+  ) {
+    return this.eventService.deleteIdea(event_id, idea_id, userData, {
+      is_deleted: EIsDelete.DELETED,
+    });
   }
 }
