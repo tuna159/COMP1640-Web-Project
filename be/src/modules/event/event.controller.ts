@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateEventDto } from 'global/dto/createEvent.dto.';
+import { VUpdateIdeaDto } from 'global/dto/update-idea.dto';
 import { VUpdateEventDto } from 'global/dto/updateEvent.dto';
 import { EventService } from './event.service';
 
@@ -49,5 +50,15 @@ export class EventController {
     @Param('event_id') event_id: number,
   ) {
     return this.eventService.createIdea(userData, body, event_id);
+  }
+
+  @Put(':event_id/idea/:idea_id')
+  updateIdea(
+    @UserData() userData: IUserData,
+    @Param('event_id') event_id: number,
+    @Param('idea_id') idea_id: number,
+    @Body() body: VUpdateIdeaDto,
+  ) {
+    return this.eventService.updateIdea(userData, event_id, idea_id, body);
   }
 }

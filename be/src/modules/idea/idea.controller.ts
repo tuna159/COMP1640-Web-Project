@@ -59,15 +59,6 @@ export class IdeaController {
     return this.ideaService.deleteIdeaReaction(userData, idea_id);
   }
 
-  @Put(':idea_id')
-  updateIdea(
-    @UserData() userData: IUserData,
-    @Param('idea_id') idea_id: number,
-    @Body() body: VUpdateIdeaDto,
-  ) {
-    return this.ideaService.updateIdea(userData, idea_id, body);
-  }
-
   @Get(':idea_id/comments?')
   async getIdeaCommentsByParent(
     @Param('idea_id') idea_id: number,
