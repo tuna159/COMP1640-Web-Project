@@ -34,7 +34,7 @@ export class UserService {
     return await userRepository.findOne({
       where: {
         email,
-        is_deleted: EIsDelete.NOT_DELETE,
+        is_deleted: EIsDelete.NOT_DELETED,
       },
     });
   }
@@ -51,7 +51,7 @@ export class UserService {
       where: {
         user_id: userId,
         role_id: role_id,
-        is_deleted: EIsDelete.NOT_DELETE,
+        is_deleted: EIsDelete.NOT_DELETED,
       },
     });
   }
@@ -93,7 +93,7 @@ export class UserService {
     return await userRepository.findOne({
       where: {
         user_id: userId,
-        is_deleted: EIsDelete.NOT_DELETE,
+        is_deleted: EIsDelete.NOT_DELETED,
       },
       relations: ['userDetail', 'department'],
     });

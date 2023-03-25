@@ -14,6 +14,7 @@ import {
 import { EIsDelete } from 'enum';
 import { ErrorMessage } from 'enum/error';
 import { VFile } from './file.dto';
+import { VCreateTagDto } from './tag.dto';
 
 export class VCreateIdeaDto {
   @IsString()
@@ -32,8 +33,9 @@ export class VCreateIdeaDto {
   @IsOptional()
   @IsArray()
   @ArrayUnique()
-  @IsString({ each: true })
-  tag_names: Array<string>;
+  @ValidateNested({ each: true })
+  @Type(() => VCreateTagDto)
+  tag_names: VCreateTagDto[];
 
   @IsOptional()
   @IsArray()

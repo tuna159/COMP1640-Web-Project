@@ -51,7 +51,7 @@ export class DepartmentService {
       );
     }
 
-    return await this.eventService.getAllEventsOfDeparment(department_id);
+    return await this.eventService.getAllEventsOfDepartment(department_id);
   }
 
   getIdeasByDepartmentAndCategory(

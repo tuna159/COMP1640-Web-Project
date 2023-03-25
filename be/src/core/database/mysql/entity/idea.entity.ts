@@ -51,7 +51,7 @@ export class Idea {
     type: 'tinyint',
     width: 1,
     comment: '0: not deleted, 1: deleted',
-    default: EIsDelete.NOT_DELETE,
+    default: EIsDelete.NOT_DELETED,
   })
   is_deleted: number;
 

@@ -8,12 +8,7 @@ import { CommentService } from '@modules/comment/comment.service';
 import { IdeaFileService } from '@modules/idea-file/idea-file.service';
 import { ReactionService } from '@modules/reaction/reaction.service';
 import { EventService } from '@modules/event/event.service';
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  StreamableFile,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import type { Response, Request } from 'express';
 import * as send from 'send';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -40,6 +35,9 @@ import {
 } from 'typeorm';
 import { UserService } from '@modules/user/user.service';
 import { VUpdateCommentDto } from 'global/dto/comment.dto';
+import { TagService } from '@modules/tag/tag.service';
+import { IdeaTagService } from '@modules/idea-tag/idea-tag.service';
+import { IdeaTag } from '@core/database/mysql/entity/ideaTag.entity';
 
 @Injectable()
 export class IdeaService {
@@ -53,6 +51,8 @@ export class IdeaService {
     private readonly connection: Connection,
     private readonly commentService: CommentService,
     private readonly userService: UserService,
+    private readonly tagService: TagService,
+    private readonly ideaTagService: IdeaTagService,
   ) {}
 
   async getIdeaDetail(
@@ -114,11 +114,6 @@ export class IdeaService {
     const ideaRepository = entityManager
       ? entityManager.getRepository<Idea>('idea')
       : this.ideaRepository;
-
-    if (event_id == null) {
-      const currentEvent = await this.eventService.getCurrentEvent();
-      event_id = currentEvent.event_id;
-    }
 
     let ideaQueryBuilder: SelectQueryBuilder<any>;
 
@@ -226,28 +221,38 @@ export class IdeaService {
     return data;
   }
 
-  async createIdea(userData: IUserData, body: VCreateIdeaDto) {
+  async createIdea(
+    userData: IUserData,
+    body: VCreateIdeaDto,
+    event_id: number,
+  ) {
     let data: DeepPartial<Idea>;
-
-    if (userData.role_id != EUserRole.STAFF) {
-      throw new HttpException(
-        ErrorMessage.YOU_DO_NOT_HAVE_PERMISSION_TO_POST_IDEA,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     try {
       data = await this.connection.transaction(async (manager) => {
-        const currentEvent = await this.eventService.getCurrentEvent();
+        let event = await this.eventService.getEventById(event_id);
+        if (!event) {
+          throw new HttpException(
+            ErrorMessage.EVENT_NOT_EXIST,
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+
+        event = await this.eventService.checkEventToCreateIdea(event_id);
+        if (!event) {
+          throw new HttpException(
+            ErrorMessage.FIRST_CLOSURE_DATE_UNAVAILABLE,
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+
         const ideaParams = new Idea();
         ideaParams.user_id = userData.user_id;
         ideaParams.title = body.title;
         ideaParams.content = body.content;
         ideaParams.is_anonymous = body.is_anonymous;
-        ideaParams.event_id = currentEvent.event_id;
+        ideaParams.event_id = event.event_id;
 
         const idea = await this.saveIdea(ideaParams, manager);
-
-        console.log(idea);
 
         const postFileParams = [];
         if (body?.files && body?.files.length) {
@@ -260,25 +265,37 @@ export class IdeaService {
             postFileParams.push(ideaFileParam);
           });
         }
+
         const categoryIdeaParams = [];
+        const categoryIdeaParam = new CategoryIdea();
+        categoryIdeaParam.idea_id = idea.idea_id;
+        categoryIdeaParam.category_id = body.category_id;
+        categoryIdeaParams.push(categoryIdeaParam);
 
-        if (body?.category_ids && body?.category_ids?.length) {
-          body.category_ids.forEach((category_id) => {
-            const categoryIdeaParam = new CategoryIdea();
-            categoryIdeaParam.idea_id = idea.idea_id;
-            categoryIdeaParam.category_id = category_id;
+        const ideaTags = [];
+        const tagDto = body.tag_names;
 
-            console.log('categoryIdeaParam: ', categoryIdeaParam);
+        tagDto.forEach(async (dto) => {
+          const tag = await this.tagService.getTagByName(dto.name);
+          const ideaTag = new IdeaTag();
+          if (tag) {
+            ideaTag.idea_id = idea.idea_id;
+            ideaTag.tag_id = tag.tag_id;
+          } else {
+            const newTag = await this.tagService.createTag(dto.name);
+            ideaTag.idea_id = idea.idea_id;
+            ideaTag.tag_id = newTag.tag_id;
+          }
+          ideaTags.push(ideaTag);
+        });
 
-            categoryIdeaParams.push(categoryIdeaParam);
-          });
-        }
         const result = await Promise.allSettled([
           this.ideaFileService.createIdeaFile(postFileParams, manager),
           this.categoryIdeaService.createIdeaCategory(
             categoryIdeaParams,
             manager,
           ),
+          this.ideaTagService.createIdeaTag(ideaTags, manager),
         ]);
 
         if (result.some((r) => r.status === 'rejected'))
@@ -430,13 +447,11 @@ export class IdeaService {
 
     try {
       await this.connection.transaction(async (manager) => {
-        const currentEvent = await this.eventService.getCurrentEvent();
         const ideaParams = new Idea();
         ideaParams.user_id = userData.user_id;
         ideaParams.title = body.title;
         ideaParams.content = body.content;
         ideaParams.is_anonymous = body.is_anonymous;
-        ideaParams.event_id = currentEvent.event_id;
 
         const idea = await this.updateIdeaCurrent(
           {

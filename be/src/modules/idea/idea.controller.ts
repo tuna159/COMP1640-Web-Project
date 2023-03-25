@@ -42,14 +42,6 @@ export class IdeaController {
     return this.ideaService.getAllIdeas(null, null, null, sorting_setting);
   }
 
-  @Post()
-  async createPost(
-    @UserData() userData: IUserData,
-    @Body() body: VCreateIdeaDto,
-  ) {
-    return await this.ideaService.createIdea(userData, body);
-  }
-
   @Post(':idea_id/reaction')
   createIdeaReaction(
     @UserData() userData: IUserData,
