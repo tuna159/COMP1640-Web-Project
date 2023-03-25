@@ -18,6 +18,7 @@ import {
   Repository,
 } from 'typeorm';
 import moment = require('moment');
+import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateEventDto } from 'global/dto/createEvent.dto.';
 import { DepartmentService } from '@modules/department/department.service';
 import { IdeaService } from '@modules/idea/idea.service';
@@ -32,7 +33,7 @@ export class EventService {
     private ideaService: IdeaService,
   ) {}
 
-  async getAllEventsOfDeparment(
+  async getAllEventsOfDepartment(
     department_id: number,
     entityManager?: EntityManager,
   ) {
@@ -60,18 +61,17 @@ export class EventService {
     return { events, count_event: data.length };
   }
 
-  async getCurrentEvent() {
-    return await this.eventRepository.findOne({
-      where: {
-        created_date: LessThanOrEqual(new Date()),
-        final_closure_date: MoreThanOrEqual(new Date()),
-      },
-    });
-  }
-
   async getEventById(event_id: number) {
     return await this.eventRepository.findOne({
       event_id: event_id,
+    });
+  }
+
+  async checkEventToCreateIdea(event_id: number) {
+    return await this.eventRepository.findOne({
+      event_id: event_id,
+      created_date: LessThanOrEqual(new Date()),
+      first_closure_date: MoreThanOrEqual(new Date()),
     });
   }
 
@@ -187,5 +187,15 @@ export class EventService {
 
     await this.eventRepository.delete({ event_id });
     return;
+  }
+
+  createIdea(userData: IUserData, body: VCreateIdeaDto, event_id: number) {
+    if (userData.role_id != EUserRole.STAFF) {
+      throw new HttpException(
+        ErrorMessage.YOU_DO_NOT_HAVE_PERMISSION_TO_POST_IDEA,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return this.ideaService.createIdea(userData, body, event_id);
   }
 }

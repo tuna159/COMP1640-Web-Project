@@ -28,6 +28,8 @@ import { UserDetailModule } from './modules/user-detail/user-detail.module';
 import { ReactionModule } from './modules/reaction/reaction.module';
 import { MeModule } from './modules/me/me.module';
 import { EventModule } from './modules/event/event.module';
+import { TagModule } from './modules/tag/tag.module';
+import { IdeaTagModule } from './modules/idea-tag/idea-tag.module';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -71,6 +73,8 @@ import { EventModule } from './modules/event/event.module';
     ReactionModule,
     MeModule,
     EventModule,
+    TagModule,
+    IdeaTagModule,
   ],
   controllers: [AppController],
   providers: [

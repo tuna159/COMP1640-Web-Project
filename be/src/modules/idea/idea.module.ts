@@ -9,6 +9,8 @@ import { IdeaFileModule } from '@modules/idea-file/idea-file.module';
 import { ReactionModule } from '@modules/reaction/reaction.module';
 import { CommentModule } from '@modules/comment/comment.module';
 import { UserModule } from '@modules/user/user.module';
+import { TagModule } from '@modules/tag/tag.module';
+import { IdeaTagModule } from '@modules/idea-tag/idea-tag.module';
 
 @Module({
   controllers: [IdeaController],
@@ -21,6 +23,8 @@ import { UserModule } from '@modules/user/user.module';
     ReactionModule,
     CommentModule,
     UserModule,
+    TagModule,
+    IdeaTagModule,
   ],
   exports: [TypeOrmModule, IdeaService],
 })
