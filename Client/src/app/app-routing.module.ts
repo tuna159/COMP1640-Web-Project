@@ -10,6 +10,10 @@ import { DetailComponent } from './detail/detail.component';
 import { AuthGuard } from './shared/guard/auth.guard';
 import { ManageCategoryComponent } from './manage-category/manage-category.component';
 import { ProfileComponent } from './profile/profile.component';
+import { ManageEventComponent } from './manage-event/manage-event.component';
+import { EventComponent } from './event/event.component';
+import { ChartComponent } from './chart/chart.component';
+
 
 
 
@@ -27,7 +31,7 @@ const routes: Routes = [
         path: 'home',
         canActivate: [AuthGuard],
         // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
-        component: HomeComponent
+        component: EventComponent
     },
     {
         path: 'detail',
@@ -40,12 +44,6 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: ManageCategoryComponent
-    },
-    {
-        path: 'manage/account',
-        canActivate: [AuthGuard],
-        // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
-        component: ManageAccountComponent
     },
     {
         path: 'view/profile',
@@ -65,6 +63,24 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: ManageAccountComponent
+    },
+    {
+        path: 'manage/event',
+        canActivate: [AuthGuard],
+        // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
+        component: ManageEventComponent
+    },
+    {
+        path: 'event/ideas',
+        canActivate: [AuthGuard],
+        // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
+        component: HomeComponent
+    },
+    {
+        path: 'chart',
+        canActivate: [AuthGuard],
+        // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
+        component: ChartComponent
     },
 ];
 
