@@ -1,4 +1,5 @@
 import { Event } from '@core/database/mysql/entity/event.entity';
+import { DepartmentModule } from '@modules/department/department.module';
 import { IdeaModule } from '@modules/idea/idea.module';
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -10,6 +11,7 @@ import { EventService } from './event.service';
   providers: [EventService],
   imports: [
     TypeOrmModule.forFeature([Event]),
+    DepartmentModule,
     forwardRef(() => IdeaModule),
   ],
   exports: [TypeOrmModule, EventService],

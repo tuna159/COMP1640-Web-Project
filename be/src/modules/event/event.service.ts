@@ -10,7 +10,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
-import { VUpdateEventDto } from 'global/dto/event.dto';
+import { VUpdateEventDto } from 'global/dto/updateEvent.dto';
 import {
   EntityManager,
   LessThanOrEqual,
@@ -19,6 +19,8 @@ import {
 } from 'typeorm';
 import moment = require('moment');
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
+import { VCreateEventDto } from 'global/dto/createEvent.dto.';
+import { DepartmentService } from '@modules/department/department.service';
 import { IdeaService } from '@modules/idea/idea.service';
 
 @Injectable()
@@ -26,8 +28,9 @@ export class EventService {
   constructor(
     @InjectRepository(Event)
     private readonly eventRepository: Repository<Event>,
+    private departmentService: DepartmentService,
     @Inject(forwardRef(() => IdeaService))
-    private readonly ideaService: IdeaService,
+    private ideaService: IdeaService,
   ) {}
 
   async getAllEventsOfDepartment(
@@ -72,7 +75,7 @@ export class EventService {
     });
   }
 
-  async createEvent(userData: IUserData, body: VUpdateEventDto) {
+  async createEvent(userData: IUserData, body: VCreateEventDto) {
     if (userData.role_id != EUserRole.ADMIN) {
       throw new HttpException(
         ErrorMessage.YOU_DO_NOT_HAVE_PERMISSION_TO_UPDATE_EVENT,
@@ -85,13 +88,26 @@ export class EventService {
 
     if (startDate > endDate) {
       throw new HttpException(
-        ErrorMessage.THE_START_DATE_NEEDS_TO_BE_LESS_THAN_THE_END_DATE,
+        ErrorMessage.FIRST_CLOSURE_DATE_NEEDS_TO_BE_LESS_THAN_FINAL_CLOSURE_DATE,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const department = await this.departmentService.getDepartmentById(
+      body.department_id,
+    );
+
+    if (!department) {
+      throw new HttpException(
+        ErrorMessage.DEPARMENT_NOT_EXIST,
         HttpStatus.BAD_REQUEST,
       );
     }
 
     const eventParam = new Event();
     eventParam.name = body.name;
+    eventParam.content = body.content;
+    eventParam.department_id = body.department_id;
     eventParam.final_closure_date = new Date(body?.final_closure_date);
     eventParam.first_closure_date = new Date(body?.first_closure_date);
 
@@ -118,28 +134,33 @@ export class EventService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    const createDate = moment(event.created_date);
+    const firstclosureDate = moment(body.first_closure_date);
+    const finalclosureDate = moment(body.final_closure_date);
 
-    const startDate = moment(body.first_closure_date);
-    const endDate = moment(body.final_closure_date);
-
-    if (startDate > endDate) {
+    if (firstclosureDate > finalclosureDate) {
       throw new HttpException(
-        ErrorMessage.THE_START_DATE_NEEDS_TO_BE_LESS_THAN_THE_END_DATE,
+        ErrorMessage.FIRST_CLOSURE_DATE_NEEDS_TO_BE_LESS_THAN_FINAL_CLOSURE_DATE,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const createDate = moment(event.created_date);
-
-    if (createDate > startDate) {
+    if (createDate > firstclosureDate) {
       throw new HttpException(
-        ErrorMessage.THE_CREATE_DATE_NEEDS_TO_BE_LESS_THAN_THE_START_DATE,
+        ErrorMessage.CREATE_DATE_NEEDS_TO_BE_LESS_THAN_THE_START_DATE,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (createDate > finalclosureDate) {
+      throw new HttpException(
+        ErrorMessage.CREATE_DATE_NEEDS_TO_BE_LESS_THAN_FINAL_CLOSURE_DATE,
         HttpStatus.BAD_REQUEST,
       );
     }
 
     const eventParam = new Event();
     eventParam.name = body.name;
+    eventParam.content = body.content;
     eventParam.final_closure_date = new Date(body?.final_closure_date);
     eventParam.first_closure_date = new Date(body?.first_closure_date);
 
@@ -148,6 +169,22 @@ export class EventService {
   }
 
   async deleteEvent(event_id: number) {
+    const checkAllIdea = await this.ideaService.checkAllIdeabyEvent(event_id);
+    const checkIdea = await this.getEventById(event_id);
+    if (!checkIdea) {
+      throw new HttpException(
+        ErrorMessage.EVENT_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (checkAllIdea.length != 0) {
+      throw new HttpException(
+        ErrorMessage.CAN_NOT_DELETE_EVENT,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     await this.eventRepository.delete({ event_id });
     return;
   }

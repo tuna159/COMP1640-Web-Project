@@ -10,7 +10,8 @@ import {
   Put,
 } from '@nestjs/common';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
-import { VUpdateEventDto } from 'global/dto/event.dto';
+import { VCreateEventDto } from 'global/dto/createEvent.dto.';
+import { VUpdateEventDto } from 'global/dto/updateEvent.dto';
 import { EventService } from './event.service';
 
 @Controller('event')
@@ -32,13 +33,13 @@ export class EventController {
   }
 
   @Post()
-  createEvent(@Body() event: VUpdateEventDto, @UserData() userData: IUserData) {
-    return this.eventService.createEvent(userData, event);
+  createEvent(@Body() body: VCreateEventDto, @UserData() userData: IUserData) {
+    return this.eventService.createEvent(userData, body);
   }
 
-  @Delete(':id')
-  deleteEvent(@Param('id') id: string) {
-    return this.eventService.deleteEvent(Number(id));
+  @Delete(':event_id')
+  deleteEvent(@Param('event_id') event_id: number) {
+    return this.eventService.deleteEvent(event_id);
   }
 
   @Post(':event_id/ideas')
