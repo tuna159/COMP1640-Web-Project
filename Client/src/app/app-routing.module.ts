@@ -13,6 +13,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { ManageEventComponent } from './manage-event/manage-event.component';
 import { EventComponent } from './event/event.component';
 import { ChartComponent } from './chart/chart.component';
+import { RoleGuardService } from './shared/guard/RoleGuardService';
 
 
 
@@ -41,26 +42,38 @@ const routes: Routes = [
     },
     {
         path: 'manage/category',
-        canActivate: [AuthGuard],
+        canActivate: [RoleGuardService],
+        data: {
+            expectedRole: [1],
+        },
         // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: ManageCategoryComponent
     },
     {
         path: 'view/profile',
-        canActivate: [AuthGuard],
+        canActivate: [RoleGuardService],
+        data: {
+            expectedRole: [2,3,4],
+        },
         // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: ProfileComponent
     },
     {
         path: 'charts',
-        // canActivate: [AuthGuard],
+        canActivate: [RoleGuardService],
+        data: {
+            expectedRole: [1],
+        },
         // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: ChartsComponent
     },
     // { path: '**', component: PageNotFoundComponent },
     {
         path: 'manage/account',
-        canActivate: [AuthGuard],
+        canActivate: [RoleGuardService],
+        data: {
+            expectedRole: 1,
+        },
         // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: ManageAccountComponent
     },

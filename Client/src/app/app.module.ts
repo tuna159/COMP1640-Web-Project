@@ -68,6 +68,7 @@ import { ChartModule } from 'angular-highcharts';
 import { ManageEventComponent } from './manage-event/manage-event.component';
 import { EventComponent } from './event/event.component';
 import { ChartComponent } from './chart/chart.component';
+import { RoleGuardService } from './shared/guard/RoleGuardService';
 
 @NgModule({
     declarations: [
@@ -92,7 +93,7 @@ import { ChartComponent } from './chart/chart.component';
         EventComponent,
         ChartComponent
     ],
-    providers: [MessageService],
+    providers: [MessageService, RoleGuardService],
     bootstrap: [AppComponent],
     imports: [
         BrowserModule,
