@@ -69,7 +69,7 @@ export class IdeaService {
     const idea = await this.ideaRepository.findOne({
       where: {
         idea_id: idea_id,
-        is_deleted: EIsDelete.NOT_DELETE,
+        is_deleted: EIsDelete.NOT_DELETED,
       },
     });
 
@@ -237,7 +237,7 @@ export class IdeaService {
           );
         }
 
-        event = await this.eventService.checkEventToCreateIdea(event_id);
+        event = await this.eventService.checkEventToIdea(event_id);
         if (!event) {
           throw new HttpException(
             ErrorMessage.FIRST_CLOSURE_DATE_UNAVAILABLE,
@@ -784,7 +784,7 @@ export class IdeaService {
     }
 
     const idea = await this.ideaRepository.findOne({
-      where: { idea_id, is_deleted: EIsDelete.NOT_DELETE },
+      where: { idea_id, is_deleted: EIsDelete.NOT_DELETED },
     });
 
     if (!idea) {
@@ -811,7 +811,7 @@ export class IdeaService {
     }
 
     const idea = await this.ideaRepository.findOne({
-      where: { idea_id, is_deleted: EIsDelete.NOT_DELETE },
+      where: { idea_id, is_deleted: EIsDelete.NOT_DELETED },
     });
 
     if (!idea) {
@@ -834,5 +834,38 @@ export class IdeaService {
         event_id: event_id,
       },
     });
+  }
+
+  async deleteIdea(idea_id: number, user_id: string, body: DeepPartial<Idea>) {
+    const idea = await this.checkIdea(idea_id, user_id);
+
+    if (!idea) {
+      throw new HttpException(
+        ErrorMessage.IDEA_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (idea.is_deleted == EIsDelete.DELETED) {
+      throw new HttpException(
+        ErrorMessage.IDEA_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    await this.updatePostByUserCreated({ idea_id, user_id }, body);
+
+    return null;
+  }
+
+  async updatePostByUserCreated(
+    condition: object,
+    body: DeepPartial<Idea>,
+    entityManager?: EntityManager,
+  ) {
+    const ideaRepository = entityManager
+      ? entityManager.getRepository<Idea>('idea')
+      : this.ideaRepository;
+    return await ideaRepository.update(condition, body);
   }
 }

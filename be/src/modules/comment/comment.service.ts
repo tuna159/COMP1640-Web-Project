@@ -35,7 +35,7 @@ export class CommentService {
         { parent_id },
       )
       .andWhere('comment.is_deleted = :is_deleted', {
-        is_deleted: EIsDelete.NOT_DELETE,
+        is_deleted: EIsDelete.NOT_DELETED,
       })
       .getMany();
 
@@ -81,7 +81,7 @@ export class CommentService {
       : this.commentRepository;
 
     const comment = await commentRepository.findOne({
-      where: { comment_id, is_deleted: EIsDelete.NOT_DELETE },
+      where: { comment_id, is_deleted: EIsDelete.NOT_DELETED },
     });
 
     if (!comment) {
@@ -122,7 +122,7 @@ export class CommentService {
       : this.commentRepository;
 
     const comment = await commentRepository.findOne({
-      where: { comment_id, is_deleted: EIsDelete.NOT_DELETE },
+      where: { comment_id, is_deleted: EIsDelete.NOT_DELETED },
     });
 
     if (!comment) {
