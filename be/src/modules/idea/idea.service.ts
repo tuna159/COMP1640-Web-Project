@@ -477,10 +477,12 @@ export class IdeaService {
           ideaTags.push(ideaTag);
         };
 
-        await this.ideaTagService.deleteIdeaTags(idea_id, manager);
-        await this.ideaFileService.deleteIdeaFile(idea_id, manager);
-        await this.categoryIdeaService.deleteIdeaCategory(idea_id, manager);
-        
+        await Promise.allSettled([
+          this.ideaTagService.deleteIdeaTags(idea_id, manager),
+          this.ideaFileService.deleteIdeaFile(idea_id, manager),
+          this.categoryIdeaService.deleteIdeaCategory(idea_id, manager),
+        ]);
+
         const result = await Promise.allSettled([
           await this.updateIdeaCurrent(
             { idea_id: idea_id },
