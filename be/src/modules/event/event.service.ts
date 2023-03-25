@@ -198,4 +198,33 @@ export class EventService {
     }
     return this.ideaService.createIdea(userData, body, event_id);
   }
+
+  async updateIdea(
+    userData: IUserData, 
+    event_id: number,
+    idea_id: number,
+    body: VCreateIdeaDto,
+  ) {
+    if (userData.role_id != EUserRole.STAFF) {
+      throw new HttpException(
+        ErrorMessage.YOU_DO_NOT_HAVE_PERMISSION_TO_POST_IDEA,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    let event = await this.getEventById(event_id);
+    if (!event) {
+      throw new HttpException(
+        ErrorMessage.EVENT_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    event = await this.checkEventToCreateIdea(event_id);
+    if (!event) {
+      throw new HttpException(
+        ErrorMessage.FIRST_CLOSURE_DATE_UNAVAILABLE,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return this.ideaService.updateIdea(userData, idea_id, body);
+  }
 }

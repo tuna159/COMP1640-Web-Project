@@ -10,19 +10,27 @@ export class IdeaTagService {
     private readonly ideaTagRepository: Repository<IdeaTag>,
   ) {}
 
-  async createIdeaTag(
+  async createIdeaTags(
     body: Array<DeepPartial<IdeaTag>>,
     entityManager?: EntityManager,
   ) {
+    console.log("body", body);
+    const ideaTagRepository = entityManager
+      ? entityManager.getRepository<IdeaTag>('idea_tag')
+      : this.ideaTagRepository;
+      await ideaTagRepository
+        .createQueryBuilder()
+        .insert()
+        .into(IdeaTag)
+        .values(body)
+        .execute();
+  }
+
+  deleteIdeaTags(idea_id: number, entityManager?: EntityManager) {
     const ideaTagRepository = entityManager
       ? entityManager.getRepository<IdeaTag>('idea_tag')
       : this.ideaTagRepository;
 
-    return await ideaTagRepository
-      .createQueryBuilder()
-      .insert()
-      .into(IdeaTag)
-      .values(body)
-      .execute();
+    return ideaTagRepository.delete({ idea_id });
   }
 }

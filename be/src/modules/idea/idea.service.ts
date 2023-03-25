@@ -38,6 +38,7 @@ import { VUpdateCommentDto } from 'global/dto/comment.dto';
 import { TagService } from '@modules/tag/tag.service';
 import { IdeaTagService } from '@modules/idea-tag/idea-tag.service';
 import { IdeaTag } from '@core/database/mysql/entity/ideaTag.entity';
+import { VCreateTagDto } from 'global/dto/tag.dto';
 
 @Injectable()
 export class IdeaService {
@@ -69,7 +70,7 @@ export class IdeaService {
     const idea = await this.ideaRepository.findOne({
       where: {
         idea_id: idea_id,
-        is_deleted: EIsDelete.NOT_DELETE,
+        is_deleted: EIsDelete.NOT_DELETED,
       },
     });
 
@@ -251,7 +252,6 @@ export class IdeaService {
         ideaParams.content = body.content;
         ideaParams.is_anonymous = body.is_anonymous;
         ideaParams.event_id = event.event_id;
-
         const idea = await this.saveIdea(ideaParams, manager);
 
         const postFileParams = [];
@@ -274,8 +274,7 @@ export class IdeaService {
 
         const ideaTags = [];
         const tagDto = body.tag_names;
-
-        tagDto.forEach(async (dto) => {
+        for(let dto of tagDto) {
           const tag = await this.tagService.getTagByName(dto.name);
           const ideaTag = new IdeaTag();
           if (tag) {
@@ -287,7 +286,7 @@ export class IdeaService {
             ideaTag.tag_id = newTag.tag_id;
           }
           ideaTags.push(ideaTag);
-        });
+        };
 
         const result = await Promise.allSettled([
           this.ideaFileService.createIdeaFile(postFileParams, manager),
@@ -295,7 +294,7 @@ export class IdeaService {
             categoryIdeaParams,
             manager,
           ),
-          this.ideaTagService.createIdeaTag(ideaTags, manager),
+          this.ideaTagService.createIdeaTags(ideaTags, manager),
         ]);
 
         if (result.some((r) => r.status === 'rejected'))
@@ -370,9 +369,6 @@ export class IdeaService {
     const ideaRepository = entityManager
       ? entityManager.getRepository<Idea>('idea')
       : this.ideaRepository;
-
-    console.log(value);
-
     return await ideaRepository.save(value);
   }
 
@@ -428,19 +424,15 @@ export class IdeaService {
     });
   }
 
-  async updateIdea(userData: IUserData, idea_id: number, body: VUpdateIdeaDto) {
-    if (userData.role_id != EUserRole.STAFF) {
-      throw new HttpException(
-        ErrorMessage.YOU_DO_NOT_HAVE_PERMISSION_TO_UPDATE_IDEA,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
+  async updateIdea(
+    userData: IUserData,
+    idea_id: number, 
+    body: VUpdateIdeaDto,
+  ) {
     const isAccess = await this.checkIdea(idea_id, userData.user_id);
-
     if (!isAccess) {
       throw new HttpException(
-        ErrorMessage.UPDATE_POST_PERMISSION_DENIED,
+        ErrorMessage.IDEA_NOT_EXIST,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -448,18 +440,9 @@ export class IdeaService {
     try {
       await this.connection.transaction(async (manager) => {
         const ideaParams = new Idea();
-        ideaParams.user_id = userData.user_id;
         ideaParams.title = body.title;
         ideaParams.content = body.content;
         ideaParams.is_anonymous = body.is_anonymous;
-
-        const idea = await this.updateIdeaCurrent(
-          {
-            idea_id: idea_id,
-          },
-          ideaParams,
-          manager,
-        );
 
         const postFileParams = [];
         if (body?.files && body?.files.length) {
@@ -471,28 +454,47 @@ export class IdeaService {
             postFileParams.push(ideaFileParam);
           });
         }
+
         const categoryIdeaParams = [];
+        const categoryIdeaParam = new CategoryIdea();
+        categoryIdeaParam.idea_id = idea_id;
+        categoryIdeaParam.category_id = body.category_id;
+        categoryIdeaParams.push(categoryIdeaParam);
 
-        await this.ideaFileService.deleteIdeaFile(idea_id);
+        const ideaTags = [];
+        const tagDto = body.tag_names;
+        for(let dto of tagDto) {
+          const tag = await this.tagService.getTagByName(dto.name);
+          const ideaTag = new IdeaTag();
+          if (tag) {
+            ideaTag.idea_id = idea_id;
+            ideaTag.tag_id = tag.tag_id;
+          } else {
+            const newTag = await this.tagService.createTag(dto.name);
+            ideaTag.idea_id = idea_id;
+            ideaTag.tag_id = newTag.tag_id;
+          }
+          ideaTags.push(ideaTag);
+        };
 
-        if (body?.category_ids && body?.category_ids?.length) {
-          body.category_ids.forEach((category_id) => {
-            const categoryIdeaParam = new CategoryIdea();
-            categoryIdeaParam.idea_id = idea_id;
-            categoryIdeaParam.category_id = category_id;
-
-            categoryIdeaParams.push(categoryIdeaParam);
-          });
-        }
-
-        await this.categoryIdeaService.deleteIdeaCategory(idea_id);
+        await Promise.allSettled([
+          this.ideaTagService.deleteIdeaTags(idea_id, manager),
+          this.ideaFileService.deleteIdeaFile(idea_id, manager),
+          this.categoryIdeaService.deleteIdeaCategory(idea_id, manager),
+        ]);
 
         const result = await Promise.allSettled([
+          await this.updateIdeaCurrent(
+            { idea_id: idea_id },
+            ideaParams,
+            manager,
+          ),
           this.ideaFileService.createIdeaFile(postFileParams, manager),
           this.categoryIdeaService.createIdeaCategory(
             categoryIdeaParams,
             manager,
           ),
+          this.ideaTagService.createIdeaTags(ideaTags, manager),
         ]);
 
         if (result.some((r) => r.status === 'rejected'))
@@ -500,12 +502,8 @@ export class IdeaService {
             'ErrorMessage.UPDATING_IDEA_FAILED',
             HttpStatus.BAD_REQUEST,
           );
-
-        return idea;
       });
     } catch (error) {
-      console.log(error, 1111111);
-
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
     return {
@@ -784,7 +782,7 @@ export class IdeaService {
     }
 
     const idea = await this.ideaRepository.findOne({
-      where: { idea_id, is_deleted: EIsDelete.NOT_DELETE },
+      where: { idea_id, is_deleted: EIsDelete.NOT_DELETED },
     });
 
     if (!idea) {
@@ -811,7 +809,7 @@ export class IdeaService {
     }
 
     const idea = await this.ideaRepository.findOne({
-      where: { idea_id, is_deleted: EIsDelete.NOT_DELETE },
+      where: { idea_id, is_deleted: EIsDelete.NOT_DELETED },
     });
 
     if (!idea) {
