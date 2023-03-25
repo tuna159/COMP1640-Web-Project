@@ -1,0 +1,61 @@
+<div class="wrapper" style="background-color: #F2F2F2">
+    <div class="menu-bar" style="position: fixed; width: 100%; top: 0%; left: 0%;">
+        <app-header-home></app-header-home>
+    </div>
+    <br>
+    <div class="">
+        <div class="menu" style="position: fixed;">
+            <app-menu></app-menu>
+        </div>
+
+        <div class="" style="margin-top: 5rem">
+            <p-card
+                [style]="{'width': '50rem', 'margin-bottom': '4em', 'margin-left': 'auto', 'margin-right': 'auto', 'background-color':'white'}">
+
+                <div class="col-5" style="position: static; margin-right: auto; margin-left: auto;">
+                    <p style="text-align: center; font-size: 25px; font-weight: bold; color: black;">
+                        Events
+                    </p>
+                </div>
+                <div>
+
+                    <div class="row" *ngFor="let l of listIdea; index as i;"
+                        style="margin-top: 2rem; margin-bottom: 1rem; background-color: #F2F2F2; padding: 10px; border-radius: 10px; width: 90%; margin-left: auto; margin-right:auto;">
+
+                        <div style="position: static; width: '100%';">
+
+                            <button pButton pRipple type="button" label="{{l.title}}"
+                                class="p-button-text p-button-plain" (click)="IdeaDetail(l.idea_id)"
+                                style="width: '100%';"></button>
+
+                            <div class="row"
+                                style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; height: 2rem;">
+                                <p>Description: {{l.created_at | date:'mediumDate'}}</p>
+                            </div>
+
+                            <div class="row"
+                                style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; height: 2rem;">
+                                <p>Start Date: {{l.created_at | date:'mediumDate'}}</p>
+                                <p>{{l.views}}
+                                    Views</p>
+                            </div>
+                            <div class="row"
+                                style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; height: 2rem;">
+                                <p>Closure Date Date: {{l.created_at | date:'mediumDate'}}</p>
+                            </div>
+                            <div class="row"
+                                style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; height: 2rem;">
+                                <p>Final Date: {{l.created_at | date:'mediumDate'}}</p>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </p-card>
+
+        </div>
+
+
+        <p-toast position="bottom-right"></p-toast>
+    </div>

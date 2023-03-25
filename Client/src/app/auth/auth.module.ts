@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChartComponent } from './chart/chart.component';
 
 
 
@@ -7,6 +8,8 @@ import { CommonModule } from '@angular/common';
 @NgModule({
   declarations: [
     
+  
+    ChartComponent
   ],
   imports: [
     CommonModule

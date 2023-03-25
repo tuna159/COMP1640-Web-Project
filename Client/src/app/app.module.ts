@@ -65,6 +65,9 @@ import { CreateAccountComponent } from './manage-account/create-account/create-a
 import { ChartsComponent } from './charts/charts.component';
 import { HighchartsChartModule } from 'highcharts-angular';
 import { ChartModule } from 'angular-highcharts';
+import { ManageEventComponent } from './manage-event/manage-event.component';
+import { EventComponent } from './event/event.component';
+import { ChartComponent } from './chart/chart.component';
 
 @NgModule({
     declarations: [
@@ -84,7 +87,10 @@ import { ChartModule } from 'angular-highcharts';
         PostComponent,
         AddCategoryComponent,
         CreateAccountComponent,
-        ChartsComponent
+        ChartsComponent,
+        ManageEventComponent,
+        EventComponent,
+        ChartComponent
     ],
     providers: [MessageService],
     bootstrap: [AppComponent],
