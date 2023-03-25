@@ -63,7 +63,7 @@ import { AddCategoryComponent } from './manage-category/add-category/add-categor
 import { CreateAccountComponent } from './manage-account/create-account/create-account/create-account.component';
 
 import { ChartsComponent } from './charts/charts.component';
-// import { HighchartsChartModule } from 'highcharts-angular';
+import { HighchartsChartModule } from 'highcharts-angular';
 import { ChartModule } from 'angular-highcharts';
 
 @NgModule({
@@ -107,7 +107,7 @@ import { ChartModule } from 'angular-highcharts';
         FormsModule,
         TabViewModule,
         CardModule,
-        // HighchartsChartModule,
+        HighchartsChartModule,
         BrowserAnimationsModule,
         DynamicDialogModule,
         DropdownModule,
