@@ -12,6 +12,7 @@ import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
 import { VUpdateEventDto } from 'global/dto/updateEvent.dto';
 import {
+  DeepPartial,
   EntityManager,
   LessThanOrEqual,
   MoreThanOrEqual,
@@ -22,6 +23,7 @@ import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateEventDto } from 'global/dto/createEvent.dto.';
 import { DepartmentService } from '@modules/department/department.service';
 import { IdeaService } from '@modules/idea/idea.service';
+import { Idea } from '@core/database/mysql/entity/idea.entity';
 
 @Injectable()
 export class EventService {
@@ -67,7 +69,7 @@ export class EventService {
     });
   }
 
-  async checkEventToCreateIdea(event_id: number) {
+  async checkEventToIdea(event_id: number) {
     return await this.eventRepository.findOne({
       event_id: event_id,
       created_date: LessThanOrEqual(new Date()),
@@ -218,7 +220,7 @@ export class EventService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    event = await this.checkEventToCreateIdea(event_id);
+    event = await this.checkEventToIdea(event_id);
     if (!event) {
       throw new HttpException(
         ErrorMessage.FIRST_CLOSURE_DATE_UNAVAILABLE,
@@ -226,5 +228,38 @@ export class EventService {
       );
     }
     return this.ideaService.updateIdea(userData, idea_id, body);
+  }
+
+  async deleteIdea(
+    event_id: number,
+    idea_id: number,
+    userData: IUserData,
+    body: DeepPartial<Idea>,
+  ) {
+    const checkEvent = await this.getEventById(event_id);
+
+    if (!checkEvent) {
+      throw new HttpException(
+        ErrorMessage.EVENT_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const event = await this.checkEventToIdea(event_id);
+    if (userData.role_id != EUserRole.STAFF) {
+      throw new HttpException(
+        ErrorMessage.YOU_DO_NOT_HAVE_PERMISSION_TO_DELETE_IDEA,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (!event) {
+      throw new HttpException(
+        ErrorMessage.EVENT_HAS_EXPIRED,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return await this.ideaService.deleteIdea(idea_id, userData.user_id, body);
   }
 }
