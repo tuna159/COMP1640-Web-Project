@@ -15,7 +15,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EIsDelete } from 'enum';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
-import { EIdeaFilter } from 'enum/idea.enum';
+import { EIdeaFilter, EReactionType } from 'enum/idea.enum';
 import { VAddComment } from 'global/dto/addComment.dto';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateReactionDto } from 'global/dto/reaction.dto';
@@ -892,11 +892,9 @@ export class IdeaService {
         },
       );
     }
-    const [listUser] = await queryBuilder.getManyAndCount();
+    const [listIdea] = await queryBuilder.getManyAndCount();
 
-    console.log(listUser);
-
-    data = listUser.map((idea) => {
+    data = listIdea.map((idea) => {
       return {
         idea_id: idea.idea_id,
         tilte: idea.title,
@@ -909,5 +907,19 @@ export class IdeaService {
     });
 
     return data;
+  }
+  async getListReaction(idea_id: number) {
+    const idea = await this.ideaRepository.findOne({
+      where: { idea_id: idea_id, is_deleted: EIsDelete.NOT_DELETED },
+    });
+
+    if (!idea) {
+      throw new HttpException(
+        ErrorMessage.IDEA_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return await this.reactionService.getListReaction();
   }
 }

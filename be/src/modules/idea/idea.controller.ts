@@ -59,6 +59,11 @@ export class IdeaController {
     return this.ideaService.createIdeaReaction(userData, idea_id, body);
   }
 
+  @Get(':idea_id/list-reaction')
+  getListReaction(@Param('idea_id') idea_id: number) {
+    return this.ideaService.getListReaction(idea_id);
+  }
+
   @Delete(':idea_id/reaction')
   deleteIdeaReaction(
     @UserData() userData: IUserData,
