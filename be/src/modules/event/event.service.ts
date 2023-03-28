@@ -202,7 +202,7 @@ export class EventService {
   }
 
   async updateIdea(
-    userData: IUserData, 
+    userData: IUserData,
     event_id: number,
     idea_id: number,
     body: VCreateIdeaDto,

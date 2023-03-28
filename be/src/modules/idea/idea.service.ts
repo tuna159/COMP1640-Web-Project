@@ -1,7 +1,7 @@
 import { CategoryIdea } from '@core/database/mysql/entity/categoryIdea.entity';
 import { Comment } from '@core/database/mysql/entity/comment.entity';
 import { IdeaFile } from '@core/database/mysql/entity/file.entity';
-import { IUserData } from '@core/interface/default.interface';
+import { IPaginationQuery, IUserData } from '@core/interface/default.interface';
 import sendMailNodemailer from '@helper/nodemailer';
 import { CategoryIdeaService } from '@modules/category-idea/category-idea.service';
 import { CommentService } from '@modules/comment/comment.service';
@@ -274,7 +274,7 @@ export class IdeaService {
 
         const ideaTags = [];
         const tagDto = body.tag_names;
-        for(let dto of tagDto) {
+        for (let dto of tagDto) {
           const tag = await this.tagService.getTagByName(dto.name);
           const ideaTag = new IdeaTag();
           if (tag) {
@@ -286,7 +286,7 @@ export class IdeaService {
             ideaTag.tag_id = newTag.tag_id;
           }
           ideaTags.push(ideaTag);
-        };
+        }
 
         const result = await Promise.allSettled([
           this.ideaFileService.createIdeaFile(postFileParams, manager),
@@ -424,11 +424,7 @@ export class IdeaService {
     });
   }
 
-  async updateIdea(
-    userData: IUserData,
-    idea_id: number, 
-    body: VUpdateIdeaDto,
-  ) {
+  async updateIdea(userData: IUserData, idea_id: number, body: VUpdateIdeaDto) {
     const isAccess = await this.checkIdea(idea_id, userData.user_id);
     if (!isAccess) {
       throw new HttpException(
@@ -463,7 +459,7 @@ export class IdeaService {
 
         const ideaTags = [];
         const tagDto = body.tag_names;
-        for(let dto of tagDto) {
+        for (let dto of tagDto) {
           const tag = await this.tagService.getTagByName(dto.name);
           const ideaTag = new IdeaTag();
           if (tag) {
@@ -475,7 +471,7 @@ export class IdeaService {
             ideaTag.tag_id = newTag.tag_id;
           }
           ideaTags.push(ideaTag);
-        };
+        }
 
         await Promise.allSettled([
           this.ideaTagService.deleteIdeaTags(idea_id, manager),
@@ -865,5 +861,53 @@ export class IdeaService {
       ? entityManager.getRepository<Idea>('idea')
       : this.ideaRepository;
     return await ideaRepository.update(condition, body);
+  }
+
+  async searchIdea(
+    userData: IUserData,
+    query: IPaginationQuery,
+    entityManager?: EntityManager,
+  ) {
+    const ideaRepository = entityManager
+      ? entityManager.getRepository<Idea>('idea')
+      : this.ideaRepository;
+
+    let data = [];
+
+    const queryBuilder = ideaRepository
+      .createQueryBuilder('idea')
+      .select()
+      .leftJoinAndSelect('idea.ideaTags', 'ideaTags')
+      .leftJoinAndSelect('ideaTags.tag', 'tag')
+      .where('idea.is_deleted = :is_deleted', {
+        is_deleted: EIsDelete.NOT_DELETED,
+      });
+
+    if (query.search_key && query.search_key != '') {
+      const searchKey = query.search_key.trim().toLowerCase();
+      queryBuilder.andWhere(
+        '((LOWER(idea.content) LIKE :searchKey) OR (LOWER(tag.name) LIKE :searchKey))',
+        {
+          searchKey: `%${searchKey}%`,
+        },
+      );
+    }
+    const [listUser] = await queryBuilder.getManyAndCount();
+
+    console.log(listUser);
+
+    data = listUser.map((idea) => {
+      return {
+        idea_id: idea.idea_id,
+        tilte: idea.title,
+        tag: idea.ideaTags.map((e) => {
+          return {
+            tag: e.tag.name,
+          };
+        }),
+      };
+    });
+
+    return data;
   }
 }

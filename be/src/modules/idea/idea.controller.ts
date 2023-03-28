@@ -1,5 +1,5 @@
 import { UserData } from '@core/decorator/user.decorator';
-import { IUserData } from '@core/interface/default.interface';
+import { IPaginationQuery, IUserData } from '@core/interface/default.interface';
 import {
   Body,
   Controller,
@@ -26,6 +26,14 @@ import { VUpdateCommentDto } from 'global/dto/comment.dto';
 @Controller('idea')
 export class IdeaController {
   constructor(private readonly ideaService: IdeaService) {}
+
+  @Get('/search')
+  async searchIdea(
+    @UserData() userData: IUserData,
+    @Query() query: IPaginationQuery,
+  ) {
+    return await this.ideaService.searchIdea(userData, query);
+  }
 
   @Get(':idea_id')
   async getIdeaDetail(
