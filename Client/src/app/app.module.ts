@@ -68,6 +68,7 @@ import { ChartModule } from 'angular-highcharts';
 import { ManageEventComponent } from './manage-event/manage-event.component';
 import { EventComponent } from './event/event.component';
 import { ChartComponent } from './chart/chart.component';
+import { IdeaEventComponent } from './idea-event/idea-event.component';
 
 @NgModule({
     declarations: [
@@ -90,7 +91,8 @@ import { ChartComponent } from './chart/chart.component';
         ChartsComponent,
         ManageEventComponent,
         EventComponent,
-        ChartComponent
+        ChartComponent,
+        IdeaEventComponent
     ],
     providers: [MessageService],
     bootstrap: [AppComponent],

@@ -40,11 +40,11 @@ export class ManageCategoryComponent implements OnInit {
   ngOnInit() {
 
     this.cols = [
-      { field: 'Stt', header: 'STT', width: '50px', textAlign: 'center' },
+      { field: 'Number', header: 'Number', width: '50px', textAlign: 'center' },
       { field: 'name', header: 'Name', width: '300px', textAlign: 'center' },
       {
-        field: 'ThaoTac',
-        header: 'Thao tác',
+        field: 'Edit/Delete',
+        header: 'Edit/Delete',
         width: '120px',
         textAlign: 'center',
       },

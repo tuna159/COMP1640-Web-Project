@@ -1,0 +1,35 @@
+.menu {
+    width: 10%;
+    float: left;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.content {
+
+    padding: 20px 35% 0px 0px;
+
+    float: right;
+}
+
+
+:host ::ng-deep .p-card .p-card-title {
+    font-size: 14px;
+    font-weight: 500;
+
+}
+
+:host ::ng-deep .p-treeselect {
+    width: 100%;
+    position: static;
+}
+
+.personal-info {
+    text-align: center;
+}
+
+:host ::ng-deep .p-button {
+    position: static;
+}

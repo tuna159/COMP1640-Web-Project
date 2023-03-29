@@ -12,7 +12,7 @@ import { CreateAccountComponent } from './create-account/create-account/create-a
   selector: 'app-manage-account',
   templateUrl: './manage-account.component.html',
   styleUrls: ['./manage-account.component.css'],
-  providers: [MessageService, ConfirmationService]
+  providers: [MessageService, ConfirmationService, DialogService]
 })
 export class ManageAccountComponent {
   cols: Array<any> = [];
@@ -32,15 +32,15 @@ export class ManageAccountComponent {
   ngOnInit() {
 
     this.cols = [
-      { field: 'Stt', header: 'STT', width: '50px', textAlign: 'center' },
+      { field: 'Number', header: 'Number', width: '50px', textAlign: 'center' },
       { field: 'email', header: 'Email', width: '300px', textAlign: 'center' },
       { field: 'name', header: 'Full Name', width: '300px', textAlign: 'center' },
       { field: 'role', header: 'Role', width: '200px', textAlign: 'center' },
       { field: 'department', header: 'Department', width: '100px', textAlign: 'center' },
       { field: 'status', header: 'Status', width: '150px', textAlign: 'center' },
       {
-        field: 'ThaoTac',
-        header: 'Thao tác',
+        field: 'Edit/Delete',
+        header: 'Edit/Delete',
         width: '120px',
         textAlign: 'center',
       },

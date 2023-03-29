@@ -1,3 +1,5 @@
+<div>
+<app-header-home></app-header-home>
 <div style="width: 100%; display: flex;">
     
         <app-menu></app-menu>
@@ -20,7 +22,7 @@
                                 </span>
                                 <button pButton type="button" (click)="openNewCategory()" label="Add" icon="pi pi-plus"
                                     style="background-color:#f97c39; width: 120px !important; height: 30px !important; margin-left: 5px; border: 0px;"></button>
-                                <button pButton type="button" label="Xóa" icon="pi pi-trash"
+                                <button pButton type="button" label="Delete" icon="pi pi-trash"
                                     style="background-color:red; width: 120px !important; height: 30px !important; margin-left: 5px; border: 0px"
                                     (click)="showDialogXoaN()"></button>
                             </div>
@@ -34,7 +36,7 @@
                     <p-table #myTab [columns]="cols" [value]="listData" [tableStyle]="{ 'min-width': '50rem' }"
                         [(selection)]="listSelectedData" dataKey="category_id" [rowHover]="true" [scrollable]="true"
                         [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
-                        [globalFilterFields]="['Stt','name',]">
+                        [globalFilterFields]="['Number','name',]">
                         <ng-template pTemplate="header" let-columns>
                             <tr>
                                 <th style="width: 2rem" class="text-center">
@@ -69,6 +71,7 @@
         </div>
         <p-toast position="bottom-right"></p-toast>
     </div>
+</div>
 </div>
 
 

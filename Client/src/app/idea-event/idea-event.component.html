@@ -1,0 +1,94 @@
+<div class="wrapper" style="background-color: #F2F2F2">
+    <div class="menu-bar" style="position: fixed; width: 100%; top: 0%; left: 0%;">
+        <app-header-home></app-header-home>
+    </div>
+    <br>
+    <div class="">
+        <div class="menu" style="position: fixed;">
+            <app-menu></app-menu>
+        </div>
+        <div class="post"
+            style=" background-color: white;  height: 100px; width: 50rem; margin-left: auto; margin-top: 5em; border-radius: 10px; margin-right: auto;">
+            <div class="post-detail">
+                <img src="https://scontent.fhan14-2.fna.fbcdn.net/v/t1.30497-1/143086968_2856368904622192_1959732218791162458_n.png?stp=cp0_dst-png_p40x40&_nc_cat=1&ccb=1%207&_nc_sid=7206a8&_nc_ohc=uzaU27BDodMAX9HIiWB&_nc_ht=scontent.fhan14-2.fna&oh=00_AfDpLnJbpOgRs5t85dtXrKzPGn1a4Cvm1huXiCIVlF-cRw&oe=6416EA38"
+                    alt="" style="width:40px; height:40px; border-radius: 50%; margin: 20px;">
+                <button pButton type="button" (click)="postIdeal()" label="Chào A, bạn có muốn thêm ý tưởng không?"
+                    style="border-radius: 20px; background-color:white; color:black; float:right; width:43rem ;  margin: 10px;"></button>
+            </div>
+        </div>
+
+        <div class="" style="margin-top: 5rem">
+            <p-card header="20/02/2001 - 20/02/2002"
+                [style]="{'width': '50rem', 'margin-bottom': '4em', 'margin-left': 'auto', 'margin-right': 'auto', 'background-color':'white'}">
+
+                <div class="row"
+                    style="width: 100%; margin-left: auto; margin-right: auto; justify-content: space-between;">
+                    <div class="col-2" style="position: static;"></div>
+                    <div class="col-5" style="position: static;">
+                        <p
+                            style="text-align: center; margin-left: 10px; font-size: 25px; font-weight: bold; color: black;">
+                            Popular Ideas
+                        </p>
+                    </div>
+                    <div class="col-3" style="position: static;">
+                        <p-treeSelect [(ngModel)]="selectedNode" [options]="nodes1" placeholder="Filter"></p-treeSelect>
+                    </div>
+
+                    <div class="col-3" style="position: static;">
+                        <ng-template ptemplate="filter" let-department let-filter="filterCallback">
+                            <p-dropdown [options]="listDepartment" (onChange)="filter($event.value)"
+                                placeholder="Category">
+                                <ng-template let-option ptemplate="item">
+                                    <span [class]="'customer-badge status-' + option.value">{{option.name}}</span>
+                                </ng-template>
+                            </p-dropdown>
+                        </ng-template>
+                    </div>
+
+                </div>
+
+                <div>
+
+                    <div class="row" *ngFor="let l of listIdea; index as i;"
+                        style="margin-top: 2rem; margin-bottom: 1rem; background-color: #F2F2F2; padding: 10px; border-radius: 10px; width: 90%; margin-left: auto; margin-right:auto;">
+                        <div class="personal-info col-3" style="position: static;">
+                            <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+                                styleclass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                            <p></p>
+                            <p>{{l.user.full_name}}</p>
+                            <p>{{l.user.full_name}}</p>
+                        </div>
+                        <div class="col-9" style="position: static;">
+
+                            <button pButton pRipple type="button" label="{{l.title}}"
+                                class="p-button-text p-button-plain" (click)="IdeaDetail(l.idea_id)"></button>
+
+                            <div class="row"
+                                style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; height: 2rem;">
+                                <p>{{l.created_at | date:'mediumDate'}}
+                                </p>
+                                <p>{{l.views}}
+                                    Views</p>
+                            </div>
+                            <div class="row" style="margin-left: auto; margin-right: auto;">
+                                <p-chip label="{{lc.name}}" styleclass="mr-2"
+                                    *ngFor="let lc of l.categories; index as i;"></p-chip>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <ng-template pTemplate="footer">
+			                                                <div [ngStyle]="{'display':'flex', 'flex-direction': 'row'}">
+			                                                        <h6 [ngStyle]="{'margin-right':'20px'}">3 Likes</h6>
+			                                                        <h6 [ngStyle]="{'margin-right':'525px'}">3 Dislikes</h6>
+			                                                        <h6>3 Comments</h6>
+			                                                </div>
+			                                        </ng-template> -->
+            </p-card>
+
+        </div>
+
+
+        <p-toast position="bottom-right"></p-toast>
+    </div>
