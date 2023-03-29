@@ -1,19 +1,22 @@
+import { UserData } from '@core/decorator/user.decorator';
+import { IUserData } from '@core/interface/default.interface';
 import { UserDetailService } from '@modules/user-detail/user-detail.service';
-import { Body, Controller, Param, Put } from '@nestjs/common';
-import { VMeDetail } from 'global/dto/user_detail.dto';
+import { Body, Controller, Put } from '@nestjs/common';
+import { VUpdateProfile } from 'global/dto/updateProfile.dto';
 import { MeService } from './me.service';
 
 @Controller('me')
 export class MeController {
   constructor(
     private readonly meService: MeService,
-    private readonly userDetailService: UserDetailService) {}
+    private readonly userDetailService: UserDetailService,
+  ) {}
 
-  @Put(":user_id")
-  async updateMe(
-    @Param('user_id') user_id: string,
-    @Body() body: VMeDetail,
-  ){
-    return await this.userDetailService.updateUserDetail( user_id, body);
+  @Put()
+  async updateProfile(
+    @UserData() userData: IUserData,
+    @Body() body: VUpdateProfile,
+  ) {
+    return await this.meService.updateProfile(userData, body);
   }
 }
