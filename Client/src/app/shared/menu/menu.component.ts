@@ -17,6 +17,9 @@ export class MenuComponent {
   display: any;
   value3: any;
   items: MenuItem[];
+  itemsAdmin: MenuItem[];
+  itemsQA: MenuItem[];
+  itemsQAM: MenuItem[];
   categories!: MegaMenuItem[];
 
   constructor(private authService: AuthenticationService,
@@ -31,6 +34,27 @@ export class MenuComponent {
       { label: 'Log out', icon: 'pi pi-sign-out', command: () => {
         this.logout()
       }}
+    ];
+
+    this.itemsAdmin = [
+      // { label: 'View profile', icon: 'pi pi-users', routerLink: '/view/profile' },
+      { label: 'Manage Account', icon: 'pi pi-fw pi-download' },
+      { label: 'Manage Event', icon: 'pi pi-fw pi-download' },
+      {
+        label: 'Log out', icon: 'pi pi-sign-out', command: () => {
+          this.logout()
+        }
+      }
+    ];
+
+    this.itemsQA = [
+      // { label: 'View profile', icon: 'pi pi-users', routerLink: '/view/profile' },
+      { label: 'Manage Category', icon: 'pi pi-fw pi-download' },
+      {
+        label: 'Log out', icon: 'pi pi-sign-out', command: () => {
+          this.logout()
+        }
+      }
     ];
 
     this.categories = [

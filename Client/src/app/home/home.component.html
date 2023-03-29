@@ -8,18 +8,16 @@
                         <app-menu></app-menu>
                 </div>
                 <div class="post"
-                        style=" background-color: white;  height: 100px; width: 50rem; margin-left: auto; margin-top: 5em; border-radius: 10px; margin-right: auto;">
-                        <div class="post-detail">
-                                <img src="https://scontent.fhan14-2.fna.fbcdn.net/v/t1.30497-1/143086968_2856368904622192_1959732218791162458_n.png?stp=cp0_dst-png_p40x40&_nc_cat=1&ccb=1%207&_nc_sid=7206a8&_nc_ohc=uzaU27BDodMAX9HIiWB&_nc_ht=scontent.fhan14-2.fna&oh=00_AfDpLnJbpOgRs5t85dtXrKzPGn1a4Cvm1huXiCIVlF-cRw&oe=6416EA38"
-                                        alt="" style="width:40px; height:40px; border-radius: 50%; margin: 20px;">
-                                <button pButton type="button" (click)="postIdeal()"
-                                        label="Chào A, bạn có muốn thêm ý tưởng không?"
-                                        style="border-radius: 20px; background-color:white; color:black; float:right; width:43rem ;  margin: 10px;"></button>
-                        </div>
+                        style=" background-color: white;  height: 100px; width: 50rem; margin-left: auto; margin-top: 5em; border-radius: 10px; margin-right: auto; text-align: center; padding-top: 1%;">
+                        <span class="p-input-icon-left" style="width: 48rem;">
+                                <i class="pi pi-search"></i>
+                                <input type="text" pInputText placeholder="Search anything you want..." [(ngModel)]="value3" 
+                                style="width: 48rem;"/>
+                        </span>
                 </div>
 
-                <div class="" style="margin-top: 5rem">
-                        <p-card header="1/2/2023 - 10/2/2023 - 30/2/2023"
+                <div class="" style="margin-top: 1rem">
+                        <p-card 
                                 [style]="{'width': '50rem', 'margin-bottom': '4em', 'margin-left': 'auto', 'margin-right': 'auto', 'background-color':'white'}">
 
                                 <div class="row"

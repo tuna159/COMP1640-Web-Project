@@ -13,6 +13,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { ManageEventComponent } from './manage-event/manage-event.component';
 import { EventComponent } from './event/event.component';
 import { ChartComponent } from './chart/chart.component';
+import { IdeaEventComponent } from './idea-event/idea-event.component';
 
 
 
@@ -28,7 +29,7 @@ const routes: Routes = [
         component: ResetPasswordComponent
     },
     {
-        path: 'home',
+        path: 'event',
         canActivate: [AuthGuard],
         // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: EventComponent
@@ -71,7 +72,7 @@ const routes: Routes = [
         component: ManageEventComponent
     },
     {
-        path: 'event/ideas',
+        path: 'home',
         canActivate: [AuthGuard],
         // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: HomeComponent
@@ -81,6 +82,12 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: ChartComponent
+    },
+    {
+        path: 'event/ideas',
+        canActivate: [AuthGuard],
+        // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
+        component: IdeaEventComponent
     },
 ];
 
