@@ -8,6 +8,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
+import { VUpdatePassword } from 'global/dto/updatePassword.dto';
 import { VUpdateProfile } from 'global/dto/updateProfile.dto';
 import { Connection, Repository } from 'typeorm';
 
@@ -69,5 +70,35 @@ export class MeService {
     });
 
     return null;
+  }
+
+  async updateProfilePassword(user_id: string, body: VUpdatePassword) {
+    await this.connection.transaction(async (entityManager) => {
+      const user = await this.userService.getUserPasswordById(
+        user_id,
+        entityManager,
+      );
+
+      const isPasswordHash = await handleBCRYPTCompare(
+        body.oldPassword,
+        user.password,
+      );
+
+      if (!isPasswordHash)
+        throw new HttpException(
+          ErrorMessage.PASSWORD_INCORRECT,
+          HttpStatus.BAD_REQUEST,
+        );
+
+      await this.userService.updateUser(
+        user_id,
+        {
+          password: await handleBCRYPTHash(body.newPassword),
+        },
+        entityManager,
+      );
+    });
+
+    return true;
   }
 }

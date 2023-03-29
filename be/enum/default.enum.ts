@@ -17,3 +17,7 @@ export enum EDepartment {
   DEPARTMENT3 = 3,
   DEPARTMENT4 = 4,
 }
+
+export const REGEX_CONSTANT = {
+  PASSWORD: /^[!@#\$%\^&\*\(\)_\-\+=\[\]\{\}\|\\;:'",\.<>\/\?a-zA-Z0-9]*$/,
+};
