@@ -118,6 +118,17 @@ export class IdeaService {
     };
   }
 
+  async ideaExists(idea_id: number, entityManager?: EntityManager) {
+    const ideaRepository = entityManager
+      ? entityManager.getRepository<Idea>('idea')
+      : this.ideaRepository;
+
+    return ideaRepository.findOne({
+      idea_id,
+      is_deleted: EIsDelete.NOT_DELETED,
+    });
+  }
+
   async getAllIdeas(
     event_id?: number,
     department_id?: number,
@@ -480,15 +491,28 @@ export class IdeaService {
     return this.reactionService.deleteReaction(userData.user_id, idea_id);
   }
 
-  async ideaExists(idea_id: number, entityManager?: EntityManager) {
-    const ideaRepository = entityManager
-      ? entityManager.getRepository<Idea>('idea')
-      : this.ideaRepository;
+  async getIdeaLikes(idea_id: number) {
+    const idea = await this.ideaExists(idea_id);
+    if (!idea) {
+      throw new HttpException(
+        ErrorMessage.IDEA_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const likes = await this.reactionService.getIdeaLikes(idea_id);
+    return { likes };
+  }
 
-    return ideaRepository.findOne({
-      idea_id,
-      is_deleted: EIsDelete.NOT_DELETED,
-    });
+  async getIdeaDislikes(idea_id: number) {
+    const idea = await this.ideaExists(idea_id);
+    if (!idea) {
+      throw new HttpException(
+        ErrorMessage.IDEA_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const dislikes = await this.reactionService.getIdeaDislikes(idea_id);
+    return { dislikes };
   }
 
   async updateIdea(userData: IUserData, idea_id: number, body: VUpdateIdeaDto) {

@@ -83,6 +83,26 @@ export class ReactionService {
     };
   }
 
+  async getIdeaLikes(idea_id: number, entityManager?: EntityManager) {
+    const reactionRepository = entityManager
+      ? entityManager.getRepository<Reaction>('reaction')
+      : this.reactionRepository;
+
+    return reactionRepository.count({ 
+      idea_id, type: EReactionType.LIKE,
+    });
+  }
+
+  async getIdeaDislikes(idea_id: number, entityManager?: EntityManager) {
+    const reactionRepository = entityManager
+      ? entityManager.getRepository<Reaction>('reaction')
+      : this.reactionRepository;
+
+    return reactionRepository.count({ 
+      idea_id, type: EReactionType.DISLIKE,
+    });
+  }
+
   async getListReaction(entityManager?: EntityManager) {
     const reactionRepository = entityManager
       ? entityManager.getRepository<Reaction>('reaction')

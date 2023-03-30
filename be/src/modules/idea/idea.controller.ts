@@ -87,9 +87,14 @@ export class IdeaController {
     return this.ideaService.deleteIdeaReaction(userData, idea_id);
   }
 
-  @Get(':idea_id/list-reaction')
-  getListReaction(@Param('idea_id') idea_id: number) {
-    return this.ideaService.getListReaction(idea_id);
+  @Get(':idea_id/likes')
+  getIdeaLikes(@Param('idea_id') idea_id: number) {
+    return this.ideaService.getIdeaLikes(idea_id);
+  }
+
+  @Get(':idea_id/dislikes')
+  getIdeaDislikes(@Param('idea_id') idea_id: number) {
+    return this.ideaService.getIdeaDislikes(idea_id);
   }
 
   @Get(':idea_id/comments?')
