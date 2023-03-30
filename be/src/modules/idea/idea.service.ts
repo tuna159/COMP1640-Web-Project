@@ -246,15 +246,7 @@ export class IdeaService {
     let data: DeepPartial<Idea>;
     try {
       data = await this.connection.transaction(async (manager) => {
-        let event = await this.eventService.eventExists(event_id);
-        if (!event) {
-          throw new HttpException(
-            ErrorMessage.EVENT_NOT_EXIST,
-            HttpStatus.BAD_REQUEST,
-          );
-        }
-
-        event = await this.eventService.checkEventToIdea(event_id);
+        const event = await this.eventService.checkEventToIdea(event_id);
         if (!event) {
           throw new HttpException(
             ErrorMessage.FIRST_CLOSURE_DATE_UNAVAILABLE,

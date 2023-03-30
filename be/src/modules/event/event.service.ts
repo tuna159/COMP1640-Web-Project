@@ -17,12 +17,12 @@ import {
   MoreThanOrEqual,
   Repository,
 } from 'typeorm';
-import moment = require('moment');
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateEventDto, VUpdateEventDto } from 'global/dto/event.dto.';
 import { DepartmentService } from '@modules/department/department.service';
 import { IdeaService } from '@modules/idea/idea.service';
 import { Idea } from '@core/database/mysql/entity/idea.entity';
+import { UserService } from '@modules/user/user.service';
 
 @Injectable()
 export class EventService {
@@ -32,6 +32,7 @@ export class EventService {
     private departmentService: DepartmentService,
     @Inject(forwardRef(() => IdeaService))
     private ideaService: IdeaService,
+    private userService: UserService,
   ) {}
 
   async getEventsByDepartment(
@@ -231,14 +232,33 @@ export class EventService {
     };
   }
 
-  createIdea(userData: IUserData, body: VCreateIdeaDto, event_id: number) {
+  async createIdea(
+    userData: IUserData, 
+    body: VCreateIdeaDto, 
+    event_id: number,
+  ) {
     if (userData.role_id != EUserRole.STAFF) {
       throw new HttpException(
-        ErrorMessage.YOU_DO_NOT_HAVE_PERMISSION_TO_POST_IDEA,
+        ErrorMessage.IDEA_PERMISSION,
         HttpStatus.BAD_REQUEST,
       );
     }
-    return this.ideaService.createIdea(userData, body, event_id);
+    const event = await this.eventExists(event_id);
+    if(!event) {
+      throw new HttpException(
+        ErrorMessage.EVENT_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const user = await this.userService.getUserById(userData.user_id);
+    if(user.department_id != event.department_id) {
+      throw new HttpException(
+        ErrorMessage.EVENT_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return "hello world";
+    // return this.ideaService.createIdea(userData, body, event_id);
   }
 
   async updateIdea(
@@ -249,7 +269,7 @@ export class EventService {
   ) {
     if (userData.role_id != EUserRole.STAFF) {
       throw new HttpException(
-        ErrorMessage.YOU_DO_NOT_HAVE_PERMISSION_TO_POST_IDEA,
+        ErrorMessage.IDEA_PERMISSION,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -288,7 +308,7 @@ export class EventService {
     const event = await this.checkEventToIdea(event_id);
     if (userData.role_id != EUserRole.STAFF) {
       throw new HttpException(
-        ErrorMessage.YOU_DO_NOT_HAVE_PERMISSION_TO_DELETE_IDEA,
+        ErrorMessage.IDEA_PERMISSION,
         HttpStatus.BAD_REQUEST,
       );
     }
