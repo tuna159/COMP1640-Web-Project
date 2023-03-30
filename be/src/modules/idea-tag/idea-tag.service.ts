@@ -14,16 +14,15 @@ export class IdeaTagService {
     body: Array<DeepPartial<IdeaTag>>,
     entityManager?: EntityManager,
   ) {
-    console.log("body", body);
     const ideaTagRepository = entityManager
       ? entityManager.getRepository<IdeaTag>('idea_tag')
       : this.ideaTagRepository;
-      await ideaTagRepository
-        .createQueryBuilder()
-        .insert()
-        .into(IdeaTag)
-        .values(body)
-        .execute();
+    await ideaTagRepository
+      .createQueryBuilder()
+      .insert()
+      .into(IdeaTag)
+      .values(body)
+      .execute();
   }
 
   deleteIdeaTags(idea_id: number, entityManager?: EntityManager) {

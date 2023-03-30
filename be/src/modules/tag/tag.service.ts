@@ -1,7 +1,6 @@
 import { Tag } from '@core/database/mysql/entity/tag.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { VCreateTagDto } from 'global/dto/tag.dto';
 import { EntityManager, Repository } from 'typeorm';
 
 @Injectable()

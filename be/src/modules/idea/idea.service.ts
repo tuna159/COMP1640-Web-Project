@@ -1,5 +1,4 @@
 import { CategoryIdea } from '@core/database/mysql/entity/categoryIdea.entity';
-import { Comment } from '@core/database/mysql/entity/comment.entity';
 import { IdeaFile } from '@core/database/mysql/entity/file.entity';
 import { IPaginationQuery, IUserData } from '@core/interface/default.interface';
 import sendMailNodemailer from '@helper/nodemailer';
@@ -33,12 +32,10 @@ import {
   getManager,
   SelectQueryBuilder,
 } from 'typeorm';
-import { UserService } from '@modules/user/user.service';
 import { VUpdateCommentDto } from 'global/dto/comment.dto';
 import { TagService } from '@modules/tag/tag.service';
 import { IdeaTagService } from '@modules/idea-tag/idea-tag.service';
 import { IdeaTag } from '@core/database/mysql/entity/ideaTag.entity';
-import { VCreateTagDto } from 'global/dto/tag.dto';
 
 @Injectable()
 export class IdeaService {

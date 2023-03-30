@@ -1,4 +1,3 @@
-import { Public } from '@core/decorator/public.decorator';
 import { UserData } from '@core/decorator/user.decorator';
 import { IUserData } from '@core/interface/default.interface';
 import {
@@ -12,7 +11,10 @@ import {
   Query,
 } from '@nestjs/common';
 import { EIdeaFilter } from 'enum/idea.enum';
-import { CreateDepartmentDto, UpdateDepartmentDto } from 'global/dto/department.dto';
+import {
+  CreateDepartmentDto,
+  UpdateDepartmentDto,
+} from 'global/dto/department.dto';
 import { DepartmentService } from './department.service';
 
 @Controller('department')
@@ -45,10 +47,14 @@ export class DepartmentController {
   @Put(':department_id')
   updateDepartment(
     @UserData() userData: IUserData,
-    @Param('department_id') department_id: number, 
+    @Param('department_id') department_id: number,
     @Body() body: UpdateDepartmentDto,
   ) {
-    return this.departmentService.updateDepartment(userData, department_id, body);
+    return this.departmentService.updateDepartment(
+      userData,
+      department_id,
+      body,
+    );
   }
 
   @Delete(':department_id')
@@ -57,6 +63,11 @@ export class DepartmentController {
     @Param('department_id') department_id: number,
   ) {
     return this.departmentService.deleteDepartment(userData, department_id);
+  }
+
+  @Get('university/events')
+  getEventsByUniversity() {
+    return this.departmentService.getEventsByUniversity();
   }
 
   @Get(':department_id/events')

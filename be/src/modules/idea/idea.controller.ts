@@ -14,14 +14,12 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-import { EIdeaFilter } from 'enum/idea.enum';
 import { VAddComment } from 'global/dto/addComment.dto';
-import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateReactionDto } from 'global/dto/reaction.dto';
-import { VUpdateIdeaDto } from 'global/dto/update-idea.dto';
 import { IdeaService } from './idea.service';
 import type { Response, Request } from 'express';
 import { VUpdateCommentDto } from 'global/dto/comment.dto';
+import { VUpdateIdeaDto } from 'global/dto/update-idea.dto';
 
 @Controller('idea')
 export class IdeaController {

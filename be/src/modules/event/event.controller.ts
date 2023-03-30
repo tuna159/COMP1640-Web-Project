@@ -20,10 +20,7 @@ export class EventController {
   constructor(private readonly eventService: EventService) {}
 
   @Post()
-  createEvent(
-    @UserData() userData: IUserData,
-    @Body() body: VCreateEventDto, 
-  ) {
+  createEvent(@UserData() userData: IUserData, @Body() body: VCreateEventDto) {
     return this.eventService.createEvent(userData, body);
   }
 

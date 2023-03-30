@@ -30,7 +30,6 @@ export class DepartmentService {
     private readonly ideaService: IdeaService,
     @Inject(forwardRef(() => EventService))
     private readonly eventService: EventService,
-    private readonly userService: UserService,
   ) {}
 
   async getAllDepartments(entityManager?: EntityManager) {
@@ -62,10 +61,7 @@ export class DepartmentService {
     return data;
   }
 
-  async departmentExists(
-    department_id: number,
-    entityManager?: EntityManager,
-  ) {
+  async departmentExists(department_id: number, entityManager?: EntityManager) {
     const departmentRepository = entityManager
       ? entityManager.getRepository<Department>('department')
       : this.departmentRepository;
@@ -73,10 +69,7 @@ export class DepartmentService {
     return departmentRepository.findOne(department_id);
   }
 
-  async containManager(
-    manager_id: string,
-    entityManager?: EntityManager,
-  ) {
+  async containManager(manager_id: string, entityManager?: EntityManager) {
     const departmentRepository = entityManager
       ? entityManager.getRepository<Department>('department')
       : this.departmentRepository;
@@ -108,16 +101,16 @@ export class DepartmentService {
       );
     }
 
-    const members = department.users.map(u => {
+    const members = department.users.map((u) => {
       const details = u.userDetail;
       return {
-        "userId": u.user_id,
-        "full_name": details.full_name,
-        "nick_name": details.nick_name,
-        "gender": details.gender,
-        "birthday": details.birthday,
-        "avatar_url": details.avatar_url,
-      }
+        userId: u.user_id,
+        full_name: details.full_name,
+        nick_name: details.nick_name,
+        gender: details.gender,
+        birthday: details.birthday,
+        avatar_url: details.avatar_url,
+      };
     });
 
     const manager = department.manager.userDetail;
@@ -145,6 +138,10 @@ export class DepartmentService {
       );
     }
     return this.eventService.getEventsByDepartment(department_id);
+  }
+
+  async getEventsByUniversity() {
+    return this.eventService.getEventsByUniversity();
   }
 
   getIdeasByDepartmentAndCategory(
@@ -232,7 +229,7 @@ export class DepartmentService {
       );
     }
     const department = await this.departmentExists(department_id);
-    if(!department) {
+    if (!department) {
       throw new HttpException(
         ErrorMessage.DEPARTMENT_NOT_EXISTS,
         HttpStatus.BAD_REQUEST,
@@ -263,7 +260,7 @@ export class DepartmentService {
 
     //? Already contains check if department exists
     const department = await this.getDepartmentDetails(department_id);
-    if(department.members.length != 0) {
+    if (department.members.length != 0) {
       throw new HttpException(
         ErrorMessage.DEPARTMENT_NOT_EMPTY,
         HttpStatus.BAD_REQUEST,
@@ -272,7 +269,7 @@ export class DepartmentService {
 
     const result = await departmentRepository.delete(department_id);
     return {
-      "affected": result.affected,
-    }
+      affected: result.affected,
+    };
   }
 }

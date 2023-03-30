@@ -13,6 +13,7 @@ import { ErrorMessage } from 'enum/error';
 import {
   DeepPartial,
   EntityManager,
+  IsNull,
   LessThanOrEqual,
   MoreThanOrEqual,
   Repository,
@@ -44,10 +45,34 @@ export class EventService {
       : this.eventRepository;
 
     const events = await eventRepository
-      .createQueryBuilder("event")
-      .innerJoinAndSelect("event.department", "department")
-      .where("department.department_id = :department_id", { department_id })
+      .createQueryBuilder('event')
+      .innerJoinAndSelect('event.department', 'department')
+      .where('department.department_id = :department_id', { department_id })
       .getMany();
+
+    return events.map((e) => {
+      return {
+        event_id: e.event_id,
+        name: e.name,
+        content: e.content,
+        created_date: e.created_date,
+        first_closure_date: e.first_closure_date,
+        final_closure_date: e.final_closure_date,
+        department: e.department,
+      };
+    });
+  }
+
+  async getEventsByUniversity(entityManager?: EntityManager) {
+    const eventRepository = entityManager
+      ? entityManager.getRepository<Event>('event')
+      : this.eventRepository;
+
+    const events = await eventRepository.find({
+      where: {
+        department_id: IsNull(),
+      },
+    });
 
     return events.map((e) => {
       return {
@@ -75,7 +100,7 @@ export class EventService {
   }
 
   async createEvent(
-    userData: IUserData, 
+    userData: IUserData,
     body: VCreateEventDto,
     entityManager?: EntityManager,
   ) {
@@ -94,8 +119,8 @@ export class EventService {
     //? Get both date and time as UTC format
     const first = new Date(body.first_closure_date);
     const final = new Date(body.final_closure_date);
-    
-    if(first < new Date()) {
+
+    if (first < new Date()) {
       throw new HttpException(
         ErrorMessage.INVALID_FIRST_CLOSURE_DATE,
         HttpStatus.BAD_REQUEST,
@@ -109,15 +134,16 @@ export class EventService {
       );
     }
 
-    if(body.department_id != null) {
-      const department = await this.departmentService
-          .departmentExists(body.department_id);
+    if (body.department_id != null) {
+      const department = await this.departmentService.departmentExists(
+        body.department_id,
+      );
       if (!department) {
         throw new HttpException(
           ErrorMessage.DEPARTMENT_NOT_EXISTS,
           HttpStatus.BAD_REQUEST,
         );
-      } 
+      }
     }
 
     const event = new Event();
@@ -156,9 +182,9 @@ export class EventService {
     }
 
     const first = new Date(body.first_closure_date);
-    if(first < new Date()) {
+    if (first < new Date()) {
       throw new HttpException(
-        "First closure date must be greater than current date",
+        'First closure date must be greater than current date',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -166,14 +192,14 @@ export class EventService {
     const final = new Date(body.final_closure_date);
     if (final < new Date()) {
       throw new HttpException(
-        "Final closure date must be greater then current date",
+        'Final closure date must be greater then current date',
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    if(first >= final) {
+    if (first >= final) {
       throw new HttpException(
-        "First closure date must be less than final closure date",
+        'First closure date must be less than final closure date',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -186,7 +212,7 @@ export class EventService {
     const result = await eventRepository.update(event_id, newEvent);
 
     return {
-      "affected": result.affected,
+      affected: result.affected,
     };
   }
 
@@ -198,7 +224,7 @@ export class EventService {
     const eventRepository = entityManager
       ? entityManager.getRepository<Event>('event')
       : this.eventRepository;
-    
+
     if (userData.role_id != EUserRole.ADMIN) {
       throw new HttpException(
         ErrorMessage.EVENT_PERMISSION,
@@ -207,19 +233,19 @@ export class EventService {
     }
 
     const event = await eventRepository
-      .createQueryBuilder("event")
-      .leftJoinAndSelect("event.ideas", "ideas")
-      .where("event.event_id = :event_id", { event_id })
+      .createQueryBuilder('event')
+      .leftJoinAndSelect('event.ideas', 'ideas')
+      .where('event.event_id = :event_id', { event_id })
       .getOne();
 
-    if(!event) {
+    if (!event) {
       throw new HttpException(
         ErrorMessage.EVENT_NOT_EXIST,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    if(event.ideas.length != 0) {
+    if (event.ideas.length != 0) {
       throw new HttpException(
         ErrorMessage.EVENT_NOT_EMPTY,
         HttpStatus.BAD_REQUEST,
@@ -228,7 +254,7 @@ export class EventService {
 
     const result = await eventRepository.delete(event_id);
     return {
-      "affected": result.affected,
+      affected: result.affected,
     };
   }
 
@@ -244,7 +270,7 @@ export class EventService {
       );
     }
     const event = await this.eventExists(event_id);
-    if(!event) {
+    if (!event) {
       throw new HttpException(
         ErrorMessage.EVENT_NOT_EXIST,
         HttpStatus.BAD_REQUEST,

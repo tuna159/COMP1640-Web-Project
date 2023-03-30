@@ -23,7 +23,6 @@ import { UserDetail } from '@core/database/mysql/entity/userDetail.entity';
 import { UserDetailService } from '@modules/user-detail/user-detail.service';
 import { IUserData } from '@core/interface/default.interface';
 import sendMailNodemailer from '@helper/nodemailer';
-import { DepartmentService } from '@modules/department/department.service';
 import { EUserRole } from 'enum/default.enum';
 
 @Injectable()
