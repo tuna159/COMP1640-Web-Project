@@ -22,7 +22,7 @@
                                     <button pButton type="button" (click)="openNewevent()" label="Add"
                                         icon="pi pi-plus"
                                         style="background-color:#f97c39; width: 120px !important; height: 30px !important; margin-left: 5px; border: 0px;"></button>
-                                    <button pButton type="button" label="Xóa" icon="pi pi-trash"
+                                    <button pButton type="button" label="Delete" icon="pi pi-trash"
                                         style="background-color:red; width: 120px !important; height: 30px !important; margin-left: 5px; border: 0px"
                                         (click)="showDialogDeletes()"></button>
                                 </div>
@@ -52,14 +52,14 @@
                                     <td style="width: 2rem" class="text-center">
                                         <p-tableCheckbox [value]="event"></p-tableCheckbox>
                                     </td>
-                                    <td style="text-align: center">{{event.Stt}}</td>
-                                    <td style="text-align: center">{{event.name}}</td>
-                                    <td style="text-align: center">{{event.name}}</td>
-                                    <td style="text-align: center">{{event.name}}</td>
-                                    <td style="text-align: center">{{event.name}}</td>
-                                    <td style="text-align: center">{{event.name}}</td>
-                                    <td style="text-align: center">
-                                        <span>
+                                    <td style="text-align: center;">{{category.Stt}}</td>
+                                    <td style="text-align: center">{{category.name}}</td>
+                                    <td style="text-align: center">{{category.name}}</td>
+                                    <td style="text-align: center">{{category.name}}</td>
+                                    <td style="text-align: center">{{category.name}}</td>
+                                    <td style="text-align: center">{{category.name}}</td>
+                                    <td style="text-align: center; ">
+                                        <span style="display: flex;">
                                             <button pButton icon="pi pi-pencil" class="ui-button-primary edit-button"
                                                 (click)="chinhSua(event)"></button>
                                             <button pButton icon="pi pi-trash" class="ui-button-danger delete-button"
@@ -80,24 +80,24 @@
 
 
 
-<!-- Xác nhận xóa event-->
-<p-dialog header="Xác nhận" [(visible)]="displayDeleteEvent" [modal]="true" [responsive]="true" [closable]="false"
+<!-- confirm delete event -->
+<p-dialog header="Confirm" [(visible)]="displayDeleteEvent" [modal]="true" [responsive]="true" [closable]="false"
     [style]="{width: '20%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
     <p>Are you sure to delete this event?</p>
     <p-footer>
-        <button type="button" pButton icon="pi pi-close" (click)="displayDeleteEvent=false" label="Hủy" class="btn btn-light"
+        <button type="button" pButton icon="pi pi-close" (click)="displayDeleteEvent=false" label="Cancel" class="btn btn-light"
             style="width:72px; height:38px"></button>
         <button type="button" pButton icon="pi pi-close" (click)="deleteEvent()" label="OK" class="btn btn-primary"
             style="width:72px; height:38px"></button>
     </p-footer>
 </p-dialog>
 
-<!-- Xác nhận xóa nhiều event-->
+<!-- confirm delete events-->
 <p-dialog header="Xác nhận" [(visible)]="displayDeleteEvents" [modal]="true" [responsive]="true" [closable]="false"
     [style]="{width: '20%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
     <p>Are you sure to delete these events?</p>
     <p-footer>
-        <button type="button" pButton icon="pi pi-close" (click)="displayDeleteEvents = false" label="Hủy" class="btn btn-light"
+        <button type="button" pButton icon="pi pi-close" (click)="displayDeleteEvents = false" label="Cancel" class="btn btn-light"
             style="width:72px; height:38px"></button>
         <button type="button" pButton icon="pi pi-close" (click)="deleteEvents()" label="OK" class="btn btn-primary"
             style="width:72px; height:38px"></button>
