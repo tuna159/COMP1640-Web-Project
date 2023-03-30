@@ -248,6 +248,7 @@ export class UserService {
       avatar_url: user?.userDetail?.avatar_url,
       birthdate: user?.userDetail?.birthday,
       email: user.email,
+      gender: user.userDetail.gender,
     };
     return data;
   }
