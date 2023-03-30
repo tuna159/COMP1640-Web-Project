@@ -5,7 +5,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
-import { VCreateCategoryDto } from 'global/dto/category.dto';
+import { CategoryDto } from 'global/dto/category.dto';
 import { Repository } from 'typeorm';
 import { EntityManager } from 'typeorm/entity-manager/EntityManager';
 
@@ -21,69 +21,103 @@ export class CategoryService {
     const categoryRepository = entityManager
       ? entityManager.getRepository<Category>('category')
       : this.categoryRepository;
-    return await categoryRepository.find();
+    return categoryRepository.find();
+  }
+
+  async categoryExists(category_id: number, entityManager?: EntityManager) {
+    const categoryRepository = entityManager
+      ? entityManager.getRepository<Category>('category')
+      : this.categoryRepository;
+
+    return categoryRepository.findOne(category_id);
   }
 
   getIdeasByCategory(category_id: number) {
     return this.ideaService.getAllIdeas(null, null, category_id);
   }
 
-  async createCategory(userData: IUserData, body: VCreateCategoryDto) {
+  async createCategory(userData: IUserData, body: CategoryDto) {
     if (userData.role_id != EUserRole.ADMIN) {
       throw new HttpException(
-        ErrorMessage.YOU_DO_NOT_HAVE_PERMISSION_TO_POST_IDEA,
+        ErrorMessage.CATEGORY_PERMISSION,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const categoryParam = new Category();
-
-    categoryParam.name = body.name;
-
-    return await this.categoryRepository.save(categoryParam);
+    const category = new Category();
+    category.name = body.name;
+    return this.categoryRepository.save(category);
   }
 
   async updateCategory(
     category_id: number,
-    body: VCreateCategoryDto,
+    body: CategoryDto,
     userData: IUserData,
   ) {
     if (userData.role_id != EUserRole.ADMIN) {
       throw new HttpException(
-        ErrorMessage.YOU_DO_NOT_HAVE_PERMISSION_TO_UPDATE_CATEGORY,
+        ErrorMessage.CATEGORY_PERMISSION,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const categoryParams = new Category();
-    if (!body) {
+    const category = await this.categoryExists(category_id);
+    if (!category) {
       throw new HttpException(
-        ErrorMessage.EMPTY_UPDATE_BODY,
+        ErrorMessage.CATEGORY_NOT_EXISTS,
         HttpStatus.BAD_REQUEST,
       );
     }
-    categoryParams.name = body.name;
-    await this.categoryRepository.update({ category_id }, categoryParams);
-    return;
+
+    const newCategory = new Category();
+    newCategory.name = body.name;
+    const result = await this.categoryRepository.update(
+      category_id,
+      newCategory,
+    );
+    return {
+      affected: result.affected,
+    };
   }
 
-  async deleteCategory(category_id: number, userData: IUserData) {
+  async deleteCategory(
+    category_id: number,
+    userData: IUserData,
+    entityManager?: EntityManager,
+  ) {
+    const categoryRepository = entityManager
+      ? entityManager.getRepository<Category>('category')
+      : this.categoryRepository;
+
     if (userData.role_id != EUserRole.ADMIN) {
       throw new HttpException(
-        ErrorMessage.YOU_DO_NOT_HAVE_PERMISSION_TO_DELETE_CATEGORY,
+        ErrorMessage.CATEGORY_PERMISSION,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const ideaData = await this.getIdeasByCategory(category_id);
-    if (ideaData.length != 0) {
+    const category = await categoryRepository
+      .createQueryBuilder('category')
+      .leftJoinAndSelect('category.categoryIdeas', 'ideas')
+      .where('category.category_id = :category_id', { category_id })
+      .getOne();
+
+    if (!category) {
       throw new HttpException(
-        ErrorMessage.CATEGORY_STILL_CONTAINS_IDEAS,
+        ErrorMessage.CATEGORY_NOT_EXISTS,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (category.categoryIdeas.length != 0) {
+      throw new HttpException(
+        ErrorMessage.CATEGORY_NOT_EMPTY,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    await this.categoryRepository.delete({ category_id });
-    return;
+    const result = await categoryRepository.delete(category_id);
+    return {
+      affected: result.affected,
+    };
   }
 }
