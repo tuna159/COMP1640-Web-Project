@@ -18,13 +18,13 @@ export class Department {
   })
   department_id: number;
 
-  @Column({ name: 'manager_id', unique: true })
+  @Column({ name: 'manager_id', unique: true, default: null, nullable: true })
   manager_id: string;
 
   @Column({ name: 'name', type: 'varchar', length: 100 }) 
   name: string;
 
-  @OneToOne(() => User, { onUpdate: 'CASCADE' })
+  @OneToOne(() => User, { onUpdate: 'CASCADE', nullable: true })
   @JoinColumn({ name: 'manager_id', referencedColumnName: 'user_id' })
   manager: User;
 

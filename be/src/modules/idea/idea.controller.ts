@@ -55,6 +55,23 @@ export class IdeaController {
   //   return this.ideaService.getAllIdeas(null, null, null, sorting_setting);
   // }
 
+  @Put(':idea_id')
+  updateIdea(
+    @UserData() userData: IUserData,
+    @Param('idea_id') idea_id: number,
+    @Body() body: VUpdateIdeaDto,
+  ) {
+    return this.ideaService.updateIdea(userData, idea_id, body);
+  }
+
+  @Delete(':idea_id')
+  deleteIdea(
+    @UserData() userData: IUserData,
+    @Param('idea_id') idea_id: number,
+  ) {
+    return this.ideaService.deleteIdea(userData, idea_id);
+  }
+
   @Post(':idea_id/reaction')
   createIdeaReaction(
     @UserData() userData: IUserData,

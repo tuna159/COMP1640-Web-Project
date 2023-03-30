@@ -24,6 +24,11 @@ export class DepartmentController {
     return this.departmentService.getAllDepartments();
   }
 
+  @Get('available')
+  getAvailableDepartments(@UserData() userData: IUserData) {
+    return this.departmentService.getAvailableDepartments(userData);
+  }
+
   @Get(':department_id')
   getDepartmentById(@Param('department_id') department_id: number) {
     return this.departmentService.getDepartmentDetails(department_id);

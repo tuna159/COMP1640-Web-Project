@@ -5,10 +5,6 @@ export class CreateDepartmentDto {
   @MaxLength(100)
   @MinLength(1)
   name: string;
-
-  @IsString()
-  @MinLength(1)
-  manager_id: string;
 }
 
 export class UpdateDepartmentDto {
@@ -16,8 +12,4 @@ export class UpdateDepartmentDto {
   @MaxLength(100)
   @MinLength(1)
   name: string;
-
-  @IsString()
-  @MinLength(1)
-  manager_id: string;
 }

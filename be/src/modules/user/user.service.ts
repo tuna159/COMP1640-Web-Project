@@ -267,7 +267,7 @@ export class UserService {
       user_id: user?.user_id,
       nick_name: user?.userDetail?.nick_name,
       avatar_url: user?.userDetail?.avatar_url,
-      birthdate: user?.userDetail?.birthday,
+      birthday: user?.userDetail?.birthday,
       email: user.email,
       gender: user.userDetail.gender,
     };

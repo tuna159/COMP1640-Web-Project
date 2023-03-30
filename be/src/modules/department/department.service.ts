@@ -11,6 +11,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EIsDelete } from 'enum';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
 import { EIdeaFilter } from 'enum/idea.enum';
@@ -18,7 +19,7 @@ import {
   CreateDepartmentDto,
   UpdateDepartmentDto,
 } from 'global/dto/department.dto';
-import { EntityManager, Repository } from 'typeorm';
+import { EntityManager, IsNull, Repository } from 'typeorm';
 
 @Injectable()
 export class DepartmentService {
@@ -168,6 +169,32 @@ export class DepartmentService {
     );
   }
 
+  async getAvailableDepartments(
+    userData: IUserData,
+    entityManager?: EntityManager
+  ) {
+    const departmentRepository = entityManager
+      ? entityManager.getRepository<Department>('department')
+      : this.departmentRepository;
+
+    if (userData.role_id != EUserRole.ADMIN) {
+      throw new HttpException(
+        ErrorMessage.DEPARTMENT_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    
+    const departments = await departmentRepository.find({
+      manager_id: IsNull(),
+    });
+    return departments.map(d => {
+      return {
+        "department_id": d.department_id,
+        "name": d.name,
+      };
+    });
+  }
+
   async createDepartment(
     userData: IUserData,
     body: CreateDepartmentDto,
@@ -183,21 +210,9 @@ export class DepartmentService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const manager = await this.userService.findUserByUserId(body.manager_id);
-    if (!manager) {
-      throw new HttpException(
-        ErrorMessage.MANAGER_NOT_EXISTS,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    const department = await this.containManager(body.manager_id);
-    if(department) {
-      throw new HttpException(
-        ErrorMessage.DEPARTMENT_MANAGER_EXISTS,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    return departmentRepository.save(body);
+    const department = new Department();
+    department.name = body.name;
+    return departmentRepository.save(department);
   }
 
   async updateDepartment(
@@ -224,21 +239,7 @@ export class DepartmentService {
       );
     }
     
-    const manager = await this.userService.findUserByUserId(body.manager_id);
-    if (!manager) {
-      throw new HttpException(
-        ErrorMessage.MANAGER_NOT_EXISTS,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    const managerDepartment = await this.containManager(body.manager_id);
-    if(managerDepartment.department_id != department_id) {
-      throw new HttpException(
-        ErrorMessage.DEPARTMENT_MANAGER_EXISTS,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    const result = await departmentRepository.update({ department_id }, body);
+    const result = await departmentRepository.update(department_id, body);
     return {
       affected: result.affected,
     };
@@ -269,7 +270,7 @@ export class DepartmentService {
       );
     }
 
-    const result = await departmentRepository.delete({ department_id });
+    const result = await departmentRepository.delete(department_id);
     return {
       "affected": result.affected,
     }

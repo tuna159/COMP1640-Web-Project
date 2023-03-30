@@ -233,8 +233,8 @@ export class EventService {
   }
 
   async createIdea(
-    userData: IUserData, 
-    body: VCreateIdeaDto, 
+    userData: IUserData,
+    body: VCreateIdeaDto,
     event_id: number,
   ) {
     if (userData.role_id != EUserRole.STAFF) {
@@ -250,76 +250,24 @@ export class EventService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const user = await this.userService.getUserById(userData.user_id);
-    if(user.department_id != event.department_id) {
-      throw new HttpException(
-        ErrorMessage.EVENT_PERMISSION,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    return "hello world";
-    // return this.ideaService.createIdea(userData, body, event_id);
-  }
 
-  async updateIdea(
-    userData: IUserData,
-    event_id: number,
-    idea_id: number,
-    body: VCreateIdeaDto,
-  ) {
-    if (userData.role_id != EUserRole.STAFF) {
-      throw new HttpException(
-        ErrorMessage.IDEA_PERMISSION,
-        HttpStatus.BAD_REQUEST,
-      );
+    //? Check if an event belongs to the university
+    if(event.department_id != null) {
+      const user = await this.userService.getUserById(userData.user_id);
+      if(user.department_id != event.department_id) {
+        throw new HttpException(
+          ErrorMessage.EVENT_PERMISSION,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
     }
-    let event = await this.eventExists(event_id);
-    if (!event) {
-      throw new HttpException(
-        ErrorMessage.EVENT_NOT_EXIST,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    event = await this.checkEventToIdea(event_id);
-    if (!event) {
+
+    if(event.first_closure_date <= new Date()) {
       throw new HttpException(
         ErrorMessage.FIRST_CLOSURE_DATE_UNAVAILABLE,
         HttpStatus.BAD_REQUEST,
       );
     }
-    return this.ideaService.updateIdea(userData, idea_id, body);
-  }
-
-  async deleteIdea(
-    event_id: number,
-    idea_id: number,
-    userData: IUserData,
-    body: DeepPartial<Idea>,
-  ) {
-    const checkEvent = await this.eventExists(event_id);
-
-    if (!checkEvent) {
-      throw new HttpException(
-        ErrorMessage.EVENT_NOT_EXIST,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    const event = await this.checkEventToIdea(event_id);
-    if (userData.role_id != EUserRole.STAFF) {
-      throw new HttpException(
-        ErrorMessage.IDEA_PERMISSION,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    if (!event) {
-      throw new HttpException(
-        ErrorMessage.EVENT_HAS_EXPIRED,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    return await this.ideaService.deleteIdea(idea_id, userData.user_id, body);
+    return this.ideaService.createIdea(userData, body, event_id);
   }
 }

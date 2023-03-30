@@ -52,25 +52,4 @@ export class EventController {
   ) {
     return this.eventService.createIdea(userData, body, event_id);
   }
-
-  @Put(':event_id/idea/:idea_id')
-  updateIdea(
-    @UserData() userData: IUserData,
-    @Param('event_id') event_id: number,
-    @Param('idea_id') idea_id: number,
-    @Body() body: VUpdateIdeaDto,
-  ) {
-    return this.eventService.updateIdea(userData, event_id, idea_id, body);
-  }
-  
-  @Delete(':event_id/idea/:idea_id')
-  deleteIdea(
-    @Param('event_id') event_id: number,
-    @Param('idea_id') idea_id: number,
-    @UserData() userData: IUserData,
-  ) {
-    return this.eventService.deleteIdea(event_id, idea_id, userData, {
-      is_deleted: EIsDelete.DELETED,
-    });
-  }
 }
