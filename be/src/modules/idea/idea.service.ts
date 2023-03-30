@@ -826,7 +826,7 @@ export class IdeaService {
     );
   }
 
-  async checkAllIdeabyEvent(event_id: number) {
+  async checkAllIdeaByEvent(event_id: number) {
     return await this.ideaRepository.find({
       where: {
         event_id: event_id,

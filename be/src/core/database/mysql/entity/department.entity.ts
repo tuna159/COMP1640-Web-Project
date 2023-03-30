@@ -18,10 +18,10 @@ export class Department {
   })
   department_id: number;
 
-  @Column({ name: 'manager_id', default: null })
+  @Column({ name: 'manager_id', unique: true })
   manager_id: string;
 
-  @Column({ name: 'name', type: 'varchar', length: 100 })
+  @Column({ name: 'name', type: 'varchar', length: 100 }) 
   name: string;
 
   @OneToOne(() => User, { onUpdate: 'CASCADE' })

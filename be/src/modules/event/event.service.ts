@@ -95,16 +95,16 @@ export class EventService {
       );
     }
 
-    const department = await this.departmentService.getDepartmentById(
+    const department = await this.departmentService.getDepartmentDetails(
       body.department_id,
     );
 
     if (!department) {
       throw new HttpException(
-        ErrorMessage.DEPARMENT_NOT_EXIST,
+        ErrorMessage.DEPARTMENT_NOT_EXISTS,
         HttpStatus.BAD_REQUEST,
       );
-    }
+    } 
 
     const eventParam = new Event();
     eventParam.name = body.name;
@@ -171,7 +171,7 @@ export class EventService {
   }
 
   async deleteEvent(event_id: number) {
-    const checkAllIdea = await this.ideaService.checkAllIdeabyEvent(event_id);
+    const checkAllIdea = await this.ideaService.checkAllIdeaByEvent(event_id);
     const checkIdea = await this.getEventById(event_id);
     if (!checkIdea) {
       throw new HttpException(
