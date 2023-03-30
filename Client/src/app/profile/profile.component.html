@@ -93,7 +93,7 @@
                     <span
                         *ngIf="formGroup.controls.name.hasError('required') || formGroup.controls.name.hasError('blankString') "
                         class="error-message-span" style="color: #FD0B0B; font-size: small;">
-                        Vui lòng nhập Full Name
+                        Please enter Full Name
                     </span>
                 </div>
             </div>
@@ -120,7 +120,7 @@
                 <div class="form-group mb-2" [hidden]="formGroup.controls.phone.valid|| formGroup.controls.phone.untouched">
                     <span *ngIf="formGroup.controls.phone.hasError('required') || formGroup.controls.phone.hasError('blankString') "
                         class="error-message-span" style="color: #FD0B0B; font-size: small;">
-                        Vui lòng nhập Phone
+                        Please enter Phone
                     </span>
                 </div>
                 
@@ -134,7 +134,7 @@
                 <div class="form-group mb-2" [hidden]="formGroup.controls.birthday.valid|| formGroup.controls.birthday.untouched">
                     <span *ngIf="formGroup.controls.birthday.hasError('required') || formGroup.controls.birthday.hasError('blankString') "
                         class="error-message-span" style="color: #FD0B0B; font-size: small;">
-                        Vui lòng nhập birthday
+                        Please enter birthday
                     </span>
                 </div>
             </div>
