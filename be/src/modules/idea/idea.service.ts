@@ -1,5 +1,4 @@
 import { CategoryIdea } from '@core/database/mysql/entity/categoryIdea.entity';
-import { Comment } from '@core/database/mysql/entity/comment.entity';
 import { IdeaFile } from '@core/database/mysql/entity/file.entity';
 import { IPaginationQuery, IUserData } from '@core/interface/default.interface';
 import sendMailNodemailer from '@helper/nodemailer';
@@ -15,7 +14,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EIsDelete } from 'enum';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
-import { EIdeaFilter, EReactionType } from 'enum/idea.enum';
+import { EIdeaFilter } from 'enum/idea.enum';
 import { VAddComment } from 'global/dto/addComment.dto';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateReactionDto } from 'global/dto/reaction.dto';
@@ -33,12 +32,10 @@ import {
   getManager,
   SelectQueryBuilder,
 } from 'typeorm';
-import { UserService } from '@modules/user/user.service';
 import { VUpdateCommentDto } from 'global/dto/comment.dto';
 import { TagService } from '@modules/tag/tag.service';
 import { IdeaTagService } from '@modules/idea-tag/idea-tag.service';
 import { IdeaTag } from '@core/database/mysql/entity/ideaTag.entity';
-import { VCreateTagDto } from 'global/dto/tag.dto';
 
 @Injectable()
 export class IdeaService {
@@ -83,40 +80,40 @@ export class IdeaService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    
+
     const files = idea.files.map((file) => {
       return {
-        "file_id": file.file_id,
-        "file_url": file.file,
-        "size": file.size,
+        file_id: file.file_id,
+        file_url: file.file,
+        size: file.size,
       };
     });
     const category = idea.ideaCategories[0];
     const user = idea.user.userDetail;
-    
+
     //? update idea views only if an idea details is requested
     //? requester must not be the idea author
-    if(userData.user_id !== user.user_id) {
-      ideaRepository.update(idea_id, {views: idea.views + 1})
+    if (userData.user_id !== user.user_id) {
+      ideaRepository.update(idea_id, { views: idea.views + 1 });
     }
 
     return {
-      "idea_id": idea.idea_id,
-      "title": idea.title,
-      "content": idea.content,
-      "views": idea.views,
-      "is_anonymous": idea.is_anonymous,
+      idea_id: idea.idea_id,
+      title: idea.title,
+      content: idea.content,
+      views: idea.views,
+      is_anonymous: idea.is_anonymous,
       files,
-      "user": {
-        "user_id": user.user_id,
-        "department_id": idea.user.department_id,
-        "nick_name": user.nick_name,
-        "full_name": user.full_name,
-        "avatar_url": user.avatar_url,
+      user: {
+        user_id: user.user_id,
+        department_id: idea.user.department_id,
+        nick_name: user.nick_name,
+        full_name: user.full_name,
+        avatar_url: user.avatar_url,
       },
-      "category": {
-        "category_id": category.category_id,
-        "name": category.category.name,
+      category: {
+        category_id: category.category_id,
+        name: category.category.name,
       },
     };
   }
@@ -238,13 +235,11 @@ export class IdeaService {
     return data;
   }
 
-  async getIdeasOfAvailableEvents(
-    entityManager?: EntityManager,
-  ) {
+  async getIdeasOfAvailableEvents(entityManager?: EntityManager) {
     const ideaRepository = entityManager
       ? entityManager.getRepository<Idea>('idea')
       : this.ideaRepository;
-    
+
     const now = new Date();
     const ideas = await ideaRepository
       .createQueryBuilder('idea')
@@ -262,51 +257,51 @@ export class IdeaService {
       })
       .getMany();
 
-    return ideas.map(idea => {
+    return ideas.map((idea) => {
       const event = idea.event;
       const user = idea.user.userDetail;
       const userDepartment = idea.user.department;
       const category = idea.ideaCategories[0];
-      const tags = idea.ideaTags.map(i => {
+      const tags = idea.ideaTags.map((i) => {
         return {
-          'tag_id': i.tag.tag_id,
-          'name': i.tag.name,
+          tag_id: i.tag.tag_id,
+          name: i.tag.name,
         };
       });
 
       return {
-        "idea_id": idea.idea_id,
-        "title": idea.title,
-        "content": idea.content,
-        "views": idea.views,
-        "is_anonymous": idea.is_anonymous,
-        "created_at": idea.created_at,
-        "updated_at": idea.updated_at,
-        "event": {
-          "event_id": event.event_id,
-          "department_id": event.department_id,
-          "name": event.name,
-          "content": event.content,
-          "created_date": event.created_date,
-          "first_closure_date": event.first_closure_date,
-          "final_closure_date": event.final_closure_date,
+        idea_id: idea.idea_id,
+        title: idea.title,
+        content: idea.content,
+        views: idea.views,
+        is_anonymous: idea.is_anonymous,
+        created_at: idea.created_at,
+        updated_at: idea.updated_at,
+        event: {
+          event_id: event.event_id,
+          department_id: event.department_id,
+          name: event.name,
+          content: event.content,
+          created_date: event.created_date,
+          first_closure_date: event.first_closure_date,
+          final_closure_date: event.final_closure_date,
         },
-        "user": {
-            "user_id": user.user_id,
-            "department": {
-              "department_id": userDepartment.department_id,
-              "manager_id": userDepartment.manager_id,
-              "name": userDepartment.name,
-            },
-            "full_name": user.full_name,
-            "nick_name": user.nick_name,
-            "avatar_url": user.avatar_url,
+        user: {
+          user_id: user.user_id,
+          department: {
+            department_id: userDepartment.department_id,
+            manager_id: userDepartment.manager_id,
+            name: userDepartment.name,
+          },
+          full_name: user.full_name,
+          nick_name: user.nick_name,
+          avatar_url: user.avatar_url,
         },
-        "category": {
-          "category_id": category.category_id,
-          "name": category.category.name,
+        category: {
+          category_id: category.category_id,
+          name: category.category.name,
         },
-        tags
+        tags,
       };
     });
   }
@@ -707,9 +702,7 @@ export class IdeaService {
     //     HttpStatus.BAD_REQUEST,
     //   );
     // }
-
     // const idea = await this.getIdeaDetails(idea_id);
-
     // if (!body.content) {
     //   throw new HttpException(
     //     ErrorMessage.INVALID_PARAM,
@@ -728,7 +721,6 @@ export class IdeaService {
     //     HttpStatus.BAD_REQUEST,
     //   );
     // }
-
     // const current = new Date();
     // if (idea.event.final_closure_date < current) {
     //   throw new HttpException(
@@ -736,7 +728,6 @@ export class IdeaService {
     //     HttpStatus.BAD_REQUEST,
     //   );
     // }
-
     // try {
     //   const comment = new Comment();
     //   comment.idea_id = idea_id;
@@ -745,11 +736,9 @@ export class IdeaService {
     //   comment.level = body.level;
     //   comment.content = body.content;
     //   const newComment = await this.commentService.addIdeaComment(comment);
-
     //   if (userData.user_id !== idea.user_id) {
     //     return newComment;
     //   }
-
     //   const email = idea.user['email'];
     //   // temporary solution
     //   const result = await this.ideaRepository
@@ -762,14 +751,12 @@ export class IdeaService {
     //     .innerJoin('staff.department', 'department')
     //     .where('idea.idea_id = :idea_id', { idea_id })
     //     .getRawOne();
-
     //   const ideaCategories = await this.categoryIdeaService.getCategoriesByIdea(
     //     idea_id,
     //   );
     //   const categories = ideaCategories.map((c) => {
     //     return c.category.name;
     //   });
-
     //   const ideaAuthorUsername = result['staff_nick_name'];
     //   const ideaDepartment = result['department'];
     //   const ideaTitle = idea.title;
@@ -784,7 +771,6 @@ export class IdeaService {
     //   const ideaCreatedDate = moment(txtDate, 'YYYY-MM-DD').format(
     //     'MMM DD, YYYY',
     //   );
-
     //   const commentAuthor = await this.userService.findUserByUserId(
     //     userData.user_id,
     //   );
@@ -803,7 +789,6 @@ export class IdeaService {
     //   const commentCreatedDate = moment(txtDate, 'YYYY-MM-DD').format(
     //     'MMM DD, YYYY',
     //   );
-
     //   sendMailNodemailer(email, 'GIC - New Comment', 'new_comment.hbs', {
     //     ideaAuthorUsername,
     //     ideaCreatedDate,
@@ -818,7 +803,6 @@ export class IdeaService {
     //     commentDepartment: commentAuthor.department.name,
     //     commentContent: newComment.content,
     //   });
-
     //   return comment;
     // } catch (error) {
     //   console.log(error);

@@ -23,8 +23,7 @@ export class IdeaFileService {
       .into(IdeaFile)
       .values(body)
       .execute();
-      console.log(body);
-      
+    console.log(body);
 
     return null;
   }

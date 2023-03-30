@@ -64,7 +64,7 @@ export class ReactionService {
       ? entityManager.getRepository<Reaction>('reaction')
       : this.reactionRepository;
 
-    let reaction = await reactionRepository.findOne({
+    const reaction = await reactionRepository.findOne({
       where: {
         user_id: user_id,
         idea_id: idea_id,

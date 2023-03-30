@@ -20,10 +20,7 @@ export class EventController {
   constructor(private readonly eventService: EventService) {}
 
   @Post()
-  createEvent(
-    @UserData() userData: IUserData,
-    @Body() body: VCreateEventDto, 
-  ) {
+  createEvent(@UserData() userData: IUserData, @Body() body: VCreateEventDto) {
     return this.eventService.createEvent(userData, body);
   }
 
@@ -62,7 +59,7 @@ export class EventController {
   ) {
     return this.eventService.updateIdea(userData, event_id, idea_id, body);
   }
-  
+
   @Delete(':event_id/idea/:idea_id')
   deleteIdea(
     @Param('event_id') event_id: number,
