@@ -15,12 +15,12 @@ import { Router } from '@angular/router';
 export class ManageEventComponent {
   cols: Array<any> = [];
   listData: any[] = [];
-  displayXoa: boolean;
-  displayXoaN: boolean;
+  displayDeleteEvent: boolean;
+  displayDeleteEvents: boolean;
   id: number;
   ref: DynamicDialogRef;
   name: string;
-  apiUrl: string = "http://localhost:3009/api/category";
+  apiUrl: string = "http://localhost:3009/api/event";
   listSelectedData: Array<any> = [];
   constructor(private messageService: MessageService, private confirmationService: ConfirmationService, private router: Router,
     private http: HttpClient, private authService: AuthenticationService, private dialogService: DialogService) {
@@ -67,37 +67,37 @@ export class ManageEventComponent {
     this.router.navigateByUrl('/');
   }
 
-  showDialogXoa(data) {
-    this.displayXoa = true;
+  showDialogDelete(data) {
+    this.displayDeleteEvent = true;
     this.id = data.category_id;
   }
 
-  showDialogXoaN() {
-    this.displayXoaN = true;
+  showDialogDeletes() {
+    this.displayDeleteEvents = true;
   }
 
-  xoaNTAccount() {
+  deleteEvents() {
     if (this.listSelectedData.length) {
       for (let i = 0; i < this.listSelectedData.length; i++) {
         this.id = this.listSelectedData[i].category_id;
-        this.xoaAccount();
+        this.deleteEvent();
       }
       this.listSelectedData = null;
     } else {
-      this.displayXoaN = false;
+      this.displayDeleteEvents = false;
     }
 
   }
 
-  async xoaAccount() {
+  async deleteEvent() {
     this.http.delete(this.apiUrl + '/' + this.id, {
       headers: {
         Authorization: 'Bearer ' + this.authService.getToken()
       }
     }).subscribe(() => {
       this.showMessage('success', 'Delete success')
-      this.displayXoa = false;
-      this.displayXoaN = false;
+      this.displayDeleteEvent = false;
+      this.displayDeleteEvents = false;
       this.getAllData();
     });
   }
@@ -106,7 +106,7 @@ export class ManageEventComponent {
     this.messageService.add({ severity: severity, summary: 'Thông báo:', detail: detail });
   }
 
-  openNewCategory() {
+  openNewevent() {
     this.ref = this.dialogService.open(CreateAccountComponent, {
       header: 'Add Account',
       width: '50%',

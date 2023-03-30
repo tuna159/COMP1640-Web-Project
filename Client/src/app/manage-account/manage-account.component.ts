@@ -17,12 +17,12 @@ import { CreateAccountComponent } from './create-account/create-account/create-a
 export class ManageAccountComponent {
   cols: Array<any> = [];
   listData: any[] = [];
-  displayXoa: boolean;
-  displayXoaN: boolean;
+  displayDeleteUser: boolean;
+  displayDeleteUsers: boolean;
   id: number;
   ref: DynamicDialogRef;
   name: string;
-  apiUrl: string = "http://localhost:3009/api/category";
+  apiUrl: string = "http://localhost:3009/api/user";
   listSelectedData: Array<any> = [];
   constructor(private messageService: MessageService, private confirmationService: ConfirmationService, private router: Router,
     private http: HttpClient, private authService: AuthenticationService, private dialogService: DialogService) {
@@ -36,7 +36,6 @@ export class ManageAccountComponent {
       { field: 'email', header: 'Email', width: '300px', textAlign: 'center' },
       { field: 'name', header: 'Full Name', width: '300px', textAlign: 'center' },
       { field: 'role', header: 'Role', width: '200px', textAlign: 'center' },
-      { field: 'department', header: 'Department', width: '100px', textAlign: 'center' },
       { field: 'status', header: 'Status', width: '150px', textAlign: 'center' },
       {
         field: 'Edit/Delete',
@@ -63,39 +62,37 @@ export class ManageAccountComponent {
     
   }
 
-  chinhSua(data) {
-    this.router.navigateByUrl('/');
+
+  showDialogDelete(data) {
+    this.displayDeleteUser = true;
+    this.id = data.user_id;
   }
 
-  showDialogXoa(data) {
-    this.displayXoa = true;
-    this.id = data.category_id;
+  showDialogDeleteUsers() {
+    this.displayDeleteUsers = true;
   }
 
-  showDialogXoaN() {
-    this.displayXoaN = true;
-  }
-
-  xoaNTAccount() {
+  DeleteAccounts() {
     if(this.listSelectedData.length){
       for(let i = 0; i < this.listSelectedData.length; i++) {
-        this.id = this.listSelectedData[i].category_id;
-        this.xoaAccount();
+        this.id = this.listSelectedData[i].user_id;
+        this.DeleteAccount();
       }
       this.listSelectedData = null;
     }else{
-      this.displayXoaN = false;
+      this.displayDeleteUsers = false;
     }
     
   }
 
-  async xoaAccount() { 
+  async DeleteAccount() { 
+    console.log(this.id)
     this.http.delete(this.apiUrl +'/'+ this.id, {headers: {
       Authorization: 'Bearer ' + this.authService.getToken()}
     }).subscribe(() => {
       this.showMessage('success', 'Delete success')
-      this.displayXoa = false;
-      this.displayXoaN = false;
+      this.displayDeleteUser = false;
+      this.displayDeleteUsers = false;
       this.getAllData();
     }); 
   }
@@ -104,16 +101,42 @@ export class ManageAccountComponent {
     this.messageService.add({ severity: severity, summary: 'Thông báo:', detail: detail });
   }
 
-  openNewCategory() {
+  openNewUser(data) {
+    if(!data) {
+      this.ref = this.dialogService.open(CreateAccountComponent, {
+        header: 'Add Account',
+        width: '30%',
+        height: '50%',
+        contentStyle: { "max-height": "800px", "overflow": "auto" },
+        baseZIndex: 10000,
+        data: {
+
+        }
+      });
+      this.ref.onClose.subscribe((result) => {
+        if (result) {
+            this.showMessage("Add success: ", result);
+        }
+        this.getAllData();
+    });
+  } else {
     this.ref = this.dialogService.open(CreateAccountComponent, {
-      header: 'Add Account',
-      width: '50%',
-      height: '80%',
+      header: 'Edit Account',
+      width: '30%',
+      height: '50%',
       contentStyle: { "max-height": "800px", "overflow": "auto" },
       baseZIndex: 10000,
+      data: data
     });
+    this.ref.onClose.subscribe((result) => {
+      if (result) {
+          this.showMessage("Edit success: ", result);
+      }
+      this.getAllData();
+  });
   }
-    addCategory(){
+  }
+    addAccount(){
     this.http.post(this.apiUrl, {"name" : "hehe"}, {
       headers: {
         Authorization: 'Bearer ' + this.authService.getToken()

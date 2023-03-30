@@ -110,25 +110,40 @@ export class ManageCategoryComponent implements OnInit {
     this.messageService.add({ severity: severity, summary: 'Thông báo:', detail: detail });
   }
 
-  addCategory(){
-    this.http.post(this.apiUrl, {"name" : "hehe"}, {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe((result: any) => {
-      this.showMessage("success", "Add success")
-      this.getAllData();
-    });
-    
-  }
+  openNewCategory(data) {
+    if(!data) {
+        this.ref = this.dialogService.open(AddCategoryComponent, {
+          header: 'Add Category',
+          width: '30%',
+          height: '50%',
+          contentStyle: { "max-height": "800px", "overflow": "auto" },
+          baseZIndex: 10000,
+          data: {
 
-  openNewCategory() {
-    this.ref = this.dialogService.open(AddCategoryComponent, {
-      header: 'Add Category',
-      width: '30%',
-      height: '50%',
-      contentStyle: { "max-height": "800px", "overflow": "auto" },
-      baseZIndex: 10000,
+          }
+        });
+        this.ref.onClose.subscribe((result) => {
+          if (result) {
+              this.showMessage("Add success: ", result);
+          }
+          this.getAllData();
+      });
+    } else {
+      this.ref = this.dialogService.open(AddCategoryComponent, {
+        header: 'Edit Category',
+        width: '30%',
+        height: '50%',
+        contentStyle: { "max-height": "800px", "overflow": "auto" },
+        baseZIndex: 10000,
+        data: data
+      });
+      this.ref.onClose.subscribe((result) => {
+        if (result) {
+            this.showMessage("Edit success: ", result);
+        }
+        this.getAllData();
     });
+    }
+    
   }
 }
