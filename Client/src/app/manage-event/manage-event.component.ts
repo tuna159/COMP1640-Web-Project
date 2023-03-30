@@ -64,10 +64,6 @@ export class ManageEventComponent {
 
   }
 
-  chinhSua(data) {
-    this.router.navigateByUrl('/');
-  }
-
   showDialogDelete(data) {
     this.displayDeleteEvent = true;
     this.id = data.category_id;
@@ -107,24 +103,20 @@ export class ManageEventComponent {
     this.messageService.add({ severity: severity, summary: 'Thông báo:', detail: detail });
   }
 
-  openNewevent() {
+  openNewevent(data) {
     this.ref = this.dialogService.open(AddEventComponent, {
       header: 'Add Event',
       width: '50%',
       height: '90%',
       contentStyle: { "max-height": "800px", "overflow": "auto" },
       baseZIndex: 10000,
+      data: data
     });
-  }
-  addCategory() {
-    this.http.post(this.apiUrl, { "name": "hehe" }, {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
+    this.ref.onClose.subscribe((result) => {
+      if (result) {
+          this.showMessage("Edit success: ", result);
       }
-    }).subscribe((result: any) => {
       this.getAllData();
-    });
-
+  });
   }
-
 }

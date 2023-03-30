@@ -44,6 +44,7 @@ export class ProfileComponent implements OnInit {
   uploadedFiles: any[] = [];
   apiUrl:string = "http://localhost:3009/api/user/";
   apiURLEditInfor = "http://localhost:3009/api/me";
+  
   formGroup: FormGroup<({
     name: FormControl<string>;
     gender: FormControl<string>;
@@ -78,7 +79,7 @@ export class ProfileComponent implements OnInit {
         Authorization: 'Bearer ' + this.authService.getToken()}
       }).subscribe((result: any) => {
             console.log(result);
-            this.name = result.data.full_name;
+            this.name = result.data.nick_name;
             this.gender = result.data.gender == 1 ? "Male" : "Female";
             this.date = result.data.birthday;
           });
@@ -106,7 +107,7 @@ export class ProfileComponent implements OnInit {
       this.formGroup.controls.birthday.value.getDate();
     }
     this.http.put<any>(this.apiURLEditInfor,{
-      "full_name" : this.formGroup.controls.name.value,
+      "nick_name" : this.formGroup.controls.name.value,
       "gender" : this.formGroup.controls.gender.value == "Male" ? 1 : 2,
       "birthdate": dateBirth
   } , {headers: {

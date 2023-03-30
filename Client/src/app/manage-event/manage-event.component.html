@@ -19,7 +19,7 @@
                                             placeholder="Search..."
                                             style="margin-left: 7.5px; height: 30px !important;" />
                                     </span>
-                                    <button pButton type="button" (click)="openNewevent()" label="Add"
+                                    <button pButton type="button" (click)="openNewEvent(null)" label="Add"
                                         icon="pi pi-plus"
                                         style="background-color:#f97c39; width: 120px !important; height: 30px !important; margin-left: 5px; border: 0px;"></button>
                                     <button pButton type="button" label="Delete" icon="pi pi-trash"
@@ -61,7 +61,7 @@
                                     <td style="text-align: center; ">
                                         <span style="display: flex;">
                                             <button pButton icon="pi pi-pencil" class="ui-button-primary edit-button"
-                                                (click)="chinhSua(event)"></button>
+                                                (click)="openNewEvent(event)"></button>
                                             <button pButton icon="pi pi-trash" class="ui-button-danger delete-button"
                                                 style="margin-left: 5px" (click)="showDialogDelete(event)"></button>
                                         </span>

@@ -50,6 +50,7 @@ export class ManageAccountComponent {
     this.http.get<any>(this.apiUrl, {headers: {
       Authorization: 'Bearer ' + this.authService.getToken()}
     }).subscribe((result: any) => {
+  
             if (result.status_code != 200) {
               this.showMessage('error', result.error_message);
               return;
@@ -57,6 +58,7 @@ export class ManageAccountComponent {
             this.listData = result.data.map((item, index) => Object.assign({
               Stt: index + 1,
             }, item));
+            console.log(this.listData);
         });
     
     
