@@ -39,7 +39,7 @@ export class AuthService {
   ) {}
 
   async getUserById(user_id: string, role_id) {
-    return await this.userService.getUserByUserId(user_id, role_id);
+    return await this.userService.getUserById(user_id, role_id);
   }
 
   async returnResponseAuth(userExist): Promise<IResponseAuth> {
