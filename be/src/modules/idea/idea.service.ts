@@ -238,6 +238,79 @@ export class IdeaService {
     return data;
   }
 
+  async getIdeasOfAvailableEvents(
+    entityManager?: EntityManager,
+  ) {
+    const ideaRepository = entityManager
+      ? entityManager.getRepository<Idea>('idea')
+      : this.ideaRepository;
+    
+    const now = new Date();
+    const ideas = await ideaRepository
+      .createQueryBuilder('idea')
+      .innerJoinAndSelect('idea.event', 'event')
+      .innerJoinAndSelect('idea.user', 'user')
+      .innerJoinAndSelect('user.department', 'department')
+      .innerJoinAndSelect('user.userDetail', 'userDetail')
+      .innerJoinAndSelect('idea.ideaCategories', 'ideaCategory')
+      .innerJoinAndSelect('ideaCategory.category', 'category')
+      .innerJoinAndSelect('idea.ideaTags', 'ideaTags')
+      .innerJoinAndSelect('ideaTags.tag', 'tag')
+      .where('event.final_closure_date >= :now', { now })
+      .andWhere('idea.is_deleted = :is_deleted', {
+        is_deleted: EIsDelete.NOT_DELETED,
+      })
+      .getMany();
+
+    return ideas.map(idea => {
+      const event = idea.event;
+      const user = idea.user.userDetail;
+      const userDepartment = idea.user.department;
+      const category = idea.ideaCategories[0];
+      const tags = idea.ideaTags.map(i => {
+        return {
+          'tag_id': i.tag.tag_id,
+          'name': i.tag.name,
+        };
+      });
+
+      return {
+        "idea_id": idea.idea_id,
+        "title": idea.title,
+        "content": idea.content,
+        "views": idea.views,
+        "is_anonymous": idea.is_anonymous,
+        "created_at": idea.created_at,
+        "updated_at": idea.updated_at,
+        "event": {
+          "event_id": event.event_id,
+          "department_id": event.department_id,
+          "name": event.name,
+          "content": event.content,
+          "created_date": event.created_date,
+          "first_closure_date": event.first_closure_date,
+          "final_closure_date": event.final_closure_date,
+        },
+        "user": {
+            "user_id": user.user_id,
+            "department": {
+              "department_id": userDepartment.department_id,
+              "manager_id": userDepartment.manager_id,
+              "name": userDepartment.name,
+            },
+            "full_name": user.full_name,
+            "nick_name": user.nick_name,
+            "avatar_url": user.avatar_url,
+        },
+        "category": {
+          "category_id": category.category_id,
+          "name": category.category.name,
+        },
+        tags
+      };
+    });
+  }
+
   async createIdea(
     userData: IUserData,
     body: VCreateIdeaDto,

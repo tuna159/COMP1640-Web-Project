@@ -38,8 +38,8 @@ export class AuthService {
     private userDetailService: UserDetailService,
   ) {}
 
-  async getUserById(user_id: string, role_id) {
-    return await this.userService.getUserByUserId(user_id, role_id);
+  async getUserByIdAndRole(user_id: string, role_id: number) {
+    return await this.userService.getUserByIdAndRole(user_id, role_id);
   }
 
   async returnResponseAuth(userExist): Promise<IResponseAuth> {

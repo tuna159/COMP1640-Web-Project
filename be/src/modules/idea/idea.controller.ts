@@ -43,12 +43,17 @@ export class IdeaController {
     return await this.ideaService.getIdeaDetails(idea_id, userData);
   }
 
-  @Get('?')
-  getIdeasByCurrentEvent(
-    @Query('sorting_setting') sorting_setting: EIdeaFilter,
-  ) {
-    return this.ideaService.getAllIdeas(null, null, null, sorting_setting);
+  @Get()
+  getIdeasOfAvailableEvents() {
+    return this.ideaService.getIdeasOfAvailableEvents();
   }
+
+  // @Get('?')
+  // getIdeasByCurrentEvent(
+  //   @Query('sorting_setting') sorting_setting: EIdeaFilter,
+  // ) {
+  //   return this.ideaService.getAllIdeas(null, null, null, sorting_setting);
+  // }
 
   @Post(':idea_id/reaction')
   createIdeaReaction(

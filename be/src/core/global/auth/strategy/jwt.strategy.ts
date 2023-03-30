@@ -19,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (payload?.type === 0) {
       return payload;
     }
-    const userExist = await this.authService.getUserById(
+    const userExist = await this.authService.getUserByIdAndRole(
       payload.user_id,
       payload.role_id,
     );

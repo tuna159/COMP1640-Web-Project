@@ -39,6 +39,24 @@ export class UserService {
     });
   }
 
+  async getUserByIdAndRole(
+    user_id: string,
+    role_id: number,
+    entityManager?: EntityManager,
+  ) {
+    const userRepository = entityManager
+      ? entityManager.getRepository<User>('user')
+      : this.userRepository;
+
+    return userRepository.findOne({
+      where: {
+        user_id,
+        role_id,
+        is_deleted: EIsDelete.NOT_DELETED,
+      },
+    });
+  }
+
   async getUserById(
     user_id: string,
     entityManager?: EntityManager,
