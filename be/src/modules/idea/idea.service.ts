@@ -452,17 +452,14 @@ export class IdeaService {
       );
     }
 
-    const idea = await this.ideaRepository.findOne({
-      where: { idea_id },
-    });
-
+    const idea = await this.ideaExists(idea_id);
     if (!idea) {
       throw new HttpException(
         ErrorMessage.IDEA_NOT_EXIST,
         HttpStatus.BAD_REQUEST,
       );
     }
-    return this.reactionService.createReaction(userData.user_id, idea_id, body);
+    return this.reactionService.createIdeaReaction(userData.user_id, idea_id, body);
   }
 
   async deleteIdeaReaction(userData: IUserData, idea_id: number) {
@@ -473,10 +470,7 @@ export class IdeaService {
       );
     }
 
-    const idea = await this.ideaRepository.findOne({
-      where: { idea_id },
-    });
-
+    const idea = await this.ideaExists(idea_id);
     if (!idea) {
       throw new HttpException(
         ErrorMessage.IDEA_NOT_EXIST,

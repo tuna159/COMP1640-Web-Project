@@ -13,7 +13,7 @@ export class ReactionService {
     private readonly reactionRepository: Repository<Reaction>,
   ) {}
 
-  async createReaction(
+  async createIdeaReaction(
     user_id: string,
     idea_id: number,
     body: VCreateReactionDto,
@@ -39,9 +39,7 @@ export class ReactionService {
       }
       await reactionRepository.update(
         { idea_id, user_id },
-        {
-          type: body.reaction,
-        },
+        { type: body.reaction },
       );
       reaction.type = body.reaction;
     } else {
