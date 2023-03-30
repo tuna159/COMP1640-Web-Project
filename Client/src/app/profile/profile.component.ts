@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { MessageService } from 'primeng/api';
 import { AuthenticationService } from '../auth/services/authentication.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 
 
 interface Profile {
@@ -12,7 +12,6 @@ interface Profile {
   fullName?: string;
   gender?: boolean;
   birthday?: Date;
-  prPhoneice?: number;
 }
 
 interface Account {
@@ -33,8 +32,7 @@ export class ProfileComponent implements OnInit {
   url: string;
   accountDialog: boolean;
   selectedValues: string;
-  date: Date;
-  Phone: number;
+  date: string;
   password: string
   confirmPass: string
   name: string;
@@ -45,12 +43,16 @@ export class ProfileComponent implements OnInit {
   accountSubmitted: boolean;
   uploadedFiles: any[] = [];
   apiUrl:string = "http://localhost:3009/api/user/";
-
+  apiURLEditInfor = "http://localhost:3009/api/me";
   formGroup: FormGroup<({
     name: FormControl<string>;
     gender: FormControl<string>;
-    phone: FormControl<number>;
-    birthday: FormControl<string>;
+    birthday: FormControl<Date>;
+  })>;
+
+  formEditAccount: FormGroup<({
+    password: FormControl<string>;
+    confirmPass: FormControl<string>;
   })>;
 
   constructor(private messageService: MessageService, private confirmationService: ConfirmationService, 
@@ -61,11 +63,14 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.formGroup = new FormGroup({
-      name: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')]),
+      name: new FormControl(null, [Validators.required]),
       gender: new FormControl(null, [Validators.required]), 
-      phone: new FormControl(null, [Validators.required]),
       birthday: new FormControl(null, [Validators.required]),
     });
+    this.formEditAccount = new FormGroup({
+      password: new FormControl(null, [Validators.required]),
+      confirmPass: new FormControl(null, [Validators.required]), 
+    })
   }
 
   getDataUser() {
@@ -84,37 +89,69 @@ export class ProfileComponent implements OnInit {
     for (let file of event.files) {
       this.uploadedFiles.push(file);
     }
-
     this.messageService.add({ severity: 'info', summary: 'File Uploaded', detail: '' });
   }
-  openProfile(profile: Profile) {
-    this.profile = { ...profile };
-    this.profileDialog = true;
+
+
+
+  SaveEditInfor() {
+    let dateBirth =""
+    if(this.formGroup.controls.birthday.value.getMonth() + 1 <= 9){
+      dateBirth = this.formGroup.controls.birthday.value.getFullYear() + "-0" + 
+      (this.formGroup.controls.birthday.value.getMonth() +1 ) + "-"+ 
+      this.formGroup.controls.birthday.value.getDate();
+    }else{
+      dateBirth = this.formGroup.controls.birthday.value.getFullYear() + "-" + 
+      this.formGroup.controls.birthday.value.getMonth() + "-"+ 
+      this.formGroup.controls.birthday.value.getDate();
+    }
+    this.http.put<any>(this.apiURLEditInfor,{
+      "full_name" : this.formGroup.controls.name.value,
+      "gender" : this.formGroup.controls.gender.value == "Male" ? 1 : 2,
+      "birthdate": dateBirth
+  } , {headers: {
+      Authorization: 'Bearer ' + this.authService.getToken()}
+    }).subscribe((result: any) => {
+      console.log(dateBirth)
+      this.getDataUser();
+      this.CancelDialog() ;
+    });
+  }
+  
+
+  SaveEditAccount() {
+
   }
 
-  openNew() {
-    this.profile = {};
-    this.profileSubmitted = false;
+  openEditYourInformation() {
     this.profileDialog = true;
+    this.setValueEditInfor();
   }
 
-  openNewAccount() {
-    this.account = {};
-    this.accountSubmitted = false;
+  setValueEditInfor() {
+    this.formGroup.patchValue({
+      name: this.name, 
+      gender: this.gender, 
+      birthday: null, 
+
+    })
+  }
+
+  openEditYourAccount() {
     this.accountDialog = true;
   }
 
-  openAccount(account: Account) {
-    this.account = { ...account };
-    this.accountDialog = true;
-  }
-
-  hideDialog() {
+  CancelDialog() {
     this.profileDialog = false;
     this.accountDialog = false;
     this.profileSubmitted = false;
     this.accountSubmitted = false;
+    this.formGroup.reset();
+    Object.keys(this.formGroup.controls).forEach(key => {
+      this.formGroup.get(key).setErrors(null) ;
+    });
   }
+
   onselectFile(e){
     if(e.target.files){
       var reader = new FileReader();
@@ -126,3 +163,4 @@ export class ProfileComponent implements OnInit {
   }
 
 }
+
