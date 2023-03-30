@@ -5,6 +5,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
+import { EIdeaFilter } from 'enum/idea.enum';
 import { CategoryDto } from 'global/dto/category.dto';
 import { Repository } from 'typeorm';
 import { EntityManager } from 'typeorm/entity-manager/EntityManager';
@@ -33,7 +34,7 @@ export class CategoryService {
   }
 
   getIdeasByCategory(category_id: number) {
-    return this.ideaService.getAllIdeas(null, null, category_id);
+    return this.ideaService.getIdeasOfSystem(null, category_id, null, null, true);
   }
 
   async createCategory(userData: IUserData, body: CategoryDto) {

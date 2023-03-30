@@ -246,6 +246,114 @@ export class IdeaService {
     return data;
   }
 
+  async getIdeasOfSystem(
+    event_id?: number,
+    category_id?: number,
+    department_id?: number,
+    entireUniversity?: boolean,
+    availableEvents?: boolean,
+    sorting_setting?: EIdeaFilter,
+    entityManager?: EntityManager,
+  ) {
+    const ideaRepository = entityManager
+      ? entityManager.getRepository<Idea>('idea')
+      : this.ideaRepository;
+
+    const query = ideaRepository
+      .createQueryBuilder('idea')
+      .innerJoinAndSelect('idea.event', 'event')
+      .innerJoinAndSelect('idea.user', 'user')
+      .innerJoinAndSelect('user.department', 'department')
+      .innerJoinAndSelect('user.userDetail', 'userDetail')
+      .innerJoinAndSelect('idea.ideaCategories', 'ideaCategory')
+      .innerJoinAndSelect('ideaCategory.category', 'category')
+      .innerJoinAndSelect('idea.ideaTags', 'ideaTags')
+      .innerJoinAndSelect('ideaTags.tag', 'tag')
+      .where('idea.is_deleted = :is_deleted', {
+        is_deleted: EIsDelete.NOT_DELETED,
+      })
+    
+    if(category_id != null) {
+      query.andWhere('ideaCategory.category_id = :category_id', { category_id });
+    }
+    if(department_id != null) {
+      query.andWhere('event.department_id = :department_id', { department_id });
+    }else if(entireUniversity) {
+      query.andWhere('event.department_id IS NULL');
+    }
+    if(event_id != null) {
+      query.andWhere('event.event_id = :event_id', { event_id });
+    }else if(availableEvents) {
+      query.andWhere('event.final_closure_date >= :now', { now: new Date() });
+    }
+
+    if(sorting_setting == EIdeaFilter.RECENT_IDEAS) {
+      query.orderBy('idea.created_at', 'DESC');
+    }else if(sorting_setting == EIdeaFilter.MOST_VIEWED_IDEAS) {
+      query.orderBy('idea.views', 'DESC');
+    }
+
+    let ideas = await query.getMany();
+    if(sorting_setting == EIdeaFilter.MOST_POPULAR_IDEAS) {
+      const ideasToSort = [];
+      for (const idea of ideas) {
+        const likes = await this.reactionService.getIdeaLikes(idea.idea_id);
+        const dislikes = await this.reactionService.getIdeaDislikes(idea.idea_id);
+        idea["point"] = likes - dislikes;
+        ideasToSort.push(idea);
+      }
+      ideas = ideasToSort.sort((a, b) => b.point - a.point);
+    }
+
+    return ideas.map((idea) => {
+      const event = idea.event;
+      const user = idea.user.userDetail;
+      const userDepartment = idea.user.department;
+      const category = idea.ideaCategories[0];
+      const tags = idea.ideaTags.map((i) => {
+        return {
+          tag_id: i.tag.tag_id,
+          name: i.tag.name,
+        };
+      });
+
+      return {
+        idea_id: idea.idea_id,
+        title: idea.title,
+        content: idea.content,
+        views: idea.views,
+        is_anonymous: idea.is_anonymous,
+        created_at: idea.created_at,
+        updated_at: idea.updated_at,
+        event: {
+          event_id: event.event_id,
+          department_id: event.department_id,
+          name: event.name,
+          content: event.content,
+          created_date: event.created_date,
+          first_closure_date: event.first_closure_date,
+          final_closure_date: event.final_closure_date,
+        },
+        user: {
+          user_id: user.user_id,
+          department: {
+            department_id: userDepartment.department_id,
+            manager_id: userDepartment.manager_id,
+            name: userDepartment.name,
+          },
+          full_name: user.full_name,
+          nick_name: user.nick_name,
+          avatar_url: user.avatar_url,
+        },
+        category: {
+          category_id: category.category_id,
+          name: category.category.name,
+        },
+        tags,
+      };
+    });
+  }
+
   async getIdeasOfAvailableEvents(entityManager?: EntityManager) {
     const ideaRepository = entityManager
       ? entityManager.getRepository<Idea>('idea')
@@ -996,7 +1104,7 @@ export class IdeaService {
     data = listIdea.map((idea) => {
       return {
         idea_id: idea.idea_id,
-        tilte: idea.title,
+        title: idea.title,
         tag: idea.ideaTags.map((e) => {
           return {
             tag: e.tag.name,
