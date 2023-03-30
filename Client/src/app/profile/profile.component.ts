@@ -114,7 +114,7 @@ export class ProfileComponent implements OnInit {
     }).subscribe((result: any) => {
       console.log(dateBirth)
       this.getDataUser();
-      this.CancelDialog() ;
+      this.hideDialog() ;
     });
   }
   
@@ -141,7 +141,7 @@ export class ProfileComponent implements OnInit {
     this.accountDialog = true;
   }
 
-  CancelDialog() {
+  hideDialog() {
     this.profileDialog = false;
     this.accountDialog = false;
     this.profileSubmitted = false;
