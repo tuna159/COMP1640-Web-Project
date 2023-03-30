@@ -1,8 +1,6 @@
 import { UserDetail } from '@core/database/mysql/entity/userDetail.entity';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ErrorMessage } from 'enum/error';
-import { VMeDetail } from 'global/dto/user_detail.dto';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
 import { EntityManager } from 'typeorm/entity-manager/EntityManager';
 import { Repository } from 'typeorm/repository/Repository';
@@ -34,19 +32,15 @@ export class UserDetailService {
       user_id: user_id,
     });
   }
+  async updateUserDetail(
+    conditions: DeepPartial<UserDetail>,
+    value: DeepPartial<UserDetail>,
+    entityManager?: EntityManager,
+  ) {
+    const userDetailRepository = entityManager
+      ? entityManager.getRepository<UserDetail>('user_detail')
+      : this.userDetailRepository;
 
-  async updateUserDetail(user_id: string, body: VMeDetail) {
-    const meParams = new UserDetail();
-    if (!body) {
-      throw new HttpException(
-        ErrorMessage.EMPTY_UPDATE_BODY,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    meParams.full_name = body.full_name;
-    meParams.birthday = body.birthdate;
-    meParams.gender = body.gender;
-    await this.userDetailRepository.update({ user_id }, meParams);
-    return;
+    await userDetailRepository.update(conditions, value);
   }
 }

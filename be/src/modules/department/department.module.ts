@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Department } from '@core/database/mysql/entity/department.entity';
 import { IdeaModule } from '@modules/idea/idea.module';
 import { EventModule } from '@modules/event/event.module';
+import { UserModule } from '@modules/user/user.module';
 
 @Module({
   providers: [DepartmentService],
@@ -13,6 +14,7 @@ import { EventModule } from '@modules/event/event.module';
     TypeOrmModule.forFeature([Department]),
     forwardRef(() => IdeaModule),
     forwardRef(() => EventModule),
+    forwardRef(() => UserModule),
   ],
   exports: [TypeOrmModule, DepartmentService],
 })

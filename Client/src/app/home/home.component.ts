@@ -15,6 +15,7 @@ import { PostComponent } from './post/post.component';
 export class HomeComponent implements OnInit{
   ref: DynamicDialogRef;
   listIdea = [];
+  value3: any;
   listDepartment = []
   selectedNode: any;
   nodes1: any[];

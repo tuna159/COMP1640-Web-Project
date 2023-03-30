@@ -9,18 +9,22 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { EIsDelete } from 'enum';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
-import { VCreateEventDto } from 'global/dto/createEvent.dto.';
-import { VUpdateEventDto } from 'global/dto/updateEvent.dto';
+import { VCreateEventDto, VUpdateEventDto } from 'global/dto/event.dto.';
+import { VUpdateIdeaDto } from 'global/dto/update-idea.dto';
 import { EventService } from './event.service';
 
 @Controller('event')
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
-  @Get(':id')
-  getEventById(@Param('id') id: string) {
-    return this.eventService.getEventById(Number(id));
+  @Post()
+  createEvent(
+    @UserData() userData: IUserData,
+    @Body() body: VCreateEventDto, 
+  ) {
+    return this.eventService.createEvent(userData, body);
   }
 
   @Put(':event_id')
@@ -32,14 +36,12 @@ export class EventController {
     return this.eventService.updateEvent(userData, event_id, body);
   }
 
-  @Post()
-  createEvent(@Body() body: VCreateEventDto, @UserData() userData: IUserData) {
-    return this.eventService.createEvent(userData, body);
-  }
-
   @Delete(':event_id')
-  deleteEvent(@Param('event_id') event_id: number) {
-    return this.eventService.deleteEvent(event_id);
+  deleteEvent(
+    @UserData() userData: IUserData,
+    @Param('event_id') event_id: number,
+  ) {
+    return this.eventService.deleteEvent(userData, event_id);
   }
 
   @Post(':event_id/ideas')
@@ -49,5 +51,26 @@ export class EventController {
     @Param('event_id') event_id: number,
   ) {
     return this.eventService.createIdea(userData, body, event_id);
+  }
+
+  @Put(':event_id/idea/:idea_id')
+  updateIdea(
+    @UserData() userData: IUserData,
+    @Param('event_id') event_id: number,
+    @Param('idea_id') idea_id: number,
+    @Body() body: VUpdateIdeaDto,
+  ) {
+    return this.eventService.updateIdea(userData, event_id, idea_id, body);
+  }
+  
+  @Delete(':event_id/idea/:idea_id')
+  deleteIdea(
+    @Param('event_id') event_id: number,
+    @Param('idea_id') idea_id: number,
+    @UserData() userData: IUserData,
+  ) {
+    return this.eventService.deleteIdea(event_id, idea_id, userData, {
+      is_deleted: EIsDelete.DELETED,
+    });
   }
 }

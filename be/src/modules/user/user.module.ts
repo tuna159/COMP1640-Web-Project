@@ -12,6 +12,7 @@ import { UserDetailModule } from '@modules/user-detail/user-detail.module';
   imports: [
     TypeOrmModule.forFeature([User]),
     forwardRef(() => AuthModule),
+    forwardRef(() => AuthModule),
     UserDetailModule,
   ],
   exports: [TypeOrmModule, UserService],

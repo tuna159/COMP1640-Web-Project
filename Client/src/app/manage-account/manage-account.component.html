@@ -36,7 +36,7 @@
                         <p-table #myTab [columns]="cols" [value]="listData" [tableStyle]="{ 'min-width': '50rem' }"
                             [(selection)]="listSelectedData" dataKey="category_id" [rowHover]="true" [scrollable]="true"
                             [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
-                            [globalFilterFields]="['Stt','name',]">
+                            [globalFilterFields]="['Number','name',]">
                             <ng-template pTemplate="header" let-columns>
                                 <tr>
                                     <th style="width: 2rem" class="text-center">
@@ -60,7 +60,7 @@
                                     <td style="text-align: center">{{category.name}}</td>
                                     <td style="text-align: center">{{category.name}}</td>
                                     <td style="text-align: center">
-                                        <span>
+                                        <span style="display: flex;">
                                             <button pButton icon="pi pi-pencil" class="ui-button-primary edit-button"
                                                 (click)="chinhSua(category)"></button>
                                             <button pButton icon="pi pi-trash" class="ui-button-danger delete-button"

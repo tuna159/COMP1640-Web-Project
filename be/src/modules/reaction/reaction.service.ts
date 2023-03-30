@@ -2,6 +2,7 @@ import { Reaction } from '@core/database/mysql/entity/reaction.entity';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ErrorMessage } from 'enum/error';
+import { EReactionType } from 'enum/idea.enum';
 import { VCreateReactionDto } from 'global/dto/reaction.dto';
 import { EntityManager, Repository } from 'typeorm';
 
@@ -82,5 +83,36 @@ export class ReactionService {
     return {
       affected: result.affected,
     };
+  }
+
+  async getListReaction(entityManager?: EntityManager) {
+    const reactionRepository = entityManager
+      ? entityManager.getRepository<Reaction>('reaction')
+      : this.reactionRepository;
+
+    let data = [];
+
+    const queryBuilder = reactionRepository
+      .createQueryBuilder('reaction')
+      .select()
+      .leftJoinAndSelect('reaction.user', 'user')
+      .leftJoinAndSelect('user.userDetail', 'userDetail')
+      .where('reaction.type = :type', {
+        type: EReactionType.LIKE,
+      });
+
+    const [listUser] = await queryBuilder.getManyAndCount();
+
+    console.log(listUser);
+
+    data = listUser.map((reaction) => {
+      return {
+        reaction_type: reaction.type,
+        user_id: reaction.user.user_id,
+        nick_name: reaction.user.userDetail.nick_name,
+        avatar: reaction.user.userDetail.avatar_url,
+      };
+    });
+    return data;
   }
 }

@@ -10,8 +10,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
-import { VUpdateEventDto } from 'global/dto/updateEvent.dto';
 import {
+  DeepPartial,
   EntityManager,
   LessThanOrEqual,
   MoreThanOrEqual,
@@ -19,9 +19,10 @@ import {
 } from 'typeorm';
 import moment = require('moment');
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
-import { VCreateEventDto } from 'global/dto/createEvent.dto.';
+import { VCreateEventDto, VUpdateEventDto } from 'global/dto/event.dto.';
 import { DepartmentService } from '@modules/department/department.service';
 import { IdeaService } from '@modules/idea/idea.service';
+import { Idea } from '@core/database/mysql/entity/idea.entity';
 
 @Injectable()
 export class EventService {
@@ -33,22 +34,21 @@ export class EventService {
     private ideaService: IdeaService,
   ) {}
 
-  async getAllEventsOfDepartment(
+  async getEventsByDepartment(
     department_id: number,
     entityManager?: EntityManager,
   ) {
     const eventRepository = entityManager
       ? entityManager.getRepository<Event>('event')
       : this.eventRepository;
-    const data = await eventRepository.find({
-      where: {
-        department_id: department_id,
-        created_date: LessThanOrEqual(new Date()),
-        final_closure_date: MoreThanOrEqual(new Date()),
-      },
-    });
 
-    const events = data.map((e) => {
+    const events = await eventRepository
+      .createQueryBuilder("event")
+      .innerJoinAndSelect("event.department", "department")
+      .where("department.department_id = :department_id", { department_id })
+      .getMany();
+
+    return events.map((e) => {
       return {
         event_id: e.event_id,
         name: e.name,
@@ -56,18 +56,16 @@ export class EventService {
         created_date: e.created_date,
         first_closure_date: e.first_closure_date,
         final_closure_date: e.final_closure_date,
+        department: e.department,
       };
     });
-    return { events, count_event: data.length };
   }
 
-  async getEventById(event_id: number) {
-    return await this.eventRepository.findOne({
-      event_id: event_id,
-    });
+  async eventExists(event_id: number) {
+    return this.eventRepository.findOne(event_id);
   }
 
-  async checkEventToCreateIdea(event_id: number) {
+  async checkEventToIdea(event_id: number) {
     return await this.eventRepository.findOne({
       event_id: event_id,
       created_date: LessThanOrEqual(new Date()),
@@ -75,118 +73,162 @@ export class EventService {
     });
   }
 
-  async createEvent(userData: IUserData, body: VCreateEventDto) {
+  async createEvent(
+    userData: IUserData, 
+    body: VCreateEventDto,
+    entityManager?: EntityManager,
+  ) {
+    const eventRepository = entityManager
+      ? entityManager.getRepository<Event>('event')
+      : this.eventRepository;
+
     if (userData.role_id != EUserRole.ADMIN) {
       throw new HttpException(
-        ErrorMessage.YOU_DO_NOT_HAVE_PERMISSION_TO_UPDATE_EVENT,
+        ErrorMessage.EVENT_PERMISSION,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const startDate = moment(body.first_closure_date);
-    const endDate = moment(body.final_closure_date);
-
-    if (startDate > endDate) {
+    //? Date time is automatically converted to UTC at Dto
+    //? Get both date and time as UTC format
+    const first = new Date(body.first_closure_date);
+    const final = new Date(body.final_closure_date);
+    
+    if(first < new Date()) {
       throw new HttpException(
-        ErrorMessage.FIRST_CLOSURE_DATE_NEEDS_TO_BE_LESS_THAN_FINAL_CLOSURE_DATE,
+        ErrorMessage.INVALID_FIRST_CLOSURE_DATE,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const department = await this.departmentService.getDepartmentById(
-      body.department_id,
-    );
-
-    if (!department) {
+    if (first > final) {
       throw new HttpException(
-        ErrorMessage.DEPARMENT_NOT_EXIST,
+        ErrorMessage.INVALID_CLOSURE_DATES,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const eventParam = new Event();
-    eventParam.name = body.name;
-    eventParam.content = body.content;
-    eventParam.department_id = body.department_id;
-    eventParam.final_closure_date = new Date(body?.final_closure_date);
-    eventParam.first_closure_date = new Date(body?.first_closure_date);
+    if(body.department_id != null) {
+      const department = await this.departmentService
+          .departmentExists(body.department_id);
+      if (!department) {
+        throw new HttpException(
+          ErrorMessage.DEPARTMENT_NOT_EXISTS,
+          HttpStatus.BAD_REQUEST,
+        );
+      } 
+    }
 
-    return await this.eventRepository.save(eventParam);
+    const event = new Event();
+    event.name = body.name;
+    event.content = body.content;
+    event.department_id = body.department_id;
+    event.first_closure_date = new Date(body?.first_closure_date);
+    event.final_closure_date = new Date(body?.final_closure_date);
+
+    return eventRepository.save(event);
   }
 
   async updateEvent(
     userData: IUserData,
     event_id: number,
     body: VUpdateEventDto,
+    entityManager?: EntityManager,
   ) {
+    const eventRepository = entityManager
+      ? entityManager.getRepository<Event>('event')
+      : this.eventRepository;
+
     if (userData.role_id != EUserRole.ADMIN) {
       throw new HttpException(
-        ErrorMessage.YOU_DO_NOT_HAVE_PERMISSION_TO_UPDATE_EVENT,
+        ErrorMessage.EVENT_PERMISSION,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const event = await this.getEventById(event_id);
-
+    const event = await this.eventExists(event_id);
     if (!event) {
       throw new HttpException(
         ErrorMessage.EVENT_NOT_EXIST,
         HttpStatus.BAD_REQUEST,
       );
     }
-    const createDate = moment(event.created_date);
-    const firstclosureDate = moment(body.first_closure_date);
-    const finalclosureDate = moment(body.final_closure_date);
 
-    if (firstclosureDate > finalclosureDate) {
+    const first = new Date(body.first_closure_date);
+    if(first < new Date()) {
       throw new HttpException(
-        ErrorMessage.FIRST_CLOSURE_DATE_NEEDS_TO_BE_LESS_THAN_FINAL_CLOSURE_DATE,
+        "First closure date must be greater than current date",
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    if (createDate > firstclosureDate) {
+    const final = new Date(body.final_closure_date);
+    if (final < new Date()) {
       throw new HttpException(
-        ErrorMessage.CREATE_DATE_NEEDS_TO_BE_LESS_THAN_THE_START_DATE,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    if (createDate > finalclosureDate) {
-      throw new HttpException(
-        ErrorMessage.CREATE_DATE_NEEDS_TO_BE_LESS_THAN_FINAL_CLOSURE_DATE,
+        "Final closure date must be greater then current date",
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const eventParam = new Event();
-    eventParam.name = body.name;
-    eventParam.content = body.content;
-    eventParam.final_closure_date = new Date(body?.final_closure_date);
-    eventParam.first_closure_date = new Date(body?.first_closure_date);
+    if(first >= final) {
+      throw new HttpException(
+        "First closure date must be less than final closure date",
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
-    await this.eventRepository.update({ event_id: event_id }, eventParam);
-    return;
+    const newEvent = new Event();
+    newEvent.name = body.name;
+    newEvent.content = body.content;
+    newEvent.final_closure_date = new Date(body.final_closure_date);
+    newEvent.first_closure_date = new Date(body.first_closure_date);
+    const result = await eventRepository.update(event_id, newEvent);
+
+    return {
+      "affected": result.affected,
+    };
   }
 
-  async deleteEvent(event_id: number) {
-    const checkAllIdea = await this.ideaService.checkAllIdeabyEvent(event_id);
-    const checkIdea = await this.getEventById(event_id);
-    if (!checkIdea) {
+  async deleteEvent(
+    userData: IUserData,
+    event_id: number,
+    entityManager?: EntityManager,
+  ) {
+    const eventRepository = entityManager
+      ? entityManager.getRepository<Event>('event')
+      : this.eventRepository;
+    
+    if (userData.role_id != EUserRole.ADMIN) {
+      throw new HttpException(
+        ErrorMessage.EVENT_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const event = await eventRepository
+      .createQueryBuilder("event")
+      .leftJoinAndSelect("event.ideas", "ideas")
+      .where("event.event_id = :event_id", { event_id })
+      .getOne();
+
+    if(!event) {
       throw new HttpException(
         ErrorMessage.EVENT_NOT_EXIST,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    if (checkAllIdea.length != 0) {
+    if(event.ideas.length != 0) {
       throw new HttpException(
-        ErrorMessage.CAN_NOT_DELETE_EVENT,
+        ErrorMessage.EVENT_NOT_EMPTY,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    await this.eventRepository.delete({ event_id });
-    return;
+    const result = await eventRepository.delete(event_id);
+    return {
+      "affected": result.affected,
+    };
   }
 
   createIdea(userData: IUserData, body: VCreateIdeaDto, event_id: number) {
@@ -197,5 +239,67 @@ export class EventService {
       );
     }
     return this.ideaService.createIdea(userData, body, event_id);
+  }
+
+  async updateIdea(
+    userData: IUserData,
+    event_id: number,
+    idea_id: number,
+    body: VCreateIdeaDto,
+  ) {
+    if (userData.role_id != EUserRole.STAFF) {
+      throw new HttpException(
+        ErrorMessage.YOU_DO_NOT_HAVE_PERMISSION_TO_POST_IDEA,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    let event = await this.eventExists(event_id);
+    if (!event) {
+      throw new HttpException(
+        ErrorMessage.EVENT_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    event = await this.checkEventToIdea(event_id);
+    if (!event) {
+      throw new HttpException(
+        ErrorMessage.FIRST_CLOSURE_DATE_UNAVAILABLE,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return this.ideaService.updateIdea(userData, idea_id, body);
+  }
+
+  async deleteIdea(
+    event_id: number,
+    idea_id: number,
+    userData: IUserData,
+    body: DeepPartial<Idea>,
+  ) {
+    const checkEvent = await this.eventExists(event_id);
+
+    if (!checkEvent) {
+      throw new HttpException(
+        ErrorMessage.EVENT_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const event = await this.checkEventToIdea(event_id);
+    if (userData.role_id != EUserRole.STAFF) {
+      throw new HttpException(
+        ErrorMessage.YOU_DO_NOT_HAVE_PERMISSION_TO_DELETE_IDEA,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (!event) {
+      throw new HttpException(
+        ErrorMessage.EVENT_HAS_EXPIRED,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return await this.ideaService.deleteIdea(idea_id, userData.user_id, body);
   }
 }

@@ -1,7 +1,7 @@
 import { CategoryIdea } from '@core/database/mysql/entity/categoryIdea.entity';
 import { Comment } from '@core/database/mysql/entity/comment.entity';
 import { IdeaFile } from '@core/database/mysql/entity/file.entity';
-import { IUserData } from '@core/interface/default.interface';
+import { IPaginationQuery, IUserData } from '@core/interface/default.interface';
 import sendMailNodemailer from '@helper/nodemailer';
 import { CategoryIdeaService } from '@modules/category-idea/category-idea.service';
 import { CommentService } from '@modules/comment/comment.service';
@@ -15,7 +15,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EIsDelete } from 'enum';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
-import { EIdeaFilter } from 'enum/idea.enum';
+import { EIdeaFilter, EReactionType } from 'enum/idea.enum';
 import { VAddComment } from 'global/dto/addComment.dto';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateReactionDto } from 'global/dto/reaction.dto';
@@ -38,6 +38,7 @@ import { VUpdateCommentDto } from 'global/dto/comment.dto';
 import { TagService } from '@modules/tag/tag.service';
 import { IdeaTagService } from '@modules/idea-tag/idea-tag.service';
 import { IdeaTag } from '@core/database/mysql/entity/ideaTag.entity';
+import { VCreateTagDto } from 'global/dto/tag.dto';
 
 @Injectable()
 export class IdeaService {
@@ -69,7 +70,7 @@ export class IdeaService {
     const idea = await this.ideaRepository.findOne({
       where: {
         idea_id: idea_id,
-        is_deleted: EIsDelete.NOT_DELETE,
+        is_deleted: EIsDelete.NOT_DELETED,
       },
     });
 
@@ -229,7 +230,7 @@ export class IdeaService {
     let data: DeepPartial<Idea>;
     try {
       data = await this.connection.transaction(async (manager) => {
-        let event = await this.eventService.getEventById(event_id);
+        let event = await this.eventService.eventExists(event_id);
         if (!event) {
           throw new HttpException(
             ErrorMessage.EVENT_NOT_EXIST,
@@ -237,7 +238,7 @@ export class IdeaService {
           );
         }
 
-        event = await this.eventService.checkEventToCreateIdea(event_id);
+        event = await this.eventService.checkEventToIdea(event_id);
         if (!event) {
           throw new HttpException(
             ErrorMessage.FIRST_CLOSURE_DATE_UNAVAILABLE,
@@ -251,7 +252,6 @@ export class IdeaService {
         ideaParams.content = body.content;
         ideaParams.is_anonymous = body.is_anonymous;
         ideaParams.event_id = event.event_id;
-
         const idea = await this.saveIdea(ideaParams, manager);
 
         const postFileParams = [];
@@ -274,8 +274,7 @@ export class IdeaService {
 
         const ideaTags = [];
         const tagDto = body.tag_names;
-
-        tagDto.forEach(async (dto) => {
+        for (let dto of tagDto) {
           const tag = await this.tagService.getTagByName(dto.name);
           const ideaTag = new IdeaTag();
           if (tag) {
@@ -287,7 +286,7 @@ export class IdeaService {
             ideaTag.tag_id = newTag.tag_id;
           }
           ideaTags.push(ideaTag);
-        });
+        }
 
         const result = await Promise.allSettled([
           this.ideaFileService.createIdeaFile(postFileParams, manager),
@@ -295,7 +294,7 @@ export class IdeaService {
             categoryIdeaParams,
             manager,
           ),
-          this.ideaTagService.createIdeaTag(ideaTags, manager),
+          this.ideaTagService.createIdeaTags(ideaTags, manager),
         ]);
 
         if (result.some((r) => r.status === 'rejected'))
@@ -370,9 +369,6 @@ export class IdeaService {
     const ideaRepository = entityManager
       ? entityManager.getRepository<Idea>('idea')
       : this.ideaRepository;
-
-    console.log(value);
-
     return await ideaRepository.save(value);
   }
 
@@ -429,18 +425,10 @@ export class IdeaService {
   }
 
   async updateIdea(userData: IUserData, idea_id: number, body: VUpdateIdeaDto) {
-    if (userData.role_id != EUserRole.STAFF) {
-      throw new HttpException(
-        ErrorMessage.YOU_DO_NOT_HAVE_PERMISSION_TO_UPDATE_IDEA,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
     const isAccess = await this.checkIdea(idea_id, userData.user_id);
-
     if (!isAccess) {
       throw new HttpException(
-        ErrorMessage.UPDATE_POST_PERMISSION_DENIED,
+        ErrorMessage.IDEA_NOT_EXIST,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -448,18 +436,9 @@ export class IdeaService {
     try {
       await this.connection.transaction(async (manager) => {
         const ideaParams = new Idea();
-        ideaParams.user_id = userData.user_id;
         ideaParams.title = body.title;
         ideaParams.content = body.content;
         ideaParams.is_anonymous = body.is_anonymous;
-
-        const idea = await this.updateIdeaCurrent(
-          {
-            idea_id: idea_id,
-          },
-          ideaParams,
-          manager,
-        );
 
         const postFileParams = [];
         if (body?.files && body?.files.length) {
@@ -471,28 +450,47 @@ export class IdeaService {
             postFileParams.push(ideaFileParam);
           });
         }
+
         const categoryIdeaParams = [];
+        const categoryIdeaParam = new CategoryIdea();
+        categoryIdeaParam.idea_id = idea_id;
+        categoryIdeaParam.category_id = body.category_id;
+        categoryIdeaParams.push(categoryIdeaParam);
 
-        await this.ideaFileService.deleteIdeaFile(idea_id);
-
-        if (body?.category_ids && body?.category_ids?.length) {
-          body.category_ids.forEach((category_id) => {
-            const categoryIdeaParam = new CategoryIdea();
-            categoryIdeaParam.idea_id = idea_id;
-            categoryIdeaParam.category_id = category_id;
-
-            categoryIdeaParams.push(categoryIdeaParam);
-          });
+        const ideaTags = [];
+        const tagDto = body.tag_names;
+        for (let dto of tagDto) {
+          const tag = await this.tagService.getTagByName(dto.name);
+          const ideaTag = new IdeaTag();
+          if (tag) {
+            ideaTag.idea_id = idea_id;
+            ideaTag.tag_id = tag.tag_id;
+          } else {
+            const newTag = await this.tagService.createTag(dto.name);
+            ideaTag.idea_id = idea_id;
+            ideaTag.tag_id = newTag.tag_id;
+          }
+          ideaTags.push(ideaTag);
         }
 
-        await this.categoryIdeaService.deleteIdeaCategory(idea_id);
+        await Promise.allSettled([
+          this.ideaTagService.deleteIdeaTags(idea_id, manager),
+          this.ideaFileService.deleteIdeaFile(idea_id, manager),
+          this.categoryIdeaService.deleteIdeaCategory(idea_id, manager),
+        ]);
 
         const result = await Promise.allSettled([
+          await this.updateIdeaCurrent(
+            { idea_id: idea_id },
+            ideaParams,
+            manager,
+          ),
           this.ideaFileService.createIdeaFile(postFileParams, manager),
           this.categoryIdeaService.createIdeaCategory(
             categoryIdeaParams,
             manager,
           ),
+          this.ideaTagService.createIdeaTags(ideaTags, manager),
         ]);
 
         if (result.some((r) => r.status === 'rejected'))
@@ -500,12 +498,8 @@ export class IdeaService {
             'ErrorMessage.UPDATING_IDEA_FAILED',
             HttpStatus.BAD_REQUEST,
           );
-
-        return idea;
       });
     } catch (error) {
-      console.log(error, 1111111);
-
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
     return {
@@ -784,7 +778,7 @@ export class IdeaService {
     }
 
     const idea = await this.ideaRepository.findOne({
-      where: { idea_id, is_deleted: EIsDelete.NOT_DELETE },
+      where: { idea_id, is_deleted: EIsDelete.NOT_DELETED },
     });
 
     if (!idea) {
@@ -811,7 +805,7 @@ export class IdeaService {
     }
 
     const idea = await this.ideaRepository.findOne({
-      where: { idea_id, is_deleted: EIsDelete.NOT_DELETE },
+      where: { idea_id, is_deleted: EIsDelete.NOT_DELETED },
     });
 
     if (!idea) {
@@ -828,11 +822,96 @@ export class IdeaService {
     );
   }
 
-  async checkAllIdeabyEvent(event_id: number) {
-    return await this.ideaRepository.find({
-      where: {
-        event_id: event_id,
-      },
+  async deleteIdea(idea_id: number, user_id: string, body: DeepPartial<Idea>) {
+    const idea = await this.checkIdea(idea_id, user_id);
+
+    if (!idea) {
+      throw new HttpException(
+        ErrorMessage.IDEA_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (idea.is_deleted == EIsDelete.DELETED) {
+      throw new HttpException(
+        ErrorMessage.IDEA_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    await this.updatePostByUserCreated({ idea_id, user_id }, body);
+
+    return null;
+  }
+
+  async updatePostByUserCreated(
+    condition: object,
+    body: DeepPartial<Idea>,
+    entityManager?: EntityManager,
+  ) {
+    const ideaRepository = entityManager
+      ? entityManager.getRepository<Idea>('idea')
+      : this.ideaRepository;
+    return await ideaRepository.update(condition, body);
+  }
+
+  async searchIdea(
+    userData: IUserData,
+    query: IPaginationQuery,
+    entityManager?: EntityManager,
+  ) {
+    const ideaRepository = entityManager
+      ? entityManager.getRepository<Idea>('idea')
+      : this.ideaRepository;
+
+    let data = [];
+
+    const queryBuilder = ideaRepository
+      .createQueryBuilder('idea')
+      .select()
+      .leftJoinAndSelect('idea.ideaTags', 'ideaTags')
+      .leftJoinAndSelect('ideaTags.tag', 'tag')
+      .where('idea.is_deleted = :is_deleted', {
+        is_deleted: EIsDelete.NOT_DELETED,
+      });
+
+    if (query.search_key && query.search_key != '') {
+      const searchKey = query.search_key.trim().toLowerCase();
+      queryBuilder.andWhere(
+        '((LOWER(idea.content) LIKE :searchKey) OR (LOWER(tag.name) LIKE :searchKey))',
+        {
+          searchKey: `%${searchKey}%`,
+        },
+      );
+    }
+    const [listIdea] = await queryBuilder.getManyAndCount();
+
+    data = listIdea.map((idea) => {
+      return {
+        idea_id: idea.idea_id,
+        tilte: idea.title,
+        tag: idea.ideaTags.map((e) => {
+          return {
+            tag: e.tag.name,
+          };
+        }),
+      };
     });
+
+    return data;
+  }
+  async getListReaction(idea_id: number) {
+    const idea = await this.ideaRepository.findOne({
+      where: { idea_id: idea_id, is_deleted: EIsDelete.NOT_DELETED },
+    });
+
+    if (!idea) {
+      throw new HttpException(
+        ErrorMessage.IDEA_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return await this.reactionService.getListReaction();
   }
 }

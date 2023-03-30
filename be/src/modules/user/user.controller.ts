@@ -48,7 +48,7 @@ export class UserController {
   async logout(@UserData() userData: IUserData) {
     return await this.userService.handleLogout(userData.user_id);
   }
-  @Put('updateAccount/:user_id')
+  @Put(':user_id')
   async updateAccount(
     @UserData() userData: IUserData,
     @Param('user_id') user_id: string,

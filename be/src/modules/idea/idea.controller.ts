@@ -1,5 +1,5 @@
 import { UserData } from '@core/decorator/user.decorator';
-import { IUserData } from '@core/interface/default.interface';
+import { IPaginationQuery, IUserData } from '@core/interface/default.interface';
 import {
   Body,
   Controller,
@@ -27,6 +27,14 @@ import { VUpdateCommentDto } from 'global/dto/comment.dto';
 export class IdeaController {
   constructor(private readonly ideaService: IdeaService) {}
 
+  @Get('/search')
+  async searchIdea(
+    @UserData() userData: IUserData,
+    @Query() query: IPaginationQuery,
+  ) {
+    return await this.ideaService.searchIdea(userData, query);
+  }
+
   @Get(':idea_id')
   async getIdeaDetail(
     @UserData() userData: IUserData,
@@ -51,21 +59,17 @@ export class IdeaController {
     return this.ideaService.createIdeaReaction(userData, idea_id, body);
   }
 
+  @Get(':idea_id/list-reaction')
+  getListReaction(@Param('idea_id') idea_id: number) {
+    return this.ideaService.getListReaction(idea_id);
+  }
+
   @Delete(':idea_id/reaction')
   deleteIdeaReaction(
     @UserData() userData: IUserData,
     @Param('idea_id') idea_id: number,
   ) {
     return this.ideaService.deleteIdeaReaction(userData, idea_id);
-  }
-
-  @Put(':idea_id')
-  updateIdea(
-    @UserData() userData: IUserData,
-    @Param('idea_id') idea_id: number,
-    @Body() body: VUpdateIdeaDto,
-  ) {
-    return this.ideaService.updateIdea(userData, idea_id, body);
   }
 
   @Get(':idea_id/comments?')

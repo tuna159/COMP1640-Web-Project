@@ -221,4 +221,17 @@ export class UserService {
 
     return;
   }
+
+  async getUserPasswordById(user_id: string, entityManager?: EntityManager) {
+    const userRepository = entityManager
+      ? entityManager.getRepository<User>('user')
+      : this.userRepository;
+    return await userRepository.findOne({
+      select: ['user_id', 'email', 'password'],
+      where: {
+        user_id,
+        isDeleted: EIsDelete.NOT_DELETED,
+      },
+    });
+  }
 }

@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
   selector: 'app-manage-event',
   templateUrl: './manage-event.component.html',
   styleUrls: ['./manage-event.component.css'],
-  providers: [MessageService, ConfirmationService]
+  providers: [MessageService, ConfirmationService, DialogService]
 })
 export class ManageEventComponent {
   cols: Array<any> = [];

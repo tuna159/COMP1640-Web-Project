@@ -36,7 +36,6 @@ export class AuthService {
     public jwtService: JwtService,
     private connection: Connection,
     private userDetailService: UserDetailService,
-    private deparmentService: DepartmentService,
   ) {}
 
   async getUserById(user_id: string, role_id) {
@@ -107,7 +106,7 @@ export class AuthService {
     userParams.email = body.email;
     userParams.password = await handleBCRYPTHash(body.password);
     userParams.role_id = body.role_id;
-    userParams.is_deleted = EIsDelete.NOT_DELETE;
+    userParams.is_deleted = EIsDelete.NOT_DELETED;
     userParams.department_id = body.department_id;
 
     const user = await this.connection.transaction(async (manager) => {
