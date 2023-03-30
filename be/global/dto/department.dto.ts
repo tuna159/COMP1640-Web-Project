@@ -13,13 +13,11 @@ export class CreateDepartmentDto {
 
 export class UpdateDepartmentDto {
   @IsString()
-  @IsOptional()
   @MaxLength(100)
   @MinLength(1)
   name: string;
 
   @IsString()
-  @IsOptional()
   @MinLength(1)
   manager_id: string;
 }

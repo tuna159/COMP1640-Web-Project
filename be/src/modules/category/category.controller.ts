@@ -9,7 +9,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { VCreateCategoryDto } from 'global/dto/category.dto';
+import { CategoryDto } from 'global/dto/category.dto';
 import { CategoryService } from './category.service';
 
 @Controller('category')
@@ -17,8 +17,8 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Get()
-  async getAllDepartments() {
-    return await this.categoryService.getAllCategories();
+  getAllCategories() {
+    return this.categoryService.getAllCategories();
   }
 
   @Get(':category_id/ideas')
@@ -27,17 +27,14 @@ export class CategoryController {
   }
 
   @Post()
-  createCategory(
-    @UserData() userData: IUserData,
-    @Body() body: VCreateCategoryDto,
-  ) {
+  createCategory(@UserData() userData: IUserData, @Body() body: CategoryDto) {
     return this.categoryService.createCategory(userData, body);
   }
 
   @Put(':category_id')
   updateCategory(
     @Param('category_id') category_id: number,
-    @Body() body: VCreateCategoryDto,
+    @Body() body: CategoryDto,
     @UserData() userData: IUserData,
   ) {
     return this.categoryService.updateCategory(category_id, body, userData);

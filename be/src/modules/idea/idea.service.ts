@@ -230,7 +230,7 @@ export class IdeaService {
     let data: DeepPartial<Idea>;
     try {
       data = await this.connection.transaction(async (manager) => {
-        let event = await this.eventService.getEventById(event_id);
+        let event = await this.eventService.eventExists(event_id);
         if (!event) {
           throw new HttpException(
             ErrorMessage.EVENT_NOT_EXIST,
@@ -820,14 +820,6 @@ export class IdeaService {
       comment_id,
       body,
     );
-  }
-
-  async checkAllIdeaByEvent(event_id: number) {
-    return await this.ideaRepository.find({
-      where: {
-        event_id: event_id,
-      },
-    });
   }
 
   async deleteIdea(idea_id: number, user_id: string, body: DeepPartial<Idea>) {

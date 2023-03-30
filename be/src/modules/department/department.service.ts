@@ -135,18 +135,15 @@ export class DepartmentService {
     };
   }
 
-  async getEventByDepartment(department_id: number) {
-    const department = await this.getDepartmentDetails(department_id);
-    console.log(department);
-
+  async getEventsByDepartment(department_id: number) {
+    const department = await this.departmentExists(department_id);
     if (!department) {
       throw new HttpException(
         ErrorMessage.DEPARTMENT_NOT_EXISTS,
         HttpStatus.BAD_REQUEST,
       );
     }
-
-    return await this.eventService.getAllEventsOfDepartment(department_id);
+    return this.eventService.getEventsByDepartment(department_id);
   }
 
   getIdeasByDepartmentAndCategory(
@@ -227,21 +224,19 @@ export class DepartmentService {
       );
     }
     
-    if (body.manager_id != null) {
-      const manager = await this.userService.findUserByUserId(body.manager_id);
-      if (!manager) {
-        throw new HttpException(
-          ErrorMessage.MANAGER_NOT_EXISTS,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      const department = await this.containManager(body.manager_id);
-      if(department.department_id != department_id) {
-        throw new HttpException(
-          ErrorMessage.DEPARTMENT_MANAGER_EXISTS,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
+    const manager = await this.userService.findUserByUserId(body.manager_id);
+    if (!manager) {
+      throw new HttpException(
+        ErrorMessage.MANAGER_NOT_EXISTS,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const managerDepartment = await this.containManager(body.manager_id);
+    if(managerDepartment.department_id != department_id) {
+      throw new HttpException(
+        ErrorMessage.DEPARTMENT_MANAGER_EXISTS,
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const result = await departmentRepository.update({ department_id }, body);
     return {
