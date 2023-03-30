@@ -47,9 +47,6 @@ export class EventComponent implements OnInit {
   ngOnInit(): void {
 
   }
-  UserDetail(Id): void {
-    console.log(Id)
-  }
   IdeaDetail(IdIdeal): void {
     this.router.navigateByUrl('/detail', { state: { Id: IdIdeal } });
   }

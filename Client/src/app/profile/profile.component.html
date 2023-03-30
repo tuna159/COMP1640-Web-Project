@@ -24,7 +24,8 @@
         <p-card>
             <div style="display: flex; justify-content: space-between;">
                 <p>Profile Info</p>
-                <p-button label="Edit your info" (click)="openNew()" styleClass="p-button-link"></p-button>
+                <p-button label="Edit your info" (click)="openEditYourInformation()"
+                    styleClass="p-button-link"></p-button>
             </div>
             <div style="display: flex; justify-content: space-between;">
                 <p style="min-width: 10%;">Full Name</p>
@@ -38,12 +39,7 @@
             </div>
             <div style="display: flex; justify-content: space-between;">
                 <p style="min-width: 10%;">BirthDay</p>
-                <p style="min-width: 20%;">{{date| date:'mediumDate'}}</p>
-                <p style="min-width: 50%;"></p>
-            </div>
-            <div style="display: flex; justify-content: space-between;">
-                <p style="min-width: 10%;">Phone</p>
-                <p style="min-width: 20%;">08*****932</p>
+                <p style="min-width: 20%;">{{date}}</p>
                 <p style="min-width: 50%;"></p>
             </div>
         </p-card>
@@ -51,7 +47,8 @@
         <p-card>
             <div style="display: flex; justify-content: space-between;">
                 <p>Account Info</p>
-                <p-button label="Edit account info" styleClass="p-button-link" (click)="openNewAccount()"></p-button>
+                <p-button label="Edit account info" styleClass="p-button-link"
+                    (click)="openEditYourAccount()"></p-button>
             </div>
             <div style="display: flex; justify-content: space-between;">
                 <p style="min-width: 10%;">Email</p>
@@ -69,19 +66,70 @@
 
 
 
-    <p-dialog [(visible)]="profileDialog" [style]="{width: '500px'}" header="Your Profile Info" [modal]="true"
-        styleClass="p-fluid">
-        
-        <form [formGroup]="formGroup">
+<p-dialog [(visible)]="profileDialog" [style]="{width: '500px'}" header="Your Profile Info" [modal]="true"
+    styleClass="p-fluid">
+    <form [formGroup]="formGroup">
+        <div class="field" style="display: flex;">
+            <p-avatar [image]="url" shape="circle" size="xlarge"></p-avatar>
+            <label for="files" class="btn"
+                style="height: 40px; width: 30%; margin-top: 3%; margin-left: 5%; border-width: 1px; border-color: black;">Select
+                Image</label>
+            <input type="file" id="files" (change)="onselectFile($event)"
+                style="margin-top: auto; margin-bottom: auto; margin-left: 5%; display: none;" required>
+        </div>
 
-            <div class="field" style="display: flex;">
-                <p-avatar [image]="url" shape="circle" size="xlarge"></p-avatar>
-                <label for="files" class="btn" style="height: 40px; width: 30%; margin-top: 3%; margin-left: 5%; border-width: 1px; border-color: black;">Select Image</label>
-                <input type="file" id="files" (change)="onselectFile($event)"
-                    style="margin-top: auto; margin-bottom: auto; margin-left: 5%; display: none;" required>
+        <div class="field" style="margin-top: 5%;">
+            <label for="name">Full Name</label>
+            <input type="text" pInputText id="name" formControlName="name"
+                [ngClass]="(formGroup.controls.name.invalid && (formGroup.controls.name.dirty || formGroup.controls.name.touched)) ? 'ng-invalid ng-dirty' : ''">
 
-
+            <div class="form-group mb-2" [hidden]="formGroup.controls.name.valid|| formGroup.controls.name.untouched">
+                <span
+                    *ngIf="formGroup.controls.name.hasError('required') || formGroup.controls.name.hasError('blankString') "
+                    class="error-message-span" style="color: #FD0B0B; font-size: small;">
+                    Vui lòng nhập Full Name
+                </span>
             </div>
+        </div>
+        <div class="field" style="margin-top: 5%;">
+            <label class="mb-3">Gender</label>
+            <div class="formgrid grid">
+                <div class="field-radiobutton col-6" style="display: flex;">
+                    <input type="radio" id="Male" name="gender" value="Male" formControlName="gender" checked
+                        style="height: 20px; width: 20px;">
+                    <label for="Male" style="margin-bottom: 0; margin-left: 5%;">Male</label>
+                </div>
+                <div class="field-radiobutton col-6" style="display: flex; margin-top: 3%;">
+                    <input type="radio" id="Female" name="gender" value="Female" formControlName="gender"
+                        style="height: 20px; width: 20px;">
+                    <label for="Female" style="margin-bottom: 0; margin-left: 5%;">Female</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="field" style="margin-top: 5%;">
+            <label for="birthDay">BirthDay</label>
+            <p-calendar formControlName="birthday" inputId="basic" [required]
+                [ngClass]="(formGroup.controls.birthday.invalid && (formGroup.controls.birthday.dirty || formGroup.controls.birthday.touched)) ? 'ng-invalid ng-dirty' : ''"></p-calendar>
+
+            <div class="form-group mb-2"
+                [hidden]="formGroup.controls.birthday.valid|| formGroup.controls.birthday.untouched">
+                <span
+                    *ngIf="formGroup.controls.birthday.hasError('required') || formGroup.controls.birthday.hasError('blankString') "
+                    class="error-message-span" style="color: #FD0B0B; font-size: small;">
+                    Vui lòng nhập birthday
+                </span>
+            </div>
+        </div>
+        
+    </form>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+            (click)="CancelDialog()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+            (click)="SaveEditInfor()"></button>
+    </ng-template>
+
 
             <div class="field" style="margin-top: 5%;">
                 <label for="name">Full Name</label>
@@ -139,7 +187,6 @@
                 </div>
             </div>
 
-        </form>
 
         <ng-template pTemplate="footer">
             <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
@@ -152,21 +199,49 @@
 
 <p-dialog [(visible)]="accountDialog" [style]="{width: '500px'}" header="Account Info" [modal]="true"
     styleClass="p-fluid">
-    <ng-template pTemplate="content">
-        <div class="field">
-            <label for="name">Password</label>
-            <p-password [(ngModel)]="password" [toggleMask]="true"></p-password>
+   
+        <ng-template pTemplate="content">
+            <form [formGroup]="formEditAccount">
+            <div class="field">
+                <label for="name">Password</label>
+                <p-password formControlName="password" [toggleMask]="true"></p-password>
+                
+            </div>
+            <div class="form-group mb-2"
+                [hidden]="formEditAccount.controls.password.valid|| formEditAccount.controls.password.untouched">
+                <span
+                    *ngIf="formEditAccount.controls.password.hasError('required') || formEditAccount.controls.password.hasError('blankString') "
+                    class="error-message-span" style="color: #FD0B0B; font-size: small;">
+                    Vui lòng nhập password
+                </span>
+            </div>
+            <div class="field">
+                <label for="name">Confirm Password</label>
+                <p-password formControlName="confirmPass" [toggleMask]="true"></p-password>
+            </div>
+            <div class="form-group mb-2"
+            [hidden]="formEditAccount.controls.confirmPass.valid|| formEditAccount.controls.confirmPass.untouched">
+            <span
+                *ngIf="formEditAccount.controls.confirmPass.hasError('required') || formEditAccount.controls.confirmPass.hasError('blankString') "
+                class="error-message-span" style="color: #FD0B0B; font-size: small;">
+                Vui lòng nhập confirmPass
+            </span>
+            <span
+                *ngIf="formEditAccount.controls.confirmPass.getError('mismatch') "
+                class="error-message-span" style="color: #FD0B0B; font-size: small;">
+                ConfirmPass khac password
+            </span>
         </div>
-        <div class="field">
-            <label for="name">Confirm Password</label>
-            <p-password [(ngModel)]="confirmPass" [toggleMask]="true"></p-password>
-        </div>
-    </ng-template>
+    </form>
+        </ng-template>
 
-    <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"></button>
-    </ng-template>
+        <ng-template pTemplate="footer">
+            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                (click)="CancelDialog()"></button>
+            <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+                (click)="SaveEditAccount()"></button>
+        </ng-template>
+    
 </p-dialog>
 
 <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

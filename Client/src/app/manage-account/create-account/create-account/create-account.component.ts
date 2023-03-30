@@ -10,7 +10,7 @@ import { AuthenticationService } from 'src/app/auth/services/authentication.serv
   styleUrls: ['./create-account.component.css']
 })
 export class CreateAccountComponent {
-  apiUrl: string = "http://localhost:3009/api/idea";
+  apiUrl: string = "http://localhost:3009/api/user";
   categories = [
     { name: 'A' },
     { name: 'B' },

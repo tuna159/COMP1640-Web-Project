@@ -51,28 +51,31 @@ export class IdeaService {
     private readonly reactionService: ReactionService,
     private readonly connection: Connection,
     private readonly commentService: CommentService,
-    private readonly userService: UserService,
     private readonly tagService: TagService,
     private readonly ideaTagService: IdeaTagService,
   ) {}
 
-  async getIdeaDetail(
+  async getIdeaDetails(
     idea_id: number,
-    user_id?: string,
+    userData: IUserData,
     entityManager?: EntityManager,
   ) {
-    let data = [];
-
     const ideaRepository = entityManager
       ? entityManager.getRepository<Idea>('idea')
       : this.ideaRepository;
 
-    const idea = await this.ideaRepository.findOne({
-      where: {
-        idea_id: idea_id,
+    const idea = await ideaRepository
+      .createQueryBuilder('idea')
+      .leftJoinAndSelect('idea.files', 'files')
+      .innerJoinAndSelect('idea.user', 'user')
+      .innerJoinAndSelect('user.userDetail', 'userDetail')
+      .innerJoinAndSelect('idea.ideaCategories', 'ideaCategory')
+      .innerJoinAndSelect('ideaCategory.category', 'category')
+      .where('idea.idea_id = :idea_id', { idea_id })
+      .andWhere('idea.is_deleted = :is_deleted', {
         is_deleted: EIsDelete.NOT_DELETED,
-      },
-    });
+      })
+      .getOne();
 
     if (!idea) {
       throw new HttpException(
@@ -80,27 +83,40 @@ export class IdeaService {
         HttpStatus.BAD_REQUEST,
       );
     }
-
-    const queryBuilder = ideaRepository
-      .createQueryBuilder('idea')
-      .leftJoinAndSelect('idea.files', 'files')
-      .innerJoinAndSelect('idea.event', 'event')
-      .innerJoinAndSelect('idea.user', 'user')
-      .where('idea.idea_id = :idea_id', { idea_id });
-
-    const result = await queryBuilder.getMany();
-    const [listFiles] = result;
-    data = listFiles.files.map((file) => file.file);
+    
+    const files = idea.files.map((file) => {
+      return {
+        "file_id": file.file_id,
+        "file_url": file.file,
+        "size": file.size,
+      };
+    });
+    const category = idea.ideaCategories[0];
+    const user = idea.user.userDetail;
+    
+    //? update idea views only if an idea details is requested
+    //? requester must not be the idea author
+    if(userData.user_id !== user.user_id) {
+      ideaRepository.update(idea_id, {views: idea.views + 1})
+    }
 
     return {
-      user_id: user_id,
-      title: idea.title,
-      content: idea.content,
-      date: idea.created_at,
-      file: data,
-      event: result[0].event,
-      user: {
-        email: result[0].user.email,
+      "idea_id": idea.idea_id,
+      "title": idea.title,
+      "content": idea.content,
+      "views": idea.views,
+      "is_anonymous": idea.is_anonymous,
+      files,
+      "user": {
+        "user_id": user.user_id,
+        "department_id": idea.user.department_id,
+        "nick_name": user.nick_name,
+        "full_name": user.full_name,
+        "avatar_url": user.avatar_url,
+      },
+      "category": {
+        "category_id": category.category_id,
+        "name": category.category.name,
       },
     };
   }
@@ -620,129 +636,129 @@ export class IdeaService {
   }
 
   async createComment(userData: IUserData, idea_id: number, body: VAddComment) {
-    if (userData.role_id != EUserRole.STAFF) {
-      throw new HttpException(
-        ErrorMessage.CREATE_COMMENT_PERMISSION,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // if (userData.role_id != EUserRole.STAFF) {
+    //   throw new HttpException(
+    //     ErrorMessage.CREATE_COMMENT_PERMISSION,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
 
-    const idea = await this.getIdeaDetail(idea_id);
+    // const idea = await this.getIdeaDetails(idea_id);
 
-    if (!body.content) {
-      throw new HttpException(
-        ErrorMessage.INVALID_PARAM,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    if (body.content === '' || body.content === null) {
-      throw new HttpException(
-        ErrorMessage.INVALID_PARAM,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    if (body.parent_id == null && body.level != 1) {
-      throw new HttpException(
-        ErrorMessage.INVALID_PARAM,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // if (!body.content) {
+    //   throw new HttpException(
+    //     ErrorMessage.INVALID_PARAM,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
+    // if (body.content === '' || body.content === null) {
+    //   throw new HttpException(
+    //     ErrorMessage.INVALID_PARAM,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
+    // if (body.parent_id == null && body.level != 1) {
+    //   throw new HttpException(
+    //     ErrorMessage.INVALID_PARAM,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
 
-    const current = new Date();
-    if (idea.event.final_closure_date < current) {
-      throw new HttpException(
-        ErrorMessage.FINAL_CLOSURE_DATE_UNAVAILABLE,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // const current = new Date();
+    // if (idea.event.final_closure_date < current) {
+    //   throw new HttpException(
+    //     ErrorMessage.FINAL_CLOSURE_DATE_UNAVAILABLE,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
 
-    try {
-      const comment = new Comment();
-      comment.idea_id = idea_id;
-      comment.author_id = userData.user_id;
-      comment.parent_id = body.parent_id;
-      comment.level = body.level;
-      comment.content = body.content;
-      const newComment = await this.commentService.addIdeaComment(comment);
+    // try {
+    //   const comment = new Comment();
+    //   comment.idea_id = idea_id;
+    //   comment.author_id = userData.user_id;
+    //   comment.parent_id = body.parent_id;
+    //   comment.level = body.level;
+    //   comment.content = body.content;
+    //   const newComment = await this.commentService.addIdeaComment(comment);
 
-      if (userData.user_id !== idea.user_id) {
-        return newComment;
-      }
+    //   if (userData.user_id !== idea.user_id) {
+    //     return newComment;
+    //   }
 
-      const email = idea.user['email'];
-      // temporary solution
-      const result = await this.ideaRepository
-        .createQueryBuilder('idea')
-        .select(
-          'staff_detail.nick_name as staff_nick_name, department.name as department, idea.created_at',
-        )
-        .innerJoin('idea.user', 'staff')
-        .innerJoin('staff.userDetail', 'staff_detail')
-        .innerJoin('staff.department', 'department')
-        .where('idea.idea_id = :idea_id', { idea_id })
-        .getRawOne();
+    //   const email = idea.user['email'];
+    //   // temporary solution
+    //   const result = await this.ideaRepository
+    //     .createQueryBuilder('idea')
+    //     .select(
+    //       'staff_detail.nick_name as staff_nick_name, department.name as department, idea.created_at',
+    //     )
+    //     .innerJoin('idea.user', 'staff')
+    //     .innerJoin('staff.userDetail', 'staff_detail')
+    //     .innerJoin('staff.department', 'department')
+    //     .where('idea.idea_id = :idea_id', { idea_id })
+    //     .getRawOne();
 
-      const ideaCategories = await this.categoryIdeaService.getCategoriesByIdea(
-        idea_id,
-      );
-      const categories = ideaCategories.map((c) => {
-        return c.category.name;
-      });
+    //   const ideaCategories = await this.categoryIdeaService.getCategoriesByIdea(
+    //     idea_id,
+    //   );
+    //   const categories = ideaCategories.map((c) => {
+    //     return c.category.name;
+    //   });
 
-      const ideaAuthorUsername = result['staff_nick_name'];
-      const ideaDepartment = result['department'];
-      const ideaTitle = idea.title;
-      const ideaContent = idea.content;
-      const date = new Date(result['created_at']);
-      const ideaCreatedTime = date.toLocaleTimeString();
-      let month = date.getMonth() + '';
-      if (month.length == 1) {
-        month = 0 + month;
-      }
-      let txtDate = date.getFullYear() + '-' + month + '-' + date.getDate();
-      const ideaCreatedDate = moment(txtDate, 'YYYY-MM-DD').format(
-        'MMM DD, YYYY',
-      );
+    //   const ideaAuthorUsername = result['staff_nick_name'];
+    //   const ideaDepartment = result['department'];
+    //   const ideaTitle = idea.title;
+    //   const ideaContent = idea.content;
+    //   const date = new Date(result['created_at']);
+    //   const ideaCreatedTime = date.toLocaleTimeString();
+    //   let month = date.getMonth() + '';
+    //   if (month.length == 1) {
+    //     month = 0 + month;
+    //   }
+    //   let txtDate = date.getFullYear() + '-' + month + '-' + date.getDate();
+    //   const ideaCreatedDate = moment(txtDate, 'YYYY-MM-DD').format(
+    //     'MMM DD, YYYY',
+    //   );
 
-      const commentAuthor = await this.userService.findUserByUserId(
-        userData.user_id,
-      );
-      const authorDetail = commentAuthor.userDetail;
-      const commentCreatedTime = newComment.created_at.toLocaleTimeString();
-      month = newComment.created_at.getMonth() + '';
-      if (month.length == 1) {
-        month = 0 + month;
-      }
-      txtDate =
-        newComment.created_at.getFullYear() +
-        '-' +
-        month +
-        '-' +
-        newComment.created_at.getDate();
-      const commentCreatedDate = moment(txtDate, 'YYYY-MM-DD').format(
-        'MMM DD, YYYY',
-      );
+    //   const commentAuthor = await this.userService.findUserByUserId(
+    //     userData.user_id,
+    //   );
+    //   const authorDetail = commentAuthor.userDetail;
+    //   const commentCreatedTime = newComment.created_at.toLocaleTimeString();
+    //   month = newComment.created_at.getMonth() + '';
+    //   if (month.length == 1) {
+    //     month = 0 + month;
+    //   }
+    //   txtDate =
+    //     newComment.created_at.getFullYear() +
+    //     '-' +
+    //     month +
+    //     '-' +
+    //     newComment.created_at.getDate();
+    //   const commentCreatedDate = moment(txtDate, 'YYYY-MM-DD').format(
+    //     'MMM DD, YYYY',
+    //   );
 
-      sendMailNodemailer(email, 'GIC - New Comment', 'new_comment.hbs', {
-        ideaAuthorUsername,
-        ideaCreatedDate,
-        ideaCreatedTime,
-        ideaDepartment,
-        ideaTitle,
-        ideaContent,
-        categories,
-        commentAuthorUsername: authorDetail.nick_name,
-        commentCreatedDate,
-        commentCreatedTime,
-        commentDepartment: commentAuthor.department.name,
-        commentContent: newComment.content,
-      });
+    //   sendMailNodemailer(email, 'GIC - New Comment', 'new_comment.hbs', {
+    //     ideaAuthorUsername,
+    //     ideaCreatedDate,
+    //     ideaCreatedTime,
+    //     ideaDepartment,
+    //     ideaTitle,
+    //     ideaContent,
+    //     categories,
+    //     commentAuthorUsername: authorDetail.nick_name,
+    //     commentCreatedDate,
+    //     commentCreatedTime,
+    //     commentDepartment: commentAuthor.department.name,
+    //     commentContent: newComment.content,
+    //   });
 
-      return comment;
-    } catch (error) {
-      console.log(error);
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    }
+    //   return comment;
+    // } catch (error) {
+    //   console.log(error);
+    //   throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    // }
   }
 
   async checkIdeaPost(

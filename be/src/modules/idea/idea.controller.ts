@@ -36,11 +36,11 @@ export class IdeaController {
   }
 
   @Get(':idea_id')
-  async getIdeaDetail(
-    @UserData() userData: IUserData,
+  async getIdeaDetails(
     @Param('idea_id') idea_id: number,
+    @UserData() userData: IUserData,
   ) {
-    return await this.ideaService.getIdeaDetail(idea_id, userData.user_id);
+    return await this.ideaService.getIdeaDetails(idea_id, userData);
   }
 
   @Get('?')
