@@ -23,15 +23,6 @@ export class UserDetailService {
     return await userDetailRepository.save(body);
   }
 
-  getUserDetail(user_id: string, entityManager?: EntityManager) {
-    const userDetailRepository = entityManager
-      ? entityManager.getRepository<UserDetail>('user_detail')
-      : this.userDetailRepository;
-
-    return userDetailRepository.findOne({
-      user_id: user_id,
-    });
-  }
   async updateUserDetail(
     conditions: DeepPartial<UserDetail>,
     value: DeepPartial<UserDetail>,

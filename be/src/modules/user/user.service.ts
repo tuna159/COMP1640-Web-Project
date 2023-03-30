@@ -1,3 +1,4 @@
+import { UserDetail } from '@core/database/mysql/entity/userDetail.entity';
 import { IUserData } from '@core/interface/default.interface';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -39,10 +40,7 @@ export class UserService {
     });
   }
 
-  async getUserById(
-    user_id: string,
-    entityManager?: EntityManager,
-  ) {
+  async getUserById(user_id: string, entityManager?: EntityManager) {
     const userRepository = entityManager
       ? entityManager.getRepository<User>('user')
       : this.userRepository;
@@ -232,5 +230,24 @@ export class UserService {
         isDeleted: EIsDelete.NOT_DELETED,
       },
     });
+  }
+
+  async getUserDetail(userData: IUserData, targetUserId: string) {
+    const user = await this.findUserByUserId(targetUserId);
+
+    if (!user) {
+      throw new HttpException(
+        ErrorMessage.USER_NOT_EXISTS,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const data = {
+      user_id: user?.user_id,
+      nick_name: user?.userDetail?.nick_name,
+      avatar_url: user?.userDetail?.avatar_url,
+      birthdate: user?.userDetail?.birthday,
+    };
+    return data;
   }
 }
