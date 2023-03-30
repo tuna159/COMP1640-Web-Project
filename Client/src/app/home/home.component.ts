@@ -32,6 +32,7 @@ export class HomeComponent implements OnInit{
         Authorization: 'Bearer ' + this.authService.getToken()}
       }).subscribe((res:any)=>{
         this.listIdea = res.data;
+        console.log(this.listIdea)
       })
     }
   getAllDepartment() {

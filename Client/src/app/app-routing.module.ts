@@ -73,7 +73,7 @@ const routes: Routes = [
         path: 'manage/account',
         canActivate: [RoleGuardService],
         data: {
-            expectedRole: 1,
+            expectedRole: [1],
         },
         // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: ManageAccountComponent
