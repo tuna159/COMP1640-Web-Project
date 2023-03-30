@@ -39,6 +39,7 @@ export class ProfileComponent implements OnInit {
   gender: string;
   profile: Profile;
   account: Account;
+  email: string;
   profileSubmitted: boolean;
   accountSubmitted: boolean;
   uploadedFiles: any[] = [];
@@ -81,7 +82,8 @@ export class ProfileComponent implements OnInit {
             console.log(result);
             this.name = result.data.nick_name;
             this.gender = result.data.gender == 1 ? "Male" : "Female";
-            this.date = result.data.birthday;
+            this.date = result.data.birthdate;
+            this.email = result.data.email;
           });
 
   }
