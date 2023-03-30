@@ -1,4 +1,3 @@
-import { UserDetail } from '@core/database/mysql/entity/userDetail.entity';
 import { IUserData } from '@core/interface/default.interface';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -58,10 +57,7 @@ export class UserService {
     });
   }
 
-  async getUserById(
-    user_id: string,
-    entityManager?: EntityManager,
-  ) {
+  async getUserById(user_id: string, entityManager?: EntityManager) {
     const userRepository = entityManager
       ? entityManager.getRepository<User>('user')
       : this.userRepository;
