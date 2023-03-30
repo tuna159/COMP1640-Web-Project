@@ -5,6 +5,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuthenticationService } from '../auth/services/authentication.service';
 import { CreateAccountComponent } from '../manage-account/create-account/create-account/create-account.component';
 import { Router } from '@angular/router';
+import { AddEventComponent } from './add-event/add-event.component';
 
 @Component({
   selector: 'app-manage-event',
@@ -30,15 +31,15 @@ export class ManageEventComponent {
   ngOnInit() {
 
     this.cols = [
-      { field: 'Stt', header: 'STT', width: '50px', textAlign: 'center' },
-      { field: 'email', header: 'Email', width: '300px', textAlign: 'center' },
-      { field: 'name', header: 'Full Name', width: '300px', textAlign: 'center' },
-      { field: 'role', header: 'Role', width: '200px', textAlign: 'center' },
-      { field: 'department', header: 'Department', width: '100px', textAlign: 'center' },
-      { field: 'status', header: 'Status', width: '150px', textAlign: 'center' },
+      { field: 'Number', header: 'Number', width: '50px', textAlign: 'center' },
+      { field: 'name', header: 'Name', width: '200px', textAlign: 'center' },
+      { field: 'Start Date', header: 'Start Date', width: '200px', textAlign: 'center' },
+      { field: 'Closure Date', header: 'Closure Date', width: '150px', textAlign: 'center' },
+      { field: 'Final Date', header: 'Final Date', width: '150px', textAlign: 'center' },
+      { field: 'Department', header: 'Department', width: '150px', textAlign: 'center' },
       {
-        field: 'ThaoTac',
-        header: 'Thao tác',
+        field: 'Edit/Delete',
+        header: 'Edit/Delete',
         width: '120px',
         textAlign: 'center',
       },
@@ -106,11 +107,11 @@ export class ManageEventComponent {
     this.messageService.add({ severity: severity, summary: 'Thông báo:', detail: detail });
   }
 
-  openNewevent() {
-    this.ref = this.dialogService.open(CreateAccountComponent, {
-      header: 'Add Account',
+  openNewCategory() {
+    this.ref = this.dialogService.open(AddEventComponent, {
+      header: 'Add Event',
       width: '50%',
-      height: '80%',
+      height: '90%',
       contentStyle: { "max-height": "800px", "overflow": "auto" },
       baseZIndex: 10000,
     });
