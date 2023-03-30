@@ -2,14 +2,14 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
+import jwt_decode from 'jwt-decode';
 @Injectable({
     providedIn: 'root',
 })
 export class AuthenticationService {
     private userSubject: BehaviorSubject<any>;
     public user: Observable<any>;
-
+    public Roles = [];
     constructor(private http: HttpClient, private router: Router) {
         this.userSubject = new BehaviorSubject<any>(
             JSON.parse(localStorage.getItem('user'))
@@ -26,10 +26,34 @@ export class AuthenticationService {
     }
 
     public getToken(): any {
+        if(!this.userSubject.value.data){
+            localStorage.removeItem('user');
+        }
         return this.userSubject.value.data.token;
     }
+
     public getUserID(): any {
+        if(!this.userSubject.value.data){
+            localStorage.removeItem('user');
+        }
         return this.userSubject.value.data.user_id;
+    }
+
+    public getRole(){
+        if(!this.userSubject.value.data){
+            localStorage.removeItem('user');
+        }
+        const tokenInfo = this.getDecodedAccessToken(this.userSubject.value.data.token); // decode token
+        console.log(tokenInfo.role_id); // show decoded token object in console
+        return tokenInfo.role_id
+    }
+
+    public getDecodedAccessToken(token: string): any {
+        try {
+            return jwt_decode(token);
+        } catch(Error) {
+            return null;
+        }
     }
 
     public login(username: string, password: string) {
