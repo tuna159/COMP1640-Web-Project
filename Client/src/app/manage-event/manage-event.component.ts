@@ -103,20 +103,39 @@ export class ManageEventComponent {
     this.messageService.add({ severity: severity, summary: 'Thông báo:', detail: detail });
   }
 
-  openNewevent(data) {
-    this.ref = this.dialogService.open(AddEventComponent, {
-      header: 'Add Event',
-      width: '50%',
-      height: '90%',
-      contentStyle: { "max-height": "800px", "overflow": "auto" },
-      baseZIndex: 10000,
-      data: data
-    });
-    this.ref.onClose.subscribe((result) => {
-      if (result) {
+  openNewEvent(data) {
+    if (!data) {
+      this.ref = this.dialogService.open(CreateAccountComponent, {
+        header: 'Add Category',
+        width: '30%',
+        height: '50%',
+        contentStyle: { "max-height": "800px", "overflow": "auto" },
+        baseZIndex: 10000,
+        data: {
+
+        }
+      });
+      this.ref.onClose.subscribe((result) => {
+        if (result) {
+          this.showMessage("Add success: ", result);
+        }
+        this.getAllData();
+      });
+    } else {
+      this.ref = this.dialogService.open(CreateAccountComponent, {
+        header: 'Edit Category',
+        width: '30%',
+        height: '50%',
+        contentStyle: { "max-height": "800px", "overflow": "auto" },
+        baseZIndex: 10000,
+        data: data
+      });
+      this.ref.onClose.subscribe((result) => {
+        if (result) {
           this.showMessage("Edit success: ", result);
-      }
-      this.getAllData();
-  });
+        }
+        this.getAllData();
+      });
+    }
   }
 }

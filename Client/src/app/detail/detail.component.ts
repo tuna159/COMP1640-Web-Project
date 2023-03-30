@@ -52,12 +52,11 @@ export class DetailComponent {
         Authorization: 'Bearer ' + this.authService.getToken()}
       }).subscribe((resultComment: any) => {
               this.listCommentData = resultComment.data;
-              console.log(this.listCommentData);
           });
     }
   }
 
-  postCommentbyIdea(level: number){
+  postCommentByIdea(level: number){
     if(/[a-z0-9]/i.test(this.comment_value) == false)
     {
       alert("Please enter a comment")
@@ -70,6 +69,7 @@ export class DetailComponent {
         Authorization: 'Bearer ' + this.authService.getToken()}
       }).subscribe((resultComment: any) => {
               console.log(resultComment)
+              console.log(this.Id)
               this.comment_value = ""
               this.getCommentbyIdea()
           });
