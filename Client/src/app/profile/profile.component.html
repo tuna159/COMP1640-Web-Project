@@ -125,7 +125,7 @@
     </form>
     <ng-template pTemplate="footer">
         <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
-            (click)="CancelDialog()"></button>
+            (click)="hideDialog()"></button>
         <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
             (click)="SaveEditInfor()"></button>
     </ng-template>
@@ -157,21 +157,6 @@
                         <label for="Female" style="margin-bottom: 0; margin-left: 5%;">Female</label>
                     </div>
                 </div>
-            </div>
-
-            <div class="field" style="margin-top: 5%;">
-                <label for="phone">Phone</label>
-                <input type="number" pInputText required [(ngModel)]="Phone" mode="decimal" inputId="withoutgrouping" formControlName="phone"
-                [ngClass]="(formGroup.controls.phone.invalid && (formGroup.controls.phone.dirty || formGroup.controls.phone.touched)) ? 'ng-invalid ng-dirty' : ''"
-                >
-
-                <div class="form-group mb-2" [hidden]="formGroup.controls.phone.valid|| formGroup.controls.phone.untouched">
-                    <span *ngIf="formGroup.controls.phone.hasError('required') || formGroup.controls.phone.hasError('blankString') "
-                        class="error-message-span" style="color: #FD0B0B; font-size: small;">
-                        Please enter Phone
-                    </span>
-                </div>
-                
             </div>
             <div class="field" style="margin-top: 5%;">
                 <label for="birthDay">BirthDay</label>
@@ -237,7 +222,7 @@
 
         <ng-template pTemplate="footer">
             <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
-                (click)="CancelDialog()"></button>
+                (click)="hideDialog()"></button>
             <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
                 (click)="SaveEditAccount()"></button>
         </ng-template>

@@ -107,7 +107,7 @@ export class ManageEventComponent {
     this.messageService.add({ severity: severity, summary: 'Thông báo:', detail: detail });
   }
 
-  openNewCategory() {
+  openNewevent() {
     this.ref = this.dialogService.open(AddEventComponent, {
       header: 'Add Event',
       width: '50%',
