@@ -1,5 +1,5 @@
+import { IUserData } from './../../core/interface/default.interface';
 import { UserData } from '@core/decorator/user.decorator';
-import { IUserData } from '@core/interface/default.interface';
 import { UserDetailService } from '@modules/user-detail/user-detail.service';
 import { Body, Controller, Put } from '@nestjs/common';
 import { VUpdatePassword } from 'global/dto/updatePassword.dto';

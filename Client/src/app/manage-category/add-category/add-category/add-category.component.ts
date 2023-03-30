@@ -10,58 +10,53 @@ import { AuthenticationService } from 'src/app/auth/services/authentication.serv
   styleUrls: ['./add-category.component.css']
 })
 export class AddCategoryComponent implements OnInit {
-  apiUrl: string = "http://localhost:3009/api/idea";
-  categories = [
-    { name: 'A' },
-    { name: 'B' },
-    { name: 'C' },
-    { name: 'D' },
-    { name: 'E' }
-  ];
+  apiUrl: string = "http://localhost:3009/api/category";
+  data: any;
   formGroup: FormGroup<{
     name: FormControl<string>;
-
-
   }>;
   constructor(private dialogService: DialogService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
     private http: HttpClient, private authService: AuthenticationService,) {
-
-
+      this.data = this.config.data;
   }
   SaveIdea() {
-    this.http.post(this.apiUrl, {
-      "title": "XYZ",
-      "content": "HEHE1",
-      "category_ids": [1, 2],
-      "files": [
-        {
-          "file": "pdf1",
-          "size": 1
-        },
-        {
-          "file": "pdf2",
-          "size": 1
-        },
-        {
-          "file": "pdf3",
-          "size": 1
+    if(this.data.category_id == null) {
+      this.http.post(this.apiUrl, {
+        "name": this.formGroup.controls.name.value,
+        }, {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken()
         }
-      ],
-      "is_anonymous": 1
-    }, {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe((result: any) => {
-      console.log(result);
-    });
-    this.closeDialog()
+      }).subscribe((result: any) => {
+        this.ref.close(this.formGroup.controls.name.value);
+      });
+    } else {
+      this.http.put(this.apiUrl + "/" + this.data.category_id, {
+        "name": this.formGroup.controls.name.value,
+        }, {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken()
+        }
+      }).subscribe((result: any) => {
+        this.ref.close(this.formGroup.controls.name.value);
+      });
+    }
+    
+    
   }
 
   ngOnInit(): void {
     this.formGroup = new FormGroup({
       name: new FormControl(null, [Validators.required]),
     });
+    if(this.data.category_id != null) {
+      this.setValueF();
+    }
+  }
+  setValueF() {
+    this.formGroup.patchValue({
+      name: this.data.name, 
+    })
   }
 
   closeDialog() {

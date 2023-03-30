@@ -4,9 +4,7 @@
 
     <div style="width: 100%; display: flex;">
         <app-menu></app-menu>
-        <div class="ds-category">
-        
-        
+        <div class="ds-account">
             <div class="col-md-12 body-page">
                 <div class="row">
                     <div class="col-md-6"></div>
@@ -20,11 +18,11 @@
                                             (input)="myTab.filterGlobal($any($event.target).value, 'contains')"
                                             placeholder="Search..." style="margin-left: 7.5px; height: 30px !important;" />
                                     </span>
-                                    <button pButton type="button" (click)="openNewCategory()" label="Add" icon="pi pi-plus"
+                                    <button pButton type="button" (click)="openNewUser(null)" label="Add" icon="pi pi-plus"
                                         style="background-color:#f97c39; width: 120px !important; height: 30px !important; margin-left: 5px; border: 0px;"></button>
                                     <button pButton type="button" label="Xóa" icon="pi pi-trash"
                                         style="background-color:red; width: 120px !important; height: 30px !important; margin-left: 5px; border: 0px"
-                                        (click)="showDialogXoaN()"></button>
+                                        (click)="showDialogDeleteUsers()"></button>
                                 </div>
         
                             </div>
@@ -34,7 +32,7 @@
                 <div class="row" style="margin-top: 20px">
                     <div class="col-md-12">
                         <p-table #myTab [columns]="cols" [value]="listData" [tableStyle]="{ 'min-width': '50rem' }"
-                            [(selection)]="listSelectedData" dataKey="category_id" [rowHover]="true" [scrollable]="true"
+                            [(selection)]="listSelectedData" dataKey="account_id" [rowHover]="true" [scrollable]="true"
                             [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
                             [globalFilterFields]="['Number','name',]">
                             <ng-template pTemplate="header" let-columns>
@@ -48,23 +46,22 @@
                                     </th>
                                 </tr>
                             </ng-template>
-                            <ng-template pTemplate="body" let-category>
+                            <ng-template pTemplate="body" let-account>
                                 <tr>
                                     <td style="width: 2rem" class="text-center">
-                                        <p-tableCheckbox [value]="category"></p-tableCheckbox>
+                                        <p-tableCheckbox [value]="account"></p-tableCheckbox>
                                     </td>
-                                    <td style="text-align: center">{{category.Stt}}</td>
-                                    <td style="text-align: center">{{category.name}}</td>
-                                    <td style="text-align: center">{{category.name}}</td>
-                                    <td style="text-align: center">{{category.name}}</td>
-                                    <td style="text-align: center">{{category.name}}</td>
-                                    <td style="text-align: center">{{category.name}}</td>
+                                    <td style="text-align: center">{{account.Stt}}</td>
+                                    <td style="text-align: center">{{account.email}}</td>
+                                    <td style="text-align: center">{{account.email}}</td>
+                                    <td style="text-align: center">{{account.role.name}}</td>
+                                    <td style="text-align: center">{{account.is_deleted}}</td>
                                     <td style="text-align: center">
                                         <span style="display: flex;">
                                             <button pButton icon="pi pi-pencil" class="ui-button-primary edit-button"
-                                                (click)="chinhSua(category)"></button>
+                                                (click)="openNewUser(account)"></button>
                                             <button pButton icon="pi pi-trash" class="ui-button-danger delete-button"
-                                                style="margin-left: 5px" (click)="showDialogXoa(category)"></button>
+                                                style="margin-left: 5px" (click)="showDialogDelete(account)"></button>
                                         </span>
                                     </td>
                                 </tr>
@@ -82,26 +79,26 @@
 
 
 
-<!-- Xác nhận xóa tổ-->
-<p-dialog header="Xác nhận" [(visible)]="displayXoa" [modal]="true" [responsive]="true" [closable]="false"
+<!-- Xác nhận xóa user-->
+<p-dialog header="Xác nhận" [(visible)]="displayDeleteUser" [modal]="true" [responsive]="true" [closable]="false"
     [style]="{width: '20%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
     <p>Bạn có chắc chắn xóa tổ này không?</p>
     <p-footer>
-        <button type="button" pButton icon="pi pi-close" (click)="displayXoa=false" label="Hủy" class="btn btn-light"
+        <button type="button" pButton icon="pi pi-close" (click)="displayDeleteUser=false" label="Hủy" class="btn btn-light"
             style="width:72px; height:38px"></button>
-            <button type="button" pButton icon="pi pi-close" (click)="xoaAccount()" label="OK" class="btn btn-primary"
+            <button type="button" pButton icon="pi pi-close" (click)="DeleteAccount()" label="OK" class="btn btn-primary"
             style="width:72px; height:38px"></button>
     </p-footer>
 </p-dialog>
 
-<!-- Xác nhận xóa nhiều tổ-->
-<p-dialog header="Xác nhận" [(visible)]="displayXoaN" [modal]="true" [responsive]="true" [closable]="false"
+<!-- Xác nhận xóa nhiều user-->
+<p-dialog header="Xác nhận" [(visible)]="displayDeleteUsers" [modal]="true" [responsive]="true" [closable]="false"
     [style]="{width: '20%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
-    <p>Bạn có chắc chắn xóa các tổ này không?</p>
+    <p>Are you sure to delete these users?</p>
     <p-footer>
-        <button type="button" pButton icon="pi pi-close" (click)="displayXoaN = false" label="Hủy" class="btn btn-light"
+        <button type="button" pButton icon="pi pi-close" (click)="displayDeleteUsers = false" label="Hủy" class="btn btn-light"
             style="width:72px; height:38px"></button>
-            <button type="button" pButton icon="pi pi-close" (click)="xoaNTAccount()" label="OK" class="btn btn-primary"
+            <button type="button" pButton icon="pi pi-close" (click)="DeleteAccounts()" label="OK" class="btn btn-primary"
             style="width:72px; height:38px"></button>
     </p-footer>
 </p-dialog>

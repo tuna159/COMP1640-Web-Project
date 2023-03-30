@@ -20,7 +20,7 @@
                                         (input)="myTab.filterGlobal($any($event.target).value, 'contains')"
                                         placeholder="Search..." style="margin-left: 7.5px; height: 30px !important; " />
                                 </span>
-                                <button pButton type="button" (click)="openNewCategory()" label="Add" icon="pi pi-plus"
+                                <button pButton type="button" (click)="openNewCategory(null)" label="Add" icon="pi pi-plus"
                                     style="background-color:#f97c39; width: 120px !important; height: 30px !important; margin-left: 5px; border: 0px;"></button>
                                 <button pButton type="button" label="Delete" icon="pi pi-trash"
                                     style="background-color:red; width: 120px !important; height: 30px !important; margin-left: 5px; border: 0px"
@@ -58,7 +58,7 @@
                                 <td style="text-align: center">
                                     <span>
                                         <button pButton icon="pi pi-pencil" class="ui-button-primary edit-button"
-                                            (click)="chinhSua(category)"></button>
+                                            (click)="openNewCategory(category)"></button>
                                         <button pButton icon="pi pi-trash" class="ui-button-danger delete-button"
                                             style="margin-left: 5px" (click)="showDialogXoa(category)"></button>
                                     </span>
