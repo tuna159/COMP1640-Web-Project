@@ -1,4 +1,6 @@
 import { Public } from '@core/decorator/public.decorator';
+import { UserData } from '@core/decorator/user.decorator';
+import { IUserData } from '@core/interface/default.interface';
 import {
   Body,
   Controller,
@@ -10,22 +12,46 @@ import {
   Query,
 } from '@nestjs/common';
 import { EIdeaFilter } from 'enum/idea.enum';
-import { DepartmentDto } from 'global/dto/department.dto';
+import { CreateDepartmentDto, UpdateDepartmentDto } from 'global/dto/department.dto';
 import { DepartmentService } from './department.service';
 
 @Controller('department')
 export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}
 
-  @Public()
   @Get()
-  async getAllDepartments() {
-    return await this.departmentService.getAllDepartments();
+  getAllDepartments() {
+    return this.departmentService.getAllDepartments();
   }
 
   @Get(':department_id')
   getDepartmentById(@Param('department_id') department_id: number) {
-    return this.departmentService.getDepartmentById(department_id);
+    return this.departmentService.getDepartmentDetails(department_id);
+  }
+
+  @Post()
+  createDepartment(
+    @UserData() userData: IUserData,
+    @Body() body: CreateDepartmentDto,
+  ) {
+    return this.departmentService.createDepartment(userData, body);
+  }
+
+  @Put(':department_id')
+  updateDepartment(
+    @UserData() userData: IUserData,
+    @Param('department_id') department_id: number, 
+    @Body() body: UpdateDepartmentDto,
+  ) {
+    return this.departmentService.updateDepartment(userData, department_id, body);
+  }
+
+  @Delete(':department_id')
+  deleteDepartment(
+    @UserData() userData: IUserData,
+    @Param('department_id') department_id: number,
+  ) {
+    return this.departmentService.deleteDepartment(userData, department_id);
   }
 
   @Get(':department_id/events')
@@ -55,20 +81,5 @@ export class DepartmentController {
       category_id,
       sorting_setting,
     );
-  }
-
-  @Post()
-  createDepartment(@Body() department: DepartmentDto) {
-    return this.departmentService.createDepartment(department);
-  }
-
-  @Put(':id')
-  updateDepartment(@Param('id') id: string, @Body() department: DepartmentDto) {
-    return this.departmentService.updateDepartment(Number(id), department);
-  }
-
-  @Delete(':id')
-  deleteDepartment(@Param('id') id: string) {
-    return this.departmentService.deleteDepartment(Number(id));
   }
 }

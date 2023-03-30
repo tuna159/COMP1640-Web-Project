@@ -17,7 +17,6 @@ import { DepartmentModule } from '@modules/department/department.module';
     PassportModule,
     JwtModule,
     UserDetailModule,
-    DepartmentModule,
   ],
   exports: [AuthService, JwtStrategy],
 })

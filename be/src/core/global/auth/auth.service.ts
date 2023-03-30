@@ -36,7 +36,6 @@ export class AuthService {
     public jwtService: JwtService,
     private connection: Connection,
     private userDetailService: UserDetailService,
-    private deparmentService: DepartmentService,
   ) {}
 
   async getUserById(user_id: string, role_id) {
