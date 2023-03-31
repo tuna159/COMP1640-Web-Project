@@ -1,9 +1,27 @@
 <div>
 
-    <app-header-home></app-header-home>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a href="" class="col-md-1"><img src="../../assets/images/home.png" style="margin-left: 55px;" /></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active col-md-5">
+                    <a class="nav-link" href="/manage/account">Manage Account<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active col-md-5">
+                    <a class="nav-link" href="/manage/event">Manage Event</a>
+                </li>
+                <li class="nav-item active col-md-5">
+                    <a class="nav-link" href="#">Log out</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
-    <div style="width: 100%; display: flex;">
-        <app-menu></app-menu>
+    <div style="width: 100%; display: flex; margin-top: 1%;">
         <div class="ds-event">
             <div class="col-md-12 body-page">
                 <div class="row">
@@ -86,19 +104,19 @@
     <p>Are you sure to delete this event?</p>
     <p-footer>
         <button type="button" pButton icon="pi pi-close" (click)="displayDeleteEvent=false" label="Cancel" class="btn btn-light"
-            style="width:72px; height:38px"></button>
+            style="width:100px; height:38px"></button>
         <button type="button" pButton icon="pi pi-close" (click)="deleteEvent()" label="OK" class="btn btn-primary"
             style="width:72px; height:38px"></button>
     </p-footer>
 </p-dialog>
 
 <!-- confirm delete events-->
-<p-dialog header="Xác nhận" [(visible)]="displayDeleteEvents" [modal]="true" [responsive]="true" [closable]="false"
+<p-dialog header="Confirm" [(visible)]="displayDeleteEvents" [modal]="true" [responsive]="true" [closable]="false"
     [style]="{width: '20%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
     <p>Are you sure to delete these events?</p>
     <p-footer>
         <button type="button" pButton icon="pi pi-close" (click)="displayDeleteEvents = false" label="Cancel" class="btn btn-light"
-            style="width:72px; height:38px"></button>
+            style="width: 100px; height:38px"></button>
         <button type="button" pButton icon="pi pi-close" (click)="deleteEvents()" label="OK" class="btn btn-primary"
             style="width:72px; height:38px"></button>
     </p-footer>

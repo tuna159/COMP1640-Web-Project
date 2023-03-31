@@ -25,7 +25,7 @@ export class AddEventComponent implements OnInit {
     startDate: FormControl<string>;
     closuretDate: FormControl<string>;
     finaltDate: FormControl<string>;
-    department: FormControl<[string]>;
+    department: FormControl<string>;
   }>;
   constructor(private dialogService: DialogService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
     private http: HttpClient, private authService: AuthenticationService,) {
@@ -68,7 +68,7 @@ export class AddEventComponent implements OnInit {
       startDate: new FormControl(null, [Validators.required]),
       closuretDate: new FormControl(null, [Validators.required]),
       finaltDate: new FormControl(null, [Validators.required]),
-      department: new FormControl(null, [Validators.required]),
+      department: new FormControl('All Department', [Validators.required]),
     });
   }
 

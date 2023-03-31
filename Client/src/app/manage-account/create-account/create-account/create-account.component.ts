@@ -35,10 +35,6 @@ export class CreateAccountComponent {
   }>;
   constructor(private dialogService: DialogService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
     private http: HttpClient, private authService: AuthenticationService,) {
-    this.status = [
-      { label: 'Dang hot dong', value: 'Dang hot dong' },
-      { label: 'Ngung hoat dong', value: 'Ngung hoat dong' },
-    ];
 
   }
   SaveIdea() {
@@ -76,9 +72,9 @@ export class CreateAccountComponent {
       email: new FormControl(null, [Validators.required]),
       password: new FormControl(null, [Validators.required]),
       fullName: new FormControl(null, [Validators.required]),
-      role: new FormControl(null, [Validators.required]),
-      department: new FormControl(null, [Validators.required]),
-      status: new FormControl(null, [Validators.required]),
+      role: new FormControl("Staff", [Validators.required]),
+      department: new FormControl("Department", [Validators.required]),
+      status: new FormControl("Using", [Validators.required]),
     });
   }
 

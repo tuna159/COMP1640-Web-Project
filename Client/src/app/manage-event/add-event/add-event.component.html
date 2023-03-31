@@ -1,6 +1,6 @@
 <form [formGroup]="formGroup" (ngSubmit)="SaveIdea()">
     <div class="field" style="margin-top: 5%;">
-        <label for="name" style="width: 100%; text-align: center;">Name Category</label>
+        <label for="name" style="width: 100%;">Name Event</label>
         <br>
         <input type="text" pInputText id="name" formControlName="name" required [autofocus] style=" width: 100%;"
             [ngClass]="(formGroup.controls.name.invalid && (formGroup.controls.name.dirty || formGroup.controls.name.touched)) ? 'ng-invalid ng-dirty' : ''">
@@ -16,7 +16,7 @@
         <div class="field" style="margin-top: 5%;">
             <label for="birthDay">Start Date</label>
             <br>
-            <p-calendar formControlName="startDate" inputId="basic" [required] [touchUI]="true" [readonlyInput]="true"
+            <p-calendar formControlName="startDate" inputId="basic" [required] appendTo="body"
                 [ngClass]="(formGroup.controls.startDate.invalid && (formGroup.controls.startDate.dirty || formGroup.controls.startDate.touched)) ? 'ng-invalid ng-dirty' : ''"></p-calendar>
         
             <div class="form-group mb-2" [hidden]="formGroup.controls.startDate.valid|| formGroup.controls.startDate.untouched">
@@ -31,7 +31,7 @@
         <div class="field" style="margin-top: 5%;">
             <label for="birthDay">Closure Date</label>
             <br>
-            <p-calendar formControlName="closuretDate" inputId="basic" [required] [touchUI]="true" [readonlyInput]="true"
+            <p-calendar formControlName="closuretDate" inputId="basic" [required] appendTo="body"
                 [ngClass]="(formGroup.controls.closuretDate.invalid && (formGroup.controls.closuretDate.dirty || formGroup.controls.closuretDate.touched)) ? 'ng-invalid ng-dirty' : ''"></p-calendar>
         
             <div class="form-group mb-2" [hidden]="formGroup.controls.closuretDate.valid|| formGroup.controls.closuretDate.untouched">
@@ -47,7 +47,7 @@
         <div class="field" style="margin-top: 5%;">
             <label for="birthDay">Final Date</label>
             <br>
-            <p-calendar formControlName="finaltDate" inputId="basic" [required] [touchUI]="true" [readonlyInput]="true"
+            <p-calendar formControlName="finaltDate" inputId="basic" [required] appendTo="body"
                 [ngClass]="(formGroup.controls.finaltDate.invalid && (formGroup.controls.finaltDate.dirty || formGroup.controls.finaltDate.touched)) ? 'ng-invalid ng-dirty' : ''"></p-calendar>
         
             <div class="form-group mb-2" [hidden]="formGroup.controls.finaltDate.valid|| formGroup.controls.finaltDate.untouched">
@@ -63,19 +63,10 @@
             <label for="Department">Department</label>
             <br>
             
-            <div class="col-3" style="position: static;">
-                <p-treeSelect formControlName="department"  [ngClass]="(formGroup.controls.department.invalid && (formGroup.controls.department.dirty || formGroup.controls.department.touched)) ? 'ng-invalid ng-dirty' : ''"  placeholder="All Department"></p-treeSelect>
-            </div>
-            
-            <div class="col-3" style="position: static;">
-                <ng-template ptemplate="filter" let-department let-filter="filterCallback">
-                    <p-dropdown [options]="listDepartment" (onChange)="filter($event.value)" placeholder="Category">
-                        <ng-template let-option ptemplate="item">
-                            <span [class]="'customer-badge status-' + option.value">{{option.name}}</span>
-                        </ng-template>
-                    </p-dropdown>
-                </ng-template>
-            </div>
+            <select class="form-control" formControlName="department" id="department">
+                <option>All Department</option>
+                <option>Department</option>
+            </select>
         </div>
 
     </div>

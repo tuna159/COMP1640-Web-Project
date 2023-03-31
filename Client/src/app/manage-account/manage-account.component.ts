@@ -33,14 +33,25 @@ export class ManageAccountComponent {
 
     this.cols = [
       { field: 'Number', header: 'Number', width: '5%', textAlign: 'center' },
+<<<<<<< HEAD
       { field: 'email', header: 'Email', width: '30%', textAlign: 'center' },
       { field: 'name', header: 'Full Name', width: '30%', textAlign: 'center' },
       { field: 'role', header: 'Role', width: '15%', textAlign: 'center' },
       { field: 'status', header: 'Status', width: '15%', textAlign: 'center' },
+=======
+      { field: 'email', header: 'Email', width: '15%', textAlign: 'center' },
+      { field: 'name', header: 'Full Name', width: '15%', textAlign: 'center' },
+      { field: 'role', header: 'Role', width: '10%', textAlign: 'center' },
+      { field: 'status', header: 'Status', width: '10%', textAlign: 'center' },
+>>>>>>> fe864b9 (sos)
       {
         field: 'edit',
         header: 'Edit',
+<<<<<<< HEAD
         width: '5%',
+=======
+        width: '10%',
+>>>>>>> fe864b9 (sos)
         textAlign: 'center',
       },
     ];
@@ -110,8 +121,7 @@ export class ManageAccountComponent {
     if(!data) {
       this.ref = this.dialogService.open(CreateAccountComponent, {
         header: 'Add Account',
-        width: '30%',
-        height: '50%',
+        width: '40%',
         contentStyle: { "max-height": "800px", "overflow": "auto" },
         baseZIndex: 10000,
         data: {
@@ -127,8 +137,7 @@ export class ManageAccountComponent {
   } else {
     this.ref = this.dialogService.open(CreateAccountComponent, {
       header: 'Edit Account',
-      width: '30%',
-      height: '50%',
+      width: '40%',
       contentStyle: { "max-height": "800px", "overflow": "auto" },
       baseZIndex: 10000,
       data: data
