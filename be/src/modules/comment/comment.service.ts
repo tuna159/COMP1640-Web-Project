@@ -176,37 +176,6 @@ export class CommentService {
     };
   }
 
-  // async updateComment(
-    
-  //   idea_id: number,
-  //   comment_id: number,
-  //   body: VUpdateCommentDto,
-  // ) {
-  //   if (userData.role_id != EUserRole.STAFF) {
-  //     throw new HttpException(
-  //       ErrorMessage.COMMENT_UPDATE_PERMISSION,
-  //       HttpStatus.BAD_REQUEST,
-  //     );
-  //   }
-
-  //   const idea = await this.ideaRepository.findOne({
-  //     where: { idea_id, is_deleted: EIsDelete.NOT_DELETED },
-  //   });
-
-  //   if (!idea) {
-  //     throw new HttpException(
-  //       ErrorMessage.IDEA_NOT_EXIST,
-  //       HttpStatus.BAD_REQUEST,
-  //     );
-  //   }
-
-  //   return this.commentService.updateComment(
-  //     userData.user_id,
-  //     comment_id,
-  //     body,
-  //   );
-  // }
-
   async updateComment(
     userData: IUserData,
     comment_id: number,
@@ -217,10 +186,26 @@ export class CommentService {
       ? entityManager.getRepository<Comment>('comment')
       : this.commentRepository;
 
-    const comment = await commentRepository.findOne({
-      where: { comment_id, is_deleted: EIsDelete.NOT_DELETED },
-    });
+    if (userData.role_id != EUserRole.STAFF) {
+      throw new HttpException(
+        ErrorMessage.COMMENT_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
+    const comment = await commentRepository
+      .createQueryBuilder('comment')
+      .innerJoinAndSelect('comment.idea', 'idea')
+      .innerJoinAndSelect('idea.event', 'event')
+      .where('comment.comment_id = :comment_id', { comment_id })
+      .andWhere('comment.is_deleted = :is_deleted', { 
+        is_deleted: EIsDelete.NOT_DELETED, 
+      })
+      .andWhere('idea.is_deleted = :is_deleted', { 
+        is_deleted: EIsDelete.NOT_DELETED, 
+      })
+      .getOne();
+  
     if (!comment) {
       throw new HttpException(
         ErrorMessage.COMMENT_NOT_EXIST,
@@ -229,18 +214,25 @@ export class CommentService {
     }
     if (userData.user_id != comment.author_id) {
       throw new HttpException(
-        ErrorMessage.COMMENT_UPDATE_PERMISSION,
+        ErrorMessage.COMMENT_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const event = comment.idea.event;
+    if(event.final_closure_date <= new Date()) {
+      throw new HttpException(
+        ErrorMessage.FINAL_CLOSURE_DATE_UNAVAILABLE,
         HttpStatus.BAD_REQUEST,
       );
     }
 
     const result = await commentRepository.update(
-      { comment_id },
-      { content: value.content! },
+      comment_id,
+      { content: value.content },
     );
-
     return {
-      affected: result.affected!,
+      affected: result.affected,
     };
   }
 }
