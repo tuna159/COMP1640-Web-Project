@@ -1,6 +1,6 @@
 import { UserData } from '@core/decorator/user.decorator';
 import { IUserData } from '@core/interface/default.interface';
-import { Body, Controller, Delete, Param, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { VUpdateCommentDto } from 'global/dto/comment.dto';
 
@@ -23,5 +23,12 @@ export class CommentController {
     @Body() body: VUpdateCommentDto,
   ) {
     return this.commentService.updateComment(userData, comment_id, body);
+  }
+
+  @Get(':parent_id')
+  getCommentsByParent(
+    @Param('parent_id') parent_id: number,
+  ) {
+    return this.commentService.getCommentsByParent(parent_id);
   }
 }

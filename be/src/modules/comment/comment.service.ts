@@ -27,9 +27,8 @@ export class CommentService {
     });
   }
 
-  async getCommentsByParent(
+  async getIdeaCommentsLv1(
     idea_id: number,
-    parent_id: number,
     entityManager?: EntityManager,
   ) {
     const commentRepository = entityManager
@@ -41,35 +40,73 @@ export class CommentService {
       .innerJoinAndSelect('comment.author', 'author')
       .innerJoinAndSelect('author.userDetail', 'user_detail')
       .where('idea_id = :idea_id', { idea_id })
-      .andWhere(
-        parent_id == null ? 'parent_id IS NULL' : 'parent_id = :parent_id',
-        { parent_id },
-      )
+      .andWhere('comment.parent_id IS NULL')
       .andWhere('comment.is_deleted = :is_deleted', {
         is_deleted: EIsDelete.NOT_DELETED,
       })
       .getMany();
 
-    let data = [];
-
-    data = comments.map((comment) => {
+    return comments.map((comment) => {
+      const author = comment.author.userDetail;
       return {
         comment_id: comment.comment_id,
         idea_id: comment.idea_id,
-        parent_id: comment.parent_id,
-        level: comment.level,
         content: comment.content,
         created_date: comment.created_at,
         updated_date: comment.updated_at,
         author: {
           author_id: comment.author_id,
-          full_name: comment.author.userDetail.full_name,
-          nickname: comment.author.userDetail.nick_name,
+          full_name: author.full_name,
+          nickname: author.nick_name,
+          avatar_url: author.avatar_url,
         },
       };
     });
+  }
 
-    return data;
+  async getCommentsByParent(
+    parent_id: number,
+    entityManager?: EntityManager,
+  ) {
+    const commentRepository = entityManager
+      ? entityManager.getRepository<Comment>('comment')
+      : this.commentRepository;
+
+    const parent = await this.commentExist(parent_id);
+    if(!parent) {
+      throw new HttpException(
+        ErrorMessage.COMMENT_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const comments = await commentRepository
+      .createQueryBuilder('comment')
+      .innerJoinAndSelect('comment.author', 'author')
+      .innerJoinAndSelect('author.userDetail', 'user_detail')
+      .andWhere('parent_id = :parent_id', { parent_id })
+      .andWhere('comment.is_deleted = :is_deleted', {
+        is_deleted: EIsDelete.NOT_DELETED,
+      })
+      .getMany();
+
+    return comments.map((comment) => {
+      const author = comment.author.userDetail;
+      return {
+        comment_id: comment.comment_id,
+        idea_id: comment.idea_id,
+        parent_id: comment.parent_id,
+        content: comment.content,
+        created_date: comment.created_at,
+        updated_date: comment.updated_at,
+        author: {
+          author_id: comment.author_id,
+          full_name: author.full_name,
+          nickname: author.nick_name,
+          avatar_url: author.avatar_url,
+        },
+      };
+    });
   }
 
   async createComment(params: any, entityManager?: EntityManager) {

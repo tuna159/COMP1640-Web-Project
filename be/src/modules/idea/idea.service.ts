@@ -791,27 +791,18 @@ export class IdeaService {
     await ideaRepository.update(conditions, value);
   }
 
-  async getCommentsByParent(
+  async getIdeaCommentsLv1(
     idea_id: number,
-    parent_id: number,
     entityManager?: EntityManager,
   ) {
-    const ideaRepository = entityManager
-      ? entityManager.getRepository<Idea>('idea')
-      : this.ideaRepository;
-
-    const idea = await ideaRepository.findOne({
-      where: { idea_id: idea_id },
-    });
-
+    const idea = await this.ideaExists(idea_id);
     if (!idea) {
       throw new HttpException(
         ErrorMessage.IDEA_NOT_EXIST,
         HttpStatus.BAD_REQUEST,
       );
     }
-
-    return this.commentService.getCommentsByParent(idea_id, parent_id);
+    return this.commentService.getIdeaCommentsLv1(idea_id);
   }
 
   downloadIdeasByEvent(

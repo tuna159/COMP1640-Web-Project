@@ -105,13 +105,12 @@ export class IdeaController {
     return this.ideaService.downloadIdeasByEvent(userData, event_id, res, req);
   }
 
-  // @Get(':idea_id/comments/:parent_id')
-  // async getCommentsByParent(
-  //   @Param('idea_id') idea_id: number,
-  //   @Param('parent_id') parent_id: number,
-  // ) {
-  //   return await this.ideaService.getCommentsByParent(idea_id, parent_id);
-  // }
+  @Get(':idea_id/comments')
+  async getIdeaCommentsLv1(
+    @Param('idea_id') idea_id: number,
+  ) {
+    return await this.ideaService.getIdeaCommentsLv1(idea_id);
+  }
 
   @Post('/:idea_id/comments')
   async createComment(
