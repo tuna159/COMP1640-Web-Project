@@ -8,18 +8,22 @@ import {
   Param,
   Post,
   Put,
+  Query,
+  Res,
 } from '@nestjs/common';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateEventDto, VUpdateEventDto } from 'global/dto/event.dto.';
+import type { Response } from 'express';
 import { EventService } from './event.service';
+import { Public } from '@core/decorator/public.decorator';
 
 @Controller('event')
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
   @Get()
-  getAllEvent(@UserData() userData: IUserData) {
-    return this.eventService.getAllEvent(userData);
+  getAllEvents(@UserData() userData: IUserData) {
+    return this.eventService.getAllEvents(userData);
   }
 
   @Post()
@@ -53,6 +57,19 @@ export class EventController {
     return this.eventService.createIdea(userData, body, event_id);
   }
 
+  @Get(':event_id/download?')
+  downloadIdeasByEvent(
+    @UserData() userData: IUserData,
+    @Param('event_id') event_id: number,
+    @Query('category_id') category_id: number,
+    @Query('department_id') department_id: number,
+    @Query('start_date') start_date: Date,
+    @Query('end_date') end_date: Date,
+    @Res() res: Response,
+  ) {
+    return this.eventService.downloadIdeasByEvent(event_id, res, userData);
+  }
+  
   @Get(':event_id/ideas')
   getIdeasByEvent(
     @UserData() userData: IUserData,
@@ -65,25 +82,4 @@ export class EventController {
   getEventsByUniversity() {
     return this.eventService.getEventsByUniversity();
   }
-
-  // @Put(':event_id/idea/:idea_id')
-  // updateIdea(
-  //   @UserData() userData: IUserData,
-  //   @Param('event_id') event_id: number,
-  //   @Param('idea_id') idea_id: number,
-  //   @Body() body: VUpdateIdeaDto,
-  // ) {
-  //   return this.eventService.updateIdea(userData, event_id, idea_id, body);
-  // }
-
-  // @Delete(':event_id/idea/:idea_id')
-  // deleteIdea(
-  //   @Param('event_id') event_id: number,
-  //   @Param('idea_id') idea_id: number,
-  //   @UserData() userData: IUserData,
-  // ) {
-  //   return this.eventService.deleteIdea(event_id, idea_id, userData, {
-  //     is_deleted: EIsDelete.DELETED,
-  //   });
-  // }
 }
