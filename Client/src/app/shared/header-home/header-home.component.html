@@ -18,21 +18,9 @@
             <li class="nav-item active">
                 <a class="nav-link" href="#">University <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Department 1</a>
+            <li class="nav-item active" *ngFor="let l of listDepartment" [class.active]="isLinkActive(l)">
+                <a class="nav-link" [routerLink]="['/event/ideas']"  [queryParams]="{ Id: l.department_id, name: l.name}">{{l.name}}</a>
             </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Department 2</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Department 2</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Department 4</a>
-            </li>
-            <!-- <li class="nav-item">
-                <a class="nav-link disabled" href="#">Disabled</a>
-            </li> -->
         </ul>
     </div>
 </nav>
