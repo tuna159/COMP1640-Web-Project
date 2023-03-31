@@ -75,27 +75,10 @@ export class DepartmentController {
     return this.departmentService.getEventsByDepartment(department_id);
   }
 
-  @Get(':department_id/ideas?')
-  getIdeasByDepartment(
+  @Get(':department_id/ideas')
+  getDepartmentValidIdeas(
     @Param('department_id') department_id: number,
-    @Query('sorting_setting') sorting_setting: EIdeaFilter,
   ) {
-    return this.departmentService.getIdeasByDepartment(
-      department_id,
-      sorting_setting,
-    );
-  }
-
-  @Get(':department_id/categories/:category_id/ideas?')
-  getIdeasByDepartmentAndCategory(
-    @Param('department_id') department_id: number,
-    @Param('category_id') category_id: number,
-    @Query('sorting_setting') sorting_setting: EIdeaFilter,
-  ) {
-    return this.departmentService.getIdeasByDepartmentAndCategory(
-      department_id,
-      category_id,
-      sorting_setting,
-    );
+    return this.departmentService.getDepartmentValidIdeas(department_id);
   }
 }

@@ -33,7 +33,15 @@ export class CategoryService {
     return categoryRepository.findOne(category_id);
   }
 
-  getIdeasByCategory(category_id: number) {
+  async getCategoryValidIdeas(category_id: number) {
+    const category = await this.categoryExists(category_id);
+    if(!category) {
+      throw new HttpException(
+        ErrorMessage.CATEGORY_NOT_EXISTS,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     return this.ideaService.getIdeasOfSystem(null, category_id, null, null, true);
   }
 

@@ -157,13 +157,16 @@ export class DepartmentService {
     );
   }
 
-  getIdeasByDepartment(department_id: number, sorting_setting: EIdeaFilter) {
-    return this.ideaService.getAllIdeas(
-      null,
-      department_id,
-      null,
-      sorting_setting,
-    );
+  async getDepartmentValidIdeas(department_id: number) {
+    const department = await this.departmentExists(department_id);
+    if(!department) {
+      throw new HttpException(
+        ErrorMessage.DEPARTMENT_NOT_EXISTS,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    
+    return this.ideaService.getIdeasOfSystem(null, null, department_id, null, true);
   }
 
   async getAvailableDepartments(

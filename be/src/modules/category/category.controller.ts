@@ -24,10 +24,10 @@ export class CategoryController {
   }
 
   @Get(':category_id/ideas?')
-  getIdeasByCategory(
+  getCategoryValidIdeas(
     @Param('category_id') category_id: number,
   ) {
-    return this.categoryService.getIdeasByCategory(category_id);
+    return this.categoryService.getCategoryValidIdeas(category_id);
   }
 
   @Post()
