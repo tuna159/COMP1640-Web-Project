@@ -69,7 +69,7 @@ export class EventController {
   ) {
     return this.eventService.downloadIdeasByEvent(event_id, res, userData);
   }
-  
+
   @Get(':event_id/ideas')
   getIdeasByEvent(
     @UserData() userData: IUserData,

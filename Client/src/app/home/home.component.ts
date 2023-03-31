@@ -15,6 +15,7 @@ import { PostComponent } from './post/post.component';
 export class HomeComponent implements OnInit{
   ref: DynamicDialogRef;
   listIdea = [];
+  listData = [];
   search_value: any;
   listDepartment = []
   selectedNode: any;
@@ -31,7 +32,22 @@ export class HomeComponent implements OnInit{
         Authorization: 'Bearer ' + this.authService.getToken()}
       }).subscribe((res:any)=>{
         this.listIdea = res.data;
-        console.log(this.listIdea)
+        this.listIdea.forEach(item => {
+          const tmp = item.tags.map(x => x.name);
+          console.log(item.tags)
+          let bodyData = {
+            full_name: item.user.full_name,
+            idea_id: item.idea_id,
+            title: item.title,
+            nameEvent: item.event.name,
+            created_at: item.created_at,
+            views: item.views, 
+            tag: item.tags,
+            nameTag: tmp.toString(),
+          }
+          this.listData.push(bodyData)
+        })
+        console.log(this.listData)
       })
   }
 

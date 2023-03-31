@@ -56,9 +56,6 @@
                             [globalFilterFields]="['Number','name',]"  >
                             <ng-template pTemplate="header" let-columns>
                                 <tr>
-                                    <th style="width: 2rem" class="text-center">
-                                        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                                    </th>
                                     <th *ngFor="let col of columns"
                                         [ngStyle]="{ 'text-align': 'center', 'width': col.width }">
                                         {{ col.header }}
@@ -67,9 +64,6 @@
                             </ng-template>
                             <ng-template pTemplate="body" let-account>
                                 <tr>
-                                    <td style="width: 2rem" class="text-center">
-                                        <p-tableCheckbox [value]="account"></p-tableCheckbox>
-                                    </td>
                                     <td style="text-align: center">{{account.Stt}}</td>
                                     <td style="text-align: center">{{account.email}}</td>
                                     <td style="text-align: center">{{account.email}}</td>
