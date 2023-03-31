@@ -296,4 +296,19 @@ export class EventService {
     }
     return this.ideaService.createIdea(userData, body, event_id);
   }
+
+  async getAllEvent(userData: IUserData, entityManager?: EntityManager) {
+    const eventRepository = entityManager
+      ? entityManager.getRepository<Event>('event')
+      : this.eventRepository;
+
+    if (userData.role_id != EUserRole.ADMIN) {
+      throw new HttpException(
+        ErrorMessage.EVENT_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return await this.eventRepository.find();
+  }
 }

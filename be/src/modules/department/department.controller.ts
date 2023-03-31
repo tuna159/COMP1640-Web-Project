@@ -8,9 +8,7 @@ import {
   Param,
   Post,
   Put,
-  Query,
 } from '@nestjs/common';
-import { EIdeaFilter } from 'enum/idea.enum';
 import {
   CreateDepartmentDto,
   UpdateDepartmentDto,
@@ -35,6 +33,10 @@ export class DepartmentController {
   getDepartmentById(@Param('department_id') department_id: number) {
     return this.departmentService.getDepartmentDetails(department_id);
   }
+  // @Get(':department_id')
+  // getDepartmentById(@Param('department_id') department_id: number) {
+  //   return this.departmentService.getDepartmentDetails(department_id);
+  // }
 
   @Post()
   createDepartment(
@@ -65,20 +67,13 @@ export class DepartmentController {
     return this.departmentService.deleteDepartment(userData, department_id);
   }
 
-  @Get('university/events')
-  getEventsByUniversity() {
-    return this.departmentService.getEventsByUniversity();
-  }
-
   @Get(':department_id/events')
   getEventsByDepartment(@Param('department_id') department_id: number) {
     return this.departmentService.getEventsByDepartment(department_id);
   }
 
   @Get(':department_id/ideas')
-  getDepartmentValidIdeas(
-    @Param('department_id') department_id: number,
-  ) {
+  getDepartmentValidIdeas(@Param('department_id') department_id: number) {
     return this.departmentService.getDepartmentValidIdeas(department_id);
   }
 }
