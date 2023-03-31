@@ -1004,6 +1004,17 @@ export class IdeaService {
     }
   }
 
+  async countIdeaComments(idea_id: number) {
+    const idea = await this.ideaExists(idea_id);
+    if (!idea) {
+      throw new HttpException(
+        ErrorMessage.IDEA_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return this.commentService.countIdeaComments(idea_id);
+  }
+
   async updatePostByUserCreated(
     condition: object,
     body: DeepPartial<Idea>,

@@ -235,4 +235,18 @@ export class CommentService {
       affected: result.affected,
     };
   }
+
+  async countIdeaComments(
+    idea_id: number,
+    entityManager?: EntityManager,
+  ) {
+    const commentRepository = entityManager
+      ? entityManager.getRepository<Comment>('comment')
+      : this.commentRepository;
+    
+    const total = await commentRepository.count({ idea_id });
+    return {
+      "comments": total,
+    };
+  }
 }
