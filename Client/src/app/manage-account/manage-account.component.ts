@@ -33,10 +33,10 @@ export class ManageAccountComponent {
 
     this.cols = [
       { field: 'Number', header: 'Number', width: '5%', textAlign: 'center' },
-      { field: 'email', header: 'Email', width: '15%', textAlign: 'center' },
-      { field: 'name', header: 'Full Name', width: '15%', textAlign: 'center' },
+      { field: 'email', header: 'Email', width: '25%', textAlign: 'center' },
+      { field: 'name', header: 'Full Name', width: '25%', textAlign: 'center' },
       { field: 'role', header: 'Role', width: '10%', textAlign: 'center' },
-      { field: 'status', header: 'Status', width: '10%', textAlign: 'center' },
+      { field: 'status', header: 'Status', width: '25%', textAlign: 'center' },
       {
         field: 'edit',
         header: 'Edit',

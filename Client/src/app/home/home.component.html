@@ -7,6 +7,7 @@
 		<div class="menu" style="position: fixed;">
 			<app-menu></app-menu>
 		</div>
+    
 		<div class="post" style=" background-color: white;  height: 100px; width: 50rem; margin-left: auto; margin-top: 5em; border-radius: 10px; margin-right: auto; text-align: center; padding-top: 1%;">
 			<span class="p-input-icon-left" style="width: 48rem;">
 				<i class="pi pi-search"></i>
@@ -47,36 +48,55 @@
 							</p-dropdown>
 						</ng-template>
 					</div>
-
+          <input pInputText type="text" class="input-search"
+                                        (input)="myTab.filterGlobal($any($event.target).value, 'contains')"
+                                        placeholder="Search..." style="margin-left: 7.5px; height: 30px !important; " />
+          <div class="row" style="margin-top: 20px">
+            <div class="col-md-12">
+                <p-table #myTab  [value]="listData" [tableStyle]="{ 'min-width': '50rem' }"
+                    [rowHover]="true" [scrollable]="true" [globalFilterFields]="['full_name','nameEvent','title', 'nameTag']"
+                    [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 50]">
+                    <ng-template pTemplate="body" let-idea>
+                        <tr>
+                            <td>
+                              <div>
+                                <div class="row"style="margin-top: 2rem; margin-bottom: 1rem; background-color: #F2F2F2; padding: 10px; border-radius: 10px; width: 90%; margin-left: auto; margin-right:auto;">
+                                  <div class="personal-info col-3" style="position: static;">
+                                    <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" styleclass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                    <p></p>
+                                    <p>{{idea.full_name}}</p>
+                                  </div>
+                                  <div class="col-9" style="position: static;">
+                                    <button pbutton pripple type="button" label="" class="p-button-text p-button-plain" (click)="IdeaDetail(idea.idea_id)">{{idea.title}}</button>
+                                    <div class="row" style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; height: 2rem;">
+                                      <p>{{idea.nameEvent}}</p>
+                                      <p>{{idea.created_at | date:'mediumDate'}}</p>
+                                      <p>{{idea.views}}Views</p>
+                                    </div>
+                                    <div class="row" style="margin-left: auto; margin-right: auto;">
+                                      <p style = "display: none">{{idea.nameTag}}</p>
+                                    </div>
+                                    <div class="row" style="margin-left: auto; margin-right: auto;">
+                                      <p-chip label="{{lc.name}}" styleclass="mr-2" *ngFor="let lc of idea.tag
+                                      ; index as i;"></p-chip>
+                      
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+          </div>
 				</div>
 
-				<div>
-
-					<div class="row" *ngFor="let l of listIdea; index as i;" style="margin-top: 2rem; margin-bottom: 1rem; background-color: #F2F2F2; padding: 10px; border-radius: 10px; width: 90%; margin-left: auto; margin-right:auto;">
-						<div class="personal-info col-3" style="position: static;">
-							<p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" styleclass="mr-2" size="xlarge" shape="circle"></p-avatar>
-							<p></p>
-							<p>{{l.user.full_name}}</p>
-						</div>
-						<div class="col-9" style="position: static;">
-
-							<button pbutton pripple type="button" label="" class="p-button-text p-button-plain" (click)="IdeaDetail(l.idea_id)">{{l.title}}</button>
-
-							<div class="row" style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; height: 2rem;">
-                <p>{{l.event.name}}</p>
-                <p>{{l.created_at | date:'mediumDate'}}</p>
-								<p>{{l.views}}Views</p>
-							</div>
-							<div class="row" style="margin-left: auto; margin-right: auto;">
-								<p-chip label="{{lc.name}}" styleclass="mr-2" *ngFor="let lc of l.tags
-                ; index as i;"></p-chip>
-							</div>
-						</div>
-					</div>
-				</div>
+				
 			</p-card>
-
 		</div>
+
 
 
 		<p-toast position="bottom-right"></p-toast>
