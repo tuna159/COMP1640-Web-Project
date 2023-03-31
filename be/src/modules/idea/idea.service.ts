@@ -1032,13 +1032,18 @@ export class IdeaService {
 
     const queryBuilder = ideaRepository
       .createQueryBuilder('idea')
-      .select()
-      .leftJoinAndSelect('idea.ideaTags', 'ideaTags')
-      .leftJoinAndSelect('ideaTags.tag', 'tag')
-      .where('idea.is_deleted = :is_deleted', {
+      .innerJoinAndSelect('idea.event', 'event')
+      .innerJoinAndSelect('idea.user', 'user')
+      .innerJoinAndSelect('user.department', 'department')
+      .innerJoinAndSelect('user.userDetail', 'userDetail')
+      .innerJoinAndSelect('idea.ideaCategories', 'ideaCategory')
+      .innerJoinAndSelect('ideaCategory.category', 'category')
+      .innerJoinAndSelect('idea.ideaTags', 'ideaTags')
+      .innerJoinAndSelect('ideaTags.tag', 'tag')
+      .where('event.final_closure_date >= :now', { now })
+      .andWhere('idea.is_deleted = :is_deleted', {
         is_deleted: EIsDelete.NOT_DELETED,
       });
-
     if (query.search_key && query.search_key != '') {
       const searchKey = query.search_key.trim().toLowerCase();
       queryBuilder.andWhere(
@@ -1051,14 +1056,50 @@ export class IdeaService {
     const [listIdea] = await queryBuilder.getManyAndCount();
 
     data = listIdea.map((idea) => {
+      const event = idea.event;
+      const user = idea.user.userDetail;
+      const userDepartment = idea.user.department;
+      const category = idea.ideaCategories[0];
+      const tags = idea.ideaTags.map((i) => {
+        return {
+          tag_id: i.tag.tag_id,
+          name: i.tag.name,
+        };
+      });
+
       return {
         idea_id: idea.idea_id,
         title: idea.title,
-        tag: idea.ideaTags.map((e) => {
-          return {
-            tag: e.tag.name,
-          };
-        }),
+        content: idea.content,
+        views: idea.views,
+        is_anonymous: idea.is_anonymous,
+        created_at: idea.created_at,
+        updated_at: idea.updated_at,
+        event: {
+          event_id: event.event_id,
+          department_id: event.department_id,
+          name: event.name,
+          content: event.content,
+          created_date: event.created_date,
+          first_closure_date: event.first_closure_date,
+          final_closure_date: event.final_closure_date,
+        },
+        user: {
+          user_id: user.user_id,
+          department: {
+            department_id: userDepartment.department_id,
+            manager_id: userDepartment.manager_id,
+            name: userDepartment.name,
+          },
+          full_name: user.full_name,
+          nick_name: user.nick_name,
+          avatar_url: user.avatar_url,
+        },
+        category: {
+          category_id: category.category_id,
+          name: category.category.name,
+        },
+        tags,
       };
     });
 
@@ -1079,4 +1120,20 @@ export class IdeaService {
 
     return await this.reactionService.getListReaction();
   }
+
+  // async storeFileStream(fileStream, filename): Promise<string> {
+  //   const bucket = admin.storage().bucket();
+  //   const file = bucket.file(filename);
+
+  //   // Pipe the file stream to the Firebase storage
+  //   await fileStream.pipe(file.createWriteStream());
+
+  //   // Get the download URL for the uploaded file
+  //   const downloadURL = await file.getSignedUrl({
+  //     action: 'read',
+  //     expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // 7 days
+  //   });
+
+  //   return downloadURL[0];
+  // }
 }
