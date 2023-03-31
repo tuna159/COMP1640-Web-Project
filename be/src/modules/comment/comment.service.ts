@@ -16,7 +16,21 @@ export class CommentService {
     private readonly commentRepository: Repository<Comment>,
   ) {}
 
-  async getIdeaCommentsByParent(
+  async commentExist(
+    comment_id: number,
+    entityManager?: EntityManager,
+  ) {
+    const commentRepository = entityManager
+      ? entityManager.getRepository<Comment>('comment')
+      : this.commentRepository;
+    
+    return commentRepository.findOne({
+      comment_id,
+      is_deleted: EIsDelete.NOT_DELETED,
+    });
+  }
+
+  async getCommentsByParent(
     idea_id: number,
     parent_id: number,
     entityManager?: EntityManager,
@@ -61,14 +75,45 @@ export class CommentService {
     return data;
   }
 
-  async addIdeaComment(
-    value: DeepPartial<Comment>,
+  async createComment(
+    params: any,
     entityManager?: EntityManager,
   ) {
     const commentRepository = entityManager
       ? entityManager.getRepository<Comment>('comment')
       : this.commentRepository;
-    return await commentRepository.save(value);
+
+    const newComment = new Comment();
+    newComment.idea_id = params.idea_id!;
+    newComment.author_id = params.author_id!;
+    newComment.content = params.content!;
+    
+    if(params.parent_id != null) {
+      const parent = await this.commentExist(params.parent_id);
+      if(!parent) {
+        throw new HttpException(
+          ErrorMessage.COMMENT_NOT_EXIST,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      if(parent.level == this.maxLevel) {
+        newComment.level = this.maxLevel;
+        newComment.parent_id = parent.parent_id;
+      }else {
+        newComment.level = parent.level + 1;
+        newComment.parent_id = parent.comment_id;
+      }
+    }
+
+    const comment = await commentRepository.save(newComment);
+    return {
+      "idea_id": comment.idea_id,
+      "author_id": comment.author_id,
+      "content": comment.content,
+      "parent_id": comment.parent_id,
+      "comment_id": comment.comment_id,
+      "created_at": comment.created_at,
+    };
   }
 
   async deleteComment(

@@ -46,13 +46,6 @@ export class IdeaController {
     return this.ideaService.getIdeasOfAvailableEvents();
   }
 
-  // @Get('?')
-  // getIdeasByCurrentEvent(
-  //   @Query('sorting_setting') sorting_setting: EIdeaFilter,
-  // ) {
-  //   return this.ideaService.getAllIdeas(null, null, null, sorting_setting);
-  // }
-
   @Put(':idea_id')
   updateIdea(
     @UserData() userData: IUserData,
@@ -96,15 +89,7 @@ export class IdeaController {
   getIdeaDislikes(@Param('idea_id') idea_id: number) {
     return this.ideaService.getIdeaDislikes(idea_id);
   }
-
-  @Get(':idea_id/comments?')
-  async getIdeaCommentsByParent(
-    @Param('idea_id') idea_id: number,
-    @Query('parent_id') parent_id: number,
-  ) {
-    return await this.ideaService.getIdeaCommentsByParent(idea_id, parent_id);
-  }
-
+  
   @Get('event/download/:event_id')
   downloadIdeasByEvent(
     @UserData() userData: IUserData,
@@ -120,8 +105,16 @@ export class IdeaController {
     return this.ideaService.downloadIdeasByEvent(userData, event_id, res, req);
   }
 
+  @Get(':idea_id/comments/:parent_id')
+  async getCommentsByParent(
+    @Param('idea_id') idea_id: number,
+    @Param('parent_id') parent_id: number,
+  ) {
+    return await this.ideaService.getCommentsByParent(idea_id, parent_id);
+  }
+
   @Post('/:idea_id/comments')
-  async handleAddComment(
+  async createComment(
     @UserData() userData: IUserData,
     @Body() body: VAddComment,
     @Param(
@@ -132,7 +125,7 @@ export class IdeaController {
     )
     idea_id: number,
   ) {
-    return await this.ideaService.createComment(userData, idea_id, body);
+    return this.ideaService.createComment(userData, idea_id, body);
   }
 
   @Delete('/:idea_id/comments/:comment_id')

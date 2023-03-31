@@ -2,23 +2,17 @@ import {
   IsString,
   IsOptional,
   MaxLength,
-  Max,
-  Min,
   IsInt,
+  MinLength,
 } from 'class-validator';
 
 export class VAddComment {
-  @IsOptional()
-  @MaxLength(4096)
   @IsString()
-  content: string | null;
+  @MinLength(1)
+  @MaxLength(4096)
+  content: string;
 
   @IsOptional()
   @IsInt()
   parent_id: number;
-
-  @IsInt()
-  @Min(1)
-  @Max(3)
-  level: number;
 }

@@ -22,7 +22,7 @@ export class Comment {
   @Column('uuid', { name: 'author_id' })
   author_id: string;
 
-  @Column({ name: 'parent_id', type: 'int', unsigned: true, nullable: true })
+  @Column({ name: 'parent_id', type: 'int', unsigned: true, default: null, nullable: true })
   parent_id: number;
 
   @Column({ name: 'level', type: 'tinyint', unsigned: true, default: 1 })
@@ -30,15 +30,6 @@ export class Comment {
 
   @Column({ name: 'content', type: 'varchar', length: 800 })
   content: string;
-
-  @Column({
-    name: 'is_anonymous',
-    type: 'tinyint',
-    unsigned: true,
-    default: 0,
-    comment: '0: not anonymous, 1: anonymous',
-  })
-  is_anonymous: number;
 
   @Column({
     name: 'is_deleted',
