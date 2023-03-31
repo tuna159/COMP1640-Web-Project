@@ -59,8 +59,7 @@ export class LoginComponent implements OnInit {
     .pipe(first())
     .subscribe((result: any) => {
       if(result.status_code == 200){
-        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-        });
+        this.router.navigate(['/']);
       }else{
         this.showMessage('error', "Vui lòng đăng nhập lại");
       }
