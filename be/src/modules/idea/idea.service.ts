@@ -1061,4 +1061,29 @@ export class IdeaService {
 
   //   return downloadURL[0];
   // }
+
+  async getDepartmentStaffContribution(
+    department_id: number,
+    entityManager?: EntityManager,
+  ) {
+    const ideaRepository = entityManager
+      ? entityManager.getRepository<Idea>('idea')
+      : this.ideaRepository;
+
+    const ideas = await ideaRepository
+      .createQueryBuilder('idea')
+      .select('idea.user_id')
+      .distinct()
+      .innerJoin('idea.user', 'user')
+      .innerJoin('user.department', 'department')
+      .where('user.department_id = :department_id', {department_id})
+      .andWhere('user.is_deleted = :is_deleted', {
+        is_deleted: EIsDelete.NOT_DELETED,
+      })
+      .andWhere('idea.is_deleted = :is_deleted', {
+        is_deleted: EIsDelete.NOT_DELETED,
+      })
+      .getRawMany();
+    return ideas.length;
+  }
 }

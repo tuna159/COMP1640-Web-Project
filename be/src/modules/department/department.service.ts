@@ -2,6 +2,7 @@ import { Department } from '@core/database/mysql/entity/department.entity';
 import { IUserData } from '@core/interface/default.interface';
 import { EventService } from '@modules/event/event.service';
 import { IdeaService } from '@modules/idea/idea.service';
+import { UserService } from '@modules/user/user.service';
 import {
   forwardRef,
   HttpException,
@@ -10,6 +11,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EIsDelete } from 'enum';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
 import { EIdeaFilter } from 'enum/idea.enum';
@@ -305,5 +307,53 @@ export class DepartmentService {
         name: d.name,
       };
     });
+  }
+
+  async countTotalStaff(
+    department_id: number,
+    entityManager?: EntityManager,
+  ) {
+    const departmentRepository = entityManager
+      ? entityManager.getRepository<Department>('department')
+      : this.departmentRepository;
+
+    const result = await departmentRepository
+      .createQueryBuilder('department')
+      .innerJoin('department.users', 'users')
+      .where('users.department_id = :department_id', { department_id })
+      .andWhere('users.is_deleted = :is_deleted', {
+        is_deleted: EIsDelete.NOT_DELETED,
+      })
+      .getRawMany();
+    return result.length;
+  }
+
+  async getDepartmentStaffContribution(
+    department_id: number,
+    userData: IUserData,
+    entityManager?: EntityManager,
+  ) {
+    if (userData.role_id != EUserRole.ADMIN) {
+      throw new HttpException(
+        ErrorMessage.GENERAL_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const department = await this.departmentExists(department_id);
+    if(!department) {
+      throw new HttpException(
+        ErrorMessage.DEPARTMENT_NOT_EXISTS,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const staffContributed = await this.ideaService
+        .getDepartmentStaffContribution(department_id, entityManager);
+    const total = await this.countTotalStaff(department_id, entityManager);
+    return {
+      "department_id": department.department_id,
+      "name": department.name,
+      "total_staff": total,
+      "staff_contributed": staffContributed,
+    };
   }
 }

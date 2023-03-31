@@ -76,4 +76,14 @@ export class DepartmentController {
   getDepartmentValidIdeas(@Param('department_id') department_id: number) {
     return this.departmentService.getDepartmentValidIdeas(department_id);
   }
+
+  @Get(':department_id/dashboard/staff-contribution')
+  getDepartmentStaffContribution(
+    @Param('department_id') department_id: number,
+    @UserData() userData: IUserData,
+  ) {
+    return this.departmentService.getDepartmentStaffContribution(
+      department_id, userData
+    );
+  }
 }

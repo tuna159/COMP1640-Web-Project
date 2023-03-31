@@ -440,4 +440,54 @@ export class EventService {
     //   return {};
     // });
   }
+
+  async getStaffContributionOfPublicEvent(
+    event_id: number,
+    userData: IUserData,
+    entityManager?: EntityManager,
+  ) {
+    const eventRepository = entityManager
+      ? entityManager.getRepository<Event>('event')
+      : this.eventRepository;
+
+    if (userData.role_id != EUserRole.ADMIN) {
+      throw new HttpException(
+        ErrorMessage.GENERAL_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const event = await this.eventExists(event_id);
+    if(!event || event.department_id != null) {
+      throw new HttpException(
+        ErrorMessage.EVENT_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const data = [];
+    const departments = await this.departmentService.getAllDepartments();
+    for (const d of departments) {
+      const result = await eventRepository
+        .createQueryBuilder('event')
+        .select('idea.user_id')
+        .distinct()
+        .innerJoin('event.ideas', 'idea')
+        .innerJoin('idea.user', 'user')
+        .where('event.event_id = :event_id', { event_id })
+        .andWhere('user.department_id = :department_id', { 
+          department_id: d.department_id,
+        })
+        .andWhere('idea.is_deleted = :is_deleted', {
+          is_deleted: EIsDelete.NOT_DELETED,
+        })
+        .getRawMany();
+      const total = await this.departmentService.countTotalStaff(d.department_id);
+      data.push({
+        "department_id": d.department_id,
+        "department_name": d.name,
+        "total_staff": total,
+        "staff_contributed": result.length,
+      });
+    }
+    return data;
+  }
 }
