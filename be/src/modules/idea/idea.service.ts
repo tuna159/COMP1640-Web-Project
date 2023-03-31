@@ -1001,66 +1001,6 @@ export class IdeaService {
     }
   }
 
-  async deleteComment(
-    userData: IUserData,
-    idea_id: number,
-    comment_id: number,
-  ) {
-    if (
-      userData.role_id != EUserRole.STAFF &&
-      userData.role_id != EUserRole.QA_COORDINATOR
-    ) {
-      throw new HttpException(
-        ErrorMessage.COMMENT_DELETE_PERMISSION,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    const idea = await this.ideaRepository.findOne({
-      where: { idea_id, is_deleted: EIsDelete.NOT_DELETED },
-    });
-
-    if (!idea) {
-      throw new HttpException(
-        ErrorMessage.IDEA_NOT_EXIST,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    return this.commentService.deleteComment(userData, comment_id);
-  }
-
-  async updateComment(
-    userData: IUserData,
-    idea_id: number,
-    comment_id: number,
-    body: VUpdateCommentDto,
-  ) {
-    if (userData.role_id != EUserRole.STAFF) {
-      throw new HttpException(
-        ErrorMessage.COMMENT_UPDATE_PERMISSION,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    const idea = await this.ideaRepository.findOne({
-      where: { idea_id, is_deleted: EIsDelete.NOT_DELETED },
-    });
-
-    if (!idea) {
-      throw new HttpException(
-        ErrorMessage.IDEA_NOT_EXIST,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    return this.commentService.updateComment(
-      userData.user_id,
-      comment_id,
-      body,
-    );
-  }
-
   async updatePostByUserCreated(
     condition: object,
     body: DeepPartial<Idea>,
@@ -1117,6 +1057,7 @@ export class IdeaService {
 
     return data;
   }
+  
   async getListReaction(idea_id: number) {
     const idea = await this.ideaRepository.findOne({
       where: { idea_id: idea_id, is_deleted: EIsDelete.NOT_DELETED },

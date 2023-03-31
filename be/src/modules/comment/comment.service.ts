@@ -16,14 +16,11 @@ export class CommentService {
     private readonly commentRepository: Repository<Comment>,
   ) {}
 
-  async commentExist(
-    comment_id: number,
-    entityManager?: EntityManager,
-  ) {
+  async commentExist(comment_id: number, entityManager?: EntityManager) {
     const commentRepository = entityManager
       ? entityManager.getRepository<Comment>('comment')
       : this.commentRepository;
-    
+
     return commentRepository.findOne({
       comment_id,
       is_deleted: EIsDelete.NOT_DELETED,
@@ -75,10 +72,7 @@ export class CommentService {
     return data;
   }
 
-  async createComment(
-    params: any,
-    entityManager?: EntityManager,
-  ) {
+  async createComment(params: any, entityManager?: EntityManager) {
     const commentRepository = entityManager
       ? entityManager.getRepository<Comment>('comment')
       : this.commentRepository;
@@ -87,19 +81,19 @@ export class CommentService {
     newComment.idea_id = params.idea_id!;
     newComment.author_id = params.author_id!;
     newComment.content = params.content!;
-    
-    if(params.parent_id != null) {
+
+    if (params.parent_id != null) {
       const parent = await this.commentExist(params.parent_id);
-      if(!parent) {
+      if (!parent) {
         throw new HttpException(
           ErrorMessage.COMMENT_NOT_EXIST,
           HttpStatus.BAD_REQUEST,
         );
       }
-      if(parent.level == this.maxLevel) {
+      if (parent.level == this.maxLevel) {
         newComment.level = this.maxLevel;
         newComment.parent_id = parent.parent_id;
-      }else {
+      } else {
         newComment.level = parent.level + 1;
         newComment.parent_id = parent.comment_id;
       }
@@ -107,12 +101,12 @@ export class CommentService {
 
     const comment = await commentRepository.save(newComment);
     return {
-      "idea_id": comment.idea_id,
-      "author_id": comment.author_id,
-      "content": comment.content,
-      "parent_id": comment.parent_id,
-      "comment_id": comment.comment_id,
-      "created_at": comment.created_at,
+      idea_id: comment.idea_id,
+      author_id: comment.author_id,
+      content: comment.content,
+      parent_id: comment.parent_id,
+      comment_id: comment.comment_id,
+      created_at: comment.created_at,
     };
   }
 
@@ -125,10 +119,17 @@ export class CommentService {
       ? entityManager.getRepository<Comment>('comment')
       : this.commentRepository;
 
-    const comment = await commentRepository.findOne({
-      where: { comment_id, is_deleted: EIsDelete.NOT_DELETED },
-    });
+    if (
+      userData.role_id != EUserRole.STAFF &&
+      userData.role_id != EUserRole.QA_COORDINATOR
+    ) {
+      throw new HttpException(
+        ErrorMessage.COMMENT_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
+    const comment = await this.commentExist(comment_id);
     if (!comment) {
       throw new HttpException(
         ErrorMessage.COMMENT_NOT_EXIST,
@@ -141,23 +142,53 @@ export class CommentService {
       userData.user_id != comment.author_id
     ) {
       throw new HttpException(
-        ErrorMessage.COMMENT_DELETE_PERMISSION,
+        ErrorMessage.COMMENT_PERMISSION,
         HttpStatus.BAD_REQUEST,
       );
     }
 
     const result = await commentRepository.update(
-      { comment_id },
+      comment_id,
       { is_deleted: EIsDelete.DELETED },
     );
-
     return {
       affected: result.affected!,
     };
   }
 
+  // async updateComment(
+    
+  //   idea_id: number,
+  //   comment_id: number,
+  //   body: VUpdateCommentDto,
+  // ) {
+  //   if (userData.role_id != EUserRole.STAFF) {
+  //     throw new HttpException(
+  //       ErrorMessage.COMMENT_UPDATE_PERMISSION,
+  //       HttpStatus.BAD_REQUEST,
+  //     );
+  //   }
+
+  //   const idea = await this.ideaRepository.findOne({
+  //     where: { idea_id, is_deleted: EIsDelete.NOT_DELETED },
+  //   });
+
+  //   if (!idea) {
+  //     throw new HttpException(
+  //       ErrorMessage.IDEA_NOT_EXIST,
+  //       HttpStatus.BAD_REQUEST,
+  //     );
+  //   }
+
+  //   return this.commentService.updateComment(
+  //     userData.user_id,
+  //     comment_id,
+  //     body,
+  //   );
+  // }
+
   async updateComment(
-    author_id: string,
+    userData: IUserData,
     comment_id: number,
     value: DeepPartial<Comment>,
     entityManager?: EntityManager,
@@ -176,7 +207,7 @@ export class CommentService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    if (author_id != comment.author_id) {
+    if (userData.user_id != comment.author_id) {
       throw new HttpException(
         ErrorMessage.COMMENT_UPDATE_PERMISSION,
         HttpStatus.BAD_REQUEST,
