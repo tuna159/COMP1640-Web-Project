@@ -178,6 +178,7 @@ export class IdeaService {
         .addSelect('COUNT(comment.idea_id)', 'comments')
         .innerJoin('idea.user', 'user')
         .innerJoinAndSelect('user.userDetail', 'user_detail')
+
         .innerJoinAndSelect('user.department', 'department')
         .leftJoin('idea.comments', 'comment')
         .where('idea.event_id = :event_id', { event_id })
@@ -277,35 +278,39 @@ export class IdeaService {
       .innerJoinAndSelect('ideaTags.tag', 'tag')
       .where('idea.is_deleted = :is_deleted', {
         is_deleted: EIsDelete.NOT_DELETED,
-      })
-    
-    if(category_id != null) {
-      query.andWhere('ideaCategory.category_id = :category_id', { category_id });
+      });
+
+    if (category_id != null) {
+      query.andWhere('ideaCategory.category_id = :category_id', {
+        category_id,
+      });
     }
-    if(department_id != null) {
+    if (department_id != null) {
       query.andWhere('event.department_id = :department_id', { department_id });
-    }else if(entireUniversity) {
+    } else if (entireUniversity) {
       query.andWhere('event.department_id IS NULL');
     }
-    if(event_id != null) {
+    if (event_id != null) {
       query.andWhere('event.event_id = :event_id', { event_id });
-    }else if(availableEvents) {
+    } else if (availableEvents) {
       query.andWhere('event.final_closure_date >= :now', { now: new Date() });
     }
 
-    if(sorting_setting == EIdeaFilter.RECENT_IDEAS) {
+    if (sorting_setting == EIdeaFilter.RECENT_IDEAS) {
       query.orderBy('idea.created_at', 'DESC');
-    }else if(sorting_setting == EIdeaFilter.MOST_VIEWED_IDEAS) {
+    } else if (sorting_setting == EIdeaFilter.MOST_VIEWED_IDEAS) {
       query.orderBy('idea.views', 'DESC');
     }
 
     let ideas = await query.getMany();
-    if(sorting_setting == EIdeaFilter.MOST_POPULAR_IDEAS) {
+    if (sorting_setting == EIdeaFilter.MOST_POPULAR_IDEAS) {
       const ideasToSort = [];
       for (const idea of ideas) {
         const likes = await this.reactionService.getIdeaLikes(idea.idea_id);
-        const dislikes = await this.reactionService.getIdeaDislikes(idea.idea_id);
-        idea["point"] = likes - dislikes;
+        const dislikes = await this.reactionService.getIdeaDislikes(
+          idea.idea_id,
+        );
+        idea['point'] = likes - dislikes;
         ideasToSort.push(idea);
       }
       ideas = ideasToSort.sort((a, b) => b.point - a.point);
@@ -584,7 +589,11 @@ export class IdeaService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    return this.reactionService.createIdeaReaction(userData.user_id, idea_id, body);
+    return this.reactionService.createIdeaReaction(
+      userData.user_id,
+      idea_id,
+      body,
+    );
   }
 
   async deleteIdeaReaction(userData: IUserData, idea_id: number) {
@@ -791,10 +800,7 @@ export class IdeaService {
     await ideaRepository.update(conditions, value);
   }
 
-  async getIdeaCommentsLv1(
-    idea_id: number,
-    entityManager?: EntityManager,
-  ) {
+  async getIdeaCommentsLv1(idea_id: number, entityManager?: EntityManager) {
     const idea = await this.ideaExists(idea_id);
     if (!idea) {
       throw new HttpException(
@@ -881,11 +887,7 @@ export class IdeaService {
     // }
   }
 
-  async createComment(
-    userData: IUserData, 
-    idea_id: number, 
-    body: VAddComment,
-  ) {
+  async createComment(userData: IUserData, idea_id: number, body: VAddComment) {
     if (userData.role_id != EUserRole.STAFF) {
       throw new HttpException(
         ErrorMessage.COMMENT_PERMISSION,
@@ -900,7 +902,7 @@ export class IdeaService {
       );
     }
     const event = await this.eventService.eventExists(idea.event_id);
-    if(!event) {
+    if (!event) {
       throw new HttpException(
         ErrorMessage.EVENT_NOT_EXIST,
         HttpStatus.BAD_REQUEST,
@@ -914,12 +916,12 @@ export class IdeaService {
     }
     try {
       const params = {
-        "idea_id": idea_id,
-        "author_id": userData.user_id,
-        "parent_id": body.parent_id,
-        "content": body.content,
+        idea_id: idea_id,
+        author_id: userData.user_id,
+        parent_id: body.parent_id,
+        content: body.content,
       };
-      
+
       const newComment = await this.commentService.createComment(params);
       if (userData.user_id != idea.user_id) {
         return newComment;
@@ -1062,7 +1064,7 @@ export class IdeaService {
 
     return data;
   }
-  
+
   async getListReaction(idea_id: number) {
     const idea = await this.ideaRepository.findOne({
       where: { idea_id: idea_id, is_deleted: EIsDelete.NOT_DELETED },

@@ -9,10 +9,8 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { EIsDelete } from 'enum';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateEventDto, VUpdateEventDto } from 'global/dto/event.dto.';
-import { VUpdateIdeaDto } from 'global/dto/update-idea.dto';
 import { EventService } from './event.service';
 
 @Controller('event')
@@ -55,6 +53,19 @@ export class EventController {
     return this.eventService.createIdea(userData, body, event_id);
   }
 
+  @Get(':event_id/ideas')
+  getIdeasByEvent(
+    @UserData() userData: IUserData,
+    @Param('event_id') event_id: number,
+  ) {
+    return this.eventService.getIdeasByEvent(userData, event_id);
+  }
+
+  @Get('university')
+  getEventsByUniversity() {
+    return this.eventService.getEventsByUniversity();
+  }
+
   // @Put(':event_id/idea/:idea_id')
   // updateIdea(
   //   @UserData() userData: IUserData,
@@ -75,9 +86,4 @@ export class EventController {
   //     is_deleted: EIsDelete.DELETED,
   //   });
   // }
-
-  @Get('university')
-  getEventsByUniversity() {
-    return this.eventService.getEventsByUniversity();
-  }
 }
