@@ -15,7 +15,7 @@ import { PostComponent } from './post/post.component';
 export class HomeComponent implements OnInit{
   ref: DynamicDialogRef;
   listIdea = [];
-  value3: any;
+  search_value: any;
   listDepartment = []
   selectedNode: any;
   nodes1: any[];
@@ -23,7 +23,6 @@ export class HomeComponent implements OnInit{
   constructor(private dialogService: DialogService, private http: HttpClient, 
     private authService: AuthenticationService, private router: Router, private messageService: MessageService) { 
     this.getAllIdeas();
-    this.getAllDepartment()
   }
 
 
@@ -34,20 +33,20 @@ export class HomeComponent implements OnInit{
         this.listIdea = res.data;
         console.log(this.listIdea)
       })
-    }
-  getAllDepartment() {
-    this.http.get<any>("http://localhost:3009/api/department", {headers: {
+  }
+
+  changeSearch() {
+    this.http.get<any>("http://localhost:3009/api/idea/search?search_key=" + this.search_value, {headers: {
       Authorization: 'Bearer ' + this.authService.getToken()}
     }).subscribe((res:any)=>{
-      this.listDepartment = res.data;
+      this.listIdea = res.data;
     })
   }
+  
   ngOnInit(): void {
     
   }
-  UserDetail(Id) : void {
-    console.log(Id)
-  }
+
   IdeaDetail(IdIdeal) : void{
     this.router.navigateByUrl('/detail', { state: { Id: IdIdeal } });
   }

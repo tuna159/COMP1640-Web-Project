@@ -1,6 +1,8 @@
 <div>
-
-    <app-header-home></app-header-home>
+    <div class="col-md-12">
+        <app-header-home></app-header-home>
+    </div>
+    
 
     <div style="width: 100%; display: flex;">
         <app-menu></app-menu>
@@ -27,19 +29,19 @@
                         </div>
                     </div>
                 </div>
-                <div class="row" style="margin-top: 20px">
+                <div class="row" style="margin-top: 20px;" >
                     <div class="col-md-12">
                         <p-table #myTab [columns]="cols" [value]="listData" [tableStyle]="{ 'min-width': '50rem' }"
                             [(selection)]="listSelectedData" dataKey="account_id" [rowHover]="true" [scrollable]="true"
-                            [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
-                            [globalFilterFields]="['Number','name',]">
+                            [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [scrollHeight]="'flex'" [scrollable]="true"
+                            [globalFilterFields]="['Number','name',]"  >
                             <ng-template pTemplate="header" let-columns>
                                 <tr>
                                     <th style="width: 2rem" class="text-center">
                                         <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                                     </th>
                                     <th *ngFor="let col of columns"
-                                        [ngStyle]="{ 'text-align': 'center', 'min-width': col.width }">
+                                        [ngStyle]="{ 'text-align': 'center', 'width': col.width }">
                                         {{ col.header }}
                                     </th>
                                 </tr>
@@ -53,7 +55,7 @@
                                     <td style="text-align: center">{{account.email}}</td>
                                     <td style="text-align: center">{{account.email}}</td>
                                     <td style="text-align: center">{{account.role.name}}</td>
-                                    <td style="text-align: center">{{account.is_deleted}}</td>
+                                    <td style="text-align: center">{{account.status}}</td>
                                     <td style="text-align: center">
                                         <span>
                                             <button pButton icon="pi pi-pencil" class="ui-button-primary edit-button"
