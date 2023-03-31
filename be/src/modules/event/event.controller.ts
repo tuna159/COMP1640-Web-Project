@@ -8,15 +8,14 @@ import {
   Param,
   Post,
   Put,
-  Req,
+  Query,
   Res,
 } from '@nestjs/common';
-import { EIsDelete } from 'enum';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateEventDto, VUpdateEventDto } from 'global/dto/event.dto.';
-import { VUpdateIdeaDto } from 'global/dto/update-idea.dto';
-import type { Response, Request } from 'express';
+import type { Response } from 'express';
 import { EventService } from './event.service';
+import { Public } from '@core/decorator/public.decorator';
 
 @Controller('event')
 export class EventController {
@@ -53,17 +52,16 @@ export class EventController {
     return this.eventService.createIdea(userData, body, event_id);
   }
 
-  @Get('event/download/:event_id')
+  @Get(':event_id/download?')
   downloadIdeasByEvent(
     @UserData() userData: IUserData,
     @Param('event_id') event_id: number,
-    @Res({ passthrough: true }) res: Response,
-    @Req() req: Request,
+    @Query('category_id') category_id: number,
+    @Query('department_id') department_id: number,
+    @Query('start_date') start_date: Date,
+    @Query('end_date') end_date: Date,
+    @Res() res: Response,
   ) {
-    res.set({
-      'Content-Type': 'application/json',
-      'Content-Disposition': 'attachment; filename="package.json"',
-    })
-    // return this.eventService.downloadIdeasByEvent(userData, event_id, res, req);
+    return this.eventService.downloadIdeasByEvent(event_id, res, userData);
   }
 }

@@ -11,7 +11,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
 import {
-  DeepPartial,
   EntityManager,
   IsNull,
   LessThanOrEqual,
@@ -24,6 +23,10 @@ import { DepartmentService } from '@modules/department/department.service';
 import { IdeaService } from '@modules/idea/idea.service';
 import { Idea } from '@core/database/mysql/entity/idea.entity';
 import { UserService } from '@modules/user/user.service';
+import { join } from 'path';
+import * as fs from 'fs';
+import type { Response } from 'express';
+import { stringify } from 'csv-stringify';
 
 @Injectable()
 export class EventService {
@@ -297,17 +300,83 @@ export class EventService {
     return this.ideaService.createIdea(userData, body, event_id);
   }
 
-  downloadIdeasByEvent(
-    userData: IUserData,
+  async downloadIdeasByEvent(
     event_id: number,
     res: Response,
-    req: Request,
-    entityManager?: EntityManager,
+    userData: IUserData,
   ) {
-    // const ideaRepository = entityManager
-    //   ? entityManager.getRepository<Idea>('idea')
-    //   : this.ideaRepository;
+    if (userData.role_id != EUserRole.QA_MANAGER) {
+      throw new HttpException(
+        ErrorMessage.DATA_DOWNLOAD_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const event = await this.eventExists(event_id);
+    if(!event) {
+      throw new HttpException(
+        ErrorMessage.EVENT_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if(event.final_closure_date) {
+      throw new HttpException(
+        ErrorMessage.DATA_DOWNLOAD_DATE_TIME,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
-    // this.ideaService.downloadIdeasByEvent()
+    const ideas = await this.ideaService.getIdeasOfSystem(event_id);
+    const data = ideas.map(idea => {
+      const row = [];
+      const event = idea.event;
+      const user = idea.user;
+      row.push(idea.idea_id);
+      row.push(idea.title);
+      row.push(idea.content);
+      row.push(idea.views);
+      row.push(idea.is_anonymous);
+      row.push(idea.created_at);
+      row.push(idea.updated_at);
+      row.push(event.event_id);
+      row.push(event.name);
+      row.push(event.department_id);
+      row.push(event.content);
+      row.push(event.created_date);
+      row.push(event.first_closure_date);
+      row.push(event.final_closure_date);
+      row.push(user.user_id);
+      row.push(user.department.department_id);
+      row.push(user.full_name);
+      row.push(user.nick_name);
+      row.push(user.avatar_url);
+      row.push(idea.category.category_id);
+      row.push(idea.category.name);
+      return row;
+    });
+    
+    const fileName = "ideas.csv";
+    const path = join(process.cwd(), fileName);
+    const writableStream = fs.createWriteStream(path);
+    const columns = ["idea_id", "title", "content", "views", "is_anonymous", "created_at", "updated_at", "event_id", "event_name", "event_department_id", "event_content", "event_created_date", "first_closure_date", "final_closure_date", "author_id", "author_department_id", "full_name", "nickname", "avatar_url", "category_id", "category_name"];
+    
+    try {
+      const stringifier = stringify({ header: true, columns: columns });
+      data.forEach(row => {
+        stringifier.write(row);
+      });
+      stringifier.pipe(writableStream);
+    
+      const readStream = fs.createReadStream(path);
+      res.set({
+        'Content-Type': 'text/csv',
+        'Content-Disposition': `attachment; filename="${fileName}"`,
+      })
+      readStream.pipe(res);
+    } catch (error) {
+      throw new HttpException(
+        ErrorMessage.DATA_DOWNLOAD_FAILED,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }
