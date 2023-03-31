@@ -81,6 +81,7 @@
     <div class="field" style="margin-top: 5%;">
         <label for="name" style="width: 100%; text-align: center;">Status</label>
         <br>
+        <p-dropdown [options]="status" [(ngModel)]="selectedCountry" optionLabel="name"></p-dropdown>
         <input type="text" pInputText id="name" formControlName="status" required [autofocus] style=" width: 100%;"
             [ngClass]="(formGroup.controls.status.invalid && (formGroup.controls.status.dirty || formGroup.controls.status.touched)) ? 'ng-invalid ng-dirty' : ''">
     

@@ -20,9 +20,7 @@
                                     </span>
                                     <button pButton type="button" (click)="openNewUser(null)" label="Add" icon="pi pi-plus"
                                         style="background-color:#f97c39; width: 120px !important; height: 30px !important; margin-left: 5px; border: 0px;"></button>
-                                    <button pButton type="button" label="Delete" icon="pi pi-trash"
-                                        style="background-color:red; width: 120px !important; height: 30px !important; margin-left: 5px; border: 0px"
-                                        (click)="showDialogDeleteUsers()"></button>
+                                    
                                 </div>
         
                             </div>
@@ -57,11 +55,9 @@
                                     <td style="text-align: center">{{account.role.name}}</td>
                                     <td style="text-align: center">{{account.is_deleted}}</td>
                                     <td style="text-align: center">
-                                        <span style="display: flex;">
+                                        <span>
                                             <button pButton icon="pi pi-pencil" class="ui-button-primary edit-button"
                                                 (click)="openNewUser(account)"></button>
-                                            <button pButton icon="pi pi-trash" class="ui-button-danger delete-button"
-                                                style="margin-left: 5px" (click)="showDialogDelete(account)"></button>
                                         </span>
                                     </td>
                                 </tr>
@@ -76,29 +72,3 @@
 
 </div>
 
-
-
-
-<!-- Confirm delete account-->
-<p-dialog header="Confirm" [(visible)]="displayDeleteUser" [modal]="true" [responsive]="true" [closable]="false"
-    [style]="{width: '20%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
-    <p>Are you sure to delete this account?</p>
-    <p-footer>
-        <button type="button" pButton icon="pi pi-close" (click)="displayDeleteUser=false" label="Cancel" class="btn btn-light"
-            style="width:72px; height:38px"></button>
-            <button type="button" pButton icon="pi pi-close" (click)="DeleteAccount()" label="OK" class="btn btn-primary"
-            style="width:72px; height:38px"></button>
-    </p-footer>
-</p-dialog>
-
-<!-- Confirm delete accounts-->
-<p-dialog header="Xác nhận" [(visible)]="displayDeleteUsers" [modal]="true" [responsive]="true" [closable]="false"
-    [style]="{width: '20%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
-    <p>Are you sure to delete these accounts?</p>
-    <p-footer>
-        <button type="button" pButton icon="pi pi-close" (click)="displayDeleteUsers = false" label="Cancel" class="btn btn-light"
-            style="width:72px; height:38px"></button>
-            <button type="button" pButton icon="pi pi-close" (click)="DeleteAccounts()" label="OK" class="btn btn-primary"
-            style="width:72px; height:38px"></button>
-    </p-footer>
-</p-dialog>

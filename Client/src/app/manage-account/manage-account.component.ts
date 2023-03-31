@@ -36,10 +36,10 @@ export class ManageAccountComponent {
       { field: 'email', header: 'Email', width: '300px', textAlign: 'center' },
       { field: 'name', header: 'Full Name', width: '300px', textAlign: 'center' },
       { field: 'role', header: 'Role', width: '200px', textAlign: 'center' },
-      { field: 'status', header: 'Status', width: '150px', textAlign: 'center' },
+      { field: 'status', header: 'Status', width: '100px', textAlign: 'center' },
       {
-        field: 'Edit/Delete',
-        header: 'Edit/Delete',
+        field: 'Edit',
+        header: 'Edit',
         width: '120px',
         textAlign: 'center',
       },

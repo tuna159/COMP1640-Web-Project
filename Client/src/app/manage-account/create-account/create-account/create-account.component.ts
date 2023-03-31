@@ -4,6 +4,10 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 
+interface Status {
+  label: string;
+  value: string;
+}
 @Component({
   selector: 'app-create-account',
   templateUrl: './create-account.component.html',
@@ -18,6 +22,9 @@ export class CreateAccountComponent {
     { name: 'D' },
     { name: 'E' }
   ];
+
+  status: Status[]
+  selectedCountry: string;
   formGroup: FormGroup<{
     email: FormControl<string>;
     password: FormControl<string>;
@@ -28,7 +35,10 @@ export class CreateAccountComponent {
   }>;
   constructor(private dialogService: DialogService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
     private http: HttpClient, private authService: AuthenticationService,) {
-
+    this.status = [
+      { label: 'Dang hot dong', value: 'Dang hot dong' },
+      { label: 'Ngung hoat dong', value: 'Ngung hoat dong' },
+    ];
 
   }
   SaveIdea() {
