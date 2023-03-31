@@ -312,13 +312,13 @@ export class EventService {
       );
     }
     const event = await this.eventExists(event_id);
-    if(!event) {
+    if (!event) {
       throw new HttpException(
         ErrorMessage.EVENT_NOT_EXIST,
         HttpStatus.BAD_REQUEST,
       );
     }
-    if(event.final_closure_date) {
+    if (event.final_closure_date) {
       throw new HttpException(
         ErrorMessage.DATA_DOWNLOAD_DATE_TIME,
         HttpStatus.BAD_REQUEST,
@@ -326,7 +326,7 @@ export class EventService {
     }
 
     const ideas = await this.ideaService.getIdeasOfSystem(event_id);
-    const data = ideas.map(idea => {
+    const data = ideas.map((idea) => {
       const row = [];
       const event = idea.event;
       const user = idea.user;
@@ -353,24 +353,46 @@ export class EventService {
       row.push(idea.category.name);
       return row;
     });
-    
-    const fileName = "ideas.csv";
+
+    const fileName = 'ideas.csv';
     const path = join(process.cwd(), fileName);
     const writableStream = fs.createWriteStream(path);
-    const columns = ["idea_id", "title", "content", "views", "is_anonymous", "created_at", "updated_at", "event_id", "event_name", "event_department_id", "event_content", "event_created_date", "first_closure_date", "final_closure_date", "author_id", "author_department_id", "full_name", "nickname", "avatar_url", "category_id", "category_name"];
-    
+    const columns = [
+      'idea_id',
+      'title',
+      'content',
+      'views',
+      'is_anonymous',
+      'created_at',
+      'updated_at',
+      'event_id',
+      'event_name',
+      'event_department_id',
+      'event_content',
+      'event_created_date',
+      'first_closure_date',
+      'final_closure_date',
+      'author_id',
+      'author_department_id',
+      'full_name',
+      'nickname',
+      'avatar_url',
+      'category_id',
+      'category_name',
+    ];
+
     try {
       const stringifier = stringify({ header: true, columns: columns });
-      data.forEach(row => {
+      data.forEach((row) => {
         stringifier.write(row);
       });
       stringifier.pipe(writableStream);
-    
+
       const readStream = fs.createReadStream(path);
       res.set({
         'Content-Type': 'text/csv',
         'Content-Disposition': `attachment; filename="${fileName}"`,
-      })
+      });
       readStream.pipe(res);
     } catch (error) {
       throw new HttpException(
