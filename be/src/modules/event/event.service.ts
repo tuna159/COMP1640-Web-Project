@@ -296,4 +296,18 @@ export class EventService {
     }
     return this.ideaService.createIdea(userData, body, event_id);
   }
+
+  downloadIdeasByEvent(
+    userData: IUserData,
+    event_id: number,
+    res: Response,
+    req: Request,
+    entityManager?: EntityManager,
+  ) {
+    // const ideaRepository = entityManager
+    //   ? entityManager.getRepository<Idea>('idea')
+    //   : this.ideaRepository;
+
+    // this.ideaService.downloadIdeasByEvent()
+  }
 }

@@ -11,14 +11,10 @@ import {
   Post,
   Put,
   Query,
-  Req,
-  Res,
 } from '@nestjs/common';
 import { VAddComment } from 'global/dto/addComment.dto';
 import { VCreateReactionDto } from 'global/dto/reaction.dto';
 import { IdeaService } from './idea.service';
-import type { Response, Request } from 'express';
-import { VUpdateCommentDto } from 'global/dto/comment.dto';
 import { VUpdateIdeaDto } from 'global/dto/update-idea.dto';
 
 @Controller('idea')
@@ -88,21 +84,6 @@ export class IdeaController {
   @Get(':idea_id/dislikes')
   getIdeaDislikes(@Param('idea_id') idea_id: number) {
     return this.ideaService.getIdeaDislikes(idea_id);
-  }
-  
-  @Get('event/download/:event_id')
-  downloadIdeasByEvent(
-    @UserData() userData: IUserData,
-    @Param('event_id') event_id: number,
-    @Res({ passthrough: true }) res: Response,
-    @Req() req: Request,
-  ) {
-    return 'hello';
-    // res.set({
-    //   'Content-Type': 'application/json',
-    //   'Content-Disposition': 'attachment; filename="package.json"',
-    // })
-    return this.ideaService.downloadIdeasByEvent(userData, event_id, res, req);
   }
 
   @Get(':idea_id/comments')

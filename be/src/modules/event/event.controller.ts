@@ -8,11 +8,14 @@ import {
   Param,
   Post,
   Put,
+  Req,
+  Res,
 } from '@nestjs/common';
 import { EIsDelete } from 'enum';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateEventDto, VUpdateEventDto } from 'global/dto/event.dto.';
 import { VUpdateIdeaDto } from 'global/dto/update-idea.dto';
+import type { Response, Request } from 'express';
 import { EventService } from './event.service';
 
 @Controller('event')
@@ -48,5 +51,19 @@ export class EventController {
     @Param('event_id') event_id: number,
   ) {
     return this.eventService.createIdea(userData, body, event_id);
+  }
+
+  @Get('event/download/:event_id')
+  downloadIdeasByEvent(
+    @UserData() userData: IUserData,
+    @Param('event_id') event_id: number,
+    @Res({ passthrough: true }) res: Response,
+    @Req() req: Request,
+  ) {
+    res.set({
+      'Content-Type': 'application/json',
+      'Content-Disposition': 'attachment; filename="package.json"',
+    })
+    // return this.eventService.downloadIdeasByEvent(userData, event_id, res, req);
   }
 }
