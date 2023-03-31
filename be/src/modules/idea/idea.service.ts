@@ -1030,6 +1030,8 @@ export class IdeaService {
 
     let data = [];
 
+    const now = new Date();
+
     const queryBuilder = ideaRepository
       .createQueryBuilder('idea')
       .innerJoinAndSelect('idea.event', 'event')
