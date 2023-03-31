@@ -806,91 +806,11 @@ export class IdeaService {
     return this.commentService.getIdeaCommentsLv1(idea_id);
   }
 
-<<<<<<< HEAD
   async createComment(
     userData: IUserData, 
     idea_id: number, 
     body: VAddComment,
   ) {
-=======
-  downloadIdeasByEvent(
-    userData: IUserData,
-    event_id: number,
-    res: Response,
-    req: Request,
-    entityManager?: EntityManager,
-  ) {
-    const ideaRepository = entityManager
-      ? entityManager.getRepository<Idea>('idea')
-      : this.ideaRepository;
-
-    if (userData.role_id != EUserRole.QA_MANAGER) {
-      throw new HttpException(
-        ErrorMessage.DATA_DOWNLOAD_PERMISSION,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    const temp = join(process.cwd(), 'package.json');
-    send(req, temp).pipe(res);
-    return;
-    // const temp = fs.createReadStream(join(process.cwd(), 'package.json'));
-    // return new StreamableFile(temp);
-
-    // const event = await this.eventService.getEventById(event_id);
-
-    // if(!event) {
-    //   throw new HttpException(
-    //     ErrorMessage.event_NOT_EXIST,
-    //     HttpStatus.BAD_REQUEST,
-    //   );
-    // }
-
-    // if(event.final_closure_date) {
-    //   throw new HttpException(
-    //     ErrorMessage.DATA_DOWNLOAD_DATE_TIME,
-    //     HttpStatus.BAD_REQUEST,
-    //   );
-    // }
-
-    const data = [
-      ['John Doe', 30, 'New York'],
-      ['Jane Smith', 25, 'San Francisco'],
-      ['Bob Johnson', 40, 'Los Angeles'],
-    ];
-
-    const fileName = 'data.csv';
-    const path = join(process.cwd(), 'src', fileName);
-
-    const writableStream = fs.createWriteStream(path);
-    const columns = ['name', 'age', 'city'];
-
-    // try {
-    const stringifier = stringify({ header: true, columns: columns });
-    data.forEach((d) => {
-      stringifier.write(d);
-    });
-
-    // stringifier.pipe(res);
-
-    res.set({
-      'Content-Type': 'text/csv',
-      'Content-Disposition': 'attachment; filename="data.csv"',
-    });
-    // res.sendFile(path);
-    const file = fs.createReadStream(path);
-    // file.pipe(res);
-    res.send(file.pipe(res));
-    // return new StreamableFile(file);
-    // } catch (error) {
-    //   throw new HttpException(
-    //     ErrorMessage.DATA_DOWNLOAD_FAILED,
-    //     HttpStatus.BAD_REQUEST,
-    //   );
-    // }
-  }
-
-  async createComment(userData: IUserData, idea_id: number, body: VAddComment) {
->>>>>>> 5426469ae2bcd71179a409aa3eac208ce42bfd96
     if (userData.role_id != EUserRole.STAFF) {
       throw new HttpException(
         ErrorMessage.COMMENT_PERMISSION,
