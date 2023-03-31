@@ -1,15 +1,23 @@
 <div>
-<app-header-home></app-header-home>
-<div style="width: 100%; display: flex;">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="row">
-                <app-menu></app-menu>
-            </div>
-        </div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a href="" class="col-md-1"><img src="../../assets/images/home.png" style="margin-left: 55px;" /></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav col">
+            <li class="nav-item active col-md-2">
+                <a class="nav-link" href="/manage/category">Manage Category<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active col-md-2">
+                <a class="nav-link" href="#">Log out</a>
+            </li>
+        </ul>
     </div>
-        
-    
+</nav>
+
+<div style="width: 100%; display: flex; ">
     <div class="ds-category">
         <div class="col-md-12 body-page">
             <div class="row">
@@ -82,24 +90,24 @@
 
 
 <!-- Confirm delete category-->
-<p-dialog header="Xác nhận" [(visible)]="displayXoa" [modal]="true" [responsive]="true" [closable]="false"
+<p-dialog header="Confirm" [(visible)]="displayXoa" [modal]="true" [responsive]="true" [closable]="false"
     [style]="{width: '20%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
     <p>Are you sure to delete this category?</p>
     <p-footer>
         <button type="button" pButton icon="pi pi-close" (click)="displayXoa=false" label="Cancel" class="btn btn-light"
-            style="width:72px; height:38px"></button>
+            style="width:100px; height:38px"></button>
         <button type="button" pButton icon="pi pi-close" (click)="xoaTo()" label="OK" class="btn btn-primary"
             style="width:72px; height:38px"></button>
     </p-footer>
 </p-dialog>
 
 <!-- Confirm delete categories-->
-<p-dialog header="Xác nhận" [(visible)]="displayXoaN" [modal]="true" [responsive]="true" [closable]="false"
+<p-dialog header="Confirm" [(visible)]="displayXoaN" [modal]="true" [responsive]="true" [closable]="false"
     [style]="{width: '20%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
     <p>Are you sure to delete these categories?</p>
     <p-footer>
         <button type="button" pButton icon="pi pi-close" (click)="displayXoaN = false" label="Cancel" class="btn btn-light"
-            style="width:72px; height:38px"></button>
+            style="width:100px; height:38px"></button>
         <button type="button" pButton icon="pi pi-close" (click)="xoaNTo()" label="OK" class="btn btn-primary"
             style="width:72px; height:38px"></button>
     </p-footer>

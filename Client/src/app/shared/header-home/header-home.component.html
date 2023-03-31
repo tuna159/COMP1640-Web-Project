@@ -1,9 +1,19 @@
 
-<div class="header">
-            <p-menubar [model]="menus">
-                <ng-template pTemplate="start">
-                    <a href=""><img src="../../assets/images/home.png" style="margin-left: 55px;" /></a>
-                </ng-template>
-            </p-menubar>
-</div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a href="" class="col-md-1"><img src="../../assets/images/home.png" style="margin-left: 55px;" /></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav col">
+            <li class="nav-item active col-md-1">
+                <a class="nav-link" href="#">University <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active" *ngFor="let l of listDepartment" [class.active]="isLinkActive(l)">
+                <a class="nav-link" [routerLink]="['/event/ideas']" style="text-align: center;"  [queryParams]="{ Id: l.department_id, name: l.name}">{{l.name}}</a>
+            </li>
+        </ul>
+    </div>
+</nav>
 

@@ -173,6 +173,7 @@ export class IdeaService {
         .addSelect('COUNT(comment.idea_id)', 'comments')
         .innerJoin('idea.user', 'user')
         .innerJoinAndSelect('user.userDetail', 'user_detail')
+
         .innerJoinAndSelect('user.department', 'department')
         .leftJoin('idea.comments', 'comment')
         .where('idea.event_id = :event_id', { event_id })
@@ -272,35 +273,39 @@ export class IdeaService {
       .innerJoinAndSelect('ideaTags.tag', 'tag')
       .where('idea.is_deleted = :is_deleted', {
         is_deleted: EIsDelete.NOT_DELETED,
-      })
-    
-    if(category_id != null) {
-      query.andWhere('ideaCategory.category_id = :category_id', { category_id });
+      });
+
+    if (category_id != null) {
+      query.andWhere('ideaCategory.category_id = :category_id', {
+        category_id,
+      });
     }
-    if(department_id != null) {
+    if (department_id != null) {
       query.andWhere('event.department_id = :department_id', { department_id });
-    }else if(entireUniversity) {
+    } else if (entireUniversity) {
       query.andWhere('event.department_id IS NULL');
     }
-    if(event_id != null) {
+    if (event_id != null) {
       query.andWhere('event.event_id = :event_id', { event_id });
-    }else if(availableEvents) {
+    } else if (availableEvents) {
       query.andWhere('event.final_closure_date >= :now', { now: new Date() });
     }
 
-    if(sorting_setting == EIdeaFilter.RECENT_IDEAS) {
+    if (sorting_setting == EIdeaFilter.RECENT_IDEAS) {
       query.orderBy('idea.created_at', 'DESC');
-    }else if(sorting_setting == EIdeaFilter.MOST_VIEWED_IDEAS) {
+    } else if (sorting_setting == EIdeaFilter.MOST_VIEWED_IDEAS) {
       query.orderBy('idea.views', 'DESC');
     }
 
     let ideas = await query.getMany();
-    if(sorting_setting == EIdeaFilter.MOST_POPULAR_IDEAS) {
+    if (sorting_setting == EIdeaFilter.MOST_POPULAR_IDEAS) {
       const ideasToSort = [];
       for (const idea of ideas) {
         const likes = await this.reactionService.getIdeaLikes(idea.idea_id);
-        const dislikes = await this.reactionService.getIdeaDislikes(idea.idea_id);
-        idea["point"] = likes - dislikes;
+        const dislikes = await this.reactionService.getIdeaDislikes(
+          idea.idea_id,
+        );
+        idea['point'] = likes - dislikes;
         ideasToSort.push(idea);
       }
       ideas = ideasToSort.sort((a, b) => b.point - a.point);
@@ -579,7 +584,11 @@ export class IdeaService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    return this.reactionService.createIdeaReaction(userData.user_id, idea_id, body);
+    return this.reactionService.createIdeaReaction(
+      userData.user_id,
+      idea_id,
+      body,
+    );
   }
 
   async deleteIdeaReaction(userData: IUserData, idea_id: number) {
@@ -786,10 +795,7 @@ export class IdeaService {
     await ideaRepository.update(conditions, value);
   }
 
-  async getIdeaCommentsLv1(
-    idea_id: number,
-    entityManager?: EntityManager,
-  ) {
+  async getIdeaCommentsLv1(idea_id: number, entityManager?: EntityManager) {
     const idea = await this.ideaExists(idea_id);
     if (!idea) {
       throw new HttpException(
@@ -800,11 +806,91 @@ export class IdeaService {
     return this.commentService.getIdeaCommentsLv1(idea_id);
   }
 
+<<<<<<< HEAD
   async createComment(
     userData: IUserData, 
     idea_id: number, 
     body: VAddComment,
   ) {
+=======
+  downloadIdeasByEvent(
+    userData: IUserData,
+    event_id: number,
+    res: Response,
+    req: Request,
+    entityManager?: EntityManager,
+  ) {
+    const ideaRepository = entityManager
+      ? entityManager.getRepository<Idea>('idea')
+      : this.ideaRepository;
+
+    if (userData.role_id != EUserRole.QA_MANAGER) {
+      throw new HttpException(
+        ErrorMessage.DATA_DOWNLOAD_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const temp = join(process.cwd(), 'package.json');
+    send(req, temp).pipe(res);
+    return;
+    // const temp = fs.createReadStream(join(process.cwd(), 'package.json'));
+    // return new StreamableFile(temp);
+
+    // const event = await this.eventService.getEventById(event_id);
+
+    // if(!event) {
+    //   throw new HttpException(
+    //     ErrorMessage.event_NOT_EXIST,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
+
+    // if(event.final_closure_date) {
+    //   throw new HttpException(
+    //     ErrorMessage.DATA_DOWNLOAD_DATE_TIME,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
+
+    const data = [
+      ['John Doe', 30, 'New York'],
+      ['Jane Smith', 25, 'San Francisco'],
+      ['Bob Johnson', 40, 'Los Angeles'],
+    ];
+
+    const fileName = 'data.csv';
+    const path = join(process.cwd(), 'src', fileName);
+
+    const writableStream = fs.createWriteStream(path);
+    const columns = ['name', 'age', 'city'];
+
+    // try {
+    const stringifier = stringify({ header: true, columns: columns });
+    data.forEach((d) => {
+      stringifier.write(d);
+    });
+
+    // stringifier.pipe(res);
+
+    res.set({
+      'Content-Type': 'text/csv',
+      'Content-Disposition': 'attachment; filename="data.csv"',
+    });
+    // res.sendFile(path);
+    const file = fs.createReadStream(path);
+    // file.pipe(res);
+    res.send(file.pipe(res));
+    // return new StreamableFile(file);
+    // } catch (error) {
+    //   throw new HttpException(
+    //     ErrorMessage.DATA_DOWNLOAD_FAILED,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
+  }
+
+  async createComment(userData: IUserData, idea_id: number, body: VAddComment) {
+>>>>>>> 5426469ae2bcd71179a409aa3eac208ce42bfd96
     if (userData.role_id != EUserRole.STAFF) {
       throw new HttpException(
         ErrorMessage.COMMENT_PERMISSION,
@@ -819,7 +905,7 @@ export class IdeaService {
       );
     }
     const event = await this.eventService.eventExists(idea.event_id);
-    if(!event) {
+    if (!event) {
       throw new HttpException(
         ErrorMessage.EVENT_NOT_EXIST,
         HttpStatus.BAD_REQUEST,
@@ -833,12 +919,12 @@ export class IdeaService {
     }
     try {
       const params = {
-        "idea_id": idea_id,
-        "author_id": userData.user_id,
-        "parent_id": body.parent_id,
-        "content": body.content,
+        idea_id: idea_id,
+        author_id: userData.user_id,
+        parent_id: body.parent_id,
+        content: body.content,
       };
-      
+
       const newComment = await this.commentService.createComment(params);
       if (userData.user_id != idea.user_id) {
         return newComment;
@@ -947,15 +1033,22 @@ export class IdeaService {
 
     let data = [];
 
+    const now = new Date();
+
     const queryBuilder = ideaRepository
       .createQueryBuilder('idea')
-      .select()
-      .leftJoinAndSelect('idea.ideaTags', 'ideaTags')
-      .leftJoinAndSelect('ideaTags.tag', 'tag')
-      .where('idea.is_deleted = :is_deleted', {
+      .innerJoinAndSelect('idea.event', 'event')
+      .innerJoinAndSelect('idea.user', 'user')
+      .innerJoinAndSelect('user.department', 'department')
+      .innerJoinAndSelect('user.userDetail', 'userDetail')
+      .innerJoinAndSelect('idea.ideaCategories', 'ideaCategory')
+      .innerJoinAndSelect('ideaCategory.category', 'category')
+      .innerJoinAndSelect('idea.ideaTags', 'ideaTags')
+      .innerJoinAndSelect('ideaTags.tag', 'tag')
+      .where('event.final_closure_date >= :now', { now })
+      .andWhere('idea.is_deleted = :is_deleted', {
         is_deleted: EIsDelete.NOT_DELETED,
       });
-
     if (query.search_key && query.search_key != '') {
       const searchKey = query.search_key.trim().toLowerCase();
       queryBuilder.andWhere(
@@ -968,20 +1061,56 @@ export class IdeaService {
     const [listIdea] = await queryBuilder.getManyAndCount();
 
     data = listIdea.map((idea) => {
+      const event = idea.event;
+      const user = idea.user.userDetail;
+      const userDepartment = idea.user.department;
+      const category = idea.ideaCategories[0];
+      const tags = idea.ideaTags.map((i) => {
+        return {
+          tag_id: i.tag.tag_id,
+          name: i.tag.name,
+        };
+      });
+
       return {
         idea_id: idea.idea_id,
         title: idea.title,
-        tag: idea.ideaTags.map((e) => {
-          return {
-            tag: e.tag.name,
-          };
-        }),
+        content: idea.content,
+        views: idea.views,
+        is_anonymous: idea.is_anonymous,
+        created_at: idea.created_at,
+        updated_at: idea.updated_at,
+        event: {
+          event_id: event.event_id,
+          department_id: event.department_id,
+          name: event.name,
+          content: event.content,
+          created_date: event.created_date,
+          first_closure_date: event.first_closure_date,
+          final_closure_date: event.final_closure_date,
+        },
+        user: {
+          user_id: user.user_id,
+          department: {
+            department_id: userDepartment.department_id,
+            manager_id: userDepartment.manager_id,
+            name: userDepartment.name,
+          },
+          full_name: user.full_name,
+          nick_name: user.nick_name,
+          avatar_url: user.avatar_url,
+        },
+        category: {
+          category_id: category.category_id,
+          name: category.category.name,
+        },
+        tags,
       };
     });
 
     return data;
   }
-  
+
   async getListReaction(idea_id: number) {
     const idea = await this.ideaRepository.findOne({
       where: { idea_id: idea_id, is_deleted: EIsDelete.NOT_DELETED },
@@ -996,4 +1125,20 @@ export class IdeaService {
 
     return await this.reactionService.getListReaction();
   }
+
+  // async storeFileStream(fileStream, filename): Promise<string> {
+  //   const bucket = admin.storage().bucket();
+  //   const file = bucket.file(filename);
+
+  //   // Pipe the file stream to the Firebase storage
+  //   await fileStream.pipe(file.createWriteStream());
+
+  //   // Get the download URL for the uploaded file
+  //   const downloadURL = await file.getSignedUrl({
+  //     action: 'read',
+  //     expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // 7 days
+  //   });
+
+  //   return downloadURL[0];
+  // }
 }

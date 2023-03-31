@@ -32,15 +32,15 @@ export class ManageAccountComponent {
   ngOnInit() {
 
     this.cols = [
-      { field: 'Number', header: 'Number', width: '50px', textAlign: 'center' },
-      { field: 'email', header: 'Email', width: '300px', textAlign: 'center' },
-      { field: 'name', header: 'Full Name', width: '300px', textAlign: 'center' },
-      { field: 'role', header: 'Role', width: '200px', textAlign: 'center' },
-      { field: 'status', header: 'Status', width: '150px', textAlign: 'center' },
+      { field: 'Number', header: 'Number', width: '5%', textAlign: 'center' },
+      { field: 'email', header: 'Email', width: '15%', textAlign: 'center' },
+      { field: 'name', header: 'Full Name', width: '15%', textAlign: 'center' },
+      { field: 'role', header: 'Role', width: '10%', textAlign: 'center' },
+      { field: 'status', header: 'Status', width: '10%', textAlign: 'center' },
       {
-        field: 'Edit/Delete',
-        header: 'Edit/Delete',
-        width: '120px',
+        field: 'edit',
+        header: 'Edit',
+        width: '10%',
         textAlign: 'center',
       },
     ];
@@ -58,10 +58,13 @@ export class ManageAccountComponent {
             this.listData = result.data.map((item, index) => Object.assign({
               Stt: index + 1,
             }, item));
-            console.log(this.listData);
+            this.listData.forEach(item => {
+              console.log(item)
+              item.status = item.is_deleted == 0 ? "Đang Hoạt động" : "Không hoạt động"
+            })
         });
     
-    
+        
   }
 
 
@@ -107,8 +110,7 @@ export class ManageAccountComponent {
     if(!data) {
       this.ref = this.dialogService.open(CreateAccountComponent, {
         header: 'Add Account',
-        width: '30%',
-        height: '50%',
+        width: '40%',
         contentStyle: { "max-height": "800px", "overflow": "auto" },
         baseZIndex: 10000,
         data: {
@@ -124,8 +126,7 @@ export class ManageAccountComponent {
   } else {
     this.ref = this.dialogService.open(CreateAccountComponent, {
       header: 'Edit Account',
-      width: '30%',
-      height: '50%',
+      width: '40%',
       contentStyle: { "max-height": "800px", "overflow": "auto" },
       baseZIndex: 10000,
       data: data

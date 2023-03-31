@@ -167,7 +167,6 @@ export class UserService {
 
     const userParam = new User();
     userParam.role_id = body.role_id;
-    userParam.department_id = body.department_id;
     userParam.is_deleted = body.is_deleted;
 
     await userRepository.update({ user_id: user_id }, userParam);
@@ -192,49 +191,49 @@ export class UserService {
     }
   }
 
-  async deleteUser(
-    userID: string,
-    userData: IUserData,
-    entityManager?: EntityManager,
-  ) {
-    if (userData.role_id != EUserRole.ADMIN) {
-      throw new HttpException(
-        ErrorMessage.YOU_DO_NOT_HAVE_RIGHTS_TO_MANAGE_USER_ACCOUNTS,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    const userRepository = entityManager
-      ? entityManager.getRepository<User>('user')
-      : this.userRepository;
+  // async deleteUser(
+  //   userID: string,
+  //   userData: IUserData,
+  //   entityManager?: EntityManager,
+  // ) {
+  //   if (userData.role_id != EUserRole.ADMIN) {
+  //     throw new HttpException(
+  //       ErrorMessage.YOU_DO_NOT_HAVE_RIGHTS_TO_MANAGE_USER_ACCOUNTS,
+  //       HttpStatus.BAD_REQUEST,
+  //     );
+  //   }
+  //   const userRepository = entityManager
+  //     ? entityManager.getRepository<User>('user')
+  //     : this.userRepository;
 
-    const user_ID = await this.checkUserByUserId(userID);
+  //   const user_ID = await this.checkUserByUserId(userID);
 
-    if (!user_ID) {
-      throw new HttpException(
-        ErrorMessage.USER_NOT_EXISTS,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    const user_delete_status = await this.checkUserDeleteStatus(userID);
+  //   if (!user_ID) {
+  //     throw new HttpException(
+  //       ErrorMessage.USER_NOT_EXISTS,
+  //       HttpStatus.BAD_REQUEST,
+  //     );
+  //   }
+  //   const user_delete_status = await this.checkUserDeleteStatus(userID);
 
-    if (user_delete_status == 1) {
-      throw new HttpException(
-        ErrorMessage.ACCOUNT_ALREADY_DELETED,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+  //   if (user_delete_status == 1) {
+  //     throw new HttpException(
+  //       ErrorMessage.ACCOUNT_ALREADY_DELETED,
+  //       HttpStatus.BAD_REQUEST,
+  //     );
+  //   }
 
-    await userRepository
-      .createQueryBuilder('user')
-      .update(User)
-      .set({ is_deleted: EIsDelete.DELETED })
-      .where({
-        user_id: userID,
-      })
-      .execute();
+  //   await userRepository
+  //     .createQueryBuilder('user')
+  //     .update(User)
+  //     .set({ is_deleted: EIsDelete.DELETED })
+  //     .where({
+  //       user_id: userID,
+  //     })
+  //     .execute();
 
-    return;
-  }
+  //   return;
+  // }
 
   async getUserPasswordById(user_id: string, entityManager?: EntityManager) {
     const userRepository = entityManager

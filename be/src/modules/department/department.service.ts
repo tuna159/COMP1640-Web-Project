@@ -2,7 +2,6 @@ import { Department } from '@core/database/mysql/entity/department.entity';
 import { IUserData } from '@core/interface/default.interface';
 import { EventService } from '@modules/event/event.service';
 import { IdeaService } from '@modules/idea/idea.service';
-import { UserService } from '@modules/user/user.service';
 import {
   forwardRef,
   HttpException,
@@ -11,7 +10,6 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EIsDelete } from 'enum';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
 import { EIdeaFilter } from 'enum/idea.enum';
@@ -19,7 +17,7 @@ import {
   CreateDepartmentDto,
   UpdateDepartmentDto,
 } from 'global/dto/department.dto';
-import { EntityManager, IsNull, Repository } from 'typeorm';
+import { DeepPartial, EntityManager, IsNull, Repository } from 'typeorm';
 
 @Injectable()
 export class DepartmentService {
@@ -159,19 +157,25 @@ export class DepartmentService {
 
   async getDepartmentValidIdeas(department_id: number) {
     const department = await this.departmentExists(department_id);
-    if(!department) {
+    if (!department) {
       throw new HttpException(
         ErrorMessage.DEPARTMENT_NOT_EXISTS,
         HttpStatus.BAD_REQUEST,
       );
     }
-    
-    return this.ideaService.getIdeasOfSystem(null, null, department_id, null, true);
+
+    return this.ideaService.getIdeasOfSystem(
+      null,
+      null,
+      department_id,
+      null,
+      true,
+    );
   }
 
   async getAvailableDepartments(
     userData: IUserData,
-    entityManager?: EntityManager
+    entityManager?: EntityManager,
   ) {
     const departmentRepository = entityManager
       ? entityManager.getRepository<Department>('department')
@@ -183,14 +187,14 @@ export class DepartmentService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    
+
     const departments = await departmentRepository.find({
       manager_id: IsNull(),
     });
-    return departments.map(d => {
+    return departments.map((d) => {
       return {
-        "department_id": d.department_id,
-        "name": d.name,
+        department_id: d.department_id,
+        name: d.name,
       };
     });
   }
@@ -238,7 +242,7 @@ export class DepartmentService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    
+
     const result = await departmentRepository.update(department_id, body);
     return {
       affected: result.affected,
@@ -274,5 +278,32 @@ export class DepartmentService {
     return {
       affected: result.affected,
     };
+  }
+
+  async addManagerDeparment(
+    user_id: string,
+    body: DeepPartial<Department>,
+    entityManager?: EntityManager,
+  ) {
+    const departmentRepository = entityManager
+      ? entityManager.getRepository<Department>('department')
+      : this.departmentRepository;
+    return await departmentRepository.update(user_id, body);
+  }
+
+  async getAvailableDepartment(user_id: string, entityManager?: EntityManager) {
+    const departmentRepository = entityManager
+      ? entityManager.getRepository<Department>('department')
+      : this.departmentRepository;
+
+    const departments = await departmentRepository.find({
+      manager_id: IsNull(),
+    });
+    return departments.map((d) => {
+      return {
+        department_id: d.department_id,
+        name: d.name,
+      };
+    });
   }
 }

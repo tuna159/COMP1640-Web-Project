@@ -21,12 +21,12 @@ import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateEventDto, VUpdateEventDto } from 'global/dto/event.dto.';
 import { DepartmentService } from '@modules/department/department.service';
 import { IdeaService } from '@modules/idea/idea.service';
-import { Idea } from '@core/database/mysql/entity/idea.entity';
 import { UserService } from '@modules/user/user.service';
 import { join } from 'path';
 import * as fs from 'fs';
 import type { Response } from 'express';
 import { stringify } from 'csv-stringify';
+import { EIsDelete } from 'enum';
 
 @Injectable()
 export class EventService {
@@ -281,9 +281,9 @@ export class EventService {
     }
 
     //? Check if an event belongs to the university
-    if(event.department_id != null) {
+    if (event.department_id != null) {
       const user = await this.userService.getUserById(userData.user_id);
-      if(user.department_id != event.department_id) {
+      if (user.department_id != event.department_id) {
         throw new HttpException(
           ErrorMessage.EVENT_PERMISSION,
           HttpStatus.BAD_REQUEST,
@@ -291,7 +291,7 @@ export class EventService {
       }
     }
 
-    if(event.first_closure_date <= new Date()) {
+    if (event.first_closure_date <= new Date()) {
       throw new HttpException(
         ErrorMessage.FIRST_CLOSURE_DATE_UNAVAILABLE,
         HttpStatus.BAD_REQUEST,
@@ -378,5 +378,66 @@ export class EventService {
         HttpStatus.BAD_REQUEST,
       );
     }
+  }
+
+  async getAllEvents(userData: IUserData, entityManager?: EntityManager) {
+    const eventRepository = entityManager
+      ? entityManager.getRepository<Event>('event')
+      : this.eventRepository;
+
+    if (userData.role_id != EUserRole.ADMIN) {
+      throw new HttpException(
+        ErrorMessage.EVENT_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return await this.eventRepository.find();
+  }
+
+  async getIdeasByEvent(
+    userData: IUserData,
+    event_id: number,
+    entityManager?: EntityManager,
+  ) {
+    const checkEvent = await this.eventExists(event_id);
+
+    if (!checkEvent) {
+      throw new HttpException(
+        ErrorMessage.EVENT_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const eventRepository = entityManager
+      ? entityManager.getRepository<Event>('event')
+      : this.eventRepository;
+
+    const data = eventRepository
+      .createQueryBuilder('event')
+      .select()
+      .leftJoinAndSelect('event.ideas', 'ideas')
+      .leftJoinAndSelect('ideas.user', 'user')
+      .leftJoinAndSelect('user.userDetail', 'userDetail')
+      .where('event.event_id = :event_id', {
+        event_id: event_id,
+      })
+      .where('user.is_deleted = :is_deleted', {
+        is_deleted: EIsDelete.NOT_DELETED,
+      })
+      .where('event.created_date <= :now_date', {
+        now_date: new Date(),
+      })
+      .where('event.final_closure_date >=  :now_date', {
+        now_date: new Date(),
+      });
+
+    const [listIdea] = await data.getManyAndCount();
+
+    return listIdea;
+
+    // const dataOfIdea = listIdea.map((e) => {
+    //   return {};
+    // });
   }
 }

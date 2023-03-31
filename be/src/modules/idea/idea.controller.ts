@@ -15,6 +15,10 @@ import {
 import { VAddComment } from 'global/dto/addComment.dto';
 import { VCreateReactionDto } from 'global/dto/reaction.dto';
 import { IdeaService } from './idea.service';
+<<<<<<< HEAD
+=======
+import type { Response, Request } from 'express';
+>>>>>>> 5426469ae2bcd71179a409aa3eac208ce42bfd96
 import { VUpdateIdeaDto } from 'global/dto/update-idea.dto';
 
 @Controller('idea')
@@ -85,11 +89,27 @@ export class IdeaController {
   getIdeaDislikes(@Param('idea_id') idea_id: number) {
     return this.ideaService.getIdeaDislikes(idea_id);
   }
+<<<<<<< HEAD
+=======
+
+  @Get('event/download/:event_id')
+  downloadIdeasByEvent(
+    @UserData() userData: IUserData,
+    @Param('event_id') event_id: number,
+    @Res({ passthrough: true }) res: Response,
+    @Req() req: Request,
+  ) {
+    return 'hello';
+    // res.set({
+    //   'Content-Type': 'application/json',
+    //   'Content-Disposition': 'attachment; filename="package.json"',
+    // })
+    return this.ideaService.downloadIdeasByEvent(userData, event_id, res, req);
+  }
+>>>>>>> 5426469ae2bcd71179a409aa3eac208ce42bfd96
 
   @Get(':idea_id/comments')
-  async getIdeaCommentsLv1(
-    @Param('idea_id') idea_id: number,
-  ) {
+  async getIdeaCommentsLv1(@Param('idea_id') idea_id: number) {
     return await this.ideaService.getIdeaCommentsLv1(idea_id);
   }
 
@@ -109,9 +129,7 @@ export class IdeaController {
   }
 
   @Get(':idea_id/comments/total')
-  countIdeaComments(
-    @Param('idea_id') idea_id: number,
-  ) {
+  countIdeaComments(@Param('idea_id') idea_id: number) {
     return this.ideaService.countIdeaComments(idea_id);
   }
 }

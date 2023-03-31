@@ -24,6 +24,7 @@ import { UserDetailService } from '@modules/user-detail/user-detail.service';
 import { IUserData } from '@core/interface/default.interface';
 import sendMailNodemailer from '@helper/nodemailer';
 import { EUserRole } from 'enum/default.enum';
+import { DepartmentService } from '@modules/department/department.service';
 
 @Injectable()
 export class AuthService {
@@ -35,6 +36,7 @@ export class AuthService {
     public jwtService: JwtService,
     private connection: Connection,
     private userDetailService: UserDetailService,
+    private departmentSerivce: DepartmentService,
   ) {}
 
   async getUserByIdAndRole(user_id: string, role_id: number) {
@@ -106,10 +108,30 @@ export class AuthService {
     userParams.password = await handleBCRYPTHash(body.password);
     userParams.role_id = body.role_id;
     userParams.is_deleted = EIsDelete.NOT_DELETED;
-    userParams.department_id = body.department_id;
+    userParams.department_id =
+      body.role_id == EUserRole.ADMIN || body.role_id == EUserRole.QA_MANAGER
+        ? null
+        : body.department_id;
 
     const user = await this.connection.transaction(async (manager) => {
       const newUser = await this.userService.createUser(userParams, manager);
+
+      if (newUser.role_id == EUserRole.QA_COORDINATOR) {
+        const checkmanage = this.departmentSerivce.getAvailableDepartment(
+          newUser.user_id,
+        );
+
+        if (checkmanage) {
+          throw new HttpException(
+            ErrorMessage.DEPARTMENT_PERMISSION,
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+      }
+
+      await this.departmentSerivce.addManagerDeparment(newUser.user_id, {
+        manager_id: newUser.user_id,
+      });
 
       const userDetailParams = new UserDetail();
       userDetailParams.user_id = newUser.user_id;

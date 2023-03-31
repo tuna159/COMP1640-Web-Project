@@ -27,16 +27,23 @@ export class HeaderHomeComponent {
       }
     }).subscribe((res: any) => {
       this.listDepartment = res.data;
-      let items = [];
-      for (let i = 0; i < this.listDepartment.length; i++) {
-        let item: MenuItem = {
-          label: this.listDepartment[i].name,
-          routerLink: "/profile",
-        }
-        items.push(item);
-      }
-      this.menus = items;
+      // for (let i = 0; i < this.listDepartment.length; i++) {
+      //   let item: MenuItem = {
+      //     label: this.listDepartment[i].name,
+      //     routerLink: "/event/ideas",
+      //     state: {Id: this.listDepartment[i].department_id},
+
+      //     queryParams: { Id: this.listDepartment[i].department_id } ,
+      //     routerLinkActiveOptions: true
+      //   }
+      //   items.push(item);
+      // }
+      // this.menus = items;
     })
+  }
+  isLinkActive(link) {
+    const url = this.router.url;
+    return link.id === url.substring(1, url.indexOf('?'));
   }
 }
 

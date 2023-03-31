@@ -21,6 +21,11 @@ import { Public } from '@core/decorator/public.decorator';
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
+  @Get()
+  getAllEvents(@UserData() userData: IUserData) {
+    return this.eventService.getAllEvents(userData);
+  }
+
   @Post()
   createEvent(@UserData() userData: IUserData, @Body() body: VCreateEventDto) {
     return this.eventService.createEvent(userData, body);
@@ -63,5 +68,18 @@ export class EventController {
     @Res() res: Response,
   ) {
     return this.eventService.downloadIdeasByEvent(event_id, res, userData);
+  }
+  
+  @Get(':event_id/ideas')
+  getIdeasByEvent(
+    @UserData() userData: IUserData,
+    @Param('event_id') event_id: number,
+  ) {
+    return this.eventService.getIdeasByEvent(userData, event_id);
+  }
+
+  @Get('university')
+  getEventsByUniversity() {
+    return this.eventService.getEventsByUniversity();
   }
 }
