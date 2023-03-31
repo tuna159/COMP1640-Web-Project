@@ -66,6 +66,7 @@ export class IdeaService {
 
     const idea = await ideaRepository
       .createQueryBuilder('idea')
+      .innerJoinAndSelect('idea.event', 'event')
       .leftJoinAndSelect('idea.files', 'files')
       .innerJoinAndSelect('idea.user', 'user')
       .innerJoinAndSelect('user.userDetail', 'userDetail')
@@ -93,6 +94,7 @@ export class IdeaService {
     });
     const category = idea.ideaCategories[0];
     const user = idea.user.userDetail;
+    const event = idea.event;
 
     //? update idea views only if an idea details is requested
     //? requester must not be the idea author
@@ -106,6 +108,7 @@ export class IdeaService {
       content: idea.content,
       views: idea.views,
       is_anonymous: idea.is_anonymous,
+      event,
       files,
       user: {
         user_id: user.user_id,

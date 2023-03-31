@@ -129,7 +129,19 @@ export class CommentService {
       );
     }
 
-    const comment = await this.commentExist(comment_id);
+    const comment = await commentRepository
+      .createQueryBuilder('comment')
+      .innerJoinAndSelect('comment.idea', 'idea')
+      .innerJoinAndSelect('idea.event', 'event')
+      .where('comment.comment_id = :comment_id', { comment_id })
+      .andWhere('comment.is_deleted = :is_deleted', { 
+        is_deleted: EIsDelete.NOT_DELETED, 
+      })
+      .andWhere('idea.is_deleted = :is_deleted', { 
+        is_deleted: EIsDelete.NOT_DELETED, 
+      })
+      .getOne();
+
     if (!comment) {
       throw new HttpException(
         ErrorMessage.COMMENT_NOT_EXIST,
@@ -143,6 +155,14 @@ export class CommentService {
     ) {
       throw new HttpException(
         ErrorMessage.COMMENT_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const event = comment.idea.event;
+    if(event.final_closure_date <= new Date()) {
+      throw new HttpException(
+        ErrorMessage.FINAL_CLOSURE_DATE_UNAVAILABLE,
         HttpStatus.BAD_REQUEST,
       );
     }
