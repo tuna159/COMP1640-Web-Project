@@ -33,25 +33,14 @@ export class ManageAccountComponent {
 
     this.cols = [
       { field: 'Number', header: 'Number', width: '5%', textAlign: 'center' },
-<<<<<<< HEAD
-      { field: 'email', header: 'Email', width: '30%', textAlign: 'center' },
-      { field: 'name', header: 'Full Name', width: '30%', textAlign: 'center' },
-      { field: 'role', header: 'Role', width: '15%', textAlign: 'center' },
-      { field: 'status', header: 'Status', width: '15%', textAlign: 'center' },
-=======
       { field: 'email', header: 'Email', width: '15%', textAlign: 'center' },
       { field: 'name', header: 'Full Name', width: '15%', textAlign: 'center' },
       { field: 'role', header: 'Role', width: '10%', textAlign: 'center' },
       { field: 'status', header: 'Status', width: '10%', textAlign: 'center' },
->>>>>>> fe864b9 (sos)
       {
         field: 'edit',
         header: 'Edit',
-<<<<<<< HEAD
-        width: '5%',
-=======
         width: '10%',
->>>>>>> fe864b9 (sos)
         textAlign: 'center',
       },
     ];
