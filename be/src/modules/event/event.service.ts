@@ -444,13 +444,13 @@ export class EventService {
       .where('event.event_id = :event_id', {
         event_id: event_id,
       })
-      .where('user.is_deleted = :is_deleted', {
+      .andWhere('user.is_deleted = :is_deleted', {
         is_deleted: EIsDelete.NOT_DELETED,
       })
-      .where('event.created_date <= :now_date', {
+      .andWhere('event.created_date <= :now_date', {
         now_date: new Date(),
       })
-      .where('event.final_closure_date >=  :now_date', {
+      .andWhere('event.final_closure_date >=  :now_date', {
         now_date: new Date(),
       });
 
