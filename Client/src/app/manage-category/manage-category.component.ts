@@ -40,12 +40,12 @@ export class ManageCategoryComponent implements OnInit {
   ngOnInit() {
 
     this.cols = [
-      { field: 'Number', header: 'Number', width: '50px', textAlign: 'center' },
-      { field: 'name', header: 'Name', width: '300px', textAlign: 'center' },
+      { field: 'Number', header: 'Number', width: '5%', textAlign: 'center' },
+      { field: 'name', header: 'Name', width: '30%', textAlign: 'center' },
       {
         field: 'Edit/Delete',
         header: 'Edit/Delete',
-        width: '120px',
+        width: '15%',
         textAlign: 'center',
       },
     ];
@@ -71,7 +71,6 @@ export class ManageCategoryComponent implements OnInit {
     this.ref = this.dialogService.open(AddCategoryComponent, {
       header: 'Edit Category',
       width: '30%',
-      height: '50%',
       contentStyle: { "max-height": "800px", "overflow": "auto" },
       baseZIndex: 10000,
     });
@@ -121,7 +120,6 @@ export class ManageCategoryComponent implements OnInit {
         this.ref = this.dialogService.open(AddCategoryComponent, {
           header: 'Add Category',
           width: '30%',
-          height: '50%',
           contentStyle: { "max-height": "800px", "overflow": "auto" },
           baseZIndex: 10000,
           data: {
@@ -138,7 +136,6 @@ export class ManageCategoryComponent implements OnInit {
       this.ref = this.dialogService.open(AddCategoryComponent, {
         header: 'Edit Category',
         width: '30%',
-        height: '50%',
         contentStyle: { "max-height": "800px", "overflow": "auto" },
         baseZIndex: 10000,
         data: data

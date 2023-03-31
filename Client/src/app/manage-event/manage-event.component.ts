@@ -31,16 +31,16 @@ export class ManageEventComponent {
   ngOnInit() {
 
     this.cols = [
-      { field: 'Number', header: 'Number', width: '50px', textAlign: 'center' },
-      { field: 'name', header: 'Name', width: '200px', textAlign: 'center' },
-      { field: 'Start Date', header: 'Start Date', width: '200px', textAlign: 'center' },
-      { field: 'Closure Date', header: 'Closure Date', width: '150px', textAlign: 'center' },
-      { field: 'Final Date', header: 'Final Date', width: '150px', textAlign: 'center' },
-      { field: 'Department', header: 'Department', width: '150px', textAlign: 'center' },
+      { field: 'Number', header: 'Number', width: '5%', textAlign: 'center' },
+      { field: 'name', header: 'Name', width: '15%', textAlign: 'center' },
+      { field: 'Start Date', header: 'Start Date', width: '15%', textAlign: 'center' },
+      { field: 'Closure Date', header: 'Closure Date', width: '10%', textAlign: 'center' },
+      { field: 'Final Date', header: 'Final Date', width: '10%', textAlign: 'center' },
+      { field: 'Department', header: 'Department', width: '10%', textAlign: 'center' },
       {
         field: 'Edit/Delete',
         header: 'Edit/Delete',
-        width: '120px',
+        width: '10%',
         textAlign: 'center',
       },
     ];
@@ -105,10 +105,9 @@ export class ManageEventComponent {
 
   openNewEvent(data) {
     if (!data) {
-      this.ref = this.dialogService.open(CreateAccountComponent, {
-        header: 'Add Category',
-        width: '30%',
-        height: '50%',
+      this.ref = this.dialogService.open(AddEventComponent, {
+        header: 'Add Event',
+        width: '40%',
         contentStyle: { "max-height": "800px", "overflow": "auto" },
         baseZIndex: 10000,
         data: {
@@ -122,10 +121,9 @@ export class ManageEventComponent {
         this.getAllData();
       });
     } else {
-      this.ref = this.dialogService.open(CreateAccountComponent, {
-        header: 'Edit Category',
-        width: '30%',
-        height: '50%',
+      this.ref = this.dialogService.open(AddEventComponent, {
+        header: 'Edit Event',
+        width: '40%',
         contentStyle: { "max-height": "800px", "overflow": "auto" },
         baseZIndex: 10000,
         data: data
