@@ -1,12 +1,25 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 /* eslint-disable @typescript-eslint/no-var-requires */
+import { IUserData } from '@core/interface/default.interface';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ErrorMessage } from 'enum/error';
+import type { Response } from 'express';
+import e from 'express';
 
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import {
+  getBytes,
+  getDownloadURL,
+  getMetadata,
+  getStorage,
+  listAll,
+  ref,
+  uploadBytes,
+} from 'firebase/storage';
+import { join } from 'path';
 import { storage } from 'src/config/firebase.config';
-
+import * as fs from 'fs';
+import * as archiver from 'archiver';
 // import { initializeFireBaseApp } from 'src/config/firebase';
 
 // const md5 = require('md5');
@@ -24,13 +37,13 @@ export class UploadService {
    */
   async uploadFireBase(files: Array<Express.Multer.File>) {
     const data = [];
-    const pdf = files.filter((el) => el.mimetype == 'application/pdf');
-    if (pdf.length > 10) {
-      throw new HttpException(
-        ErrorMessage.FILE_PDF_MAX,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // const pdf = files.filter((el) => el.mimetype == 'application/pdf');
+    // if (pdf.length > 10) {
+    //   throw new HttpException(
+    //     ErrorMessage.FILE_PDF_MAX,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
     for (const file of files) {
       const fileUpload = await this.save(file);
 
@@ -70,5 +83,34 @@ export class UploadService {
     } catch (e) {
       return e.ErrorMessage;
     }
+  }
+
+  async downloadAllIdeas(res: Response, userData: IUserData) {
+    const listRef = ref(storage, 'files');
+    const folderName = 'static';
+
+    const a = await listAll(listRef);
+    for (const ref of a.items) {
+      console.log(ref);
+      const a = await getMetadata(ref);
+      console.log(a.name);
+
+      const bytes = await getBytes(ref);
+      const buffer = Buffer.from(bytes);
+      const path = join(process.cwd(), folderName, a.name);
+      console.log(path);
+      fs.writeFileSync(path, buffer);
+    }
+    // .then((resI) => {
+    // })
+    // .catch((error) => {
+    //   console.log(error);
+    // });
+
+    const archive = archiver('zip', { zlib: { level: 9 } });
+    archive.directory(folderName, false);
+    res.attachment(`${folderName}.zip`);
+    archive.pipe(res);
+    archive.finalize();
   }
 }

@@ -582,10 +582,11 @@ export class EventService {
     const data = [];
     const departments = await this.departmentService.getAllDepartments();
     for (const d of departments) {
-      const contribution = await this.ideaService.getDepartmentIdeasContributionInTime(
-        d.department_id,
-        year,
-      );
+      const contribution =
+        await this.ideaService.getDepartmentIdeasContributionInTime(
+          d.department_id,
+          year,
+        );
       data.push({
         department_id: d.department_id,
         department_name: d.name,
