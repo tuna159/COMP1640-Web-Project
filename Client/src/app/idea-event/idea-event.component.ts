@@ -14,47 +14,39 @@ import { PostComponent } from '../home/post/post.component';
 })
 export class IdeaEventComponent implements OnInit {
   ref: DynamicDialogRef;
-  listEvent = [];
-  listDepartment = []
-  selectedNode: any;
-  nodes1: any[];
-  Id = 1;
-  nameDpm: any;
-  apiUrl = 'http://localhost:3009/api/department/';
+  listIdea = [];
+  Id: any;
+  name: any;
+  content: any;
+  first_closure_date: any;
+  final_closure_date: any;
+  apiUrl = 'http://localhost:3009/api/event/';
   constructor(private dialogService: DialogService, private http: HttpClient, private route: ActivatedRoute,
     private authService: AuthenticationService, private router: Router, private messageService: MessageService) {
-    
+      this.Id = this.router.getCurrentNavigation().extras.state.Id;
+      this.getAllIdeaByEvent();
   }
 
 
-  getAllEventsByDepartment() {
-    this.listEvent = []
-    this.http.get<any>(this.apiUrl + this.Id + "/events", {
+  getAllIdeaByEvent() {
+    this.http.get<any>(this.apiUrl + this.Id + "/ideas", {
       headers: {
         Authorization: 'Bearer ' + this.authService.getToken()
       }
     }).subscribe((res: any) => {
-      this.listEvent = res.data;
+      this.listIdea = res.data[0].ideas;
+      this.name = res.data.name;
+      this.content = res.data.content;
+      this.final_closure_date = res.data.final_closure_date;
+      this.first_closure_date = res.data.first_closure_date;
+      console.log(this.listIdea)
     })
   }
 
   ngOnInit(): void {
-    let obj: any
-    this.route.queryParamMap.subscribe((params) => {
-      obj = params;
-      this.Id = obj.params.Id;
-      this.nameDpm = obj.params.name;
-      this.getAllEventsByDepartment();
-    }
-  );
-
+    
   }
   
-  IdeaDetail(IdIdeal): void {
-    this.router.navigateByUrl('/detail', { state: { Id: IdIdeal } });
-  }
-
-
   showMessage(severity: string, detail: string) {
     this.messageService.add({ severity: severity, summary: 'Notification:', detail: detail });
   }

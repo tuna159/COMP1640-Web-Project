@@ -18,51 +18,35 @@
                     <div class="col-5" style="position: static;">
                         <p
                             style="text-align: center; margin-left: 10px; font-size: 25px; font-weight: bold; color: black;">
-                            Events of {{nameDpm}}
+                            {{name}}
                         </p>
-                    </div>
-                    <div class="col-3" style="position: static;">
-                        <p-treeSelect [(ngModel)]="selectedNode" [options]="nodes1" placeholder="Filter"></p-treeSelect>
-                    </div>
-
-                    <div class="col-3" style="position: static;">
-                        <ng-template ptemplate="filter" let-department let-filter="filterCallback">
-                            <p-dropdown [options]="listDepartment" (onChange)="filter($event.value)"
-                                placeholder="Category">
-                                <ng-template let-option ptemplate="item">
-                                    <span [class]="'customer-badge status-' + option.value">{{option.name}}</span>
-                                </ng-template>
-                            </p-dropdown>
-                        </ng-template>
+                        <p
+                            style="text-align: center; margin-left: 10px; font-size: 25px; font-weight: bold; color: black;">
+                            {{content}}
+                        </p>
+                        <p
+                            style="text-align: center; margin-left: 10px; font-size: 25px; font-weight: bold; color: black;">
+                            {{first_closure_date | date:'mediumDate'}}
+                        </p>
+                        <p
+                            style="text-align: center; margin-left: 10px; font-size: 25px; font-weight: bold; color: black;">
+                            {{final_closure_date | date:'mediumDate'}}
+                        </p>
                     </div>
 
                 </div>
 
                 <div>
 
-                    <div class="row" *ngFor="let l of listEvent; index as i;"
+                    <div class="row" *ngFor="let l of listIdea; index as i;"
                         style="margin-top: 2rem; margin-bottom: 1rem; background-color: #F2F2F2; padding: 10px; border-radius: 10px; width: 90%; margin-left: auto; margin-right:auto;">
-                        <div class="personal-info col-3" style="position: static;">
-                            <p></p>
-                            <p>{{l.name}}</p>
-                        </div>
                         <div class="col-9" style="position: static;">
-
-                            <button pButton pRipple type="button" label="{{l.content}}"
-                                class="p-button-text p-button-plain" (click)="IdeaDetail(l.idea_id)"></button>
-
-                            <div class="row"
-                                style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; height: 2rem;">
-                                <p>{{l.created_date | date:'mediumDate'}}
-                                </p>
-                                <p>{{l.first_closure_date | date:'mediumDate'}} </p>
-                                <p>{{l.final_closure_date | date:'mediumDate'}} </p>
-                            </div>
-                            <div class="row" style="margin-left: auto; margin-right: auto;">
-                                <p-chip label="{{lc.name}}" styleclass="mr-2"
-                                    *ngFor="let lc of l.categories; index as i;"></p-chip>
-                            </div>
+                            <p>{{l.title}}</p>
+                            <p>{{l.content}}</p>
+                            <p>{{l.user.userDetail.full_name}}</p>
+                            <p>{{l.created_at | date:'mediumDate'}}</p>
                         </div>
+                        
                     </div>
                 </div>
 

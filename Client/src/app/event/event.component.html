@@ -14,38 +14,35 @@
 
                 <div class="col-5" style="position: static; margin-right: auto; margin-left: auto;">
                     <p style="text-align: center; font-size: 25px; font-weight: bold; color: black;">
-                        Events
+                        Events of {{nameDpm}}
                     </p>
                 </div>
                 <div>
 
-                    <div class="row" *ngFor="let l of listIdea; index as i;"
+                    <div class="row" *ngFor="let l of listEvent; index as i;"
                         style="margin-top: 2rem; margin-bottom: 1rem; background-color: #F2F2F2; padding: 10px; border-radius: 10px; width: 90%; margin-left: auto; margin-right:auto;">
 
                         <div style="position: static; width: '100%';">
 
-                            <button pButton pRipple type="button" label="{{l.title}}"
-                                class="p-button-text p-button-plain" (click)="IdeaDetail(l.idea_id)"
+                            <button pButton pRipple type="button" label="{{l.name}}"
+                                class="p-button-text p-button-plain" (click)="EventDetail(l.event_id)"
                                 style="width: '100%';"></button>
-
                             <div class="row"
                                 style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; height: 2rem;">
-                                <p>Description: {{l.created_at | date:'mediumDate'}}</p>
+                                <p>Content: {{l.content}}</p>
                             </div>
 
                             <div class="row"
                                 style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; height: 2rem;">
-                                <p>Start Date: {{l.created_at | date:'mediumDate'}}</p>
-                                <p>{{l.views}}
-                                    Views</p>
+                                <p>Start Date: {{l.created_date | date:'mediumDate'}}</p>
                             </div>
                             <div class="row"
                                 style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; height: 2rem;">
-                                <p>Closure Date Date: {{l.created_at | date:'mediumDate'}}</p>
+                                <p>First Closure Date:{{l.first_closure_date | date:'mediumDate'}}</p>
                             </div>
                             <div class="row"
                                 style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; height: 2rem;">
-                                <p>Final Date: {{l.created_at | date:'mediumDate'}}</p>
+                                <p>Final Date: {{l.final_closure_date | date:'mediumDate'}}</p>
                             </div>
 
 
