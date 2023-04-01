@@ -255,6 +255,8 @@ export class IdeaService {
     entireUniversity?: boolean,
     availableEvents?: boolean,
     sorting_setting?: EIdeaFilter,
+    startDate?: Date,
+    endDate?: Date,
     entityManager?: EntityManager,
   ) {
     const ideaRepository = entityManager

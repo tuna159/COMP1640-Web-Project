@@ -57,17 +57,24 @@ export class EventController {
     return this.eventService.createIdea(userData, body, event_id);
   }
 
+  @Public()
   @Get(':event_id/download?')
   downloadIdeasByEvent(
     @UserData() userData: IUserData,
     @Param('event_id') event_id: number,
     @Query('category_id') category_id: number,
     @Query('department_id') department_id: number,
-    @Query('start_date') start_date: Date,
-    @Query('end_date') end_date: Date,
+    @Query('start_date') start_date: string,
+    @Query('end_date') end_date: string,
     @Res() res: Response,
   ) {
-    return this.eventService.downloadIdeasByEvent(event_id, res, userData);
+    return this.eventService.downloadIdeasByEvent(
+      event_id,
+      start_date,
+      end_date,
+      res, 
+      userData,
+    );
   }
 
   @Get(':event_id/ideas')

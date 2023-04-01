@@ -27,6 +27,7 @@ import * as fs from 'fs';
 import type { Response } from 'express';
 import { stringify } from 'csv-stringify';
 import { EIsDelete } from 'enum';
+import moment from 'moment';
 
 @Injectable()
 export class EventService {
@@ -302,29 +303,34 @@ export class EventService {
 
   async downloadIdeasByEvent(
     event_id: number,
+    start_date: string,
+    end_date: string,
     res: Response,
     userData: IUserData,
   ) {
-    if (userData.role_id != EUserRole.QA_MANAGER) {
-      throw new HttpException(
-        ErrorMessage.DATA_DOWNLOAD_PERMISSION,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    const event = await this.eventExists(event_id);
-    if (!event) {
-      throw new HttpException(
-        ErrorMessage.EVENT_NOT_EXIST,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    if (event.final_closure_date) {
-      throw new HttpException(
-        ErrorMessage.DATA_DOWNLOAD_DATE_TIME,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // if (userData.role_id != EUserRole.QA_MANAGER) {
+    //   throw new HttpException(
+    //     ErrorMessage.DATA_DOWNLOAD_PERMISSION,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
+    // const event = await this.eventExists(event_id);
+    // if (!event) {
+    //   throw new HttpException(
+    //     ErrorMessage.EVENT_NOT_EXIST,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
+    // if (event.final_closure_date) {
+    //   throw new HttpException(
+    //     ErrorMessage.DATA_DOWNLOAD_DATE_TIME,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
 
+    const isValid = moment(start_date, moment.ISO_8601, true).isValid();
+    console.log("moment", isValid);
+    return;
     const ideas = await this.ideaService.getIdeasOfSystem(event_id);
     const data = ideas.map((idea) => {
       const row = [];

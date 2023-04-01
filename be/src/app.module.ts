@@ -30,6 +30,8 @@ import { MeModule } from './modules/me/me.module';
 import { EventModule } from './modules/event/event.module';
 import { TagModule } from './modules/tag/tag.module';
 import { IdeaTagModule } from './modules/idea-tag/idea-tag.module';
+import { DownloadModule } from './download/download.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -75,6 +77,8 @@ import { IdeaTagModule } from './modules/idea-tag/idea-tag.module';
     EventModule,
     TagModule,
     IdeaTagModule,
+    DownloadModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [
