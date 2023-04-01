@@ -12,7 +12,7 @@
         <p style="font-weight: bold; font-size: 24px;">Your Info</p>
         <p-card>
             <div style="display: flex;">
-                <p-avatar size="xlarge" shape="circle" image="user.png"></p-avatar>
+                <p-avatar size="xlarge" shape="circle" image="{{avatar_url}}"></p-avatar>
                 <p style="width: 50%; margin-left: 5%;">Personalize your account with a photo. Your profile picture will
                     appear at the top of the app
                     ideas section.</p>
@@ -129,6 +129,7 @@
             (click)="SaveEditInfor()"></button>
     </ng-template>
 </p-dialog>
+
 
 
 

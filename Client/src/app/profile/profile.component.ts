@@ -43,6 +43,9 @@ export class ProfileComponent implements OnInit {
   profileSubmitted: boolean;
   accountSubmitted: boolean;
   uploadedFiles: any[] = [];
+  fileImage: any
+  urlImage: any
+  avatar_url: any
   apiUrl:string = "http://localhost:3009/api/user/";
   apiURLEditInfor = "http://localhost:3009/api/me";
   
@@ -82,8 +85,9 @@ export class ProfileComponent implements OnInit {
             console.log(result);
             this.name = result.data.nick_name;
             this.gender = result.data.gender == 1 ? "Male" : "Female";
-            this.date = result.data.birthdate;
+            this.date = result.data.birthday;
             this.email = result.data.email;
+            this.avatar_url = result.data.avatar_url
           });
 
   }
@@ -97,7 +101,23 @@ export class ProfileComponent implements OnInit {
 
 
 
-  SaveEditInfor() {
+  async SaveEditInfor() {
+    if(this.fileImage.name.length) {
+      const formData: FormData = new FormData();
+
+      formData.append('files', this.fileImage, this.fileImage.name);
+
+      await this.http.post<any>("http://localhost:3009/api/upload", formData , {headers: { Authorization: 'Bearer ' + this.authService.getToken()}
+        }).subscribe((result: any) => {
+          this.save(result.data[0].file_url)
+        });
+    }else{
+      this.save('')
+    }
+
+  }
+  
+  save(url: any) {
     let dateBirth =""
     if(this.formGroup.controls.birthday.value.getMonth() + 1 <= 9){
       dateBirth = this.formGroup.controls.birthday.value.getFullYear() + "-0" + 
@@ -111,11 +131,11 @@ export class ProfileComponent implements OnInit {
     this.http.put<any>(this.apiURLEditInfor,{
       "nick_name" : this.formGroup.controls.name.value,
       "gender" : this.formGroup.controls.gender.value == "Male" ? 1 : 2,
-      "birthdate": dateBirth
+      "birthdate": dateBirth,
+      "avatar_url": url
   } , {headers: {
       Authorization: 'Bearer ' + this.authService.getToken()}
     }).subscribe((result: any) => {
-      console.log(dateBirth)
       this.getDataUser();
       this.hideDialog() ;
     });
@@ -162,8 +182,10 @@ export class ProfileComponent implements OnInit {
       reader.onload=(event:any)=>{
         this.url = event.target.result;
       }
+      this.fileImage = e.target.files[0]
     }
   }
+  
 
 }
 

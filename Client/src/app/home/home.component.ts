@@ -43,6 +43,7 @@ export class HomeComponent implements OnInit{
             created_at: item.created_at,
             views: item.views, 
             tag: item.tags,
+            url_avatar: item.user.avatar_url,
             nameTag: tmp.toString(),
           }
           this.listData.push(bodyData)
