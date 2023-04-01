@@ -1,13 +1,47 @@
-<div class="menu-left" style="align-items: center;">
 
-    <p-chip label="Amy Elsner" image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
-        styleClass="mr-2"></p-chip>
+<header>
+    <!-- Sidebar -->
+    <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
+        <div class="position-sticky">
+            <div class="list-group list-group-flush mx-3">
+                <p-chip label="Amy Elsner" image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+                    styleClass="mr-2"></p-chip>
 
-    <span class="p-input-icon-left" style="margin-left: 25px;">
-        <i class="pi pi-search"></i>
-        <input type="text" pInputText placeholder="Search" [(ngModel)]="value3" />
-    </span>
-    <p-megaMenu [model]="categories" orientation="vertical"></p-megaMenu>
-    
-    <p-menu [model]="items"></p-menu>
-</div>
+                <ul id="collapseExample1" class="collapse show list-group list-group-flush">
+                    <li class="list-group-item py-1 mt-4 border-0">
+                        <i class="pi pi-user"></i>
+                        <a href="/view/profile" class="text-dark ml-2">View profile</a>
+                    </li>
+                    <li class="list-group-item py-1 mt-4 border-0">
+                        <i class="pi pi-chart-bar"></i>
+                        <a href="" class="text-dark ml-2">Dashboard</a>
+                    </li>
+                    <li class="list-group-item py-1 mt-4 border-0">
+                        <i class="pi pi-users"></i>
+                        <a href="/manage/account" class="text-dark ml-2">Manage Account</a>
+                    </li>
+                    <li class="list-group-item py-1 mt-4 border-0">
+                        <i class="pi pi-database"></i>
+                        <a href="/manage/category" class="text-dark ml-2">Manage Category</a>
+                    </li>
+                    <li class="list-group-item py-1 mt-4 border-0">
+                        <i class="pi pi-building"></i>
+                        <a href="" class="text-dark ml-2">Manage Department</a>
+                    </li>
+                    <li class="list-group-item py-1 mt-4 border-0">
+                        <i class="pi pi-stopwatch"></i>
+                        <a href="/manage/event" class="text-dark ml-2">Manage Event</a>
+                    </li>
+                    <li class="list-group-item py-1 mt-4 border-0">
+                        <i class="pi pi-stopwatch"></i>
+                        <a href="" class="text-dark ml-2">Category</a>
+                    </li>
+                    <li class="list-group-item py-1 mt-4 border-0">
+                        <i class="pi pi-sign-out"></i>
+                        <a href="" class="text-dark ml-2">Log out</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>

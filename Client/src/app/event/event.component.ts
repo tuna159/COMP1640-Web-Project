@@ -1,7 +1,7 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuthenticationService } from '../auth/services/authentication.service';
@@ -14,41 +14,45 @@ import { AuthenticationService } from '../auth/services/authentication.service';
 })
 export class EventComponent implements OnInit {
   ref: DynamicDialogRef;
-  listIdea = [];
+  listEvent = [];
   listDepartment = []
   selectedNode: any;
   nodes1: any[];
-  apiUrl = 'http://localhost:3009/api/idea';
-  constructor(private dialogService: DialogService, private http: HttpClient,
+  Id = 1;
+  nameDpm: any;
+  apiUrl = 'http://localhost:3009/api/department/';
+  constructor(private dialogService: DialogService, private http: HttpClient, private route: ActivatedRoute,
     private authService: AuthenticationService, private router: Router, private messageService: MessageService) {
-    this.getAllIdeas();
-    this.getAllDepartment()
+    
   }
 
 
-  getAllIdeas() {
-    this.http.get<any>(this.apiUrl, {
+  getAllEventsByDepartment() {
+    this.listEvent = []
+    this.http.get<any>(this.apiUrl + this.Id + "/events", {
       headers: {
         Authorization: 'Bearer ' + this.authService.getToken()
       }
     }).subscribe((res: any) => {
-      this.listIdea = res.data;
+      this.listEvent = res.data;
+      console.log(this.listEvent);
     })
   }
-  getAllDepartment() {
-    this.http.get<any>("http://localhost:3009/api/department", {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe((res: any) => {
-      this.listDepartment = res.data;
-    })
-  }
+
   ngOnInit(): void {
+    let obj: any
+    this.route.queryParamMap.subscribe((params) => {
+      obj = params;
+      this.Id = obj.params.Id;
+      this.nameDpm = obj.params.name;
+      this.getAllEventsByDepartment();
+    }
+  );
 
   }
-  IdeaDetail(IdIdeal): void {
-    this.router.navigateByUrl('/detail', { state: { Id: IdIdeal } });
+
+  EventDetail(IdEvent: any) {
+    this.router.navigateByUrl('/event/ideas', { state: { Id: IdEvent } });
   }
 
   showMessage(severity: string, detail: string) {

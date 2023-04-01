@@ -9,41 +9,45 @@
         </div>
 
         <div class="" style="margin-top: 5rem">
-            <p-card header="{{user}}"  
-                [style]="{'width': '50rem', 'margin-bottom': '4em', 'margin-left': 'auto', 'margin-right': 'auto', 'background-color':'white'}">
+            <p-card header="{{user}}"
+                [style]="{'width': '55%', 'margin-bottom': '4em', 'margin-left': 'auto', 'margin-right': 'auto', 'background-color':'white'}">
                 <h4>{{title}}</h4>
                 <h6>{{date| date:'mediumDate'}}</h6>
                 <div
-                    style="width: 90%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px;">
+                    style="width: 100%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px;">
                     <p style="color: black;">
                         {{title}}</p>
                 </div>
 
                 <p-button label="Attachment" icon="pi pi-file-word"></p-button>
                 <br>
-                <button pButton type="button" (click)="DownloadFile()" label="File đính kèm.doc" class="p-button-text" id="file"></button>
-                <button pButton type="button" (click)="DownloadFile()" label="File đính kèm.doc" class="p-button-text" id="file"></button>
+                <button pButton type="button" (click)="DownloadFile()" label="File đính kèm.doc" class="p-button-text"
+                    id="file"></button>
+                <button pButton type="button" (click)="DownloadFile()" label="File đính kèm.doc" class="p-button-text"
+                    id="file"></button>
                 <div class="row"
-                    style="border-bottom-width: 1px; border-color: #F2F2F2; border-bottom-style: solid; width: 100%; margin-top: 15px; margin-left: auto; margin-right: auto;">
-                    <h6 style="width: 58%;">100 Views</h6>
-                    <h6 style="width: 13%;">{{like}} Like</h6>
-                    <h6 style="width: 13%;">{{dislike}} Dislikes</h6>
-                    <h6 style="width: 16%;">100 Comments</h6>
+                    style="border-bottom-width: 1px; border-color: #F2F2F2; border-bottom-style: solid; width: 100%; margin-top: 15px; margin-left: auto; margin-right: auto; padding-left: 10px;">
+                    <h6 style="width: 50%;">100 Views</h6>
+                    <h6 style="width: 15%;">{{like}} Like</h6>
+                    <h6 style="width: 15%;">{{dislike}} Dislikes</h6>
+                    <h6>100 Comments</h6>
                 </div>
                 <div class="row"
                     style="border-bottom-width: 1px; border-color: #F2F2F2; border-bottom-style: solid; width: 100%; margin-top: 15px; margin-left: auto; margin-right: auto;">
                     <div style="width: 80%;">
-                        <p-toggleButton #likeAble [(ngModel)]="like" onLabel="Like" offLabel="Like" offIcon="pi pi-thumbs-up-fill"
-                            onIcon="pi pi-thumbs-up-fill" (click)="dislike = false"></p-toggleButton>
+                        <p-toggleButton #likeAble [(ngModel)]="like" onLabel="Like" offLabel="Like"
+                            offIcon="pi pi-thumbs-up-fill" onIcon="pi pi-thumbs-up-fill"
+                            (click)="dislike = false"></p-toggleButton>
 
-                        <p-toggleButton [(ngModel)]="dislike" onLabel="Dislike" offLabel="Dislike" offIcon="pi pi-thumbs-down-fill"
-                            onIcon="pi pi-thumbs-down-fill" (click)="like = false"></p-toggleButton>
+                        <p-toggleButton [(ngModel)]="dislike" onLabel="Dislike" offLabel="Dislike"
+                            offIcon="pi pi-thumbs-down-fill" onIcon="pi pi-thumbs-down-fill"
+                            (click)="like = false"></p-toggleButton>
                     </div>
                     <p-button id="comment_btn" label="Comments" icon="pi pi-comments"></p-button>
                 </div>
 
                 <br>
-                <div *ngIf="role == 4" style="width: 100%; display: flex;" >
+                <div *ngIf="role == 4" style="width: 100%; display: flex;">
                     <span class="p-float-label" style="width: 90%;">
                         <textarea [(ngModel)]="comment_value" [rows]="1" pInputTextarea [autoResize]="true"></textarea>
                         <label for="float-input">Comment something here.............</label>
@@ -52,18 +56,40 @@
                         class="p-button-rounded p-button-outlined" (click)="postCommentByIdea(1)"></button>
                 </div>
                 <br>
-                <div  class="row" *ngFor="let l of listCommentData; index as i;"
-                    style="width: 100%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px;">
-                    <div>
+                <div *ngFor="let l of listCommentData; index as i;" style="padding-left: 10px; padding-right: 10px;">
+                    <div class="row"
+                        style="width: 100%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px; margin-top: 10px;">
                         <h6>{{l.author.full_name}}</h6>
                         <p>{{l.content}}</p>
+                    </div>
+                    <div  class="form-group" style="width: 100%;">
+                        <button type="button" class="btn btn-tertiary text-dark float-right" id="cmtBtn" data-toggle="collapse" data-target="#demo"
+                            data-mdb-ripple-color="light" style="background-color: white; ">Comment</button>
+                    </div>
+                    <br>
+                    <div class="collapse float-right"  id="demo" style="width: 90%; margin-bottom: 10px;">
+                        <div class="row"
+                            style="width: 100%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px; margin-top: 10px;">
+                            <h6>{{l.author.full_name}}</h6>
+                            <p>{{l.content}}</p>
+                        </div>
+
+                        <div class="row"
+                            style="width: 100%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px; margin-top: 10px;">
+                            <h6>{{l.author.full_name}}</h6>
+                            <p>{{l.content}}</p>
+                        </div>
+                        
+                        <div style="display: flex; margin-top: 10px; width: 90%;" class="float-right">
+                            <span class="p-float-label" style="width: 90%; height: 100%;">
+                                <textarea [(ngModel)]="comment_value" [rows]="1" pInputTextarea [autoResize]="true"></textarea>
+                                <label for="float-input">Comment something here.............</label>
+                            </span>
+                            <button style="margin-top: 0; margin-left: 10px;" pButton pRipple type="button" icon="pi pi-reply"
+                                class="p-button-rounded p-button-outlined" (click)="postCommentByIdea(1)"></button>
+                        </div>
                     </div>
                 </div>
             </p-card>
         </div>
-
-        <a href="#" style="position: fixed; top: 90%; left: 90%;">
-            <img src="../../assets/images/post.png">
-        </a>
-
     </div>
