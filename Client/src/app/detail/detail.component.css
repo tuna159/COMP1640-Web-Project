@@ -8,6 +8,12 @@ a:hover {
 }
 
 
+#cmtBtn:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+
 :host ::ng-deep .p-card .p-card-title {
     font-size: 16px;
     font-weight: 700;
@@ -67,6 +73,9 @@ a:hover {
 :host ::ng-deep .p-inputtext {
     position: static;
     width: 100%;
+}
+:host ::ng-deep .p-inputtextarea{
+    height: 100% !important;
 }
 
 
