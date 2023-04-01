@@ -16,6 +16,7 @@ import { VCreateEventDto, VUpdateEventDto } from 'global/dto/event.dto.';
 import type { Response } from 'express';
 import { EventService } from './event.service';
 import { Public } from '@core/decorator/public.decorator';
+import { VDownloadIdeaDto } from 'global/dto/downloadIdeas.dto';
 
 @Controller('event')
 export class EventController {
@@ -57,24 +58,14 @@ export class EventController {
     return this.eventService.createIdea(userData, body, event_id);
   }
 
-  @Public()
   @Get(':event_id/download?')
   downloadIdeasByEvent(
     @UserData() userData: IUserData,
     @Param('event_id') event_id: number,
-    @Query('category_id') category_id: number,
-    @Query('department_id') department_id: number,
-    @Query('start_date') start_date: string,
-    @Query('end_date') end_date: string,
+    @Body() body: VDownloadIdeaDto,
     @Res() res: Response,
   ) {
-    return this.eventService.downloadIdeasByEvent(
-      event_id,
-      start_date,
-      end_date,
-      res, 
-      userData,
-    );
+    return this.eventService.downloadIdeasByEvent(event_id, body, res, userData);
   }
 
   @Get(':event_id/ideas')

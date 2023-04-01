@@ -83,7 +83,7 @@ export class ReactionService {
     };
   }
 
-  async getIdeaLikes(idea_id: number, entityManager?: EntityManager) {
+  async countIdeaLikes(idea_id: number, entityManager?: EntityManager) {
     const reactionRepository = entityManager
       ? entityManager.getRepository<Reaction>('reaction')
       : this.reactionRepository;
@@ -93,7 +93,7 @@ export class ReactionService {
     });
   }
 
-  async getIdeaDislikes(idea_id: number, entityManager?: EntityManager) {
+  async countIdeaDislikes(idea_id: number, entityManager?: EntityManager) {
     const reactionRepository = entityManager
       ? entityManager.getRepository<Reaction>('reaction')
       : this.reactionRepository;

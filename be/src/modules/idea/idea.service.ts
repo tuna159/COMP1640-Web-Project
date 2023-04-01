@@ -251,48 +251,77 @@ export class IdeaService {
   async getIdeasOfSystem(
     event_id?: number,
     category_id?: number,
-    department_id?: number,
-    entireUniversity?: boolean,
-    availableEvents?: boolean,
+    event_department_id?: number,
+    author_department_id?: number,
+    availableEvents: boolean = false,
     sorting_setting?: EIdeaFilter,
     startDate?: Date,
     endDate?: Date,
+    isDeleted: boolean = false,
     entityManager?: EntityManager,
   ) {
     const ideaRepository = entityManager
       ? entityManager.getRepository<Idea>('idea')
       : this.ideaRepository;
 
+    if(event_id != null && availableEvents) {
+      throw new HttpException(
+        "assertion: event_id != null && availableEvents",
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if(event_id != null && event_department_id != null) {
+      throw new HttpException(
+        "assertion: event_id != null && event_department_id != null",
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const query = ideaRepository
       .createQueryBuilder('idea')
       .innerJoinAndSelect('idea.event', 'event')
-      .innerJoinAndSelect('idea.user', 'user')
-      .innerJoinAndSelect('user.department', 'department')
-      .innerJoinAndSelect('user.userDetail', 'userDetail')
+      .innerJoinAndSelect('idea.user', 'author')
+      .innerJoinAndSelect('author.department', 'department')
+      .innerJoinAndSelect('author.userDetail', 'userDetail')
       .innerJoinAndSelect('idea.ideaCategories', 'ideaCategory')
       .innerJoinAndSelect('ideaCategory.category', 'category')
       .innerJoinAndSelect('idea.ideaTags', 'ideaTags')
-      .innerJoinAndSelect('ideaTags.tag', 'tag')
-      .where('idea.is_deleted = :is_deleted', {
+      .innerJoinAndSelect('ideaTags.tag', 'tag');
+
+    if (!isDeleted) {
+      query.where('idea.is_deleted = :is_deleted', {
         is_deleted: EIsDelete.NOT_DELETED,
       });
-
+    }
+    if (event_id != null) {
+      query.andWhere('event.event_id = :event_id', { event_id });
+    } else {
+      if (availableEvents) {
+        query.andWhere('event.final_closure_date >= :now', { now: new Date() });
+      }
+      if (event_department_id != null) {
+        query.andWhere('event.department_id = :event_department_id', { event_department_id });
+      } else {
+        query.andWhere('event.department_id IS NULL');
+      }
+    }
+    if (author_department_id != null) {
+      console.log("info: ", author_department_id);
+      query.andWhere('author.department_id = :author_department_id', {
+        author_department_id,
+      });
+    }
     if (category_id != null) {
       query.andWhere('ideaCategory.category_id = :category_id', {
         category_id,
       });
     }
-    if (department_id != null) {
-      query.andWhere('event.department_id = :department_id', { department_id });
-    } else if (entireUniversity) {
-      query.andWhere('event.department_id IS NULL');
+    if (startDate != null) {
+      query.andWhere('idea.created_at >= :startDate', { startDate });
     }
-    if (event_id != null) {
-      query.andWhere('event.event_id = :event_id', { event_id });
-    } else if (availableEvents) {
-      query.andWhere('event.final_closure_date >= :now', { now: new Date() });
+    if (endDate != null) {
+      query.andWhere('idea.created_at <= :endDate', { endDate });
     }
-
     if (sorting_setting == EIdeaFilter.RECENT_IDEAS) {
       query.orderBy('idea.created_at', 'DESC');
     } else if (sorting_setting == EIdeaFilter.MOST_VIEWED_IDEAS) {
@@ -303,8 +332,8 @@ export class IdeaService {
     if (sorting_setting == EIdeaFilter.MOST_POPULAR_IDEAS) {
       const ideasToSort = [];
       for (const idea of ideas) {
-        const likes = await this.reactionService.getIdeaLikes(idea.idea_id);
-        const dislikes = await this.reactionService.getIdeaDislikes(
+        const likes = await this.reactionService.countIdeaLikes(idea.idea_id);
+        const dislikes = await this.reactionService.countIdeaDislikes(
           idea.idea_id,
         );
         idea['point'] = likes - dislikes;
@@ -331,6 +360,7 @@ export class IdeaService {
         content: idea.content,
         views: idea.views,
         is_anonymous: idea.is_anonymous,
+        is_deleted: idea.is_deleted,
         created_at: idea.created_at,
         updated_at: idea.updated_at,
         event: {
@@ -619,7 +649,7 @@ export class IdeaService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const likes = await this.reactionService.getIdeaLikes(idea_id);
+    const likes = await this.reactionService.countIdeaLikes(idea_id);
     return { likes };
   }
 
@@ -631,7 +661,7 @@ export class IdeaService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const dislikes = await this.reactionService.getIdeaDislikes(idea_id);
+    const dislikes = await this.reactionService.countIdeaDislikes(idea_id);
     return { dislikes };
   }
 
@@ -808,11 +838,7 @@ export class IdeaService {
     return this.commentService.getIdeaCommentsLv1(idea_id);
   }
 
-  async createComment(
-    userData: IUserData, 
-    idea_id: number, 
-    body: VAddComment,
-  ) {
+  async createComment(userData: IUserData, idea_id: number, body: VAddComment) {
     if (userData.role_id != EUserRole.STAFF) {
       throw new HttpException(
         ErrorMessage.COMMENT_PERMISSION,
@@ -1078,7 +1104,7 @@ export class IdeaService {
       .distinct()
       .innerJoin('idea.user', 'user')
       .innerJoin('user.department', 'department')
-      .where('user.department_id = :department_id', {department_id})
+      .where('user.department_id = :department_id', { department_id })
       .andWhere('user.is_deleted = :is_deleted', {
         is_deleted: EIsDelete.NOT_DELETED,
       })

@@ -27,7 +27,9 @@ import * as fs from 'fs';
 import type { Response } from 'express';
 import { stringify } from 'csv-stringify';
 import { EIsDelete } from 'enum';
-import moment from 'moment';
+import { VDownloadIdeaDto } from 'global/dto/downloadIdeas.dto';
+import { ReactionService } from '@modules/reaction/reaction.service';
+import { CommentService } from '@modules/comment/comment.service';
 
 @Injectable()
 export class EventService {
@@ -38,6 +40,8 @@ export class EventService {
     @Inject(forwardRef(() => IdeaService))
     private ideaService: IdeaService,
     private userService: UserService,
+    private reactionService: ReactionService,
+    private commentService: CommentService,
   ) {}
 
   async getEventsByDepartment(
@@ -303,44 +307,79 @@ export class EventService {
 
   async downloadIdeasByEvent(
     event_id: number,
-    start_date: string,
-    end_date: string,
+    body: VDownloadIdeaDto,
     res: Response,
     userData: IUserData,
   ) {
-    // if (userData.role_id != EUserRole.QA_MANAGER) {
-    //   throw new HttpException(
-    //     ErrorMessage.DATA_DOWNLOAD_PERMISSION,
-    //     HttpStatus.BAD_REQUEST,
-    //   );
-    // }
-    // const event = await this.eventExists(event_id);
-    // if (!event) {
-    //   throw new HttpException(
-    //     ErrorMessage.EVENT_NOT_EXIST,
-    //     HttpStatus.BAD_REQUEST,
-    //   );
-    // }
-    // if (event.final_closure_date) {
-    //   throw new HttpException(
-    //     ErrorMessage.DATA_DOWNLOAD_DATE_TIME,
-    //     HttpStatus.BAD_REQUEST,
-    //   );
-    // }
+    if (userData.role_id != EUserRole.QA_MANAGER) {
+      throw new HttpException(
+        ErrorMessage.DATA_DOWNLOAD_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const event = await this.eventExists(event_id);
+    if (!event) {
+      throw new HttpException(
+        ErrorMessage.EVENT_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (event.final_closure_date) {
+      throw new HttpException(
+        ErrorMessage.DATA_DOWNLOAD_DATE_TIME,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
-    const isValid = moment(start_date, moment.ISO_8601, true).isValid();
-    console.log("moment", isValid);
-    return;
-    const ideas = await this.ideaService.getIdeasOfSystem(event_id);
-    const data = ideas.map((idea) => {
+    const start_date = new Date(body.start_date);
+    const end_date = new Date(body.end_date);
+    if (start_date > end_date) {
+      throw new HttpException(
+        'Start date must be less than or equal to end date',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (
+      start_date < event.first_closure_date ||
+      start_date > event.final_closure_date ||
+      end_date < event.first_closure_date ||
+      end_date > event.final_closure_date
+    ) {
+      throw new HttpException(
+        'Start date must be between fist and final closure date',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const ideas = await this.ideaService.getIdeasOfSystem(
+      event_id,
+      body.category_id,
+      null,
+      body.author_department_id,
+      null,
+      null,
+      start_date,
+      end_date,
+      true,
+    );
+    
+    const data = [];
+    for (const idea of ideas) {
       const row = [];
+      const likes = await this.reactionService.countIdeaLikes(idea.idea_id);
+      const dislikes = await this.reactionService.countIdeaDislikes(idea.idea_id);
+      const comments = await this.commentService.countIdeaComments(idea.idea_id);
       const event = idea.event;
       const user = idea.user;
       row.push(idea.idea_id);
       row.push(idea.title);
       row.push(idea.content);
       row.push(idea.views);
+      row.push(likes);
+      row.push(dislikes);
+      row.push(comments);
       row.push(idea.is_anonymous);
+      row.push(idea.is_deleted);
       row.push(idea.created_at);
       row.push(idea.updated_at);
       row.push(event.event_id);
@@ -357,8 +396,8 @@ export class EventService {
       row.push(user.avatar_url);
       row.push(idea.category.category_id);
       row.push(idea.category.name);
-      return row;
-    });
+      data.push(row);
+    }
 
     const fileName = 'ideas.csv';
     const path = join(process.cwd(), fileName);
@@ -368,7 +407,11 @@ export class EventService {
       'title',
       'content',
       'views',
+      'likes',
+      'dislikes',
+      'comments',
       'is_anonymous',
+      'is_deleted',
       'created_at',
       'updated_at',
       'event_id',
@@ -485,7 +528,7 @@ export class EventService {
       );
     }
     const event = await this.eventExists(event_id);
-    if(!event || event.department_id != null) {
+    if (!event || event.department_id != null) {
       throw new HttpException(
         ErrorMessage.EVENT_NOT_EXIST,
         HttpStatus.BAD_REQUEST,
@@ -501,19 +544,21 @@ export class EventService {
         .innerJoin('event.ideas', 'idea')
         .innerJoin('idea.user', 'user')
         .where('event.event_id = :event_id', { event_id })
-        .andWhere('user.department_id = :department_id', { 
+        .andWhere('user.department_id = :department_id', {
           department_id: d.department_id,
         })
         .andWhere('idea.is_deleted = :is_deleted', {
           is_deleted: EIsDelete.NOT_DELETED,
         })
         .getRawMany();
-      const total = await this.departmentService.countTotalStaff(d.department_id);
+      const total = await this.departmentService.countTotalStaff(
+        d.department_id,
+      );
       data.push({
-        "department_id": d.department_id,
-        "department_name": d.name,
-        "total_staff": total,
-        "staff_contributed": result.length,
+        department_id: d.department_id,
+        department_name: d.name,
+        total_staff: total,
+        staff_contributed: result.length,
       });
     }
     return data;

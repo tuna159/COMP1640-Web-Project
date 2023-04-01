@@ -6,6 +6,8 @@ import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventController } from './event.controller';
 import { EventService } from './event.service';
+import { ReactionModule } from '@modules/reaction/reaction.module';
+import { CommentModule } from '@modules/comment/comment.module';
 
 @Module({
   controllers: [EventController],
@@ -15,6 +17,8 @@ import { EventService } from './event.service';
     DepartmentModule,
     forwardRef(() => IdeaModule),
     UserModule,
+    ReactionModule,
+    CommentModule,
   ],
   exports: [TypeOrmModule, EventService],
 })
