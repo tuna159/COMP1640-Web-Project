@@ -264,15 +264,15 @@ export class IdeaService {
       ? entityManager.getRepository<Idea>('idea')
       : this.ideaRepository;
 
-    if(event_id != null && availableEvents) {
+    if (event_id != null && availableEvents) {
       throw new HttpException(
-        "assertion: event_id != null && availableEvents",
+        'assertion: event_id != null && availableEvents',
         HttpStatus.BAD_REQUEST,
       );
     }
-    if(event_id != null && event_department_id != null) {
+    if (event_id != null && event_department_id != null) {
       throw new HttpException(
-        "assertion: event_id != null && event_department_id != null",
+        'assertion: event_id != null && event_department_id != null',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -300,13 +300,15 @@ export class IdeaService {
         query.andWhere('event.final_closure_date >= :now', { now: new Date() });
       }
       if (event_department_id != null) {
-        query.andWhere('event.department_id = :event_department_id', { event_department_id });
+        query.andWhere('event.department_id = :event_department_id', {
+          event_department_id,
+        });
       } else {
         query.andWhere('event.department_id IS NULL');
       }
     }
     if (author_department_id != null) {
-      console.log("info: ", author_department_id);
+      console.log('info: ', author_department_id);
       query.andWhere('author.department_id = :author_department_id', {
         author_department_id,
       });
@@ -1113,5 +1115,38 @@ export class IdeaService {
       })
       .getRawMany();
     return ideas.length;
+  }
+
+  async getDepartmentIdeasContributionInTime(
+    department_id: number,
+    year: number,
+    entityManager?: EntityManager,
+  ) {
+    const ideaRepository = entityManager
+      ? entityManager.getRepository<Idea>('idea')
+      : this.ideaRepository;
+
+    const startDate = new Date(year);
+    const endDate = new Date(`${Number(year) + Number(1)}`);
+    const ideas = await ideaRepository
+      .createQueryBuilder('idea')
+      .select('idea.created_at', 'date')
+      .innerJoin('idea.user', 'author')
+      .innerJoin('author.department', 'department')
+      .where('author.department_id = :department_id', { department_id })
+      .andWhere('idea.is_deleted = :is_deleted', {
+        is_deleted: EIsDelete.NOT_DELETED,
+      })
+      .andWhere('idea.created_at >= :startDate', { startDate })
+      .andWhere('idea.created_at < :endDate', { endDate })
+      .orderBy('idea.created_at', "ASC")
+      .getRawMany();
+
+    const data = Array(12).fill(0);
+    ideas.forEach(i => {
+      const index = new Date(i.date).getMonth();
+      data[index]++;
+    });
+    return data;
   }
 }

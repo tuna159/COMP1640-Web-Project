@@ -362,13 +362,17 @@ export class EventService {
       end_date,
       true,
     );
-    
+
     const data = [];
     for (const idea of ideas) {
       const row = [];
       const likes = await this.reactionService.countIdeaLikes(idea.idea_id);
-      const dislikes = await this.reactionService.countIdeaDislikes(idea.idea_id);
-      const comments = await this.commentService.countIdeaComments(idea.idea_id);
+      const dislikes = await this.reactionService.countIdeaDislikes(
+        idea.idea_id,
+      );
+      const comments = await this.commentService.countIdeaComments(
+        idea.idea_id,
+      );
       const event = idea.event;
       const user = idea.user;
       row.push(idea.idea_id);
@@ -559,6 +563,33 @@ export class EventService {
         department_name: d.name,
         total_staff: total,
         staff_contributed: result.length,
+      });
+    }
+    return data;
+  }
+
+  async getDepartmentIdeasContributionInTime(
+    year: number,
+    userData: IUserData,
+  ) {
+    if (userData.role_id != EUserRole.ADMIN) {
+      throw new HttpException(
+        ErrorMessage.GENERAL_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const data = [];
+    const departments = await this.departmentService.getAllDepartments();
+    for (const d of departments) {
+      const contribution = await this.ideaService.getDepartmentIdeasContributionInTime(
+        d.department_id,
+        year,
+      );
+      data.push({
+        department_id: d.department_id,
+        department_name: d.name,
+        contribution,
       });
     }
     return data;

@@ -65,7 +65,12 @@ export class EventController {
     @Body() body: VDownloadIdeaDto,
     @Res() res: Response,
   ) {
-    return this.eventService.downloadIdeasByEvent(event_id, body, res, userData);
+    return this.eventService.downloadIdeasByEvent(
+      event_id,
+      body,
+      res,
+      userData,
+    );
   }
 
   @Get(':event_id/ideas')
@@ -87,7 +92,19 @@ export class EventController {
     @UserData() userData: IUserData,
   ) {
     return this.eventService.getStaffContributionOfPublicEvent(
-      event_id, userData
+      event_id,
+      userData,
+    );
+  }
+
+  @Get('dashboard/staff-contribution?')
+  getDepartmentIdeasContributionInTime(
+    @Query('year') year: number,
+    @UserData() userData: IUserData,
+  ) {
+    return this.eventService.getDepartmentIdeasContributionInTime(
+      year,
+      userData,
     );
   }
 }
