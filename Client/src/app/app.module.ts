@@ -56,6 +56,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { CheckboxModule } from 'primeng/checkbox';
 import { CalendarModule } from 'primeng/calendar';
 
+import { FieldsetModule } from 'primeng/fieldset';
 import { ImageModule } from 'primeng/image'
 import { MessageService } from 'primeng/api';
 import { PostComponent } from './home/post/post.component';
@@ -106,6 +107,7 @@ import { AddEventComponent } from './manage-event/add-event/add-event.component'
         CheckboxModule,
         CalendarModule,
         ImageModule,
+        FieldsetModule,
         AccordionModule,
         PasswordModule,
         InputTextModule,
