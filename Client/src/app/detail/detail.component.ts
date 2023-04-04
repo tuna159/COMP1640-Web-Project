@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from '../auth/services/authentication.service';
+import { Observable } from 'rxjs'
 
 @Component({
   selector: 'app-detail',
@@ -25,11 +26,13 @@ export class DetailComponent {
   content: string;
   date: any
   user: any
-  listReact: boolean = false;
+  listReact: any =[];
   comment_value: any
   totalComment: any;
   public userArray: any = [];
   apiUrl:string = "http://localhost:3009/api/idea/";
+
+
   constructor(private http : HttpClient, private route: ActivatedRoute,private authService: AuthenticationService,
     private router: Router){
     this.Id = this.router.getCurrentNavigation().extras.state.Id;
@@ -40,17 +43,27 @@ export class DetailComponent {
     this.getCommentbyIdea();
     this.getListReaction();
   }
+
   getListReaction() {
     if (this.Id) {
       this.http.get<any>("http://localhost:3009/api/idea/" + this.Id + "/list-reaction", {headers: {
         Authorization: 'Bearer ' + this.authService.getToken()}
       }).subscribe((result: any) => {
               this.listReact = result.data;
+              if(this.listReact.map(x => x.user_id).includes(this.authService.getUserID()) == true) {
+                if(this.listReact.find(x => x.user_id == this.authService.getUserID()).reaction_type == 1) {
+                  this.like = true;
+                  this.dislike = false;
+                } else {
+                  this.like = false;
+                  this.dislike = true;
+                }
+              }
           });
     }
   }
   class="p-ripple p-element p-button p-togglebutton p-component p-highlight"
-  getDislikeIdea() {
+  getLikeIdea() {
     if (this.Id) {
       this.http.get<any>("http://localhost:3009/api/idea/" + this.Id + "/likes", {headers: {
         Authorization: 'Bearer ' + this.authService.getToken()}
@@ -60,7 +73,7 @@ export class DetailComponent {
           });
     }
   }
-  getLikeIdea() {
+  getDislikeIdea() {
     if (this.Id) {
       this.http.get<any>("http://localhost:3009/api/idea/" + this.Id + "/dislikes", {headers: {
         Authorization: 'Bearer ' + this.authService.getToken()}
@@ -117,7 +130,7 @@ export class DetailComponent {
         Authorization: 'Bearer ' + this.authService.getToken()}
       }).subscribe((resultComment: any) => {
               this.comment_value = ""
-              this.getCommentbyIdea()
+              this.getCommentbyIdea();
           });
     }
   }
@@ -127,10 +140,51 @@ export class DetailComponent {
   }
   
   dislikeIdeal() {
-
+    if (this.Id && this.dislike == true) {
+      this.http.post<any>("http://localhost:3009/api/idea/" + this.Id +"/reaction", {
+        "reaction": -1
+      },{headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()}
+      }).subscribe((result: any) => {
+              this.dislike = true
+              this.like = false
+              this.getDislikeIdea()
+              this.getLikeIdea()
+          });
+    } else {
+      console.log("dislike")
+      this.http.delete<any>("http://localhost:3009/api/idea/" + this.Id +"/reaction", {headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()}
+      }).subscribe((result: any) => {
+              this.dislike = false
+              this.like = false
+              this.getDislikeIdea()
+              this.getLikeIdea()
+          });
+    }
   }
   likeIdeal() {
-
+    if (this.Id && this.like == true) {
+      this.http.post<any>("http://localhost:3009/api/idea/" + this.Id +"/reaction", {
+        "reaction": 1
+      },{headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()}
+      }).subscribe((result: any) => {
+              this.like = true
+              this.dislike = false
+              this.getDislikeIdea()
+              this.getLikeIdea()
+          });
+    } else {
+      this.http.delete<any>("http://localhost:3009/api/idea/" + this.Id +"/reaction", {headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()}
+      }).subscribe((result: any) => {
+              this.like = false
+              this.dislike = false
+              this.getDislikeIdea()
+              this.getLikeIdea()
+          });
+    }
   }
   DownloadFile() {
     let thefile: any;

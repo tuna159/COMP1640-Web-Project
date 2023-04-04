@@ -18,7 +18,7 @@ export class EventComponent implements OnInit {
   listDepartment = []
   selectedNode: any;
   nodes1: any[];
-  Id = 1;
+  Id: any;
   nameDpm: any;
   apiUrl = 'http://localhost:3009/api/department/';
   constructor(private dialogService: DialogService, private http: HttpClient, private route: ActivatedRoute,
@@ -29,14 +29,24 @@ export class EventComponent implements OnInit {
 
   getAllEventsByDepartment() {
     this.listEvent = []
-    this.http.get<any>(this.apiUrl + this.Id + "/events", {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe((res: any) => {
-      this.listEvent = res.data;
-      console.log(this.listEvent);
+    if(this.Id == 'University') {
+      this.http.get<any>("http://localhost:3009/api/event/university", {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken()
+        }
+      }).subscribe((res: any) => {
+        this.listEvent = res.data;
+      })
+    } else {
+      this.http.get<any>(this.apiUrl + this.Id + "/events", {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken()
+        }
+      }).subscribe((res: any) => {
+        this.listEvent = res.data;
+        console.log(this.listEvent);
     })
+  }
   }
 
   ngOnInit(): void {
