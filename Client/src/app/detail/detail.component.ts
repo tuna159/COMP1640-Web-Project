@@ -12,33 +12,81 @@ import { AuthenticationService } from '../auth/services/authentication.service';
 
 export class DetailComponent {
   Id: any;
+  views: any;
   role: number;
   selectedNode: any;
   nodes1: any[];
   like: boolean = false;
   dislike: boolean = false;
+  totalLike: any;
+  totalDislike: any;
   listCommentData = [];
   title: string;
   content: string;
   date: any
   user: any
+  listReact: boolean = false;
   comment_value: any
+  totalComment: any;
   public userArray: any = [];
   apiUrl:string = "http://localhost:3009/api/idea/";
   constructor(private http : HttpClient, private route: ActivatedRoute,private authService: AuthenticationService,
     private router: Router){
     this.Id = this.router.getCurrentNavigation().extras.state.Id;
     this.getIdeaDetail();
+    this.getCountIdeaComment();
+    this.getLikeIdea();
+    this.getDislikeIdea();
     this.getCommentbyIdea();
+    this.getListReaction();
   }
+  getListReaction() {
+    if (this.Id) {
+      this.http.get<any>("http://localhost:3009/api/idea/" + this.Id + "/list-reaction", {headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()}
+      }).subscribe((result: any) => {
+              this.listReact = result.data;
+          });
+    }
+  }
+  class="p-ripple p-element p-button p-togglebutton p-component p-highlight"
+  getDislikeIdea() {
+    if (this.Id) {
+      this.http.get<any>("http://localhost:3009/api/idea/" + this.Id + "/likes", {headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()}
+      }).subscribe((result: any) => {
+              
+              this.totalLike = result.data.likes;
+          });
+    }
+  }
+  getLikeIdea() {
+    if (this.Id) {
+      this.http.get<any>("http://localhost:3009/api/idea/" + this.Id + "/dislikes", {headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()}
+      }).subscribe((result: any) => {
+              this.totalDislike = result.data.dislikes;
+          });
+    }
+  }
+
+  getCountIdeaComment() {
+    if (this.Id) {
+      this.http.get<any>("http://localhost:3009/api/idea/" + this.Id + "/comments/total", {headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()}
+      }).subscribe((result: any) => {
+              this.totalComment = result.data.comments;
+          });
+    }
+  }
+
   getIdeaDetail() {
     if (this.Id) {
       this.http.get<any>(this.apiUrl + this.Id, {headers: {
         Authorization: 'Bearer ' + this.authService.getToken()}
       }).subscribe((result: any) => {
-              this.like = result.data.like;
-              this.dislike = result.data.dislike;
               this.title = result.data.title;
+              this.views = result.data.views;
               this.user = result.data.user.email;
               this.content = result.data.content;
               this.date = result.data.date;
@@ -56,7 +104,7 @@ export class DetailComponent {
     }
   }
 
-  postCommentByIdea(level: number){
+  postCommentByIdea(id: number){
     if(/[a-z0-9]/i.test(this.comment_value) == false)
     {
       alert("Please enter a comment")
@@ -64,12 +112,10 @@ export class DetailComponent {
     if (this.Id) {
       this.http.post<any>(this.apiUrl + this.Id + "/comments",{
         "content" : this.comment_value,
-        "level": level
+        "parent_id": id
       }, {headers: {
         Authorization: 'Bearer ' + this.authService.getToken()}
       }).subscribe((resultComment: any) => {
-              console.log(resultComment)
-              console.log(this.Id)
               this.comment_value = ""
               this.getCommentbyIdea()
           });
@@ -78,31 +124,14 @@ export class DetailComponent {
 
   ngOnInit(): void {
     this.role = this.authService.getRole();
-    // this.nodes1 = [
-    //   {
-    //     label: 'Category',
-    //   },
-    //   {
-    //     label: 'Category',
-    //   },
-    //   {
-    //     label: 'Category',
-    //   },
-    //   {
-    //     label: 'Category',
-    //   },
-    //   {
-    //     label: 'Category',
-    //   },
-    //   {
-    //     label: 'Category',
-    //   },
-    //   {
-    //     label: 'Category',
-    //   },
-    // ]
   }
   
+  dislikeIdeal() {
+
+  }
+  likeIdeal() {
+
+  }
   DownloadFile() {
     let thefile: any;
     if (this.Id) {
@@ -127,8 +156,6 @@ export class DetailComponent {
               hiddenElement.target = '_blank';
               hiddenElement.download = name + '.csv';
               hiddenElement.click();
-            // console.log(data);
-            // console.log(this.userArray)
         },
         error => {
             console.log(error);

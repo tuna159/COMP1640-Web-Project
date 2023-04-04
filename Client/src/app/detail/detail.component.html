@@ -27,10 +27,10 @@
                     id="file"></button>
                 <div class="row"
                     style="border-bottom-width: 1px; border-color: #F2F2F2; border-bottom-style: solid; width: 100%; margin-top: 15px; margin-left: auto; margin-right: auto; padding-left: 10px;">
-                    <h6 style="width: 50%;">100 Views</h6>
-                    <h6 style="width: 15%;">{{like}} Like</h6>
-                    <h6 style="width: 15%;">{{dislike}} Dislikes</h6>
-                    <h6>100 Comments</h6>
+                    <h6 style="width: 50%;">{{views}} Views</h6>
+                    <h6 style="width: 15%;">{{totalLike}} Like</h6>
+                    <h6 style="width: 15%;">{{totalDislike}} Dislikes</h6>
+                    <h6>{{totalComment}} Comments</h6>
                 </div>
                 <div class="row"
                     style="border-bottom-width: 1px; border-color: #F2F2F2; border-bottom-style: solid; width: 100%; margin-top: 15px; margin-left: auto; margin-right: auto;">
@@ -53,7 +53,7 @@
                         <label for="float-input">Comment something here.............</label>
                     </span>
                     <button style="margin-top: 0; margin-left: 10px;" pButton pRipple type="button" icon="pi pi-reply"
-                        class="p-button-rounded p-button-outlined" (click)="postCommentByIdea(1)"></button>
+                        class="p-button-rounded p-button-outlined" (click)="postCommentByIdea(null)"></button>
                 </div>
                 <br>
                 <div *ngFor="let l of listCommentData; index as i;" style="padding-left: 10px; padding-right: 10px;">
@@ -62,23 +62,19 @@
                         <h6>{{l.author.full_name}}</h6>
                         <p>{{l.content}}</p>
                     </div>
+                    
                     <div  class="form-group" style="width: 100%;">
-                        <button type="button" class="btn btn-tertiary text-dark float-right" id="cmtBtn" data-toggle="collapse" data-target="#demo"
+                        <button type="button" class="btn btn-tertiary text-dark float-right" id="cmtBtn" data-toggle="collapse" [attr.data-target]="'#' + l.comment_id"
                             data-mdb-ripple-color="light" style="background-color: white; ">Comment</button>
                     </div>
                     <br>
-                    <div class="collapse float-right"  id="demo" style="width: 90%; margin-bottom: 10px;">
+                    <div class="collapse float-right"  id="{{l.comment_id}}" style="width: 90%; margin-bottom: 10px;">
                         <div class="row"
                             style="width: 100%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px; margin-top: 10px;">
-                            <h6>{{l.author.full_name}}</h6>
+                            <h6>{{l.comment_id}}</h6>
                             <p>{{l.content}}</p>
                         </div>
 
-                        <div class="row"
-                            style="width: 100%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px; margin-top: 10px;">
-                            <h6>{{l.author.full_name}}</h6>
-                            <p>{{l.content}}</p>
-                        </div>
                         
                         <div style="display: flex; margin-top: 10px; width: 90%;" class="float-right">
                             <span class="p-float-label" style="width: 90%; height: 100%;">
@@ -86,7 +82,7 @@
                                 <label for="float-input">Comment something here.............</label>
                             </span>
                             <button style="margin-top: 0; margin-left: 10px;" pButton pRipple type="button" icon="pi pi-reply"
-                                class="p-button-rounded p-button-outlined" (click)="postCommentByIdea(1)"></button>
+                                class="p-button-rounded p-button-outlined" (click)="postCommentByIdea(l.comment_id)"></button>
                         </div>
                     </div>
                 </div>
