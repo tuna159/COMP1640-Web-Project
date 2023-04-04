@@ -51,6 +51,16 @@ a:hover {
     position: static;
 }
 
+:host ::ng-deep .p-chip {
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.col-md-12 {
+    position: static;
+}
+
+
 
 
 
