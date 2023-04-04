@@ -16,6 +16,7 @@ import { VAddComment } from 'global/dto/addComment.dto';
 import { VCreateReactionDto } from 'global/dto/reaction.dto';
 import { IdeaService } from './idea.service';
 import { VUpdateIdeaDto } from 'global/dto/update-idea.dto';
+import { EIdeaFilter } from 'enum/idea.enum';
 
 @Controller('idea')
 export class IdeaController {
@@ -37,9 +38,17 @@ export class IdeaController {
     return await this.ideaService.getIdeaDetails(idea_id, userData);
   }
 
-  @Get()
-  getIdeasOfAvailableEvents() {
-    return this.ideaService.getIdeasOfAvailableEvents();
+  @Get('?')
+  getIdeasOfAvailableEvents(
+    @Query('sorting_setting') sorting_setting: EIdeaFilter,
+    @Query('start_date') start_date: Date,
+    @Query('end_date') end_date: Date,
+  ) {
+    return this.ideaService.getIdeasOfAvailableEvents(
+      sorting_setting,
+      start_date,
+      end_date,
+    );
   }
 
   @Put(':idea_id')
