@@ -147,19 +147,6 @@ export class DepartmentService {
     return this.eventService.getEventsByUniversity();
   }
 
-  getIdeasByDepartmentAndCategory(
-    department_id?: number,
-    category_id?: number,
-    sorting_setting?: EIdeaFilter,
-  ) {
-    return this.ideaService.getAllIdeas(
-      null,
-      department_id,
-      category_id,
-      sorting_setting,
-    );
-  }
-
   async getDepartmentValidIdeas(department_id: number) {
     const department = await this.departmentExists(department_id);
     if (!department) {

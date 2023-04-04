@@ -27,11 +27,9 @@ import {
   getManager,
   SelectQueryBuilder,
 } from 'typeorm';
-import { VUpdateCommentDto } from 'global/dto/comment.dto';
 import { TagService } from '@modules/tag/tag.service';
 import { IdeaTagService } from '@modules/idea-tag/idea-tag.service';
 import { IdeaTag } from '@core/database/mysql/entity/ideaTag.entity';
-import { Comment } from '@core/database/mysql/entity/comment.entity';
 import { UserService } from '@modules/user/user.service';
 
 @Injectable()
@@ -253,11 +251,11 @@ export class IdeaService {
     category_id?: number,
     event_department_id?: number,
     author_department_id?: number,
-    availableEvents: boolean = false,
+    availableEvents = false,
     sorting_setting?: EIdeaFilter,
     startDate?: Date,
     endDate?: Date,
-    isDeleted: boolean = false,
+    isDeleted = false,
     entityManager?: EntityManager,
   ) {
     const ideaRepository = entityManager
@@ -394,10 +392,26 @@ export class IdeaService {
     });
   }
 
-  async getIdeasOfAvailableEvents(entityManager?: EntityManager) {
+  async getIdeasOfAvailableEvents(
+    sorting_setting?: EIdeaFilter,
+    start_date?: Date,
+    end_date?: Date,
+    entityManager?: EntityManager,
+  ) {
     const ideaRepository = entityManager
       ? entityManager.getRepository<Idea>('idea')
       : this.ideaRepository;
+
+    return this.getIdeasOfSystem(
+      null,
+      null,
+      null,
+      null,
+      true,
+      sorting_setting,
+      new Date(start_date),
+      new Date(end_date),
+    );
 
     const now = new Date();
     const ideas = await ideaRepository
@@ -501,7 +515,7 @@ export class IdeaService {
 
         const ideaTags = [];
         const tagDto = body.tag_names;
-        for (let dto of tagDto) {
+        for (const dto of tagDto) {
           const tag = await this.tagService.getTagByName(dto.name);
           const ideaTag = new IdeaTag();
           if (tag) {
@@ -543,11 +557,11 @@ export class IdeaService {
         .innerJoin('staff.department', 'department')
         .innerJoin('department.manager', 'manager')
         .innerJoin('manager.userDetail', 'manager_detail')
-        .where('idea.idea_id = :idea_id', { idea_id: data.idea_id! })
+        .where('idea.idea_id = :idea_id', { idea_id: data.idea_id })
         .getRawOne();
 
       const ideaCategories = await this.categoryIdeaService.getCategoriesByIdea(
-        data.idea_id!,
+        data.idea_id,
       );
       const categories = ideaCategories.map((c) => {
         return c.category.name;
@@ -557,8 +571,8 @@ export class IdeaService {
       const receiverUsername = result['manager_nick_name'];
       const staffUsername = result['staff_nick_name'];
       const department = result['department'];
-      const ideaTitle = data.title!;
-      const ideaContent = data.content!;
+      const ideaTitle = data.title;
+      const ideaContent = data.content;
       const date = new Date(result['created_at']);
       const createdTime = date.toLocaleTimeString();
       let month = date.getMonth() + '';
@@ -722,7 +736,7 @@ export class IdeaService {
 
         const ideaTags = [];
         const tagDto = body.tag_names;
-        for (let dto of tagDto) {
+        for (const dto of tagDto) {
           const tag = await this.tagService.getTagByName(dto.name);
           const ideaTag = new IdeaTag();
           if (tag) {
@@ -829,7 +843,7 @@ export class IdeaService {
     await ideaRepository.update(conditions, value);
   }
 
-  async getIdeaCommentsLv1(idea_id: number, entityManager?: EntityManager) {
+  async getIdeaCommentsLv1(idea_id: number) {
     const idea = await this.ideaExists(idea_id);
     if (!idea) {
       throw new HttpException(
@@ -1139,11 +1153,11 @@ export class IdeaService {
       })
       .andWhere('idea.created_at >= :startDate', { startDate })
       .andWhere('idea.created_at < :endDate', { endDate })
-      .orderBy('idea.created_at', "ASC")
+      .orderBy('idea.created_at', 'ASC')
       .getRawMany();
 
     const data = Array(12).fill(0);
-    ideas.forEach(i => {
+    ideas.forEach((i) => {
       const index = new Date(i.date).getMonth();
       data[index]++;
     });
