@@ -62,10 +62,15 @@
 												<div class="row"
 													style="margin-top: 2rem; margin-bottom: 1rem; background-color: #F2F2F2; padding: 10px; border-radius: 10px; width: 100%; margin-left: auto; margin-right:auto;">
 													<div class="personal-info col-3" style="position: static;">
-														<p-avatar image="{{idea.url_avatar}}" styleclass="mr-2"
+														<p-avatar *ngIf="idea.is_anonymous == 0" image="{{idea.url_avatar}}" styleclass="mr-2"
 															size="xlarge" shape="circle"></p-avatar>
 														<p></p>
-														<p>{{idea.full_name}}</p>
+														<p-avatar *ngIf="idea.is_anonymous == 1" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleclass="mr-2"
+															size="xlarge" shape="circle"></p-avatar>
+														<p></p>
+														<p *ngIf="idea.is_anonymous == 0">{{idea.full_name}}</p>
+														<p *ngIf="idea.is_anonymous == 1">User</p>
+
 													</div>
 													<div class="col-9" style="position: static;">
 														<button pbutton pripple type="button" label=""

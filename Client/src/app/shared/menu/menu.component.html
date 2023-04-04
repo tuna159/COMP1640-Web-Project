@@ -4,8 +4,8 @@
     <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
         <div class="position-sticky">
             <div class="list-group list-group-flush mx-3">
-                <p-chip label="{{dataUser.nick_name}}" image="{{dataUser.avatar_url}}"
-                    styleClass="mr-2"></p-chip>
+                <p-chip *ngIf="role != 1" label="{{dataUser.nick_name}}" image="{{dataUser.avatar_url}}" styleClass="mr-2"></p-chip>
+                <p-chip *ngIf="role == 1" label="Admin" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleClass="mr-2"></p-chip>
 
                 <ul id="collapseExample1" class="collapse show list-group list-group-flush">
                     <li class="list-group-item py-1 mt-4 border-0">
