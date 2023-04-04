@@ -40,7 +40,7 @@
 
 					</div>
 					<div class="field" style="width: 20%;">
-						<select class="form-control" formControlName="department" id="department">
+						<select class="form-control"  id="department">
 							<option>Newest</option>
 							<option>Most View</option>
 							<option>Most Likes</option>
@@ -48,52 +48,51 @@
 						</select>
 					</div>
 
-					<div class="col-3" style="position: static;">
-						<ng-template ptemplate="filter" let-department let-filter="filterCallback">
-							<p-dropdown [options]="listDepartment" (onChange)="filter($event.value)"
-								placeholder="Category">
-								<ng-template let-option ptemplate="item">
-									<span [class]="'customer-badge status-' + option.value">{{option.name}}</span>
-								</ng-template>
-							</p-dropdown>
-						</ng-template>
-					</div>
-					<input pInputText type="text" class="input-search"
-						(input)="myTab.filterGlobal($any($event.target).value, 'contains')" placeholder="Search..."
-						style="margin-left: 7.5px; height: 30px !important; " />
-					<div class="row" style="margin-top: 20px">
+					
+					
+					<div class="row" style="margin-top: 20px; width: 100%; margin-left: auto; margin-right: auto;">
 						<div class="col-md-12">
-							<p-table #myTab [value]="listData" [tableStyle]="{ 'min-width': '50rem' }" [rowHover]="true"
+							<p-table #myTab [value]="listData" [tableStyle]="{ 'width': '100%' }" [rowHover]="true"
 								[scrollable]="true" [globalFilterFields]="['full_name','nameEvent','title', 'nameTag']"
 								[paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 50]">
 								<ng-template pTemplate="body" let-idea>
 									<tr>
 										<td>
-											<div>
+											<div style="width: 100%;">
 												<div class="row"
-													style="margin-top: 2rem; margin-bottom: 1rem; background-color: #F2F2F2; padding: 10px; border-radius: 10px; width: 90%; margin-left: auto; margin-right:auto;">
+													style="margin-top: 2rem; margin-bottom: 1rem; background-color: #F2F2F2; padding: 10px; border-radius: 10px; width: 100%; margin-left: auto; margin-right:auto;">
 													<div class="personal-info col-3" style="position: static;">
-														<p-avatar image="{{idea.url_avatar}}" styleclass="mr-2"
+														<p-avatar *ngIf="idea.is_anonymous == 0" image="{{idea.url_avatar}}" styleclass="mr-2"
 															size="xlarge" shape="circle"></p-avatar>
 														<p></p>
-														<p>{{idea.full_name}}</p>
+														<p-avatar *ngIf="idea.is_anonymous == 1" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleclass="mr-2"
+															size="xlarge" shape="circle"></p-avatar>
+														<p></p>
+														<p *ngIf="idea.is_anonymous == 0">{{idea.full_name}}</p>
+														<p *ngIf="idea.is_anonymous == 1">User</p>
+
 													</div>
 													<div class="col-9" style="position: static;">
 														<button pbutton pripple type="button" label=""
-															class="p-button-text p-button-plain"
+															class="p-button-text p-button-plain border-0"
 															(click)="IdeaDetail(idea.idea_id)">{{idea.title}}</button>
 														<div class="row"
-															style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; height: 2rem;">
-															<p>{{idea.nameEvent}}</p>
-															<p>{{idea.created_at | date:'mediumDate'}}</p>
-															<p>{{idea.views}}Views</p>
+															style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto;">
+															<p>Event: {{idea.nameEvent}}</p>
+															
+															<p>{{idea.views}} Views</p>
+														</div>
+														<div class="row"
+															style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; ">
+															<p style="width: 60%;">Start at: {{idea.created_at | date:'mediumDate'}}</p>
+															<p>{{idea.views}} Likes</p>
+															<p>{{idea.views}} Dislikes</p>
 														</div>
 														<div class="row" style="margin-left: auto; margin-right: auto;">
-															<p style="display: none">{{idea.nameTag}}</p>
+															<p style="display: none;">{{idea.nameTag}}</p>
 														</div>
-														<div class="row" style="margin-left: auto; margin-right: auto;">
-															<p-chip label="{{lc.name}}" styleclass="mr-2" *ngFor="let lc of idea.tag
-                                      ; index as i;"></p-chip>
+														<div class="row">
+															<p-chip label="#{{lc.name}}" *ngFor="let lc of idea.tag; index as i;"></p-chip>
 
 														</div>
 													</div>

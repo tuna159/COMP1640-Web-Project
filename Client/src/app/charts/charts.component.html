@@ -1,64 +1,94 @@
-<p-tabView >
-    <p-tabPanel header="Học phí">
-        <div style="text-align:right; padding-bottom: 3px">
-            <p-dropdown [options]="khois" [(ngModel)]="chonKhoiSoTien" optionLabel="name"></p-dropdown>
-        </div>
-        <div class="chartTKSoTienTheolop" [chart]="chartTKSoTienTheolop"></div>
-        <br>
-        <div class="barChartTKTSoTienTheoHS" [chart]="barChartTKTSoTienTheoHS"></div>
-    </p-tabPanel>
-    <p-tabPanel header="Học sinh">
-        <div class="chart">
-            <div class="chartGioiTinh" [chart]="chartGioiTinh"></div>
-            <div class="item">
-                <div style="text-align:right ; padding-bottom: 3px">
-                    <p-dropdown [options]="khois" [(ngModel)]="chonKhoiChuyenCan" optionLabel="name"></p-dropdown>
-                </div>
-                <div class="chartTKChuyenCan" [chart]="chartTKChuyenCan"></div>
-            </div>
-            <div class="item">
-                <div style="text-align:right; padding-bottom: 3px" >
-                    <p-dropdown [options]="khois" [(ngModel)]="chonKhoiKXuongYTe" optionLabel="name"></p-dropdown>
-                </div>
-                <div class="chartTKXuongYTe" [chart]="chartTKXuongYTe"></div>
-            </div>
-            <div class="item">
-                <div style="text-align:right; padding-bottom: 3px">
-                    <p-dropdown [options]="khois" [(ngModel)]="chonKhoiDanhHieu" optionLabel="name"></p-dropdown>
-                </div>
-                <div class="chartTKDanhHieu" [chart]="chartTKDanhHieu"></div>
-            </div>
-        </div>
-    </p-tabPanel>
-    <p-tabPanel header="Câu lạc bộ">
-        <div class="">
-            <div class="barChartTKTVCLB" [chart]="barChartTKTVCLB"></div>
-            
-        </div>
-    </p-tabPanel>
-    <p-tabPanel header="Thực đơn">
-        <div class="chartTKCaloriesTheoTuan" [chart]="chartTKCaloriesTheoTuan"></div>
-        <div class="chartTKCaloriesTheoNgay" [chart]="chartTKCaloriesTheoNgay"></div>
-    </p-tabPanel>
-    <p-tabPanel header="Tâm lý">
-        <div class="">
-            <div class="grid">
-                <div style="background-color: coral; height:200px;text-align: center; border-radius:10px">
-                    <h2 style="padding-top: 80px;">
-                        Trường hợp đang hỗ trợ 1500
-                    </h2>
-                </div>
+<p-toast position="bottom-right"></p-toast>
 
-                <div style="background-color:  #4da6ff; height:200px; text-align: center; border-radius:10px">
-                    <h2 style="padding-top: 80px;">
-                        Trường hợp đã khép lại 1500
-                    </h2>
-                </div>
+<div #myComponent class="highcharts">
+	<div class="col-md-12 body-page">
+		<p-tabView>
+			<p-tabPanel header="Học phí">
+				<div class="row">
+					<div class="col-md-12">
+						<p-fieldset legend="Thống kê số tiền đã đóng theo lớp">
+							<div class="row">
+								<div class="col-md-12 text-right">
+									<p-dropdown [options]="events" [(ngModel)]="eventValue" optionlabel="name" appendto="body" [filter]="true" (onChange)="changeEvent()"></p-dropdown>
+								</div>
+								<div class="col-md-12 mt-10" style="display: flex;justify-content: center;">
+									<div class="chart" [chart]="barChartStaffDepartment"></div>
+								</div>
+							</div>
+						</p-fieldset>
+					</div>
+				</div>
+			</p-tabPanel>
 
-                <div class="pieChartThamVan" [chart]="pieChartThamVan"></div>
-                <div class="pieChartTyLeThamVan" [chart]="pieChartTyLeThamVan"></div>
-            </div>
-            <div class="chartTVMucDo" [chart]="chartTVMucDo" style="padding-top: 20px;"></div>
-        </div>
-    </p-tabPanel>
-</p-tabView>
+			<p-tabPanel header="Học sinh">
+				<div>
+					<div
+						class="row">
+								<div class="col-lg-12 col-xl-12">
+									<p-fieldset legend="Thống kê kết quả theo năng lực, phẩm chất">
+										<div class="row">
+											<div class="col-md-12 text-right">
+												<p-dropdown [options]="staffs" [(ngModel)]="staffValue" optionlabel="name" [filter]="true" [ngStyle]="{ 'margin-left': '7px'}" appendto="body"></p-dropdown>
+
+											</div>
+											<div class="chart2" [chart]="pieChartStaffContribute"></div>
+										</div>
+									</p-fieldset>
+								</div>
+					</div>
+				</div>
+
+
+			</p-tabPanel>
+
+			<p-tabPanel header="Câu lạc bộ">
+				<div class="row">
+					<div class="col-md-12">
+						<p-fieldset legend="Thống kê số lượng thành viên tham gia câu lạc bộ">
+							<div class="row">
+								<div class="col-md-12 mt-10" style="display: flex;justify-content: center;">
+									<div class="chart" [chart]="pieChartReactDepartment"></div>
+								</div>
+							</div>
+						</p-fieldset>
+					</div>
+				</div>
+			</p-tabPanel>
+
+			<p-tabPanel header="Thực đơn">
+				<div class="row">
+					<div class="col-md-12">
+						<p-fieldset legend="Thống kê calories theo tuần">
+							<div class="row">
+								<div class="col-md-12 text-right">
+									<p-dropdown [options]="departments" [(ngModel)]="departmentValue" optionlabel="TuanSo" [filter]="true" [style]="{'height': '30px', 'width': '280px'}" (onChange)="changeEvent()" [autoDisplayFirst]="false" appendto="body"></p-dropdown>
+								</div>
+								<div class="col-md-12 mt-10" style="display: flex;justify-content: center;">
+									<div class="chart" [chart]="lineCharIdeaDepartment"></div>
+								</div>
+							</div>
+						</p-fieldset>
+					</div>
+				</div>
+			</p-tabPanel>
+
+			<p-tabPanel header="Thực đơn">
+				<div class="row">
+					<div class="col-md-12">
+						<p-fieldset legend="Thống kê calories theo tuần">
+							<div class="row">
+								<div class="col-md-12 text-right">
+									<p-dropdown [options]="departments" [(ngModel)]="departmentValue" optionlabel="TuanSo" [filter]="true" [style]="{'height': '30px', 'width': '280px'}" (onChange)="changeEvent()" [autoDisplayFirst]="false" appendto="body"></p-dropdown>
+								</div>
+								<div class="col-md-12 mt-10" style="display: flex;justify-content: center;">
+									<div class="chart" [chart]="lineCharIdeaDepartment"></div>
+								</div>
+							</div>
+						</p-fieldset>
+					</div>
+				</div>
+			</p-tabPanel>
+		</p-tabView>
+	</div>
+
+</div>

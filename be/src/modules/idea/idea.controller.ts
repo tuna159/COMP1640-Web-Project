@@ -119,4 +119,9 @@ export class IdeaController {
   countIdeaComments(@Param('idea_id') idea_id: number) {
     return this.ideaService.countIdeaComments(idea_id);
   }
+
+  @Get(':idea_id/list-reaction')
+  getListReaction(@Param('idea_id') idea_id: number) {
+    return this.ideaService.getListReaction(idea_id);
+  }
 }

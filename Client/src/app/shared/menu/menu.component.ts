@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
@@ -16,15 +17,26 @@ interface Country {
 export class MenuComponent {
   display: any;
   value3: any;
+  dataUser: any;
   items: MenuItem[];
   itemsAdmin: MenuItem[];
   itemsQA: MenuItem[];
   itemsQAM: MenuItem[];
   categories!: MegaMenuItem[];
-
-  constructor(private authService: AuthenticationService,
+  role: any
+  constructor(private authService: AuthenticationService, private http : HttpClient,
     public router: Router,){
-    
+    this.getDataUser(); 
+    this.role = this.authService.getRole()
+  }
+  getDataUser() {
+    if(this.authService.getRole() != 1) {
+      this.http.get<any>("http://localhost:3009/api/user/" + this.authService.getUserID(), {headers: {
+      Authorization: 'Bearer ' + this.authService.getToken()}
+    }).subscribe((result: any) => {
+            this.dataUser = result.data;
+        });
+    }
   }
   
   ngOnInit() {

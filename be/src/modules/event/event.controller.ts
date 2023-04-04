@@ -15,7 +15,6 @@ import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
 import { VCreateEventDto, VUpdateEventDto } from 'global/dto/event.dto.';
 import type { Response } from 'express';
 import { EventService } from './event.service';
-import { Public } from '@core/decorator/public.decorator';
 import { VDownloadIdeaDto } from 'global/dto/downloadIdeas.dto';
 
 @Controller('event')
