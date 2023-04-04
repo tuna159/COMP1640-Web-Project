@@ -8,7 +8,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav col">
             <li class="nav-item active col-md-1">
-                <a class="nav-link" href="#">University <span class="sr-only">(current)</span></a>
+                <a class="nav-link" [routerLink]="['/event']" style="text-align: center;"  [queryParams]="{ Id: 'University', name: 'University'}">University</a>
             </li>
             <li class="nav-item active" *ngFor="let l of listDepartment" [class.active]="isLinkActive(l)">
                 <a class="nav-link" [routerLink]="['/event']" style="text-align: center;"  [queryParams]="{ Id: l.department_id, name: l.name}">{{l.name}}</a>

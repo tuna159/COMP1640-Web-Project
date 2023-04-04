@@ -29,18 +29,19 @@ export class IdeaEventComponent implements OnInit {
 
 
   getAllIdeaByEvent() {
-    this.http.get<any>(this.apiUrl + this.Id + "/ideas", {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe((res: any) => {
-      this.listIdea = res.data;
-      this.name = res.data.name;
-      this.content = res.data.content;
-      this.final_closure_date = res.data.final_closure_date;
-      this.first_closure_date = res.data.first_closure_date;
-      console.log(this.listIdea)
-    })
+      this.http.get<any>(this.apiUrl + this.Id + "/ideas", {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken()
+        }
+      }).subscribe((res: any) => {
+        this.listIdea = res.data;
+        this.name = res.data.name;
+        this.content = res.data.content;
+        this.final_closure_date = res.data.final_closure_date;
+        this.first_closure_date = res.data.first_closure_date;
+        console.log(this.listIdea)
+      })
+
   }
 
   ngOnInit(): void {

@@ -37,11 +37,11 @@
                     <div style="width: 80%;">
                         <p-toggleButton #likeAble [(ngModel)]="like" onLabel="Like" offLabel="Like"
                             offIcon="pi pi-thumbs-up-fill" onIcon="pi pi-thumbs-up-fill"
-                            (click)="dislike = false"></p-toggleButton>
+                            (click)="likeIdeal()"></p-toggleButton>
 
                         <p-toggleButton [(ngModel)]="dislike" onLabel="Dislike" offLabel="Dislike"
                             offIcon="pi pi-thumbs-down-fill" onIcon="pi pi-thumbs-down-fill"
-                            (click)="like = false"></p-toggleButton>
+                            (click)="dislikeIdeal()"></p-toggleButton>
                     </div>
                     <p-button id="comment_btn" label="Comments" icon="pi pi-comments"></p-button>
                 </div>
@@ -60,12 +60,16 @@
                     <div class="row"
                         style="width: 100%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px; margin-top: 10px;">
                         <h6>{{l.author.full_name}}</h6>
-                        <p>{{l.content}}</p>
+                        <p-avatar size="xlarge" shape="circle" image="{{l.author.avatar_url}}"></p-avatar>
+                        
+                        <span>{{l.content}}</span>
+                        <br>
+                        <span>{{l.created_date | date:'mediumDate'}}</span>
                     </div>
                     
                     <div  class="form-group" style="width: 100%;">
                         <button type="button" class="btn btn-tertiary text-dark float-right" id="cmtBtn" data-toggle="collapse" [attr.data-target]="'#' + l.comment_id"
-                            data-mdb-ripple-color="light" style="background-color: white; ">Comment</button>
+                            data-mdb-ripple-color="light" style="background-color: white; ">See more</button>
                     </div>
                     <br>
                     <div class="collapse float-right"  id="{{l.comment_id}}" style="width: 90%; margin-bottom: 10px;">
