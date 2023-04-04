@@ -24,18 +24,21 @@ export class MenuComponent {
   itemsQA: MenuItem[];
   itemsQAM: MenuItem[];
   categories!: MegaMenuItem[];
-
+  role: any
   constructor(private authService: AuthenticationService, private http : HttpClient,
     public router: Router, ){
       this.role = authService.getRole();
     this.getDataUser(); 
+    this.role = this.authService.getRole()
   }
   getDataUser() {
-    this.http.get<any>("http://localhost:3009/api/user/" + this.authService.getUserID(), {headers: {
+    if(this.authService.getRole() != 1) {
+      this.http.get<any>("http://localhost:3009/api/user/" + this.authService.getUserID(), {headers: {
       Authorization: 'Bearer ' + this.authService.getToken()}
     }).subscribe((result: any) => {
             this.dataUser = result.data;
         });
+    }
   }
   
   ngOnInit() {

@@ -43,7 +43,8 @@ export class HomeComponent implements OnInit{
             created_at: item.created_at,
             views: item.views, 
             tag: item.tags,
-            url_avatar: item.user.avatar_url,
+            is_anonymous: item.is_anonymous,
+            url_avatar: item.user.avatar_url == null ? "https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" : item.user.avatar_url,
             nameTag: tmp.toString(),
           }
           this.listData.push(bodyData)

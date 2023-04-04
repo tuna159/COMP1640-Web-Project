@@ -29,6 +29,7 @@ export class DetailComponent {
   listReact: any =[];
   comment_value: any
   totalComment: any;
+  commentChildren_value: any;
   public userArray: any = [];
   apiUrl:string = "http://localhost:3009/api/idea/";
 
@@ -68,7 +69,6 @@ export class DetailComponent {
       this.http.get<any>("http://localhost:3009/api/idea/" + this.Id + "/likes", {headers: {
         Authorization: 'Bearer ' + this.authService.getToken()}
       }).subscribe((result: any) => {
-              
               this.totalLike = result.data.likes;
           });
     }
@@ -112,26 +112,43 @@ export class DetailComponent {
       this.http.get<any>(this.apiUrl + this.Id + "/comments", {headers: {
         Authorization: 'Bearer ' + this.authService.getToken()}
       }).subscribe((resultComment: any) => {
+              let listAllCmtChildren = []
+              let listCmtChildren = []
               this.listCommentData = resultComment.data;
+              //list comment cha
+              this.listCommentData = this.listCommentData.filter(x => x.level == 1)
+              //list comment con
+              listAllCmtChildren = resultComment.data.filter(x => x.level == 2)
+              this.listCommentData.forEach(cmt => {
+                //filter tìm parent_id = comment_id để push vào listCommentData
+                listCmtChildren = listAllCmtChildren.filter(x => x.parent_id == cmt.comment_id)
+                cmt.listCommentChildren = listCmtChildren;
+              });
           });
     }
   }
 
-  postCommentByIdea(id: number){
-    if(/[a-z0-9]/i.test(this.comment_value) == false)
-    {
-      alert("Please enter a comment")
+  postCommentByIdea(idParent: number){
+    if(idParent == null) {
+      if(/[a-z0-9]/i.test(this.comment_value) == false)
+      {
+        alert("Please enter a comment")
+      }
+    } else {
+      if(/[a-z0-9]/i.test(this.commentChildren_value) == false)
+      {
+        alert("Please enter a comment")
+      }
     }
     if (this.Id) {
       this.http.post<any>(this.apiUrl + this.Id + "/comments",{
-        "content" : this.comment_value,
-        "parent_id": id
-      }, {headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()}
-      }).subscribe((resultComment: any) => {
-              this.comment_value = ""
-              this.getCommentbyIdea();
-          });
+        "content" : this.comment_value == null ? this.commentChildren_value : this.comment_value,
+        "parent_id": idParent
+      }, {headers: {Authorization: 'Bearer ' + this.authService.getToken()}}).subscribe((resultComment: any) => {
+            this.comment_value = ""
+            this.commentChildren_value = ""
+            this.getCommentbyIdea();
+      });
     }
   }
 

@@ -1,4 +1,4 @@
-<div class="wrapper" style="background-color: #F2F2F2">
+<div class="wrapper" style="background-color: #F2F2F2; height: auto;" >
     <div class="menu-bar" style="position: fixed; width: 100%; top: 0%; left: 0%;">
         <app-header-home></app-header-home>
     </div>
@@ -60,7 +60,9 @@
                     <div class="row"
                         style="width: 100%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px; margin-top: 10px;">
                         <h6>{{l.author.full_name}}</h6>
-                        <p-avatar size="xlarge" shape="circle" image="{{l.author.avatar_url}}"></p-avatar>
+
+                        <p-avatar *ngIf="l.author.avatar_url != null" size="xlarge" shape="circle" image="{{l.author.avatar_url}}"></p-avatar>
+                        <p-avatar *ngIf="l.author.avatar_url == null" size="xlarge" shape="circle" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg"></p-avatar>
 
                         <span>{{l.content}}</span>
                         <br>
@@ -74,16 +76,21 @@
                     </div>
                     <br>
                     <div class="collapse float-right"  id="{{l.comment_id}}" style="width: 90%; margin-bottom: 10px;">
-                        <div class="row"
+                        <div class="row" *ngFor="let cmtChildren of l.listCommentChildren"
                             style="width: 100%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px; margin-top: 10px;">
-                            <h6>{{l.comment_id}}</h6>
-                            <p>{{l.content}}</p>
+                            <h6>{{cmtChildren.author.full_name}}</h6>
+                            <p-avatar *ngIf="cmtChildren.author.avatar_url != null" size="xlarge" shape="circle" image="{{cmtChildren.author.avatar_url}}"></p-avatar>
+                            <p-avatar *ngIf="cmtChildren.author.avatar_url == null" size="xlarge" shape="circle" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg"></p-avatar>
+    
+                            <span>{{cmtChildren.content}}</span>
+                            <br>
+                            <span>{{cmtChildren.created_date | date:'mediumDate'}}</span>
                         </div>
 
-                        <div *ngIf="role == 4" style="display: flex; margin-top: 10px; width: 90%;" class="float-right" >
-                            <span class="p-float-label" style="width: 90%;">
-                                <textarea [(ngModel)]="comment_value" [rows]="1" pInputTextarea
-                                    [autoResize]="true"></textarea>
+
+                        <div *ngIf="role == 4" style="display: flex; margin-top: 10px; width: 90%;" class="float-right">
+                            <span class="p-float-label" style="width: 90%; height: 100%;">
+                                <textarea [(ngModel)]="commentChildren_value" [rows]="1" pInputTextarea [autoResize]="true"></textarea>
                                 <label for="float-input">Comment something here.............</label>
                             </span>
                             <button style="margin-top: 0; margin-left: 10px;" pButton pRipple type="button"
