@@ -65,6 +65,7 @@
 														<p-avatar *ngIf="idea.is_anonymous == 0" image="{{idea.url_avatar}}" styleclass="mr-2"
 															size="xlarge" shape="circle"></p-avatar>
 														<p></p>
+
 														<p-avatar *ngIf="idea.is_anonymous == 1" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleclass="mr-2"
 															size="xlarge" shape="circle"></p-avatar>
 														<p></p>
@@ -74,7 +75,7 @@
 													</div>
 													<div class="col-9" style="position: static;">
 														<button pbutton pripple type="button" label=""
-															class="p-button-text p-button-plain border-0"
+															class="p-button-text p-button-plain border-0 text-left w-100 p-0 h5" style="color: black; font-size: 19px;"
 															(click)="IdeaDetail(idea.idea_id)">{{idea.title}}</button>
 														<div class="row"
 															style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto;">

@@ -1,18 +1,17 @@
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { AddEventComponent } from '../manage-event/add-event/add-event.component';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { AuthenticationService } from '../auth/services/authentication.service';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
-import { AddEventComponent } from './add-event/add-event.component';
+import { HttpClient } from '@angular/common/http';
+import { AuthenticationService } from '../auth/services/authentication.service';
 
 @Component({
-  selector: 'app-manage-event',
-  templateUrl: './manage-event.component.html',
-  styleUrls: ['./manage-event.component.css'],
-  providers: [MessageService, ConfirmationService, DialogService]
+  selector: 'app-manage-department',
+  templateUrl: './manage-department.component.html',
+  styleUrls: ['./manage-department.component.css']
 })
-export class ManageEventComponent {
+export class ManageDepartmentComponent {
   cols: Array<any> = [];
   listData: any[] = [];
   displayDeleteEvent: boolean;

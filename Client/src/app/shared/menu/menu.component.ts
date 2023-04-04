@@ -18,6 +18,7 @@ export class MenuComponent {
   display: any;
   value3: any;
   dataUser: any;
+  role: number;
   items: MenuItem[];
   itemsAdmin: MenuItem[];
   itemsQA: MenuItem[];
@@ -25,7 +26,8 @@ export class MenuComponent {
   categories!: MegaMenuItem[];
   role: any
   constructor(private authService: AuthenticationService, private http : HttpClient,
-    public router: Router,){
+    public router: Router, ){
+      this.role = authService.getRole();
     this.getDataUser(); 
     this.role = this.authService.getRole()
   }

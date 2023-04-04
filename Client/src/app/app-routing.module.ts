@@ -15,6 +15,7 @@ import { EventComponent } from './event/event.component';
 import { ChartComponent } from './chart/chart.component';
 import { RoleGuardService } from './shared/guard/RoleGuardService';
 import { IdeaEventComponent } from './idea-event/idea-event.component';
+import { ManageDepartmentComponent } from './manage-department/manage-department.component';
 
 
 
@@ -83,6 +84,12 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: ManageEventComponent
+    },
+    {
+        path: 'manage/department',
+        canActivate: [AuthGuard],
+        // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
+        component: ManageDepartmentComponent
     },
     {
         path: 'home',
