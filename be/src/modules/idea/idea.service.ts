@@ -409,8 +409,8 @@ export class IdeaService {
       null,
       true,
       sorting_setting,
-      new Date(start_date),
-      new Date(end_date),
+      start_date == null ? null : new Date(start_date),
+      end_date == null ? null : new Date(end_date),
     );
 
     const now = new Date();
