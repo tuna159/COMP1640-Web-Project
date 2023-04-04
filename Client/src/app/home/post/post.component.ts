@@ -26,6 +26,7 @@ export class PostComponent implements OnInit {
     title: FormControl<string>;
     content: FormControl<string>;
     checked: FormControl<boolean>;
+    anonymous: FormControl<boolean>;
   }>;
   constructor(private dialogService: DialogService,public ref: DynamicDialogRef, public config: DynamicDialogConfig,
     private http: HttpClient, private authService: AuthenticationService,) {
@@ -68,6 +69,7 @@ export class PostComponent implements OnInit {
       title: new FormControl(null, [Validators.required]),
       content: new FormControl(null, [Validators.required]),
       checked: new FormControl(false, [Validators.required]),
+      anonymous: new FormControl(false, [Validators.required]),
     });
   }
 

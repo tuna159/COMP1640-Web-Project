@@ -46,6 +46,13 @@
         <div style="display: flex;">
             
 
+            <input type="checkbox" id="anonymous" formControlName="anonymous" required
+                [ngClass]="(formGroup.controls.anonymous.invalid && (formGroup.controls.anonymous.dirty || formGroup.controls.anonymous.touched)) ? 'ng-invalid ng-dirty' : ''">
+                <label for="name">Anonymous</label>
+        </div>
+        <div style="display: flex;">
+            
+
             <input type="checkbox" id="term" formControlName="checked" required
                 [ngClass]="(formGroup.controls.checked.invalid && (formGroup.controls.checked.dirty || formGroup.controls.checked.touched)) ? 'ng-invalid ng-dirty' : ''">
                 <label for="name">Agree term</label>
