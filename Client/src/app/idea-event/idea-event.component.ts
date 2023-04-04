@@ -50,4 +50,17 @@ export class IdeaEventComponent implements OnInit {
   showMessage(severity: string, detail: string) {
     this.messageService.add({ severity: severity, summary: 'Notification:', detail: detail });
   }
+
+  postIdeal(){
+    this.ref = this.dialogService.open(PostComponent, {
+      header: 'Add ideal',
+            width: '90%',
+            height: '90%',
+            contentStyle: {"max-height": "800px", "overflow": "auto"},
+            baseZIndex: 10000,
+    });
+    this.ref.onClose.subscribe(() => {
+      this.showMessage('success', 'Post successfully')
+  });
+  }
 }
