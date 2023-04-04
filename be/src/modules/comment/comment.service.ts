@@ -40,7 +40,7 @@ export class CommentService {
       .innerJoinAndSelect('comment.author', 'author')
       .innerJoinAndSelect('author.userDetail', 'user_detail')
       .where('idea_id = :idea_id', { idea_id })
-      .andWhere('comment.parent_id IS NULL')
+      // .andWhere('comment.parent_id IS NULL')
       .andWhere('comment.is_deleted = :is_deleted', {
         is_deleted: EIsDelete.NOT_DELETED,
       })
@@ -54,6 +54,8 @@ export class CommentService {
         content: comment.content,
         created_date: comment.created_at,
         updated_date: comment.updated_at,
+        parent_id: comment.parent_id,
+        level: comment.level,
         author: {
           author_id: comment.author_id,
           full_name: author.full_name,

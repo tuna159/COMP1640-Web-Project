@@ -34,7 +34,7 @@ export class IdeaEventComponent implements OnInit {
         Authorization: 'Bearer ' + this.authService.getToken()
       }
     }).subscribe((res: any) => {
-      this.listIdea = res.data[0].ideas;
+      this.listIdea = res.data;
       this.name = res.data.name;
       this.content = res.data.content;
       this.final_closure_date = res.data.final_closure_date;
