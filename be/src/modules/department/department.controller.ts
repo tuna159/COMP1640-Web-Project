@@ -83,7 +83,19 @@ export class DepartmentController {
     @UserData() userData: IUserData,
   ) {
     return this.departmentService.getDepartmentStaffContribution(
-      department_id, userData
+      department_id,
+      userData,
+    );
+  }
+
+  @Get(':department_id/dashboard/reaction')
+  getDepartmentStaffReaction(
+    @Param('department_id') department_id: number,
+    @UserData() userData: IUserData,
+  ) {
+    return this.departmentService.getDepartmentStaffReaction(
+      department_id,
+      userData,
     );
   }
 }

@@ -88,8 +88,9 @@ export class ReactionService {
       ? entityManager.getRepository<Reaction>('reaction')
       : this.reactionRepository;
 
-    return reactionRepository.count({ 
-      idea_id, type: EReactionType.LIKE,
+    return reactionRepository.count({
+      idea_id,
+      type: EReactionType.LIKE,
     });
   }
 
@@ -98,8 +99,9 @@ export class ReactionService {
       ? entityManager.getRepository<Reaction>('reaction')
       : this.reactionRepository;
 
-    return reactionRepository.count({ 
-      idea_id, type: EReactionType.DISLIKE,
+    return reactionRepository.count({
+      idea_id,
+      type: EReactionType.DISLIKE,
     });
   }
 
@@ -121,8 +123,6 @@ export class ReactionService {
 
     const [listUser] = await queryBuilder.getManyAndCount();
 
-    console.log(listUser);
-
     data = listUser.map((reaction) => {
       return {
         reaction_type: reaction.type,
@@ -132,5 +132,55 @@ export class ReactionService {
       };
     });
     return data;
+  }
+
+  async getListReactionLikeByDepartment(
+    department_id: number,
+    entityManager?: EntityManager,
+  ) {
+    const reactionRepository = entityManager
+      ? entityManager.getRepository<Reaction>('reaction')
+      : this.reactionRepository;
+
+    const queryBuilder = reactionRepository
+      .createQueryBuilder('reaction')
+      .select()
+      .leftJoinAndSelect('reaction.idea', 'idea')
+      .leftJoinAndSelect('idea.event', 'event')
+      .where('reaction.type = :type', {
+        type: EReactionType.LIKE,
+      })
+      .andWhere('event.department_id = :department_id', {
+        department_id: department_id,
+      });
+
+    const [listReactionLike] = await queryBuilder.getManyAndCount();
+
+    return listReactionLike.length;
+  }
+
+  async getListReactionDisLikeByDepartment(
+    department_id: number,
+    entityManager?: EntityManager,
+  ) {
+    const reactionRepository = entityManager
+      ? entityManager.getRepository<Reaction>('reaction')
+      : this.reactionRepository;
+
+    const queryBuilder = reactionRepository
+      .createQueryBuilder('reaction')
+      .select()
+      .leftJoinAndSelect('reaction.idea', 'idea')
+      .leftJoinAndSelect('idea.event', 'event')
+      .where('reaction.type = :type', {
+        type: EReactionType.DISLIKE,
+      })
+      .andWhere('event.department_id = :department_id', {
+        department_id: department_id,
+      });
+
+    const [listReactionisLike] = await queryBuilder.getManyAndCount();
+
+    return listReactionisLike.length;
   }
 }

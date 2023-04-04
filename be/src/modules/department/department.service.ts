@@ -2,6 +2,7 @@ import { Department } from '@core/database/mysql/entity/department.entity';
 import { IUserData } from '@core/interface/default.interface';
 import { EventService } from '@modules/event/event.service';
 import { IdeaService } from '@modules/idea/idea.service';
+import { ReactionService } from '@modules/reaction/reaction.service';
 import { UserService } from '@modules/user/user.service';
 import {
   forwardRef,
@@ -30,6 +31,8 @@ export class DepartmentService {
     private readonly ideaService: IdeaService,
     @Inject(forwardRef(() => EventService))
     private readonly eventService: EventService,
+
+    private reactionService: ReactionService,
   ) {}
 
   async getAllDepartments(entityManager?: EntityManager) {
@@ -309,10 +312,7 @@ export class DepartmentService {
     });
   }
 
-  async countTotalStaff(
-    department_id: number,
-    entityManager?: EntityManager,
-  ) {
+  async countTotalStaff(department_id: number, entityManager?: EntityManager) {
     const departmentRepository = entityManager
       ? entityManager.getRepository<Department>('department')
       : this.departmentRepository;
@@ -340,20 +340,55 @@ export class DepartmentService {
       );
     }
     const department = await this.departmentExists(department_id);
-    if(!department) {
+    if (!department) {
       throw new HttpException(
         ErrorMessage.DEPARTMENT_NOT_EXISTS,
         HttpStatus.BAD_REQUEST,
       );
     }
-    const staffContributed = await this.ideaService
-        .getDepartmentStaffContribution(department_id, entityManager);
+    const staffContributed =
+      await this.ideaService.getDepartmentStaffContribution(
+        department_id,
+        entityManager,
+      );
     const total = await this.countTotalStaff(department_id, entityManager);
     return {
-      "department_id": department.department_id,
-      "name": department.name,
-      "total_staff": total,
-      "staff_contributed": staffContributed,
+      department_id: department.department_id,
+      name: department.name,
+      total_staff: total,
+      staff_contributed: staffContributed,
+    };
+  }
+
+  async getDepartmentStaffReaction(
+    department_id: number,
+    userData: IUserData,
+    entityManager?: EntityManager,
+  ) {
+    if (userData.role_id != EUserRole.ADMIN) {
+      throw new HttpException(
+        ErrorMessage.GENERAL_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const department = await this.departmentExists(department_id);
+    if (!department) {
+      throw new HttpException(
+        ErrorMessage.DEPARTMENT_NOT_EXISTS,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const totalReactionLikeByDepartment =
+      await this.reactionService.getListReactionLikeByDepartment(department_id);
+    const totalReactionDislikeByDepartment =
+      await this.reactionService.getListReactionDisLikeByDepartment(
+        department_id,
+      );
+
+    return {
+      total_like: totalReactionLikeByDepartment,
+      total_dislike: totalReactionDislikeByDepartment,
     };
   }
 }

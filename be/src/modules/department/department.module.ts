@@ -6,6 +6,7 @@ import { Department } from '@core/database/mysql/entity/department.entity';
 import { IdeaModule } from '@modules/idea/idea.module';
 import { EventModule } from '@modules/event/event.module';
 import { UserModule } from '@modules/user/user.module';
+import { ReactionModule } from '@modules/reaction/reaction.module';
 
 @Module({
   providers: [DepartmentService],
@@ -15,6 +16,7 @@ import { UserModule } from '@modules/user/user.module';
     forwardRef(() => IdeaModule),
     forwardRef(() => EventModule),
     forwardRef(() => UserModule),
+    ReactionModule,
   ],
   exports: [TypeOrmModule, DepartmentService],
 })
