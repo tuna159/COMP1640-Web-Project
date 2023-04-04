@@ -147,6 +147,7 @@ export class DetailComponent {
       }, {headers: {Authorization: 'Bearer ' + this.authService.getToken()}}).subscribe((resultComment: any) => {
             this.comment_value = ""
             this.commentChildren_value = ""
+            this.getCountIdeaComment();
             this.getCommentbyIdea();
       });
     }
