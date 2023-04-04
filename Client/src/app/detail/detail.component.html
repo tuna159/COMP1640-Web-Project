@@ -1,9 +1,9 @@
-<div class="wrapper" style="background-color: #F2F2F2">
+<div class="wrapper" style="background-color: #F2F2F2; height: auto;" >
     <div class="menu-bar" style="position: fixed; width: 100%; top: 0%; left: 0%;">
         <app-header-home></app-header-home>
     </div>
     <br>
-    <div class="">
+    <div>
         <div class="menu" style="position: fixed;">
             <app-menu></app-menu>
         </div>
@@ -12,11 +12,11 @@
             <p-card header="{{user}}"
                 [style]="{'width': '55%', 'margin-bottom': '4em', 'margin-left': 'auto', 'margin-right': 'auto', 'background-color':'white'}">
                 <h4>{{title}}</h4>
-                <h6>{{date| date:'mediumDate'}}</h6>
+
                 <div
                     style="width: 100%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px;">
                     <p style="color: black;">
-                        {{title}}</p>
+                        {{content}}</p>
                 </div>
 
                 <p-button label="Attachment" icon="pi pi-file-word"></p-button>
@@ -35,11 +35,11 @@
                 <div class="row"
                     style="border-bottom-width: 1px; border-color: #F2F2F2; border-bottom-style: solid; width: 100%; margin-top: 15px; margin-left: auto; margin-right: auto;">
                     <div style="width: 80%;">
-                        <p-toggleButton #likeAble [(ngModel)]="like" onLabel="Like" offLabel="Like"
+                        <p-toggleButton *ngIf="role == 4" #likeAble [(ngModel)]="like" onLabel="Like" offLabel="Like"
                             offIcon="pi pi-thumbs-up-fill" onIcon="pi pi-thumbs-up-fill"
                             (click)="likeIdeal()"></p-toggleButton>
 
-                        <p-toggleButton [(ngModel)]="dislike" onLabel="Dislike" offLabel="Dislike"
+                        <p-toggleButton *ngIf="role == 4" [(ngModel)]="dislike" onLabel="Dislike" offLabel="Dislike"
                             offIcon="pi pi-thumbs-down-fill" onIcon="pi pi-thumbs-down-fill"
                             (click)="dislikeIdeal()"></p-toggleButton>
                     </div>
@@ -60,33 +60,42 @@
                     <div class="row"
                         style="width: 100%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px; margin-top: 10px;">
                         <h6>{{l.author.full_name}}</h6>
-                        <p-avatar size="xlarge" shape="circle" image="{{l.author.avatar_url}}"></p-avatar>
-                        
+
+                        <p-avatar *ngIf="l.author.avatar_url != null" size="xlarge" shape="circle" image="{{l.author.avatar_url}}"></p-avatar>
+                        <p-avatar *ngIf="l.author.avatar_url == null" size="xlarge" shape="circle" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg"></p-avatar>
+
                         <span>{{l.content}}</span>
                         <br>
                         <span>{{l.created_date | date:'mediumDate'}}</span>
                     </div>
-                    
-                    <div  class="form-group" style="width: 100%;">
-                        <button type="button" class="btn btn-tertiary text-dark float-right" id="cmtBtn" data-toggle="collapse" [attr.data-target]="'#' + l.comment_id"
-                            data-mdb-ripple-color="light" style="background-color: white; ">See more</button>
+
+                    <div class="form-group" style="width: 100%;">
+                        <button type="button" class="btn btn-tertiary text-dark float-right" id="cmtBtn" 
+                            data-toggle="collapse" [attr.data-target]="'#' + l.comment_id" data-mdb-ripple-color="light"
+                            style="background-color: white;">See more</button>
                     </div>
                     <br>
                     <div class="collapse float-right"  id="{{l.comment_id}}" style="width: 90%; margin-bottom: 10px;">
-                        <div class="row"
+                        <div class="row" *ngFor="let cmtChildren of l.listCommentChildren"
                             style="width: 100%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px; margin-top: 10px;">
-                            <h6>{{l.comment_id}}</h6>
-                            <p>{{l.content}}</p>
+                            <h6>{{cmtChildren.author.full_name}}</h6>
+                            <p-avatar *ngIf="cmtChildren.author.avatar_url != null" size="xlarge" shape="circle" image="{{cmtChildren.author.avatar_url}}"></p-avatar>
+                            <p-avatar *ngIf="cmtChildren.author.avatar_url == null" size="xlarge" shape="circle" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg"></p-avatar>
+    
+                            <span>{{cmtChildren.content}}</span>
+                            <br>
+                            <span>{{cmtChildren.created_date | date:'mediumDate'}}</span>
                         </div>
 
-                        
-                        <div style="display: flex; margin-top: 10px; width: 90%;" class="float-right">
+
+                        <div *ngIf="role == 4" style="display: flex; margin-top: 10px; width: 90%;" class="float-right">
                             <span class="p-float-label" style="width: 90%; height: 100%;">
-                                <textarea [(ngModel)]="comment_value" [rows]="1" pInputTextarea [autoResize]="true"></textarea>
+                                <textarea [(ngModel)]="commentChildren_value" [rows]="1" pInputTextarea [autoResize]="true"></textarea>
                                 <label for="float-input">Comment something here.............</label>
                             </span>
-                            <button style="margin-top: 0; margin-left: 10px;" pButton pRipple type="button" icon="pi pi-reply"
-                                class="p-button-rounded p-button-outlined" (click)="postCommentByIdea(l.comment_id)"></button>
+                            <button style="margin-top: 0; margin-left: 10px;" pButton pRipple type="button"
+                                icon="pi pi-reply" class="p-button-rounded p-button-outlined"
+                                (click)="postCommentByIdea(l.comment_id)"></button>
                         </div>
                     </div>
                 </div>

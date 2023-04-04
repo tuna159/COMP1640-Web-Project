@@ -72,6 +72,8 @@ import { ChartComponent } from './chart/chart.component';
 import { RoleGuardService } from './shared/guard/RoleGuardService';
 import { IdeaEventComponent } from './idea-event/idea-event.component';
 import { AddEventComponent } from './manage-event/add-event/add-event.component';
+import { ManageDepartmentComponent } from './manage-department/manage-department.component';
+import { AddDepartmentComponent } from './manage-department/add-department/add-department.component';
 
 @NgModule({
     declarations: [
@@ -96,7 +98,9 @@ import { AddEventComponent } from './manage-event/add-event/add-event.component'
         EventComponent,
         ChartComponent,
         IdeaEventComponent,
-        AddEventComponent
+        AddEventComponent,
+        ManageDepartmentComponent,
+        AddDepartmentComponent
     ],
     providers: [MessageService, RoleGuardService],
     bootstrap: [AppComponent],
