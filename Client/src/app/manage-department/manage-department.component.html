@@ -15,6 +15,9 @@
                     <a class="nav-link" href="/manage/event">Manage Event</a>
                 </li>
                 <li class="nav-item active col-md-5">
+                    <a class="nav-link" href="/manage/department">Manage Department</a>
+                </li>
+                <li class="nav-item active col-md-5">
                     <a class="nav-link" href="#">Log out</a>
                 </li>
             </ul>
@@ -73,11 +76,8 @@
                                     <td style="text-align: center;">{{event.Stt}}</td>
                                     <td style="text-align: center">{{event.name}}</td>
                                     <td style="text-align: center">{{event.name}}</td>
-                                    <td style="text-align: center">{{event.name}}</td>
-                                    <td style="text-align: center">{{event.name}}</td>
-                                    <td style="text-align: center">{{event.name}}</td>
                                     <td style="text-align: center; ">
-                                        <span style="display: flex;">
+                                        <span style="display: flex; text-align: center; width: fit-content; margin-right: auto; margin-left: auto;">
                                             <button pButton icon="pi pi-pencil" class="ui-button-primary edit-button"
                                                 (click)="openNewEvent(event)"></button>
                                             <button pButton icon="pi pi-trash" class="ui-button-danger delete-button"
@@ -98,10 +98,10 @@
 
 
 
-<!-- confirm delete event -->
+<!-- confirm delete department -->
 <p-dialog header="Confirm" [(visible)]="displayDeleteEvent" [modal]="true" [responsive]="true" [closable]="false"
     [style]="{width: '20%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
-    <p>Are you sure to delete this event?</p>
+    <p>Are you sure to delete this department?</p>
     <p-footer>
         <button type="button" pButton icon="pi pi-close" (click)="displayDeleteEvent=false" label="Cancel" class="btn btn-light"
             style="width:100px; height:38px"></button>
@@ -110,10 +110,10 @@
     </p-footer>
 </p-dialog>
 
-<!-- confirm delete events-->
+<!-- confirm delete departments-->
 <p-dialog header="Confirm" [(visible)]="displayDeleteEvents" [modal]="true" [responsive]="true" [closable]="false"
     [style]="{width: '20%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
-    <p>Are you sure to delete these events?</p>
+    <p>Are you sure to delete these departments?</p>
     <p-footer>
         <button type="button" pButton icon="pi pi-close" (click)="displayDeleteEvents = false" label="Cancel" class="btn btn-light"
             style="width: 100px; height:38px"></button>

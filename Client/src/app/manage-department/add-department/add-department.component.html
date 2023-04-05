@@ -1,1 +1,30 @@
-<p>add-department works!</p>
+<form [formGroup]="formGroup" (ngSubmit)="SaveIdea()">
+    <div class="field" style="margin-top: 5%;">
+        <label for="name" style="width: 100%;">Name Department</label>
+        <br>
+        <input type="text" pInputText id="name" formControlName="name" required [autofocus] style=" width: 100%;"
+            [ngClass]="(formGroup.controls.name.invalid && (formGroup.controls.name.dirty || formGroup.controls.name.touched)) ? 'ng-invalid ng-dirty' : ''">
+
+        <div class="form-group mb-2" [hidden]="formGroup.controls.name.valid|| formGroup.controls.name.untouched">
+            <span
+                *ngIf="formGroup.controls.name.hasError('required') || formGroup.controls.name.hasError('blankString') "
+                class="error-message-span" style="color: #FD0B0B; font-size: small;">
+                Please enter name of department
+            </span>
+        </div>
+
+        <div class="field" style="margin-top: 5%;">
+            <label for="manager">Manager Name</label>
+            <br>
+            
+            <select class="form-control" formControlName="manager" id="manager">
+                <option>Han Hong Son</option>
+                
+            </select>
+        </div>
+    </div>
+    <br>
+    <div>
+        <button pButton type="Submit" label="Save"></button>
+    </div>
+</form>
