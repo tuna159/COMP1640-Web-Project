@@ -7,7 +7,7 @@
     </button>
     <div class="collapse navbar-collapse ml-5" id="navbarNav">
         <ul class="navbar-nav col">
-            <li class="nav-item active col-md-0">
+            <li class="nav-item active ml-3">
                 <a class="nav-link" [routerLink]="['/event']" style="text-align: center;"  [queryParams]="{ Id: 'University', name: 'University'}">University</a>
             </li>
             <li class="nav-item active ml-3" *ngFor="let l of listDepartment" [class.active]="isLinkActive(l)">
