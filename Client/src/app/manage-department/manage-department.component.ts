@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { AddEventComponent } from '../manage-event/add-event/add-event.component';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
@@ -16,12 +15,12 @@ import { AddDepartmentComponent } from './add-department/add-department.componen
 export class ManageDepartmentComponent {
   cols: Array<any> = [];
   listData: any[] = [];
-  displayDeleteEvent: boolean;
-  displayDeleteEvents: boolean;
+  displayDeleteDepartment: boolean;
+  displayDeleteDepartments: boolean;
   id: number;
   ref: DynamicDialogRef;
   name: string;
-  apiUrl: string = "http://localhost:3009/api/event";
+  apiUrl: string = "http://localhost:3009/api/department";
   listSelectedData: Array<any> = [];
   constructor(private messageService: MessageService, private confirmationService: ConfirmationService, private router: Router,
     private http: HttpClient, private authService: AuthenticationService, private dialogService: DialogService) {
@@ -62,36 +61,36 @@ export class ManageDepartmentComponent {
   }
 
   showDialogDelete(data) {
-    this.displayDeleteEvent = true;
-    this.id = data.category_id;
+    this.displayDeleteDepartment = true;
+    this.id = data.department_id;
   }
 
   showDialogDeletes() {
-    this.displayDeleteEvents = true;
+    this.displayDeleteDepartments = true;
   }
 
-  deleteEvents() {
+  deleteDepartments() {
     if (this.listSelectedData.length) {
       for (let i = 0; i < this.listSelectedData.length; i++) {
-        this.id = this.listSelectedData[i].category_id;
-        this.deleteEvent();
+        this.id = this.listSelectedData[i].department_id;
+        this.deleteDepartment();
       }
       this.listSelectedData = null;
     } else {
-      this.displayDeleteEvents = false;
+      this.displayDeleteDepartments = false;
     }
 
   }
 
-  async deleteEvent() {
+  async deleteDepartment() {
     this.http.delete(this.apiUrl + '/' + this.id, {
       headers: {
         Authorization: 'Bearer ' + this.authService.getToken()
       }
     }).subscribe(() => {
       this.showMessage('success', 'Delete success')
-      this.displayDeleteEvent = false;
-      this.displayDeleteEvents = false;
+      this.displayDeleteDepartment = false;
+      this.displayDeleteDepartments = false;
       this.getAllData();
     });
   }
@@ -100,7 +99,7 @@ export class ManageDepartmentComponent {
     this.messageService.add({ severity: severity, summary: 'Thông báo:', detail: detail });
   }
 
-  openNewEvent(data) {
+  openNewDepartment(data) {
     if (!data) {
       this.ref = this.dialogService.open(AddDepartmentComponent, {
         header: 'Add Department',

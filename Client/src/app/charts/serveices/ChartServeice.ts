@@ -10,7 +10,7 @@ export class ChartServeice {
     constructor() { }
 
     
-    createBarChartStaffDepartment(x: string[], data: number[]) {
+    createBarChartStaffDepartment(x: string[], data: number[], ) {
         let chartStaffDepartment: Options = {
             chart: {
                 type: 'column',

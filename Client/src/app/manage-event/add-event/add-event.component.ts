@@ -42,12 +42,14 @@ export class AddEventComponent implements OnInit {
   }
 
   setValueF() {
+    if(this.data.event_id != null) {
     this.formGroup.patchValue({
       name: this.data.name, 
       content: this.data.content,
-      closureDate: new Date(this.data.first_closure_date),
-      finalDate: new Date(this.data.first_closure_date),
+        closureDate: new Date(this.data.first_closure_date),
+        finalDate: new Date(this.data.final_closure_date),
     })
+  }
   }
 
   SaveEvent() {

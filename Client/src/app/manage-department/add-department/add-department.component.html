@@ -1,7 +1,7 @@
-<form [formGroup]="formGroup" (ngSubmit)="SaveIdea()">
+<form [formGroup]="formGroup" (ngSubmit)="SaveDepartment()">
     <div class="field" style="margin-top: 5%;">
         <label for="name" style="width: 100%;">Name Department</label>
-        <br>
+        
         <input type="text" pInputText id="name" formControlName="name" required [autofocus] style=" width: 100%;"
             [ngClass]="(formGroup.controls.name.invalid && (formGroup.controls.name.dirty || formGroup.controls.name.touched)) ? 'ng-invalid ng-dirty' : ''">
 
@@ -14,16 +14,12 @@
         </div>
 
         <div class="field" style="margin-top: 5%;">
-            <label for="manager">Manager Name</label>
-            <br>
-            
-            <select class="form-control" formControlName="manager" id="manager">
-                <option>Han Hong Son</option>
-                
-            </select>
+            <label for="name" style="width: 100%;">Manager Name</label>
+            <p-dropdown [options]="listManagers" formControlName="manager" optionLabel="name" appendTo="body" [style] = "{'width' : '100%'}"
+                        [filter]="true" ></p-dropdown>
         </div>
     </div>
-    <br>
+    
     <div>
         <button pButton type="Submit" label="Save"></button>
     </div>
