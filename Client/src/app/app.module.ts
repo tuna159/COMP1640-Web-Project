@@ -41,7 +41,6 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { HttpClientModule } from "@angular/common/http";
 import {MessagesModule} from 'primeng/messages';
 import { ProfileComponent } from './profile/profile.component';
-import { UpdateProfileComponent } from './update-profile/update-profile.component';
 import { ManageCategoryComponent } from './manage-category/manage-category.component';
 import { ManageAccountComponent } from './manage-account/manage-account.component';
 import { TableModule } from 'primeng/table';
@@ -87,7 +86,6 @@ import { AddDepartmentComponent } from './manage-department/add-department/add-d
         LayoutComponent,
         MenuComponent,
         ProfileComponent,
-        UpdateProfileComponent,
         ManageCategoryComponent,
         ManageAccountComponent,
         PostComponent,

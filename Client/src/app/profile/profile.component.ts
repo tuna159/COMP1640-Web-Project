@@ -155,7 +155,7 @@ export class ProfileComponent implements OnInit {
     this.formGroup.patchValue({
       name: this.name, 
       gender: this.gender, 
-      birthday: null, 
+      birthday: new Date(this.date), 
 
     })
   }

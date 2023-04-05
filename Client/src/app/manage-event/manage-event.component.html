@@ -72,10 +72,11 @@
                                     </td>
                                     <td style="text-align: center;">{{event.Stt}}</td>
                                     <td style="text-align: center">{{event.name}}</td>
-                                    <td style="text-align: center">{{event.name}}</td>
-                                    <td style="text-align: center">{{event.name}}</td>
-                                    <td style="text-align: center">{{event.name}}</td>
-                                    <td style="text-align: center">{{event.name}}</td>
+                                    <td style="text-align: center">{{event.created_date | date:'mediumDate'}}</td>
+                                    <td style="text-align: center">{{event.first_closure_date | date:'mediumDate'}}</td>
+                                    <td style="text-align: center">{{event.final_closure_date | date:'mediumDate'}}</td>
+                                    <td style="text-align: center" *ngIf="event.department == null"></td>
+                                    <td style="text-align: center" *ngIf="event.department != null">{{event.department.name}}</td>
                                     <td style="text-align: center; ">
                                         <span style="display: flex;">
                                             <button pButton icon="pi pi-pencil" class="ui-button-primary edit-button"

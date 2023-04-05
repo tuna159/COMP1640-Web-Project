@@ -1,8 +1,8 @@
 <form [formGroup]="formGroup" (ngSubmit)="SaveIdea()" >
     <div class="field" style="margin-top: 5%;">
         <label for="name" style="width: 100%;">Name Category</label>
-        <br>
-        <input type="text" pInputText id="name" formControlName="name" required [autofocus] style=" width: 100%;"
+        
+        <input type="text" pInputText id="name" formControlName="name" required  style=" width: 100%;"
             [ngClass]="(formGroup.controls.name.invalid && (formGroup.controls.name.dirty || formGroup.controls.name.touched)) ? 'ng-invalid ng-dirty' : ''">
     
         <div class="form-group mb-2" [hidden]="formGroup.controls.name.valid|| formGroup.controls.name.untouched">
@@ -12,7 +12,7 @@
             </span>
         </div>
     </div>
-    <br>
+    
     <div>
         <!-- <button pButton type="Submit" label="Save"></button> -->
         <button type="submit" class="btn btn-primary">Submit</button>
