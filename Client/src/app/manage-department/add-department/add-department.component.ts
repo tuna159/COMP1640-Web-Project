@@ -1,3 +1,4 @@
+import { map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -10,7 +11,8 @@ import { AuthenticationService } from 'src/app/auth/services/authentication.serv
   styleUrls: ['./add-department.component.css']
 })
 export class AddDepartmentComponent implements OnInit{
-  apiUrl: string = "http://localhost:3009/api/event";
+  listManagers = [];
+  apiUrl: string = "http://localhost:3009/api/department";
   data: any;
   formGroup: FormGroup<{
     name: FormControl<string>;
@@ -21,10 +23,22 @@ export class AddDepartmentComponent implements OnInit{
     private http: HttpClient, private authService: AuthenticationService,) {
       this.data = this.config.data;
       console.log(this.data)
+      this.getListManager();
+  }
+  getListManager() {
+    this.http.get<any>("http://localhost:3009/api/user", {
+      headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()
+      }
+    }).subscribe((res: any) => {
+      let listRole = []
+      listRole = res.data.map(x => x.role);
+      this.listManagers = listRole
+    })
   }
 
-  SaveIdea() {
-    if(this.data.event_id == null) {
+  SaveDepartment() {
+    if(this.data.department_id == null) {
       this.http.post(this.apiUrl, {
         "name": this.formGroup.controls.name.value,
         }, {
@@ -35,7 +49,7 @@ export class AddDepartmentComponent implements OnInit{
         this.ref.close(this.formGroup.controls.name.value);
       });
     } else {
-      this.http.put(this.apiUrl + "/" + this.data.category_id, {
+      this.http.put(this.apiUrl + "/" + this.data.department_id, {
         "name": this.formGroup.controls.name.value,
         }, {
         headers: {
