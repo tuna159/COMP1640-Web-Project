@@ -25,6 +25,7 @@ export class DetailComponent {
   title: string;
   avatar: string;
   content: string;
+  anonymous: number
   date: any
   user: any
   listReact: any =[];
@@ -107,6 +108,7 @@ export class DetailComponent {
               this.content = result.data.content;
               this.date = result.data.date;
               this.avatar = result.data.avatar_url;
+              this.anonymous = result.data.is_anonymous;
           });
     }
   }
