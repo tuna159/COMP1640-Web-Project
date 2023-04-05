@@ -24,7 +24,6 @@ export class MenuComponent {
   itemsQA: MenuItem[];
   itemsQAM: MenuItem[];
   categories!: MegaMenuItem[];
-  role: any
   constructor(private authService: AuthenticationService, private http : HttpClient,
     public router: Router, ){
       this.role = authService.getRole();

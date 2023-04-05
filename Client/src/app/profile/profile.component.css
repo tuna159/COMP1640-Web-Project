@@ -1,10 +1,6 @@
 :host ::ng-deep .p-card {
     margin-bottom: 5%;
 }
-.menu {
-    width: 10%;
-    float: left;
-}
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

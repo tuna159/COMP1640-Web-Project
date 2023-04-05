@@ -9,10 +9,15 @@
         </div>
 
         <div class="" style="margin-top: 5rem">
-            <p-card header="{{user}}"
+            <p-card
                 [style]="{'width': '55%', 'margin-bottom': '4em', 'margin-left': 'auto', 'margin-right': 'auto', 'background-color':'white'}">
-                <h4>{{title}}</h4>
+                <div class="row"
+                        style="width: 100%; margin-left: auto; margin-right: auto;">
 
+                        <p-chip *ngIf="avatar != null" label="{{user}}" image="{{avatar}}" styleClass="mr-2"></p-chip>
+                        <p-chip *ngIf="avatar == null" label="{{user}}" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleClass="mr-2"></p-chip>
+                    </div>
+                <h4>{{title}}</h4>
                 <div
                     style="width: 100%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px;">
                     <p style="color: black;">
@@ -59,11 +64,9 @@
                 <div *ngFor="let l of listCommentData; index as i;" style="padding-left: 10px; padding-right: 10px;">
                     <div class="row"
                         style="width: 100%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px; margin-top: 10px;">
-                        <h6>{{l.author.full_name}}</h6>
-
-                        <p-avatar *ngIf="l.author.avatar_url != null" size="xlarge" shape="circle" image="{{l.author.avatar_url}}"></p-avatar>
-                        <p-avatar *ngIf="l.author.avatar_url == null" size="xlarge" shape="circle" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg"></p-avatar>
-
+                        
+                        <p-chip *ngIf="l.author.avatar_url != null" label="{{l.author.full_name}}" image="{{l.author.avatar_url}}" styleClass="mr-2"></p-chip>
+                        <p-chip *ngIf="l.author.avatar_url == null" label="{{l.author.full_name}}" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleClass="mr-2"></p-chip>
                         <span>{{l.content}}</span>
                         <br>
                         <span>{{l.created_date | date:'mediumDate'}}</span>

@@ -5,11 +5,13 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthenticationService } from '../auth/services/authentication.service';
+import { AddDepartmentComponent } from './add-department/add-department.component';
 
 @Component({
   selector: 'app-manage-department',
   templateUrl: './manage-department.component.html',
-  styleUrls: ['./manage-department.component.css']
+  styleUrls: ['./manage-department.component.css'],
+  providers: [MessageService, ConfirmationService, DialogService]
 })
 export class ManageDepartmentComponent {
   cols: Array<any> = [];
@@ -31,10 +33,7 @@ export class ManageDepartmentComponent {
     this.cols = [
       { field: 'Number', header: 'Number', width: '5%', textAlign: 'center' },
       { field: 'name', header: 'Name', width: '15%', textAlign: 'center' },
-      { field: 'Start Date', header: 'Start Date', width: '15%', textAlign: 'center' },
-      { field: 'Closure Date', header: 'Closure Date', width: '10%', textAlign: 'center' },
-      { field: 'Final Date', header: 'Final Date', width: '10%', textAlign: 'center' },
-      { field: 'Department', header: 'Department', width: '10%', textAlign: 'center' },
+      { field: 'Manager Name', header: 'Manager Name', width: '15%', textAlign: 'center' },
       {
         field: 'Edit/Delete',
         header: 'Edit/Delete',
@@ -103,8 +102,8 @@ export class ManageDepartmentComponent {
 
   openNewEvent(data) {
     if (!data) {
-      this.ref = this.dialogService.open(AddEventComponent, {
-        header: 'Add Event',
+      this.ref = this.dialogService.open(AddDepartmentComponent, {
+        header: 'Add Department',
         width: '40%',
         contentStyle: { "max-height": "800px", "overflow": "auto" },
         baseZIndex: 10000,
@@ -119,8 +118,8 @@ export class ManageDepartmentComponent {
         this.getAllData();
       });
     } else {
-      this.ref = this.dialogService.open(AddEventComponent, {
-        header: 'Edit Event',
+      this.ref = this.dialogService.open(AddDepartmentComponent, {
+        header: 'Edit Department',
         width: '40%',
         contentStyle: { "max-height": "800px", "overflow": "auto" },
         baseZIndex: 10000,
