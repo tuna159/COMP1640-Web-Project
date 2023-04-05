@@ -1,13 +1,13 @@
-import { IsEnum } from 'class-validator';
+import { IsEnum, IsNumber } from 'class-validator';
 import { EIsDelete } from 'enum';
-import { EDepartment, EUserRole } from 'enum/default.enum';
+import { EUserRole } from 'enum/default.enum';
 
 export class VUpdateAccount {
   @IsEnum(EUserRole)
   role_id: EUserRole;
 
-  @IsEnum(EDepartment)
-  department_id: EDepartment;
+  @IsNumber()
+  department_id: number;
 
   @IsEnum(EIsDelete)
   is_deleted: EIsDelete;

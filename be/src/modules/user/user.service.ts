@@ -1,4 +1,5 @@
 import { IUserData } from '@core/interface/default.interface';
+import { DepartmentService } from '@modules/department/department.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EIsDelete } from 'enum';
@@ -17,6 +18,7 @@ export class UserService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private authService: AuthService,
+    private departmentService: DepartmentService,
   ) {}
 
   async login(body: VLogin) {
@@ -165,9 +167,27 @@ export class UserService {
       );
     }
 
+    if (body.role_id == EUserRole.ADMIN) {
+      throw new HttpException(
+        ErrorMessage.YOU_CAN_NOT_UPDATE_ROLE_ADMIN,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const department = await this.departmentService.departmentExists(
+      body.department_id,
+    );
+    if (!department) {
+      throw new HttpException(
+        ErrorMessage.DEPARTMENT_NOT_EXISTS,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const userParam = new User();
     userParam.role_id = body.role_id;
     userParam.is_deleted = body.is_deleted;
+    userParam.department_id = body.department_id;
 
     await userRepository.update({ user_id: user_id }, userParam);
     return;

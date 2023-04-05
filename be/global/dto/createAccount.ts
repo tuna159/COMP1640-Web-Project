@@ -1,5 +1,11 @@
-import { IsString, IsEmail, IsDateString, IsEnum } from 'class-validator';
-import { EDepartment, EGender, EUserRole } from 'enum/default.enum';
+import {
+  IsString,
+  IsEmail,
+  IsDateString,
+  IsEnum,
+  IsNumber,
+} from 'class-validator';
+import { EGender, EUserRole } from 'enum/default.enum';
 
 export class VSignUp {
   @IsEmail()
@@ -24,8 +30,8 @@ export class VSignUp {
   // @IsString()
   // avatar: string;
 
-  @IsEnum(EDepartment)
-  department_id: EDepartment;
+  @IsNumber()
+  department_id: number;
 
   // @IsString()
   // nickname: string;
