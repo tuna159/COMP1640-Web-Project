@@ -5,7 +5,8 @@
         <div class="position-sticky">
             <div class="list-group list-group-flush mx-3">
 
-                <p-chip *ngIf="role != 1 && dataUser != null" label="{{dataUser.nick_name}}" image="{{dataUser.avatar_url}}" styleClass="mr-2"></p-chip>
+                <p-chip *ngIf="role != 1 && dataUser.avatar_url != null" label="{{dataUser.nick_name}}" image="{{dataUser.avatar_url}}" styleClass="mr-2"></p-chip>
+                <p-chip *ngIf="role != 1 && dataUser.avatar_url == null" label="{{dataUser.nick_name}}" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleClass="mr-2"></p-chip>
                 <p-chip *ngIf="role == 1" label="Admin" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleClass="mr-2"></p-chip>
 
                 <ul id="collapseExample1" class="collapse show list-group list-group-flush">
