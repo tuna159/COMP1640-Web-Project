@@ -27,7 +27,13 @@ export class LoginComponent implements OnInit {
   ) {
     // redirect to home if already logged in
     if (this.authService.getUser()) {
-      this.router.navigate(['/']);
+      
+      if(this.authService.getRole() == 1){
+        this.router.navigate(['/chart']);
+      }
+      else{
+        this.router.navigate(['/']);
+      }
     }
   }
 
@@ -59,7 +65,13 @@ export class LoginComponent implements OnInit {
     .pipe(first())
     .subscribe((result: any) => {
       if(result.status_code == 200){
-        this.router.navigate(['/']);
+        if(this.authService.getRole() == 1){
+          this.router.navigate(['/chart']);
+        }
+        else{
+          this.router.navigate(['/']);
+        }
+        
       }else{
         this.showMessage('error', "Please log in again");
       }

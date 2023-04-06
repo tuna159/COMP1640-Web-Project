@@ -4,7 +4,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuthenticationService } from '../auth/services/authentication.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { PostComponent } from '../home/post/post.component';
+import { PostComponent } from './post/post.component';
 
 @Component({
   selector: 'app-idea-event',
@@ -36,14 +36,13 @@ export class IdeaEventComponent implements OnInit {
           Authorization: 'Bearer ' + this.authService.getToken()
         }
       }).subscribe((res: any) => {
-        console.log("idea", res.data[0].ideas);
-        
         this.listIdea = res.data[0].ideas;
-        this.name = res.data.name;
-        this.content = res.data.content;
-        this.final_closure_date = res.data.final_closure_date;
-        this.first_closure_date = res.data.first_closure_date;
-
+        console.log("idea: ", res.data[0].ideas);
+        
+        this.name = res.data[0].name;
+        this.content = res.data[0].content;
+        this.final_closure_date = res.data[0].final_closure_date;
+        this.first_closure_date = res.data[0].first_closure_date;
       })
 
   }
@@ -66,9 +65,15 @@ export class IdeaEventComponent implements OnInit {
             width: '60%',
             contentStyle: {"max-height": "800px", "overflow": "auto"},
             baseZIndex: 10000,
+            data: {
+              Id: this.Id
+            }
+      });
+      this.ref.onClose.subscribe((result) => {
+        if (result) {
+            this.showMessage("Add success: ", result);
+        }
+        this.getAllIdeaByEvent();
     });
-    this.ref.onClose.subscribe(() => {
-      this.showMessage('success', 'Post successfully')
-  });
   }
 }

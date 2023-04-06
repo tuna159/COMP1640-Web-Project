@@ -59,7 +59,7 @@ import { DataViewModule, DataViewLayoutOptions } from 'primeng/dataview';
 import { FieldsetModule } from 'primeng/fieldset';
 import { ImageModule } from 'primeng/image'
 import { MessageService } from 'primeng/api';
-import { PostComponent } from './home/post/post.component';
+import { PostComponent } from './idea-event/post/post.component';
 import { AddCategoryComponent } from './manage-category/add-category/add-category/add-category.component';
 import { CreateAccountComponent } from './manage-account/create-account/create-account/create-account.component';
 

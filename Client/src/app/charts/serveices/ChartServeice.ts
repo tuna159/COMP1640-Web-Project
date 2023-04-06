@@ -10,7 +10,7 @@ export class ChartServeice {
     constructor() { }
 
     
-    createBarChartStaffDepartment(x: string[], data: number[], ) {
+    createBarChartStaffDepartment(x: string[], data1: number[],  data2: number[],) {
         let chartStaffDepartment: Options = {
             chart: {
                 type: 'column',
@@ -69,10 +69,15 @@ export class ChartServeice {
                 valueSuffix: ' staff'
             },
             series: [{
-                name: 'staff',
+                name: 'Total staff',
+                type: 'column',
+                color: '#FF530D',
+                data: data1
+            }, {
+                name: 'Staff contribute',
                 type: 'column',
                 color: 'blue',
-                data: data
+                data: data2
             }]
         };
         return chartStaffDepartment
@@ -105,18 +110,20 @@ export class ChartServeice {
                     cursor: 'pointer',
                     dataLabels: {
                         enabled: true,
-                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                        format: '<b>{point.name}</b>: {point.percentage:.1f} %' 
                     }
                 }
             },
             series: [{
-                name: 'Tỷ lệ',
+                name: 'percent',
                 type: 'pie',
                 data: [{
                     name: 'staff do not contribute',
+                    color: 'red',
                     y: dataContribute,
                 }, {
                     name: 'staff contributors',
+                    color: 'blue',
                     y: dataNotContribute
                 }]
             }]
@@ -156,14 +163,17 @@ export class ChartServeice {
                 }
             },
             series: [{
-                name: 'Tỷ lệ',
+                name: 'percent',
                 type: 'pie',
                 data: [{
                     name: 'Like',
                     y: dataLike,
+                    color: 'blue'
                 }, {
                     name: 'Dislike',
-                    y: dataDislike
+                    y: dataDislike,
+                    color: 'red'
+
                 }]
             }]
         };
@@ -256,6 +266,74 @@ export class ChartServeice {
             }]
         };
         return chartIdeaDepartment
+    }
+
+    createBarChartCommentDepartment(x: string[], data: number[]) {
+        let chartCommentDepartment: Options = {
+            chart: {
+                type: 'column',
+                width: 1500
+            },
+            credits: {
+                enabled: false,
+            },
+            title: {
+                text: ' ',
+            },
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxWidth: 1500,
+                    },
+                    // chartOptions: {
+                    //     yAxis: {
+                    //         tickInterval: null
+                    //     },
+                    // }
+                }]
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Comment',
+                    align: 'high',
+                    style: {
+                        overflow: 'justify',
+                    },
+
+                }
+            },
+            xAxis: {
+                categories: x,
+                // title: {
+                //     text: 'Department',
+                //     align: 'high',
+                // },
+            },
+
+            plotOptions: {
+                column: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                },
+                series: {
+                    borderRadius: 5,
+                    pointWidth: 50
+                } as any,
+            },
+
+            tooltip: {
+                valueSuffix: ' comment'
+            },
+            series: [{
+                // name: 'comment',
+                type: 'column',
+                color: 'blue',
+                data: data
+            }]
+        };
+        return chartCommentDepartment
     }
     
 }

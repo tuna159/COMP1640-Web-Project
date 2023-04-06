@@ -138,7 +138,21 @@
     <ng-template pTemplate="content">
         <form [formGroup]="formEditAccount">
             <div class="field">
-                <label for="name">Password</label>
+                <label for="name">Old password</label>
+                <p-password formControlName="oldPassword" [toggleMask]="true"></p-password>
+
+            </div>
+            <div class="form-group mb-2"
+                [hidden]="formEditAccount.controls.oldPassword.valid|| formEditAccount.controls.oldPassword.untouched">
+                <span
+                    *ngIf="formEditAccount.controls.oldPassword.hasError('required') || formEditAccount.controls.oldPassword.hasError('blankString') "
+                    class="error-message-span" style="color: #FD0B0B; font-size: small;">
+                    Please enter your old password
+                </span>
+            </div>
+
+            <div class="field">
+                <label for="name">New password</label>
                 <p-password formControlName="password" [toggleMask]="true"></p-password>
 
             </div>
@@ -148,6 +162,20 @@
                     *ngIf="formEditAccount.controls.password.hasError('required') || formEditAccount.controls.password.hasError('blankString') "
                     class="error-message-span" style="color: #FD0B0B; font-size: small;">
                     Please enter your password
+                </span>
+            </div>
+
+            <div class="field">
+                <label for="name">Confirm password</label>
+                <p-password formControlName="confirmPassword" [toggleMask]="true"></p-password>
+
+            </div>
+            <div class="form-group mb-2"
+                [hidden]="formEditAccount.controls.confirmPassword.valid|| formEditAccount.controls.confirmPassword.untouched">
+                <span
+                    *ngIf="formEditAccount.controls.confirmPassword.hasError('required') || formEditAccount.controls.confirmPassword.hasError('blankString') "
+                    class="error-message-span" style="color: #FD0B0B; font-size: small;">
+                    Please enter your confirm password
                 </span>
             </div>
         </form>
