@@ -284,8 +284,8 @@ export class IdeaService {
       .innerJoinAndSelect('author.userDetail', 'userDetail')
       .innerJoinAndSelect('idea.ideaCategories', 'ideaCategory')
       .innerJoinAndSelect('ideaCategory.category', 'category')
-      .innerJoinAndSelect('idea.ideaTags', 'ideaTags')
-      .innerJoinAndSelect('ideaTags.tag', 'tag');
+      .leftJoinAndSelect('idea.ideaTags', 'ideaTags')
+      .leftJoinAndSelect('ideaTags.tag', 'tag');
 
     if (!isDeleted) {
       query.where('idea.is_deleted = :is_deleted', {
