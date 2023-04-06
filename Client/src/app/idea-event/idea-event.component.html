@@ -24,25 +24,17 @@
                     <div class="row"
                         style="width: 100%; margin-left: auto; margin-right: auto; justify-content: space-between;">
     
-                        <div style="position: static; width: 70%; margin-left: 10%;">
+                        <div style="position: static; width: 100%; text-align: center;">
                             <p
                                 style="text-align: center; margin-left: 10px; font-size: 25px; font-weight: bold; color: black;">
-                                Popular Ideas
+                                Ideas of {{name}} 
                             </p>
     
                         </div>
-                        <div class="field" style="width: 20%;">
-                            <select class="form-control"  id="department">
-                                <option>Newest</option>
-                                <option>Most View</option>
-                                <option>Most Likes</option>
-                                <option>Most Dislikes</option>
-                            </select>
-                        </div>
     
                         
                         
-                        <div class="row" style="margin-top: 20px; width: 100%; margin-left: auto; margin-right: auto;">
+                        <div class="row" style="width: 100%; margin-left: auto; margin-right: auto;">
                             <div class="col-md-12">
                                 <p-table [value]="listIdea" [tableStyle]="{ 'width': '100%' }" [rowHover]="true"
                                     [scrollable]="true"
@@ -72,7 +64,7 @@
                                                                 (click)="IdeaDetail(idea.idea_id)">{{idea.title}}</button>
                                                             <div class="row"
                                                                 style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto;">
-                                                                <p>Event: {{idea.nameEvent}}</p>
+                                                                <p>Event: {{name}}</p>
                                                                 
                                                                 <p>{{idea.views}} Views</p>
                                                             </div>
@@ -82,11 +74,11 @@
                                                                 <p>{{idea.views}} Likes</p>
                                                                 <p>{{idea.views}} Dislikes</p>
                                                             </div>
-                                                            <div class="row" style="margin-left: auto; margin-right: auto;">
+                                                            <!-- <div class="row" style="margin-left: auto; margin-right: auto;">
                                                                 <p style="display: none;">{{idea.nameTag}}</p>
-                                                            </div>
+                                                            </div> -->
                                                             <div class="row">
-                                                                <p-chip label="#{{lc.name}}" *ngFor="let lc of idea.tag; index as i;"></p-chip>
+                                                                <p-chip label="#{{lc.tag.name}}" *ngFor="let lc of idea.ideaTags; index as i;"></p-chip>
     
                                                             </div>
                                                         </div>

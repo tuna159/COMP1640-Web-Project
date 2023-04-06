@@ -5,6 +5,7 @@ import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuthenticationService } from '../auth/services/authentication.service';
 import { PostComponent } from './post/post.component';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -19,7 +20,14 @@ export class HomeComponent implements OnInit{
   search_value: any;
   listDepartment = []
   selectedNode: any;
+  sortEvent: boolean;
   nodes1: any[];
+  formGroup: FormGroup<{
+    newest: FormControl<string>;
+    mostLike: FormControl<string>;
+    mostDislike: FormControl<string>;
+    mostView: FormControl<string>;
+  }>;
   apiUrl = 'http://localhost:3009/api/idea';
   constructor(private dialogService: DialogService, private http: HttpClient, 
     private authService: AuthenticationService, private router: Router, private messageService: MessageService) { 
@@ -57,7 +65,12 @@ export class HomeComponent implements OnInit{
 
   
   ngOnInit(): void {
-    
+    this.formGroup = new FormGroup({
+      newest: new FormControl(null, [Validators.required]),
+      mostLike: new FormControl(null, [Validators.required]),
+      mostDislike: new FormControl(null, [Validators.required]),
+      mostView: new FormControl(null, [Validators.required]),
+    });
   }
 
   IdeaDetail(IdIdeal) : void{

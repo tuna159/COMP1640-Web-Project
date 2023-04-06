@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { MegaMenuItem } from 'primeng/api';
@@ -21,9 +22,16 @@ export class MenuComponent {
   role: number;
   items: MenuItem[];
   itemsAdmin: MenuItem[];
+  downloadEvent: boolean;
   itemsQA: MenuItem[];
   itemsQAM: MenuItem[];
   categories!: MegaMenuItem[];
+  formGroup: FormGroup<{
+    name: FormControl<string>;
+    department: FormControl<string>;
+    startDate: FormControl<Date>;
+    endDate: FormControl<Date>;
+  }>;
   constructor(private authService: AuthenticationService, private http : HttpClient,
     public router: Router, ){
       this.role = authService.getRole();
@@ -41,6 +49,14 @@ export class MenuComponent {
   }
   
   ngOnInit() {
+    this.formGroup = new FormGroup({
+      name: new FormControl(null, [Validators.required]),
+      department: new FormControl(null, [Validators.required]),
+      startDate: new FormControl(null, [Validators.required]),
+      endDate: new FormControl(null, [Validators.required]),
+    });
+    
+
     this.items = [
       { label: 'View profile', icon: 'pi pi-users', routerLink: '/view/profile' },
       { label: 'Settings', icon: 'pi pi-fw pi-download' },
@@ -105,5 +121,9 @@ export class MenuComponent {
   logout() {
     this.authService.logout();
     this.router.navigateByUrl('/login')
+  }
+
+  showDialogDownload() {
+    this.downloadEvent = true;
   }
 }
