@@ -5,7 +5,7 @@ import { ConfirmationService } from 'primeng/api';
 import { MessageService } from 'primeng/api';
 import { AuthenticationService } from '../auth/services/authentication.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { PostComponent } from '../home/post/post.component';
+import { PostComponent } from '../idea-event/post/post.component';
 import { AddCategoryComponent } from './add-category/add-category/add-category.component';
 
 interface Category {

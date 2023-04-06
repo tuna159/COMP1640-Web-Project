@@ -14,17 +14,18 @@ import { Router } from '@angular/router';
   templateUrl: './charts.component.html',
   styleUrls: ['./charts.component.css']
 })
-export class ChartsComponent {
+export class ChartsComponent implements OnInit{
 
   apiUrlStaffDepartment: string = "http://localhost:3009/api/event/";
   xStaffDepartment: any;
   dataStaffDepartment: any;
   
-  events = [];
+  events: any;
   eventValue: any;
 
-  staffs = [];
-  staffValue: any;
+  ListDepartment = [];
+  departmentStaffValue: any;
+  departmentReactValue: any;
 
   departments = [];
   departmentValue: any;
@@ -45,30 +46,44 @@ export class ChartsComponent {
     lineCharIdeaDepartment = null;
     optionsLineCharIdeaDepartment: Options = null;
 
-    
+    // chart Thống kê comment of department by event
+    barChartCommentDepartment = null;
+    optionsBarChartCommentDepartment: Options = null;
 
   constructor(
     private chartsService: ChartServeice,
     private messageService: MessageService,private http: HttpClient, 
     private authService: AuthenticationService, private router: Router) {
-    this.getEvent()
-    
+    this.getListEvent();
+    this.getListDepartment();
 
-    // pie chart Thống kê staff contribute
-    this.optionsPieChartStaffContribute = chartsService.createPieChartStaffContributeDepartment(this.xStaffDepartment, this.dataStaffDepartment);
-    this.pieChartStaffContribute = new Chart(this.optionsPieChartStaffContribute);
-
-    // pie chart Thống kê react department
-    this.optionsPieChartReactDepartment = chartsService.createPieChartReactDepartment(this.xStaffDepartment, this.dataStaffDepartment);
-    this.pieChartReactDepartment = new Chart(this.optionsPieChartReactDepartment);
 
     // line chart Thống kê react department
     this.optionsLineCharIdeaDepartment = chartsService.createLineCharIdeaDepartment(3, this.dataStaffDepartment);
     this.lineCharIdeaDepartment = new Chart(this.optionsLineCharIdeaDepartment);
   }
-
-  getEvent() {
-    this.http.get<any>(this.apiUrlStaffDepartment + 7 + '/dashboard/staff-contribution', {
+  
+  ngOnInit(): void {
+    
+  }
+  getListDepartment() {
+    this.http.get<any>("http://localhost:3009/api/department", {
+      headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()
+      }
+    }).subscribe((result: any) => {
+      if (result.status_code != 200) {
+        this.showMessage('error', result.error_message);
+        return;
+      }
+      this.ListDepartment = result.data;
+      this.getStaffDepartment(this.ListDepartment[0].department_id)
+      this.getReactDepartment(this.ListDepartment[0].department_id)
+      this.getCommentDepartment(this.ListDepartment[0].department_id)
+    })
+  }
+  getCommentDepartment(id: any) {
+    this.http.get<any>("http://localhost:3009/api/event/" + id + '/dashboard/staff-contribution', {
       headers: {
         Authorization: 'Bearer ' + this.authService.getToken()
       }
@@ -78,14 +93,96 @@ export class ChartsComponent {
         return;
       }
       // chart Thống kê staff of department by event
-          this.optionsBarChartStaffDepartment = this.chartsService.createBarChartStaffDepartment(result.data.map(x =>x.total_staff), result.data.map(x =>x.staff_contributed));
+          this.optionsBarChartStaffDepartment = this.chartsService.createBarChartStaffDepartment(result.data.map(x =>x.department_name),result.data.map(x =>x.total_staff), result.data.map(x =>x.staff_contributed));
           this.barChartStaffDepartment = new Chart(this.optionsBarChartStaffDepartment);
       })
   }
 
-  changeEvent() {
-
+  getStaffDepartment(id: any) {
+    this.http.get<any>("http://localhost:3009/api/department/" + id + '/dashboard/staff-contribution', {
+      headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()
+      }
+    }).subscribe((result: any) => {
+      if (result.status_code != 200) {
+        this.showMessage('error', result.error_message);
+        return;
+      }
+        let StaffContribute = result.data.staff_contributed
+        let totalStaff = result.data.total_staff
+        // pie chart Thống kê staff contribute
+        this.optionsPieChartStaffContribute = this.chartsService.createPieChartStaffContributeDepartment((totalStaff - StaffContribute)/totalStaff * 1000, StaffContribute/totalStaff *100);
+        this.pieChartStaffContribute = new Chart(this.optionsPieChartStaffContribute);
+      })
   }
+
+  getListEvent() {
+    this.http.get<any>("http://localhost:3009/api/event", {
+      headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()
+      }
+    }).subscribe((result: any) => {
+      if (result.status_code != 200) {
+        this.showMessage('error', result.error_message);
+        return;
+      }
+      this.events = result.data;
+      this.getEvent(this.events[0].event_id)
+    })
+  }
+
+  getEvent(id: number) {
+    this.http.get<any>("http://localhost:3009/api/event/" + id + '/dashboard/staff-contribution', {
+      headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()
+      }
+    }).subscribe((result: any) => {
+      if (result.status_code != 200) {
+        this.showMessage('error', result.error_message);
+        return;
+      }
+      // chart Thống kê staff of department by event
+          this.optionsBarChartStaffDepartment = this.chartsService.createBarChartStaffDepartment(result.data.map(x =>x.department_name),result.data.map(x =>x.total_staff), result.data.map(x =>x.staff_contributed));
+          this.barChartStaffDepartment = new Chart(this.optionsBarChartStaffDepartment);
+      })
+  }
+
+  getReactDepartment(id: any) {
+    this.http.get<any>("http://localhost:3009/api/department/" + id + '/dashboard/reaction', {
+      headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()
+      }
+    }).subscribe((result: any) => {
+      if (result.status_code != 200) {
+        this.showMessage('error', result.error_message);
+        return;
+      }
+      // pie chart Thống kê react department
+      this.optionsPieChartReactDepartment = this.chartsService.createPieChartReactDepartment(result.data.total_like/(result.data.total_like + result.data.total_dislike),
+      result.data.total_dislike/(result.data.total_like + result.data.total_dislike));
+      this.pieChartReactDepartment = new Chart(this.optionsPieChartReactDepartment);
+    })
+  }
+
+
+
+  //Change Event (Dropdown)
+  changeEvent() {
+    this.getEvent(this.eventValue.event_id)
+  }
+
+  changeDepartmentStaff() {
+    if(this.departmentStaffValue != null) {
+      this.getStaffDepartment(this.departmentStaffValue.department_id)
+    }
+  }
+
+  changeDepartmentReact() {
+    if(this.departmentReactValue != null) {
+      this.getReactDepartment(this.departmentReactValue.department_id)
+    }
+  }
+
 
   showMessage(severity: string, detail: string) {
     this.messageService.add({ severity: severity, summary: 'Thông báo:', detail: detail });

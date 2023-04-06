@@ -57,7 +57,8 @@ export class ProfileComponent implements OnInit {
 
   formEditAccount: FormGroup<({
     password: FormControl<string>;
-    confirmPass: FormControl<string>;
+    oldPassword: FormControl<string>;
+    confirmPassword: FormControl<string>;
   })>;
 
   constructor(private messageService: MessageService, private confirmationService: ConfirmationService, 
@@ -74,7 +75,8 @@ export class ProfileComponent implements OnInit {
     });
     this.formEditAccount = new FormGroup({
       password: new FormControl(null, [Validators.required]),
-      confirmPass: new FormControl(null, [Validators.required]), 
+      oldPassword: new FormControl(null, [Validators.required]), 
+      confirmPassword: new FormControl(null, [Validators.required])
     })
   }
 
@@ -143,7 +145,10 @@ export class ProfileComponent implements OnInit {
   
 
   SaveEditAccount() {
-
+    if(this.formEditAccount.controls.password != this.formEditAccount.controls.confirmPassword) {
+      alert("Please re-enter your password. Password and confirm password are not the same")
+    }
+    
   }
 
   openEditYourInformation() {
