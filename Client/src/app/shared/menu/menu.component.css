@@ -41,3 +41,7 @@ body {
     overflow-y: auto;
     /* Scrollable contents if viewport is shorter than content. */
 }
+
+:host ::ng-deep .button:focus {
+    border: none !important;
+}

@@ -55,7 +55,11 @@
 											<div class="row"
 												style="margin-top: 2rem; margin-bottom: 1rem; background-color: #F2F2F2; padding: 10px; border-radius: 10px; width: 100%; margin-left: auto; margin-right:auto;">
 												<div class="personal-info col-3" style="position: static;">
-													<p-avatar *ngIf="idea.is_anonymous == 0" image="{{idea.url_avatar}}"
+													<p-avatar *ngIf="idea.is_anonymous == 0 && idea.url_avatar"
+														image="{{idea.url_avatar}}" styleclass="mr-2" size="xlarge"
+														shape="circle"></p-avatar>
+													<p-avatar *ngIf="idea.is_anonymous == 0 && idea.url_avatar == null"
+														image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg"
 														styleclass="mr-2" size="xlarge" shape="circle"></p-avatar>
 													<p></p>
 
@@ -69,11 +73,11 @@
 												</div>
 												<div class="col-9" style="position: static;">
 													<button pbutton pripple type="button" label=""
-														class="p-button-text p-button-plain border-0 text-left w-100 p-0 h5"
-														style="color: black; font-size: 19px;"
+														class="p-button-text p-button-plain border-0 text-left w-100 p-0"
+														style="color: black; font-size: 19px; font-weight: 700;"
 														(click)="IdeaDetail(idea.idea_id)">{{idea.title}}</button>
 													<div class="row"
-														style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto;">
+														style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; margin-top: 1%;">
 														<p>Event: {{idea.nameEvent}}</p>
 
 														<p>{{idea.views}} Views</p>
@@ -112,24 +116,24 @@
 </div>
 
 <p-dialog header="Sort Ideas Options" [(visible)]="sortEvent" [modal]="true" [responsive]="true" [closable]="false"
-	[style]="{width: '40%'}" [minY]="70" [baseZIndex]="10000">
+	[style]="{width: '30%'}" [minY]="70" [baseZIndex]="10000">
 
 	<form [formGroup]="formGroup">
-		<div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: 50%;">
+		<div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: 80%;">
 			<div class="form-check form-check-inline w-50">
-				<input class="form-check-input h-10" type="checkbox"  formControlName="newest">
+				<input class="form-check-input h-10" type="checkbox" formControlName="newest">
 				<label class="form-check-label h6" for="inlineCheckbox1">Newest</label>
 			</div>
 			<div class="form-check form-check-inline w-50">
-				<input class="form-check-input" type="checkbox"  formControlName="mostLike">
+				<input class="form-check-input" type="checkbox" formControlName="mostLike">
 				<label class="form-check-label h6" for="inlineCheckbox2">Most Likes</label>
 			</div>
 		</div>
 
 		<br>
-		<div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: 50%;">
+		<div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: 80%;">
 			<div class="form-check form-check-inline w-50">
-				<input class="form-check-input" type="checkbox"  formControlName="mostDislike">
+				<input class="form-check-input" type="checkbox" formControlName="mostDislike">
 				<label class="form-check-label h6" for="inlineCheckbox2">Most DisLikes</label>
 			</div>
 			<div class="form-check form-check-inline w-50">
