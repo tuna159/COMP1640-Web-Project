@@ -494,7 +494,7 @@ export class EventService {
       .leftJoinAndSelect('event.ideas', 'ideas')
       .leftJoinAndSelect('ideas.user', 'user')
       .leftJoinAndSelect('user.department', 'deparment')
-      .innerJoinAndSelect('ideas.ideaTags', 'ideaTags')
+      .leftJoinAndSelect('ideas.ideaTags', 'ideaTags')
       .leftJoinAndSelect('ideaTags.tag', 'tag')
       .innerJoinAndSelect('user.userDetail', 'userDetail')
       .where('event.event_id = :event_id', {
