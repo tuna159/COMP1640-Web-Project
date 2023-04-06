@@ -26,7 +26,7 @@ export class CreateAccountComponent {
     { name: 'Female'},
   ];
   listRole = [ 
-    {name: 'Staff', Id: '1'},
+    {name: 'Staff', Id: '4'},
     {name: 'Quality Assurance Manager', Id: '2'},
     {name: 'Quality Assurance Coordinator', Id: '3'}
   ]
@@ -122,9 +122,14 @@ export class CreateAccountComponent {
       });
       this.closeDialog()
     } else {
-      
-      this.http.put("http://localhost:3009/api/user/updateAccount/" + this.data.user_id, {      
-        "role_id" : this.formGroup.controls.role.value['Id'],
+      let data = {
+        "role_id" : Number(this.formGroup.controls.role.value['Id']),
+        "department_id" : this.formGroup.controls.department.value['department_id'],
+        "is_deleted": this.formGroup.controls.status.value['name'] == "Using" ? 0:1
+      }
+      console.log(data)
+      this.http.put("http://localhost:3009/api/user/" + this.data.user_id, {      
+        "role_id" : Number(this.formGroup.controls.role.value['Id']),
         "department_id" : this.formGroup.controls.department.value['department_id'],
         "is_deleted": this.formGroup.controls.status.value['name'] == "Using" ? 0:1
       }, {

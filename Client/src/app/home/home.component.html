@@ -114,28 +114,33 @@
 <p-dialog header="Sort Ideas Options" [(visible)]="sortEvent" [modal]="true" [responsive]="true" [closable]="false"
 	[style]="{width: '40%'}" [minY]="70" [baseZIndex]="10000">
 
-	<form [formGroup]="formGroup">
-		<div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: 50%;">
+	<form [formGroup]="formGroup" (ngSubmit)="SaveSort()">
+		<div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: 100%;">
 			<div class="form-check form-check-inline w-50">
 				<input class="form-check-input h-10" type="checkbox"  formControlName="newest">
 				<label class="form-check-label h6" for="inlineCheckbox1">Newest</label>
 			</div>
 			<div class="form-check form-check-inline w-50">
-				<input class="form-check-input" type="checkbox"  formControlName="mostLike">
-				<label class="form-check-label h6" for="inlineCheckbox2">Most Likes</label>
-			</div>
-		</div>
-
-		<br>
-		<div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: 50%;">
-			<div class="form-check form-check-inline w-50">
-				<input class="form-check-input" type="checkbox"  formControlName="mostDislike">
-				<label class="form-check-label h6" for="inlineCheckbox2">Most DisLikes</label>
+				<input class="form-check-input" type="checkbox"  formControlName="mostPopular">
+				<label class="form-check-label h6" for="inlineCheckbox2">Most popular</label>
 			</div>
 			<div class="form-check form-check-inline w-50">
 				<input class="form-check-input" type="checkbox" formControlName="mostView">
 				<label class="form-check-label h6" for="inlineCheckbox2">Most Views</label>
 			</div>
+		</div>
+
+		<br>
+		<div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: 100%;">
+			<div class="form-check form-check-inline w-50">
+				<label class="form-check-label h6" for="inlineCheckbox2">Start Date: </label>
+				<p-calendar formControlName="startDate" inputId="basic" [required] appendTo="body"></p-calendar>
+			</div>
+			<div class="form-check form-check-inline w-50">
+				<label class="form-check-label h6" for="inlineCheckbox2">End Date: </label>
+				<p-calendar formControlName="endDate" inputId="basic" [required] appendTo="body"></p-calendar>
+			</div>
+			
 		</div>
 
 

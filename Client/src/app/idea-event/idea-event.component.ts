@@ -4,7 +4,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuthenticationService } from '../auth/services/authentication.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { PostComponent } from '../home/post/post.component';
+import { PostComponent } from './post/post.component';
 
 @Component({
   selector: 'app-idea-event',
@@ -65,9 +65,15 @@ export class IdeaEventComponent implements OnInit {
             width: '60%',
             contentStyle: {"max-height": "800px", "overflow": "auto"},
             baseZIndex: 10000,
+            data: {
+              Id: this.Id
+            }
+      });
+      this.ref.onClose.subscribe((result) => {
+        if (result) {
+            this.showMessage("Add success: ", result);
+        }
+        this.getAllIdeaByEvent();
     });
-    this.ref.onClose.subscribe(() => {
-      this.showMessage('success', 'Post successfully')
-  });
   }
 }
