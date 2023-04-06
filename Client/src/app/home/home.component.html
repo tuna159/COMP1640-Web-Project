@@ -51,7 +51,7 @@
 						<div class="col-md-12">
 							<p-table #myTab [value]="listData" [tableStyle]="{ 'width': '100%' }" [rowHover]="true"
 								[scrollable]="true" [globalFilterFields]="['full_name','nameEvent','title', 'nameTag']"
-								[paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 50]">
+								[paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 50]">
 								<ng-template pTemplate="body" let-idea>
 									<tr>
 										<td>
@@ -108,8 +108,5 @@
 
 			</p-card>
 		</div>
-
-
-
 		<p-toast position="bottom-right"></p-toast>
 	</div>

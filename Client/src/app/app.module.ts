@@ -54,6 +54,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { CheckboxModule } from 'primeng/checkbox';
 import { CalendarModule } from 'primeng/calendar';
+import { DataViewModule, DataViewLayoutOptions } from 'primeng/dataview';
 
 import { FieldsetModule } from 'primeng/fieldset';
 import { ImageModule } from 'primeng/image'
@@ -100,7 +101,7 @@ import { AddDepartmentComponent } from './manage-department/add-department/add-d
         ManageDepartmentComponent,
         AddDepartmentComponent
     ],
-    providers: [MessageService, RoleGuardService],
+    providers: [MessageService, RoleGuardService, DataViewLayoutOptions],
     bootstrap: [AppComponent],
     imports: [
         BrowserModule,
@@ -113,6 +114,7 @@ import { AddDepartmentComponent } from './manage-department/add-department/add-d
         AccordionModule,
         PasswordModule,
         InputTextModule,
+        DataViewModule,
         MenubarModule,
         SlideMenuModule,
         ButtonModule,

@@ -44,7 +44,7 @@ export class AuthenticationService {
             localStorage.removeItem('user');
         }
         const tokenInfo = this.getDecodedAccessToken(this.userSubject.value.data.token); // decode token
-        console.log(tokenInfo.role_id); // show decoded token object in console
+       
         return tokenInfo.role_id
     }
 

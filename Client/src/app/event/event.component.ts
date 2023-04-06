@@ -36,6 +36,7 @@ export class EventComponent implements OnInit {
         }
       }).subscribe((res: any) => {
         this.listEvent = res.data;
+        console.log(this.listEvent);
       })
     } else {
       this.http.get<any>(this.apiUrl + this.Id + "/events", {
@@ -62,6 +63,8 @@ export class EventComponent implements OnInit {
   }
 
   EventDetail(IdEvent: any) {
+    console.log("id:", IdEvent);
+    
     this.router.navigateByUrl('/event/ideas', { state: { Id: IdEvent } });
   }
 

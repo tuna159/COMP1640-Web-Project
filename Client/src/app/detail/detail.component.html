@@ -64,25 +64,25 @@
                 <br>
                 <div *ngFor="let l of listCommentData; index as i;" style="padding-left: 10px; padding-right: 10px;">
                     <div class="row"
-                        style="width: 100%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px; margin-top: 10px;">
+                        style="width: 100%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px; margin-bottom: 10px;">
                         
                         <p-chip *ngIf="l.author.avatar_url != null" label="{{l.author.full_name}}" image="{{l.author.avatar_url}}" styleClass="mr-2"></p-chip>
                         <p-chip *ngIf="l.author.avatar_url == null" label="{{l.author.full_name}}" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleClass="mr-2"></p-chip>
-                        <span>{{l.content}}</span>
+                        <span style="color: black;">{{l.content}}</span>
                         <br>
-                        <span>{{l.created_date | date:'mediumDate'}}</span>
+                        <span style="color: black;">{{l.created_date | date:'mediumDate'}}</span>
                     </div>
 
                     <div class="form-group" style="width: 100%;">
-                        <button type="button" class="btn btn-tertiary text-dark float-right" id="cmtBtn" 
+                        <button type="button" class="btn btn-tertiary text-dark" id="cmtBtn" 
                             data-toggle="collapse" [attr.data-target]="'#' + l.comment_id" data-mdb-ripple-color="light"
                             style="background-color: white;">See more</button>
                     </div>
-                    <br>
+                
                     
-                    <div class="collapse float-right"  id="{{l.comment_id}}" style="width: 90%; margin-bottom: 10px;">
+                    <div class="collapse"  id="{{l.comment_id}}" style="width: 90%; ">
                         <div *ngFor="let cmtChildren of l.listCommentChildren"
-                            style="width: 100%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px; margin-top: 10px;">
+                            style="width: 100%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px; margin-bottom: 10px;">
                             
                             <p-chip *ngIf="cmtChildren.author.avatar_url != null" label="{{cmtChildren.author.full_name}}" image="{{cmtChildren.author.avatar_url}}" styleClass="mr-2"></p-chip>
                             <p-chip *ngIf="cmtChildren.author.avatar_url == null" label="{{cmtChildren.author.full_name}}" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleClass="mr-2"></p-chip>
@@ -93,7 +93,7 @@
                         </div>
 
 
-                        <div *ngIf="role == 4" style="display: flex; margin-top: 10px; width: 90%;" class="float-right">
+                        <div *ngIf="role == 4" style="display: flex;  width: 90%; margin-bottom: 10px;">
                             <span class="p-float-label" style="width: 90%; height: 100%;">
                                 <textarea [(ngModel)]="commentChildren_value" [rows]="1" pInputTextarea [autoResize]="true"></textarea>
                                 <label for="float-input">Comment something here.............</label>

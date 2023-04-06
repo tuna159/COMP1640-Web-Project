@@ -34,7 +34,6 @@ export class HomeComponent implements OnInit{
         this.listIdea = res.data;
         this.listIdea.forEach(item => {
           const tmp = item.tags.map(x => x.name);
-          console.log(item.tags)
           let bodyData = {
             full_name: item.user.full_name,
             idea_id: item.idea_id,
