@@ -493,7 +493,10 @@ export class EventService {
       .select()
       .leftJoinAndSelect('event.ideas', 'ideas')
       .leftJoinAndSelect('ideas.user', 'user')
-      .leftJoinAndSelect('user.userDetail', 'userDetail')
+      .leftJoinAndSelect('user.department', 'deparment')
+      .innerJoinAndSelect('ideas.ideaTags', 'ideaTags')
+      .leftJoinAndSelect('ideaTags.tag', 'tag')
+      .innerJoinAndSelect('user.userDetail', 'userDetail')
       .where('event.event_id = :event_id', {
         event_id: event_id,
       })
@@ -595,4 +598,7 @@ export class EventService {
     }
     return data;
   }
+}
+function innerJoinAndSelect(arg0: string, arg1: string) {
+  throw new Error('Function not implemented.');
 }

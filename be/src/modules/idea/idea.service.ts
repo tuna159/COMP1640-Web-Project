@@ -343,7 +343,8 @@ export class IdeaService {
       ideas = ideasToSort.sort((a, b) => b.point - a.point);
     }
 
-    return ideas.map((idea) => {
+    const data = [];
+    for (const idea of ideas) {
       const event = idea.event;
       const user = idea.user.userDetail;
       const userDepartment = idea.user.department;
@@ -355,11 +356,18 @@ export class IdeaService {
         };
       });
 
-      return {
+      const likes = await this.reactionService.countIdeaLikes(idea.idea_id);
+      const dislikes = await this.reactionService.countIdeaDislikes(
+        idea.idea_id,
+      );
+
+      data.push({
         idea_id: idea.idea_id,
         title: idea.title,
         content: idea.content,
         views: idea.views,
+        likes,
+        dislikes,
         is_anonymous: idea.is_anonymous,
         is_deleted: idea.is_deleted,
         created_at: idea.created_at,
@@ -389,8 +397,10 @@ export class IdeaService {
           name: category.category.name,
         },
         tags,
-      };
-    });
+      });
+    }
+
+    return data;
   }
 
   async getIdeasOfAvailableEvents(
