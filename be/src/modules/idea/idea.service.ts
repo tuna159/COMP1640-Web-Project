@@ -344,7 +344,7 @@ export class IdeaService {
     }
 
     const data = [];
-    for(const idea of ideas) {
+    for (const idea of ideas) {
       const event = idea.event;
       const user = idea.user.userDetail;
       const userDepartment = idea.user.department;
@@ -355,8 +355,8 @@ export class IdeaService {
           name: i.tag.name,
         };
       });
-      
-	    const likes = await this.reactionService.countIdeaLikes(idea.idea_id);
+
+      const likes = await this.reactionService.countIdeaLikes(idea.idea_id);
       const dislikes = await this.reactionService.countIdeaDislikes(
         idea.idea_id,
       );
@@ -396,9 +396,9 @@ export class IdeaService {
           category_id: category.category_id,
           name: category.category.name,
         },
-        tags
+        tags,
       });
-    };
+    }
 
     return data;
   }
