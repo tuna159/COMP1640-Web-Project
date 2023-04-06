@@ -5,6 +5,7 @@ import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuthenticationService } from '../auth/services/authentication.service';
 import { PostComponent } from './post/post.component';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -19,7 +20,14 @@ export class HomeComponent implements OnInit{
   search_value: any;
   listDepartment = []
   selectedNode: any;
+  sortEvent: boolean;
   nodes1: any[];
+  formGroup: FormGroup<{
+    newest: FormControl<string>;
+    mostLike: FormControl<string>;
+    mostDislike: FormControl<string>;
+    mostView: FormControl<string>;
+  }>;
   apiUrl = 'http://localhost:3009/api/idea';
   constructor(private dialogService: DialogService, private http: HttpClient, 
     private authService: AuthenticationService, private router: Router, private messageService: MessageService) { 
@@ -31,8 +39,10 @@ export class HomeComponent implements OnInit{
       this.http.get<any>(this.apiUrl, {headers: {
         Authorization: 'Bearer ' + this.authService.getToken()}
       }).subscribe((res:any)=>{
+        console.log("res.data", res.data);
+        
         this.listIdea = res.data;
-        this.listIdea.forEach(item => {
+        res.data.forEach(item => {
           const tmp = item.tags.map(x => x.name);
           let bodyData = {
             full_name: item.user.full_name,
@@ -48,20 +58,19 @@ export class HomeComponent implements OnInit{
           }
           this.listData.push(bodyData)
         })
-        console.log(this.listData)
+        console.log("data: ", this.listData);
+        
       })
   }
 
-  changeSearch() {
-    this.http.get<any>("http://localhost:3009/api/idea/search?search_key=" + this.search_value, {headers: {
-      Authorization: 'Bearer ' + this.authService.getToken()}
-    }).subscribe((res:any)=>{
-      this.listIdea = res.data;
-    })
-  }
   
   ngOnInit(): void {
-    
+    this.formGroup = new FormGroup({
+      newest: new FormControl(null, [Validators.required]),
+      mostLike: new FormControl(null, [Validators.required]),
+      mostDislike: new FormControl(null, [Validators.required]),
+      mostView: new FormControl(null, [Validators.required]),
+    });
   }
 
   IdeaDetail(IdIdeal) : void{
@@ -70,6 +79,6 @@ export class HomeComponent implements OnInit{
   
 
   showMessage(severity: string, detail: string) {
-    this.messageService.add({ severity: severity, summary: 'Thông báo:', detail: detail });
+    this.messageService.add({ severity: severity, summary: 'Notification:', detail: detail });
   }
 }
