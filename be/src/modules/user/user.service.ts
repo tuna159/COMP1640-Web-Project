@@ -129,7 +129,7 @@ export class UserService {
       return {
         user_id: user.user_id,
         email: user.email,
-        is_deleted: 0,
+        is_deleted: user.is_deleted,
         role: {
           role_id: user.role_id,
           name: user.role.name,
