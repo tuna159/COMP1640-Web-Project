@@ -34,7 +34,7 @@ export class ManageAccountComponent {
     this.cols = [
       { field: 'Number', header: 'Number', width: '5%', textAlign: 'center' },
       { field: 'email', header: 'Email', width: '25%', textAlign: 'center' },
-      { field: 'name', header: 'Full Name', width: '25%', textAlign: 'center' },
+      { field: 'department', header: 'Department', width: '25%', textAlign: 'center' },
       { field: 'role', header: 'Role', width: '10%', textAlign: 'center' },
       { field: 'status', header: 'Status', width: '25%', textAlign: 'center' },
       {
@@ -59,48 +59,44 @@ export class ManageAccountComponent {
               Stt: index + 1,
             }, item));
             this.listData.forEach(item => {
-              console.log(item)
               item.status = item.is_deleted == 0 ? "Đang Hoạt động" : "Không hoạt động"
             })
         });
+  }
+
+
+  // showDialogDelete(data) {
+  //   this.displayDeleteUser = true;
+  //   this.id = data.user_id;
+  // }
+
+  // showDialogDeleteUsers() {
+  //   this.displayDeleteUsers = true;
+  // }
+
+  // DeleteAccounts() {
+  //   if(this.listSelectedData.length){
+  //     for(let i = 0; i < this.listSelectedData.length; i++) {
+  //       this.id = this.listSelectedData[i].user_id;
+  //       this.DeleteAccount();
+  //     }
+  //     this.listSelectedData = null;
+  //   }else{
+  //     this.displayDeleteUsers = false;
+  //   }
     
-        
-  }
+  // }
 
-
-  showDialogDelete(data) {
-    this.displayDeleteUser = true;
-    this.id = data.user_id;
-  }
-
-  showDialogDeleteUsers() {
-    this.displayDeleteUsers = true;
-  }
-
-  DeleteAccounts() {
-    if(this.listSelectedData.length){
-      for(let i = 0; i < this.listSelectedData.length; i++) {
-        this.id = this.listSelectedData[i].user_id;
-        this.DeleteAccount();
-      }
-      this.listSelectedData = null;
-    }else{
-      this.displayDeleteUsers = false;
-    }
-    
-  }
-
-  async DeleteAccount() { 
-    console.log(this.id)
-    this.http.delete(this.apiUrl +'/'+ this.id, {headers: {
-      Authorization: 'Bearer ' + this.authService.getToken()}
-    }).subscribe(() => {
-      this.showMessage('success', 'Delete success')
-      this.displayDeleteUser = false;
-      this.displayDeleteUsers = false;
-      this.getAllData();
-    }); 
-  }
+  // async DeleteAccount() { 
+  //   this.http.delete(this.apiUrl +'/'+ this.id, {headers: {
+  //     Authorization: 'Bearer ' + this.authService.getToken()}
+  //   }).subscribe(() => {
+  //     this.showMessage('success', 'Delete success')
+  //     this.displayDeleteUser = false;
+  //     this.displayDeleteUsers = false;
+  //     this.getAllData();
+  //   }); 
+  // }
 
   showMessage(severity: string, detail: string) {
     this.messageService.add({ severity: severity, summary: 'Thông báo:', detail: detail });

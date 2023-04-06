@@ -15,6 +15,9 @@
                     <a class="nav-link" href="/manage/event">Manage Event</a>
                 </li>
                 <li class="nav-item active col-md-5">
+                    <a class="nav-link" href="/manage/department">Manage Department</a>
+                </li>
+                <li class="nav-item active col-md-5">
                     <a class="nav-link" href="#">Log out</a>
                 </li>
             </ul>
@@ -72,12 +75,13 @@
                                     </td>
                                     <td style="text-align: center;">{{event.Stt}}</td>
                                     <td style="text-align: center">{{event.name}}</td>
-                                    <td style="text-align: center">{{event.name}}</td>
-                                    <td style="text-align: center">{{event.name}}</td>
-                                    <td style="text-align: center">{{event.name}}</td>
-                                    <td style="text-align: center">{{event.name}}</td>
+                                    <td style="text-align: center">{{event.created_date | date:'mediumDate'}}</td>
+                                    <td style="text-align: center">{{event.first_closure_date | date:'mediumDate'}}</td>
+                                    <td style="text-align: center">{{event.final_closure_date | date:'mediumDate'}}</td>
+                                    <td style="text-align: center" *ngIf="event.department == null"></td>
+                                    <td style="text-align: center" *ngIf="event.department != null">{{event.department.name}}</td>
                                     <td style="text-align: center; ">
-                                        <span style="display: flex;">
+                                        <span style="display: flex; text-align: center; width: fit-content; margin-right: auto; margin-left: auto;">
                                             <button pButton icon="pi pi-pencil" class="ui-button-primary edit-button"
                                                 (click)="openNewEvent(event)"></button>
                                             <button pButton icon="pi pi-trash" class="ui-button-danger delete-button"

@@ -7,12 +7,12 @@
     <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
         <div class="position-sticky">
             <div class="list-group list-group-flush mx-3">
-                <p-chip label="Admin" image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+                <p-chip label="Admin" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg"
                     styleClass="ml-3"></p-chip>
 
                 <ul id="collapseExample1" class="collapse show list-group list-group-flush">
                     <li class="list-group-item py-1 mt-4 border-0">
-                        <i class="pi pi-chart-bar"></i>
+                        <i class="pi pi-home"></i>
                         <a href="/home" class="text-dark ml-2">Home</a>
                     </li>
                     <li class="list-group-item py-1 mt-4 border-0">
@@ -33,7 +33,7 @@
                     </li>
                     <li class="list-group-item py-1 mt-4 border-0">
                         <i class="pi pi-sign-out"></i>
-                        <a href="" class="text-dark ml-2">Log out</a>
+                        <button (click)="logout()" style="border: none;  background-color: white; padding-left: 5px">Log out</button>
                     </li>
                 </ul>
             </div>

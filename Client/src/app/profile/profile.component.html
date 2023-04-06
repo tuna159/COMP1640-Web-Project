@@ -2,17 +2,16 @@
     <app-header-home></app-header-home>
 </div>
 <br>
-<br>
-
 <div class="row">
 
     <app-menu></app-menu>
 
-    <div style="width: 80%; margin-left: auto; margin-right: auto; margin-top: 3.5%;">
+    <div style="width: 55%; margin-left: auto; margin-right: auto; margin-top: 4.5%;">
         <p style="font-weight: bold; font-size: 24px;">Your Info</p>
         <p-card>
             <div style="display: flex;">
-                <p-avatar size="xlarge" shape="circle" image="{{avatar_url}}"></p-avatar>
+                <p-avatar *ngIf="avatar_url != null" size="xlarge" shape="circle" image="{{avatar_url}}"></p-avatar>
+                <p-avatar *ngIf="avatar_url == null" size="xlarge" shape="circle" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg"></p-avatar>
                 <p style="width: 50%; margin-left: 5%;">Personalize your account with a photo. Your profile picture will
                     appear at the top of the app
                     ideas section.</p>
@@ -65,12 +64,12 @@
 </div>
 
 
-
 <p-dialog [(visible)]="profileDialog" [style]="{width: '500px'}" header="Your Profile Info" [modal]="true"
     styleClass="p-fluid">
     <form [formGroup]="formGroup">
         <div class="field" style="display: flex;">
-            <p-avatar [image]="url" shape="circle" size="xlarge"></p-avatar>
+            <p-avatar *ngIf="url != null" [image]="url" shape="circle" size="xlarge"></p-avatar>
+            <p-avatar *ngIf="url == null" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg"  shape="circle" size="xlarge"></p-avatar>
             <label for="files" class="btn"
                 style="height: 40px; width: 30%; margin-top: 3%; margin-left: 5%; border-width: 1px; border-color: black;">Select
                 Image</label>
@@ -87,7 +86,7 @@
                 <span
                     *ngIf="formGroup.controls.name.hasError('required') || formGroup.controls.name.hasError('blankString') "
                     class="error-message-span" style="color: #FD0B0B; font-size: small;">
-                    Vui lòng nhập Full Name
+                    Please enter your Full Name
                 </span>
             </div>
         </div>
@@ -117,7 +116,7 @@
                 <span
                     *ngIf="formGroup.controls.birthday.hasError('required') || formGroup.controls.birthday.hasError('blankString') "
                     class="error-message-span" style="color: #FD0B0B; font-size: small;">
-                    Vui lòng nhập birthday
+                    Please enter your birthday
                 </span>
             </div>
         </div>
@@ -148,7 +147,7 @@
                 <span
                     *ngIf="formEditAccount.controls.password.hasError('required') || formEditAccount.controls.password.hasError('blankString') "
                     class="error-message-span" style="color: #FD0B0B; font-size: small;">
-                    Vui lòng nhập password
+                    Please enter your password
                 </span>
             </div>
         </form>

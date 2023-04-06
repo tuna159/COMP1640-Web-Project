@@ -25,7 +25,7 @@ export class RoleGuardService implements CanActivate {
             // this.authService.getRole() !== expectedRole
             expectedRole.includes(this.authService.getRole())== false
         ) {
-            alert("bạn không đủ trình để truy cập")
+            alert("You do not have permission to access this site")
             this.router.navigate(['/home']);
             return false;
         }

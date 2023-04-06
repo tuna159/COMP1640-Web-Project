@@ -1,3 +1,4 @@
+import { map } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { Chart } from 'angular-highcharts';
 import { ChartServeice } from './serveices/ChartServeice';
@@ -15,6 +16,19 @@ import { Router } from '@angular/router';
 })
 export class ChartsComponent {
 
+  apiUrlStaffDepartment: string = "http://localhost:3009/api/event/";
+  xStaffDepartment: any;
+  dataStaffDepartment: any;
+  
+  events = [];
+  eventValue: any;
+
+  staffs = [];
+  staffValue: any;
+
+  departments = [];
+  departmentValue: any;
+
     // chart Thống kê staff of department by event
     barChartStaffDepartment = null;
     optionsBarChartStaffDepartment: Options = null;
@@ -31,26 +45,14 @@ export class ChartsComponent {
     lineCharIdeaDepartment = null;
     optionsLineCharIdeaDepartment: Options = null;
 
-    apiUrl: string = "http://localhost:3009/api/event";
-    xStaffDepartment: any;
-    dataStaffDepartment: any;
-    events = [];
-    eventValue: any;
-
-    staffs = [];
-    staffValue: any;
-
-    departments = [];
-    departmentValue: any;
+    
 
   constructor(
     private chartsService: ChartServeice,
     private messageService: MessageService,private http: HttpClient, 
     private authService: AuthenticationService, private router: Router) {
     this.getEvent()
-    // chart Thống kê staff of department by event
-    this.optionsBarChartStaffDepartment = chartsService.createBarChartStaffDepartment(this.xStaffDepartment, this.dataStaffDepartment);
-    this.barChartStaffDepartment = new Chart(this.optionsBarChartStaffDepartment);
+    
 
     // pie chart Thống kê staff contribute
     this.optionsPieChartStaffContribute = chartsService.createPieChartStaffContributeDepartment(this.xStaffDepartment, this.dataStaffDepartment);
@@ -65,8 +67,8 @@ export class ChartsComponent {
     this.lineCharIdeaDepartment = new Chart(this.optionsLineCharIdeaDepartment);
   }
 
-  async getEvent() {
-    this.http.get<any>(this.apiUrl, {
+  getEvent() {
+    this.http.get<any>(this.apiUrlStaffDepartment + 7 + '/dashboard/staff-contribution', {
       headers: {
         Authorization: 'Bearer ' + this.authService.getToken()
       }
@@ -75,14 +77,10 @@ export class ChartsComponent {
         this.showMessage('error', result.error_message);
         return;
       }
-      result.data.forEach(item => {
-        let bodyData = {
-          id: item.event_id,
-          name: item.name,
-        }
-        this.events.push(bodyData)
+      // chart Thống kê staff of department by event
+          this.optionsBarChartStaffDepartment = this.chartsService.createBarChartStaffDepartment(result.data.map(x =>x.total_staff), result.data.map(x =>x.staff_contributed));
+          this.barChartStaffDepartment = new Chart(this.optionsBarChartStaffDepartment);
       })
-    });
   }
 
   changeEvent() {

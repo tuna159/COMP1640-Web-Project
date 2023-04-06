@@ -1,8 +1,8 @@
 <form [formGroup]="formGroup" (ngSubmit)="SaveIdea()">
-    <div class="field" style="margin-top: 5%;">
+    <div class="field" style="margin-top: 5%;" *ngIf="data.user_id == null">
         <label for="name" style="width: 100%;">Email</label>
-        <br>
-        <input type="text" pInputText id="name" formControlName="email" required [autofocus] style=" width: 100%;"
+        
+        <input type="text" pInputText id="name" formControlName="email" required  style=" width: 100%;" 
             [ngClass]="(formGroup.controls.email.invalid && (formGroup.controls.email.dirty || formGroup.controls.email.touched)) ? 'ng-invalid ng-dirty' : ''">
 
         <div class="form-group mb-2" [hidden]="formGroup.controls.email.valid|| formGroup.controls.email.untouched">
@@ -13,12 +13,12 @@
             </span>
         </div>
     </div>
-    <br>
+    
 
-    <div class="field" style="margin-top: 5%;">
+    <div class="field" style="margin-top: 5%;" *ngIf="data.user_id == null">
         <label for="name" style="width: 100%;">Password</label>
-        <br>
-        <input type="text" pInputText id="name" formControlName="password" required [autofocus] style=" width: 100%;"
+        
+        <input type="text" pInputText id="name" formControlName="password" required  style=" width: 100%;"
             [ngClass]="(formGroup.controls.password.invalid && (formGroup.controls.password.dirty || formGroup.controls.password.touched)) ? 'ng-invalid ng-dirty' : ''">
     
         <div class="form-group mb-2" [hidden]="formGroup.controls.password.valid|| formGroup.controls.password.untouched">
@@ -28,12 +28,12 @@
             </span>
         </div>
     </div>
-    <br>
+    
 
-    <div class="field" style="margin-top: 5%;">
+    <div class="field" style="margin-top: 5%;" *ngIf="data.user_id == null">
         <label for="name" style="width: 100%;">Full Name</label>
-        <br>
-        <input type="text" pInputText id="name" formControlName="fullName" required [autofocus] style=" width: 100%;"
+        
+        <input type="text" pInputText id="name" formControlName="fullName" required  style=" width: 100%;"
             [ngClass]="(formGroup.controls.fullName.invalid && (formGroup.controls.fullName.dirty || formGroup.controls.fullName.touched)) ? 'ng-invalid ng-dirty' : ''">
     
         <div class="form-group mb-2" [hidden]="formGroup.controls.fullName.valid|| formGroup.controls.fullName.untouched">
@@ -44,40 +44,90 @@
             </span>
         </div>
     </div>
-    <br>
+    
 
-    <div class="field" style="margin-top: 5%;">
+    <div class="field" style="margin-top: 5%;" *ngIf="data.user_id == null">
+        <label for="nickName" style="width: 100%;">Nick Name</label>
+        
+        <input type="text" pInputText id="nickName" formControlName="nickName" required  style=" width: 100%;"
+            [ngClass]="(formGroup.controls.nickName.invalid && (formGroup.controls.nickName.dirty || formGroup.controls.nickName.touched)) ? 'ng-invalid ng-dirty' : ''">
+    
+        <div class="form-group mb-2" [hidden]="formGroup.controls.nickName.valid|| formGroup.controls.nickName.untouched">
+            <span
+                *ngIf="formGroup.controls.nickName.hasError('required') || formGroup.controls.nickName.hasError('blankString') "
+                class="error-message-span" style="color: #FD0B0B; font-size: small;">
+                Please enter nickName
+            </span>
+        </div>
+    </div>
+    
+
+    <div class="field" style="margin-top: 5%;" *ngIf="data.user_id == null">
+        <label for="birthDay" style="width: 100%;">BirthDay</label>
+        <p-calendar formControlName="birthday" inputId="basic" [required] appendTo="body" [style]= "{'width':'100%'}"
+            [ngClass]="(formGroup.controls.birthday.invalid && (formGroup.controls.birthday.dirty || formGroup.controls.birthday.touched)) ? 'ng-invalid ng-dirty' : ''"></p-calendar>
+
+        <div class="form-group mb-2"
+            [hidden]="formGroup.controls.birthday.valid|| formGroup.controls.birthday.untouched">
+            <span
+                *ngIf="formGroup.controls.birthday.hasError('required') || formGroup.controls.birthday.hasError('blankString') "
+                class="error-message-span" style="color: #FD0B0B; font-size: small;">
+                Please enter your birthday
+            </span>
+        </div>
+    </div>
+    
+
+    <div class="field" style="margin-top: 5%;" *ngIf="data.user_id == null">
+        <label for="name" style="width: 100%;">Gender</label>
+        
+        <p-dropdown [options]="genders" formControlName="gender" optionLabel="name" appendTo="body" [style] = "{'width' : '100%'}"
+                    [filter]="true" ></p-dropdown>
+    </div>
+    
+
+    <div class="field" style="margin-top: 5%;" >
         <label for="name" style="width: 100%;">Role</label>
-        <br>
-        <!-- <input type="text" pInputText id="name" formControlName="role" required [autofocus] style=" width: 100%;"
-            [ngClass]="(formGroup.controls.role.invalid && (formGroup.controls.role.dirty || formGroup.controls.role.touched)) ? 'ng-invalid ng-dirty' : ''"> -->
+        
+        <!-- 
         <select class="form-control" formControlName="role" id="Role">
             <option>Staff</option>
             <option>Quality Assurance Manager</option>
             <option>Quality Assurance Coordinator</option>
         </select>
+        -->
+        <p-dropdown [options]="listRole" formControlName="role" optionLabel="name" appendTo="body" [style] = "{'width' : '100%'}"
+                    [filter]="true" ></p-dropdown>
     </div>
-    <br>
+    
 
     <div class="field" style="margin-top: 5%;">
         <label for="name" style="width: 100%;">Department</label>
-        <br>
+        
+        <!--
         <select class="form-control" formControlName="department" id="department">
             <option>Department</option>
         </select>
+        -->
+        <p-dropdown [options]="listDepartments" formControlName="department" optionLabel="name" appendTo="body" [style] = "{'width' : '100%'}"
+                    [filter]="true" ></p-dropdown>
     </div>
-    <br>
+    
 
 
-    <div class="field" style="margin-top: 5%;">
+    <div class="field" style="margin-top: 5%;" *ngIf="data.user_id != null">
         <label for="name" style="width: 100%;">Status</label>
-        <br>
+        
+        <p-dropdown [options]="listStatus" formControlName="status" optionLabel="name" appendTo="body" [style] = "{'width' : '100%'}"
+                    [filter]="true" ></p-dropdown>
+        <!--
         <select class="form-control" formControlName="status" id="status">
             <option>Using</option>
             <option>Not Using</option>
         </select>
+        -->
     </div>
-    <br>
+    
 
     <div>
         <button pButton type="Submit" label="Save"></button>

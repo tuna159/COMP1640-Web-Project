@@ -46,7 +46,7 @@ const routes: Routes = [
         path: 'manage/category',
         canActivate: [RoleGuardService],
         data: {
-            expectedRole: [1],
+            expectedRole: [2],
         },
         // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: ManageCategoryComponent
@@ -81,13 +81,19 @@ const routes: Routes = [
     },
     {
         path: 'manage/event',
-        canActivate: [AuthGuard],
+        canActivate: [RoleGuardService],
+        data: {
+            expectedRole: [1],
+        },
         // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: ManageEventComponent
     },
     {
         path: 'manage/department',
-        canActivate: [AuthGuard],
+        canActivate: [RoleGuardService],
+        data: {
+            expectedRole: [1],
+        },
         // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: ManageDepartmentComponent
     },
@@ -99,7 +105,10 @@ const routes: Routes = [
     },
     {
         path: 'chart',
-        canActivate: [AuthGuard],
+        canActivate: [RoleGuardService],
+        data: {
+            expectedRole: [1],
+        },
         // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: ChartComponent
     },

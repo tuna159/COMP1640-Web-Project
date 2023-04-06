@@ -25,6 +25,7 @@ import { IUserData } from '@core/interface/default.interface';
 import sendMailNodemailer from '@helper/nodemailer';
 import { EUserRole } from 'enum/default.enum';
 import { DepartmentService } from '@modules/department/department.service';
+import { Department } from '@core/database/mysql/entity/department.entity';
 
 @Injectable()
 export class AuthService {
@@ -129,9 +130,46 @@ export class AuthService {
         }
       }
 
-      await this.departmentSerivce.addManagerDeparment(newUser.user_id, {
-        manager_id: newUser.user_id,
-      });
+
+      
+      const department = await this.departmentSerivce.departmentExists(
+        body.department_id,
+      );
+      if (!department) {
+        throw new HttpException(
+          ErrorMessage.DEPARTMENT_NOT_EXISTS,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      console.log(newUser.department_id);
+
+      const checkDeparment =
+        await this.departmentSerivce.checkManagerDepartment(body.department_id);
+
+      console.log(body.department_id, 11111111111);
+
+      if (!checkDeparment) {
+        throw new HttpException(
+          ErrorMessage.DEPARTMENT_PERMISSION,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+
+      if (
+        body.role_id != EUserRole.ADMIN &&
+        body.role_id != EUserRole.QA_MANAGER
+      ) {
+        const deparmentParam = new Department();
+        deparmentParam.manager_id = newUser.user_id;
+
+        await this.departmentSerivce.addManagerDeparment(
+          body.department_id,
+          deparmentParam,
+          manager,
+        );
+      }
 
       const userDetailParams = new UserDetail();
       userDetailParams.user_id = newUser.user_id;

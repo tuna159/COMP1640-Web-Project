@@ -23,7 +23,9 @@ export class DetailComponent {
   totalDislike: any;
   listCommentData = [];
   title: string;
+  avatar: string;
   content: string;
+  anonymous: number
   date: any
   user: any
   listReact: any =[];
@@ -98,11 +100,15 @@ export class DetailComponent {
       this.http.get<any>(this.apiUrl + this.Id, {headers: {
         Authorization: 'Bearer ' + this.authService.getToken()}
       }).subscribe((result: any) => {
+        console.log("result", result.data);
+        
               this.title = result.data.title;
               this.views = result.data.views;
-              this.user = result.data.user.email;
+              this.user = result.data.user.nick_name;
               this.content = result.data.content;
               this.date = result.data.date;
+              this.avatar = result.data.avatar_url;
+              this.anonymous = result.data.is_anonymous;
           });
     }
   }

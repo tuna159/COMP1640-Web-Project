@@ -20,7 +20,7 @@ import {
   CreateDepartmentDto,
   UpdateDepartmentDto,
 } from 'global/dto/department.dto';
-import { DeepPartial, EntityManager, IsNull, Repository } from 'typeorm';
+import { DeepPartial, EntityManager, IsNull, Not, Repository } from 'typeorm';
 
 @Injectable()
 export class DepartmentService {
@@ -211,6 +211,21 @@ export class DepartmentService {
     return departmentRepository.save(department);
   }
 
+  async checkManagerDepartment(
+    department_id: number,
+    entityManager?: EntityManager,
+  ) {
+    const departmentRepository = entityManager
+      ? entityManager.getRepository<Department>('department')
+      : this.departmentRepository;
+    const departments = await departmentRepository.find({
+      department_id: department_id,
+      manager_id: Not(IsNull()),
+    });
+
+    return departments;
+  }
+
   async updateDepartment(
     userData: IUserData,
     department_id: number,
@@ -273,14 +288,14 @@ export class DepartmentService {
   }
 
   async addManagerDeparment(
-    user_id: string,
+    department_id: number,
     body: DeepPartial<Department>,
     entityManager?: EntityManager,
   ) {
     const departmentRepository = entityManager
       ? entityManager.getRepository<Department>('department')
       : this.departmentRepository;
-    return await departmentRepository.update(user_id, body);
+    return await departmentRepository.update(department_id, body);
   }
 
   async getAvailableDepartment(user_id: string, entityManager?: EntityManager) {

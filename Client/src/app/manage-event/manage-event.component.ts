@@ -18,6 +18,7 @@ export class ManageEventComponent {
   displayDeleteEvent: boolean;
   displayDeleteEvents: boolean;
   id: number;
+  listDepartments = [];
   ref: DynamicDialogRef;
   name: string;
   apiUrl: string = "http://localhost:3009/api/event";
@@ -32,7 +33,7 @@ export class ManageEventComponent {
     this.cols = [
       { field: 'Number', header: 'Number', width: '5%', textAlign: 'center' },
       { field: 'name', header: 'Name', width: '15%', textAlign: 'center' },
-      { field: 'Start Date', header: 'Start Date', width: '15%', textAlign: 'center' },
+      { field: 'Create on', header: 'Create on', width: '15%', textAlign: 'center' },
       { field: 'Closure Date', header: 'Closure Date', width: '10%', textAlign: 'center' },
       { field: 'Final Date', header: 'Final Date', width: '10%', textAlign: 'center' },
       { field: 'Department', header: 'Department', width: '10%', textAlign: 'center' },
@@ -46,6 +47,7 @@ export class ManageEventComponent {
   }
 
   async getAllData() {
+    let listDepartment = []
     this.http.get<any>(this.apiUrl, {
       headers: {
         Authorization: 'Bearer ' + this.authService.getToken()
@@ -55,17 +57,34 @@ export class ManageEventComponent {
         this.showMessage('error', result.error_message);
         return;
       }
-      this.listData = result.data.map((item, index) => Object.assign({
-        Stt: index + 1,
-      }, item));
+      this.http.get<any>("http://localhost:3009/api/department", {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken()
+        }
+      }).subscribe((res: any) => {
+        listDepartment = res.data;
+        this.listData = result.data.map((item, index) => Object.assign({
+          Stt: index + 1,
+          department: listDepartment.find(x => x.department_id == item.department_id),
+        }, item));
+      })
+
     });
 
-
+  }
+  getAllDepartment() {
+    this.http.get<any>("http://localhost:3009/api/department", {
+      headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()
+      }
+    }).subscribe((res: any) => {
+      this.listDepartments = res.data;
+    })
   }
 
   showDialogDelete(data) {
     this.displayDeleteEvent = true;
-    this.id = data.category_id;
+    this.id = data.event_id;
   }
 
   showDialogDeletes() {
@@ -75,7 +94,7 @@ export class ManageEventComponent {
   deleteEvents() {
     if (this.listSelectedData.length) {
       for (let i = 0; i < this.listSelectedData.length; i++) {
-        this.id = this.listSelectedData[i].category_id;
+        this.id = this.listSelectedData[i].event_id;
         this.deleteEvent();
       }
       this.listSelectedData = null;

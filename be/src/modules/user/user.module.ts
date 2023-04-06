@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/core/database/mysql/entity/user.entity';
 import { AuthModule } from 'src/core/global/auth/auth.module';
 import { UserDetailModule } from '@modules/user-detail/user-detail.module';
+import { DepartmentModule } from '@modules/department/department.module';
 
 @Module({
   controllers: [UserController],
@@ -14,6 +15,7 @@ import { UserDetailModule } from '@modules/user-detail/user-detail.module';
     forwardRef(() => AuthModule),
     forwardRef(() => AuthModule),
     UserDetailModule,
+    forwardRef(() => DepartmentModule),
   ],
   exports: [TypeOrmModule, UserService],
 })

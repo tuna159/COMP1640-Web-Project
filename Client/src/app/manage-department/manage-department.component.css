@@ -1,4 +1,4 @@
-.ds-event {
+.ds-department {
     background: #fff;
     border-radius: 8px;
     border: 1px solid #ccc;
@@ -9,7 +9,7 @@
 
 /* .header-left .header-left {} */
 
-.ds-event .header-right {
+.ds-department .header-right {
     text-align: right;
 }
 
@@ -17,7 +17,7 @@
     margin: 10px 5px 0 5px;
 }
 
-.ds-event .header-content {
+.ds-department .header-content {
     padding: 10px 10px 10px 10px;
     font-style: normal;
     font-weight: 500;
@@ -28,20 +28,20 @@
     margin-bottom: 10px;
 }
 
-.ds-event .header-content .header-title {
+.ds-department .header-content .header-title {
     color: #f77643;
 }
 
-.ds-event .header-center {
+.ds-department .header-center {
     display: flex;
     align-items: center;
 }
 
-.ds-event .header-title {
+.ds-department .header-title {
     margin-bottom: 0;
     text-transform: uppercase;
 }
 
-.ds-event .body-page {
+.ds-department .body-page {
     padding-bottom: 10px;
 }

@@ -12,7 +12,10 @@
                     <a class="nav-link" href="/manage/account">Manage Account<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item active col-md-5">
-                    <a class="nav-link" href="/manage/event">Manage Event</a>
+                    <a class="nav-link" href="/manage/Department">Manage Department</a>
+                </li>
+                <li class="nav-item active col-md-5">
+                    <a class="nav-link" href="/manage/department">Manage Department</a>
                 </li>
                 <li class="nav-item active col-md-5">
                     <a class="nav-link" href="#">Log out</a>
@@ -22,7 +25,7 @@
     </nav>
 
     <div style="width: 100%; display: flex; margin-top: 1%;">
-        <div class="ds-event">
+        <div class="ds-department">
             <div class="col-md-12 body-page">
                 <div class="row">
                     <div class="col-md-6"></div>
@@ -37,7 +40,7 @@
                                             placeholder="Search..."
                                             style="margin-left: 7.5px; height: 30px !important;" />
                                     </span>
-                                    <button pButton type="button" (click)="openNewEvent(null)" label="Add"
+                                    <button pButton type="button" (click)="openNewDepartment(null)" label="Add"
                                         icon="pi pi-plus"
                                         style="background-color:#f97c39; width: 120px !important; height: 30px !important; margin-left: 5px; border: 0px;"></button>
                                     <button pButton type="button" label="Delete" icon="pi pi-trash"
@@ -51,7 +54,7 @@
                 <div class="row" style="margin-top: 20px">
                     <div class="col-md-12">
                         <p-table #myTab [columns]="cols" [value]="listData" [tableStyle]="{ 'min-width': '50rem' }"
-                            [(selection)]="listSelectedData" dataKey="event_id" [rowHover]="true" [scrollable]="true"
+                            [(selection)]="listSelectedData" dataKey="department_id" [rowHover]="true" [scrollable]="true"
                             [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
                             [globalFilterFields]="['Stt','name',]">
                             <ng-template pTemplate="header" let-columns>
@@ -65,23 +68,20 @@
                                     </th>
                                 </tr>
                             </ng-template>
-                            <ng-template pTemplate="body" let-event>
+                            <ng-template pTemplate="body" let-department>
                                 <tr>
                                     <td style="width: 2rem" class="text-center">
-                                        <p-tableCheckbox [value]="event"></p-tableCheckbox>
+                                        <p-tableCheckbox [value]="department"></p-tableCheckbox>
                                     </td>
-                                    <td style="text-align: center;">{{event.Stt}}</td>
-                                    <td style="text-align: center">{{event.name}}</td>
-                                    <td style="text-align: center">{{event.name}}</td>
-                                    <td style="text-align: center">{{event.name}}</td>
-                                    <td style="text-align: center">{{event.name}}</td>
-                                    <td style="text-align: center">{{event.name}}</td>
+                                    <td style="text-align: center;">{{department.Stt}}</td>
+                                    <td style="text-align: center">{{department.name}}</td>
+                                    <td style="text-align: center">{{department.manager.nick_name}}</td>
                                     <td style="text-align: center; ">
-                                        <span style="display: flex;">
+                                        <span style="display: flex; text-align: center; width: fit-content; margin-right: auto; margin-left: auto;">
                                             <button pButton icon="pi pi-pencil" class="ui-button-primary edit-button"
-                                                (click)="openNewEvent(event)"></button>
+                                                (click)="openNewDepartment(department)"></button>
                                             <button pButton icon="pi pi-trash" class="ui-button-danger delete-button"
-                                                style="margin-left: 5px" (click)="showDialogDelete(event)"></button>
+                                                style="margin-left: 5px" (click)="showDialogDelete(department)"></button>
                                         </span>
                                     </td>
                                 </tr>
@@ -98,26 +98,26 @@
 
 
 
-<!-- confirm delete event -->
-<p-dialog header="Confirm" [(visible)]="displayDeleteEvent" [modal]="true" [responsive]="true" [closable]="false"
+<!-- confirm delete department -->
+<p-dialog header="Confirm" [(visible)]="displayDeleteDepartment" [modal]="true" [responsive]="true" [closable]="false"
     [style]="{width: '20%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
-    <p>Are you sure to delete this event?</p>
+    <p>Are you sure to delete this department?</p>
     <p-footer>
-        <button type="button" pButton icon="pi pi-close" (click)="displayDeleteEvent=false" label="Cancel" class="btn btn-light"
+        <button type="button" pButton icon="pi pi-close" (click)="displayDeleteDepartment=false" label="Cancel" class="btn btn-light"
             style="width:100px; height:38px"></button>
-        <button type="button" pButton icon="pi pi-close" (click)="deleteEvent()" label="OK" class="btn btn-primary"
+        <button type="button" pButton icon="pi pi-close" (click)="deleteDepartment()" label="OK" class="btn btn-primary"
             style="width:72px; height:38px"></button>
     </p-footer>
 </p-dialog>
 
-<!-- confirm delete events-->
-<p-dialog header="Confirm" [(visible)]="displayDeleteEvents" [modal]="true" [responsive]="true" [closable]="false"
+<!-- confirm delete departments-->
+<p-dialog header="Confirm" [(visible)]="displayDeleteDepartments" [modal]="true" [responsive]="true" [closable]="false"
     [style]="{width: '20%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
-    <p>Are you sure to delete these events?</p>
+    <p>Are you sure to delete these departments?</p>
     <p-footer>
-        <button type="button" pButton icon="pi pi-close" (click)="displayDeleteEvents = false" label="Cancel" class="btn btn-light"
+        <button type="button" pButton icon="pi pi-close" (click)="displayDeleteDepartments = false" label="Cancel" class="btn btn-light"
             style="width: 100px; height:38px"></button>
-        <button type="button" pButton icon="pi pi-close" (click)="deleteEvents()" label="OK" class="btn btn-primary"
+        <button type="button" pButton icon="pi pi-close" (click)="deleteDepartments()" label="OK" class="btn btn-primary"
             style="width:72px; height:38px"></button>
     </p-footer>
 </p-dialog>

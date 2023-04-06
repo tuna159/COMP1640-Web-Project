@@ -1,16 +1,16 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a href="" class="col-md-1"><img src="../../assets/images/home.png" style="margin-left: 55px;" /></a>
+    <a href="" class="col-md-0"><img src="../../assets/images/home.png" style="margin-left: 55px;" /></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
+    <div class="collapse navbar-collapse ml-5" id="navbarNav">
         <ul class="navbar-nav col">
-            <li class="nav-item active col-md-1">
+            <li class="nav-item active ml-3">
                 <a class="nav-link" [routerLink]="['/event']" style="text-align: center;"  [queryParams]="{ Id: 'University', name: 'University'}">University</a>
             </li>
-            <li class="nav-item active" *ngFor="let l of listDepartment" [class.active]="isLinkActive(l)">
+            <li class="nav-item active ml-3" *ngFor="let l of listDepartment" [class.active]="isLinkActive(l)">
                 <a class="nav-link" [routerLink]="['/event']" style="text-align: center;"  [queryParams]="{ Id: l.department_id, name: l.name}">{{l.name}}</a>
             </li>
         </ul>
