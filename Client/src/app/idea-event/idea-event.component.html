@@ -44,7 +44,7 @@
                         
                         <div class="row" style="margin-top: 20px; width: 100%; margin-left: auto; margin-right: auto;">
                             <div class="col-md-12">
-                                <p-table #myTab [value]="listIdea" [tableStyle]="{ 'width': '100%' }" [rowHover]="true"
+                                <p-table [value]="listIdea" [tableStyle]="{ 'width': '100%' }" [rowHover]="true"
                                     [scrollable]="true"
                                     [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 50]">
                                     <ng-template pTemplate="body" let-idea>
@@ -54,13 +54,14 @@
                                                     <div class="row"
                                                         style="margin-top: 2rem; margin-bottom: 1rem; background-color: #F2F2F2; padding: 10px; border-radius: 10px; width: 100%; margin-left: auto; margin-right:auto;">
                                                         <div class="personal-info col-3" style="position: static;">
-                                                            <p-avatar *ngIf="idea.is_anonymous == 0" image="{{idea.url_avatar}}" styleclass="mr-2"
+                                                            <p-avatar *ngIf="idea.is_anonymous == 0 && idea.url_avatar " image="{{idea.url_avatar}}" styleclass="mr-2"
                                                                 size="xlarge" shape="circle"></p-avatar>
-                                                            <p></p>
-    
+                                                            
+                                                                <p-avatar *ngIf="idea.is_anonymous == 0 && idea.url_avatar == null" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleclass="mr-2"
+                                                                size="xlarge" shape="circle"></p-avatar>
                                                             <p-avatar *ngIf="idea.is_anonymous == 1" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleclass="mr-2"
                                                                 size="xlarge" shape="circle"></p-avatar>
-                                                            <p></p>
+                                                            
                                                             <p *ngIf="idea.is_anonymous == 0">{{idea.full_name}}</p>
                                                             <p *ngIf="idea.is_anonymous == 1">User</p>
     

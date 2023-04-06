@@ -45,12 +45,13 @@
 						</select>
 					</div>
 
-					
+					<!-- [globalFilterFields]="['full_name','nameEvent','title', 'nameTag']" -->
 					
 					<div class="row" style="margin-top: 20px; width: 100%; margin-left: auto; margin-right: auto;">
 						<div class="col-md-12">
 							<p-table #myTab [value]="listData" [tableStyle]="{ 'width': '100%' }" [rowHover]="true"
-								[scrollable]="true" [globalFilterFields]="['full_name','nameEvent','title', 'nameTag']"
+								[scrollable]="true" 
+								[globalFilterFields]="['user.full_name','event.nameEvent','title', 'nameTag']"
 								[paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 50]">
 								<ng-template pTemplate="body" let-idea>
 									<tr>
@@ -87,7 +88,7 @@
 															<p>{{idea.views}} Dislikes</p>
 														</div>
 														<div class="row" style="margin-left: auto; margin-right: auto;">
-															<p style="display: none;">{{idea.nameTag}}</p>
+															<p style="display: none;">{{idea.tags}}</p>
 														</div>
 														<div class="row">
 															<p-chip label="#{{lc.name}}" *ngFor="let lc of idea.tag; index as i;"></p-chip>

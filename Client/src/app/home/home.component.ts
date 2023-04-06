@@ -31,8 +31,10 @@ export class HomeComponent implements OnInit{
       this.http.get<any>(this.apiUrl, {headers: {
         Authorization: 'Bearer ' + this.authService.getToken()}
       }).subscribe((res:any)=>{
+        console.log("res.data", res.data);
+        
         this.listIdea = res.data;
-        this.listIdea.forEach(item => {
+        res.data.forEach(item => {
           const tmp = item.tags.map(x => x.name);
           let bodyData = {
             full_name: item.user.full_name,
@@ -48,17 +50,11 @@ export class HomeComponent implements OnInit{
           }
           this.listData.push(bodyData)
         })
-        console.log(this.listData)
+        console.log("data: ", this.listData);
+        
       })
   }
 
-  changeSearch() {
-    this.http.get<any>("http://localhost:3009/api/idea/search?search_key=" + this.search_value, {headers: {
-      Authorization: 'Bearer ' + this.authService.getToken()}
-    }).subscribe((res:any)=>{
-      this.listIdea = res.data;
-    })
-  }
   
   ngOnInit(): void {
     
@@ -70,6 +66,6 @@ export class HomeComponent implements OnInit{
   
 
   showMessage(severity: string, detail: string) {
-    this.messageService.add({ severity: severity, summary: 'Thông báo:', detail: detail });
+    this.messageService.add({ severity: severity, summary: 'Notification:', detail: detail });
   }
 }

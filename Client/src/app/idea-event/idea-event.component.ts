@@ -36,14 +36,28 @@ export class IdeaEventComponent implements OnInit {
           Authorization: 'Bearer ' + this.authService.getToken()
         }
       }).subscribe((res: any) => {
-        console.log("idea", res.data[0].ideas);
-        
+        console.log("ideas: ", res.data[0].ideas);
+        // res.data[0].ideas.forEach(item => {
+        //   // const tmp = item.tags.map(x => x.name);
+        //   let bodyData = {
+        //     full_name: item.user.userDetail.full_name,
+        //     idea_id: item.idea_id,
+        //     title: item.title,
+        //     // nameEvent: item.event.name,
+        //     created_at: item.created_at,
+        //     views: item.views, 
+        //     // tag: item.tags,
+        //     is_anonymous: item.is_anonymous,
+        //     url_avatar: item.user.userDetail.avatar_url == null ? "https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" : item.user.userDetail.avatar_url,
+        //     // nameTag: tmp.toString(),
+        //   }
+        //   this.listIdea.push(bodyData)
+        // })
         this.listIdea = res.data[0].ideas;
         this.name = res.data.name;
         this.content = res.data.content;
         this.final_closure_date = res.data.final_closure_date;
         this.first_closure_date = res.data.first_closure_date;
-
       })
 
   }
