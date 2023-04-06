@@ -256,6 +256,7 @@ export class IdeaService {
     startDate?: Date,
     endDate?: Date,
     isDeleted = false,
+    allEvents = true,
     entityManager?: EntityManager,
   ) {
     const ideaRepository = entityManager
@@ -301,7 +302,7 @@ export class IdeaService {
         query.andWhere('event.department_id = :event_department_id', {
           event_department_id,
         });
-      } else {
+      } else if (!allEvents) {
         query.andWhere('event.department_id IS NULL');
       }
     }

@@ -356,7 +356,7 @@ export class EventService {
       body.category_id,
       null,
       body.author_department_id,
-      null,
+      false,
       null,
       start_date,
       end_date,
