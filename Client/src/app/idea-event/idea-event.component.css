@@ -33,3 +33,29 @@ a:hover {
 :host ::ng-deep .p-button {
     position: static;
 }
+
+:host ::ng-deep .p-chip-text {
+    color: blue;
+}
+
+:host ::ng-deep .p-datatable.p-datatable-hoverable-rows .p-datatable-tbody>tr:not(.p-highlight):hover {
+    background: #FFFFFF;
+    color: #495057;
+}
+
+:host ::ng-deep .p-datatable {
+    position: static;
+}
+
+:host ::ng-deep .p-datatable-scrollable>.p-datatable-wrapper {
+    position: static;
+}
+
+:host ::ng-deep .p-chip {
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.col-md-12 {
+    position: static;
+}

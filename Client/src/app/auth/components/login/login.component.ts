@@ -41,16 +41,16 @@ export class LoginComponent implements OnInit {
   signUp(){
     if (this.formGroup.invalid) {
       if (!this.formGroup.value.email && !this.formGroup.value.password) {
-        this.showMessage('error', 'Email và mật khẩu không được để trống');
+        this.showMessage('error', 'Email and password cannot be empty');
       }
       else if (!this.formGroup.value.email) {
-        this.showMessage('error', 'Email không được để trống');
+        this.showMessage('error', 'Email cannot be empty');
       }
       else if (!this.formGroup.value.password) {
-        this.showMessage('error', 'Mật khẩu không được để trống');
+        this.showMessage('error', 'Password cannot be empty');
       }
       else {
-        this.showMessage('error', 'Email không đúng định dạng');
+        this.showMessage('error', 'Invalid Email');
       }
       return;
     }
@@ -61,14 +61,14 @@ export class LoginComponent implements OnInit {
       if(result.status_code == 200){
         this.router.navigate(['/']);
       }else{
-        this.showMessage('error', "Vui lòng đăng nhập lại");
+        this.showMessage('error', "Please log in again");
       }
     }
     );
   }
 
   showMessage(status: string, message: string) {
-    let msg = { severity: status, summary: 'Thông báo', detail: message };
+    let msg = { severity: status, summary: 'Notification', detail: message };
     this.messageService.add(msg);
   }
 }

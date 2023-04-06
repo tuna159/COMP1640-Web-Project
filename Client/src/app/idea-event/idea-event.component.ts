@@ -17,12 +17,14 @@ export class IdeaEventComponent implements OnInit {
   listIdea = [];
   Id: any;
   name: any;
+  role: number;
   content: any;
   first_closure_date: any;
   final_closure_date: any;
   apiUrl = 'http://localhost:3009/api/event/';
   constructor(private dialogService: DialogService, private http: HttpClient, private route: ActivatedRoute,
     private authService: AuthenticationService, private router: Router, private messageService: MessageService) {
+      this.role = authService.getRole();
       this.Id = this.router.getCurrentNavigation().extras.state.Id;
       this.getAllIdeaByEvent();
   }
@@ -34,12 +36,14 @@ export class IdeaEventComponent implements OnInit {
           Authorization: 'Bearer ' + this.authService.getToken()
         }
       }).subscribe((res: any) => {
-        this.listIdea = res.data;
+        console.log("idea", res.data[0].ideas);
+        
+        this.listIdea = res.data[0].ideas;
         this.name = res.data.name;
         this.content = res.data.content;
         this.final_closure_date = res.data.final_closure_date;
         this.first_closure_date = res.data.first_closure_date;
-        console.log(this.listIdea)
+
       })
 
   }
@@ -52,11 +56,14 @@ export class IdeaEventComponent implements OnInit {
     this.messageService.add({ severity: severity, summary: 'Notification:', detail: detail });
   }
 
+  IdeaDetail(IdIdeal) : void{
+    this.router.navigateByUrl('/detail', { state: { Id: IdIdeal } });
+  }
+
   postIdeal(){
     this.ref = this.dialogService.open(PostComponent, {
       header: 'Add ideal',
-            width: '90%',
-            height: '90%',
+            width: '60%',
             contentStyle: {"max-height": "800px", "overflow": "auto"},
             baseZIndex: 10000,
     });
