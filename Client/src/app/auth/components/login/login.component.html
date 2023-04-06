@@ -29,12 +29,12 @@
 							<span
 								*ngIf="formGroup.controls.email.hasError('required') || formGroup.controls.email.hasError('blankString') "
 								class="error-message-span" style="color: #FD0B0B; font-size: small;">
-								Vui lòng nhập Email
+								Please enter Email
 							</span>
 							<span
 								*ngIf="formGroup.controls.email.hasError('pattern')"
 								class="error-message-span" style="color: #FD0B0B; font-size: small;">
-								Vui lòng nhập đúng Email
+								Please enter correct Email
 							</span>
 						</div>
 					</div>
@@ -42,7 +42,7 @@
 					<!-- Password input -->
 					<div class="form-outline mb-3">
 						<div class="col-md-6">
-							<h4>Mật khẩu</h4>
+							<h4>Password</h4>
 						</div>
 						<p-password [toggleMask]="true" formControlName="password" placeholder="Enter your Password"
 							[style]="{'width':'90%'}" #keywordsInput
@@ -52,7 +52,7 @@
 							<span
 								*ngIf="formGroup.controls.password.hasError('required') || formGroup.controls.password.hasError('blankString') "
 								class="error-message-span" style="color: #FD0B0B; font-size: small;">
-								Vui lòng nhập mật khẩu
+								Please enter a password
 							</span>
 						</div>
 					</div>
@@ -96,5 +96,5 @@
 		</div>
 	</div>
 
-	<p-messages></p-messages>
+	<p-toast position="bottom-right"></p-toast>
 </section>
