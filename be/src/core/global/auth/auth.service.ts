@@ -130,17 +130,32 @@ export class AuthService {
         }
       }
 
+
+      
+      const department = await this.departmentSerivce.departmentExists(
+        body.department_id,
+      );
+      if (!department) {
+        throw new HttpException(
+          ErrorMessage.DEPARTMENT_NOT_EXISTS,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       console.log(newUser.department_id);
 
       const checkDeparment =
         await this.departmentSerivce.checkManagerDepartment(body.department_id);
 
-      if (checkDeparment) {
+      console.log(body.department_id, 11111111111);
+
+      if (!checkDeparment) {
         throw new HttpException(
           ErrorMessage.DEPARTMENT_PERMISSION,
           HttpStatus.BAD_REQUEST,
         );
       }
+
 
       if (
         body.role_id != EUserRole.ADMIN &&
