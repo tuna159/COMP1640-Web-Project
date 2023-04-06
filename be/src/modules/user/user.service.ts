@@ -263,7 +263,7 @@ export class UserService {
       select: ['user_id', 'email', 'password'],
       where: {
         user_id,
-        isDeleted: EIsDelete.NOT_DELETED,
+        is_deleted: EIsDelete.NOT_DELETED,
       },
     });
   }
