@@ -14,7 +14,7 @@ export class ChartServeice {
         let chartStaffDepartment: Options = {
             chart: {
                 type: 'column',
-                width: 1500
+                width: 900
             },
             credits: {
                 enabled: false,

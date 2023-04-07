@@ -22,7 +22,7 @@ export class AddDepartmentComponent implements OnInit{
   constructor(private dialogService: DialogService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
     private http: HttpClient, private authService: AuthenticationService,) {
       this.data = this.config.data;
-      console.log(this.data)
+      console.log("this.data", this.data)
       this.getListManager();
   }
   getListManager() {

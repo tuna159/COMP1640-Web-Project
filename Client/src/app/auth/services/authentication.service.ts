@@ -65,7 +65,8 @@ export class AuthenticationService {
                 console.log(this.userSubject.value.data.token)
                 this.userSubject.next(user);
                 return user;
-            })
+            },
+            )
         );
     }
 
