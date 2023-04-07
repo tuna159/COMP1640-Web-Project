@@ -18,11 +18,11 @@ export class IdeaEventComponent implements OnInit {
   listIdea = [];
   listData = [];
   Id: any;
+  
   name: any;
   role: number;
   eventInfo: any;
   userDepartment: number;
-  file: any
   content: any;
   first_closure_date: any;
   final_closure_date: any;
@@ -40,13 +40,11 @@ export class IdeaEventComponent implements OnInit {
     private authService: AuthenticationService, private router: Router, private messageService: MessageService) {
       this.role = authService.getRole();
       
-        this.userDepartment = authService.getDepartment();
-      
+      this.userDepartment = authService.getDepartment();
       
       this.Id = this.router.getCurrentNavigation().extras.state.Id;
       this.getAllIdeaByEvent();
       this.getAllDepartment();
-      this.getAllCategory();
   }
 
 
@@ -56,7 +54,6 @@ export class IdeaEventComponent implements OnInit {
           Authorization: 'Bearer ' + this.authService.getToken()
         }
       }).subscribe((res: any) => {
-        console.log("res.data", res.data.ideas);
   
         this.listIdea = res.data;
         this.listData = [];
@@ -79,7 +76,6 @@ export class IdeaEventComponent implements OnInit {
           }
           this.listData.push(bodyData)
         })
-        console.log("data: ", this.listData);
         }
       )
   }
@@ -91,48 +87,13 @@ export class IdeaEventComponent implements OnInit {
       }
     }).subscribe((res: any) => {
       this.listDepartments = res.data;
+      this.name = res.data.find(i => i.department_id == this.Id).name
     })
-  }
-
-  getAllCategory() {
-    this.http.get<any>("http://localhost:3009/api/category", {headers: {
-      Authorization: 'Bearer ' + this.authService.getToken()}
-    }).subscribe((result: any) => {
-            if (result.status_code != 200) {
-              this.showMessage('error', result.error_message);
-              return;
-            }
-            this.listCategories = result.data
-        });
+  
   }
 
   showDialogDownload() {
     this.dialogDownloadEvent = true;
-  }
-
-  async downloadEvent() {
-    if(this.formGroup.controls.category.value == null || 
-      this.formGroup.controls.department.value == null||
-      this.formGroup.controls.startDate.value == null||
-      this.formGroup.controls.endDate.value== null) {
-        this.dialogDownloadEvent = false;
-      } else {
-        if(this.file.name.length) {
-          const formData: FormData = new FormData();
-          formData.append('files', this.file, this.file.name);
-          await this.http.post<any>("http://localhost:3009/api/upload/images", formData , {headers: { Authorization: 'Bearer ' + this.authService.getToken()}
-            }).subscribe((result: any) => {
-              this.save(result.data[0].file_url)
-            });
-        }else{
-          this.save('')
-        }
-        this.dialogDownloadEvent = false;
-      }
-  }
-
-  save(file_url: any) {
-    throw new Error('Method not implemented.');
   }
 
   ngOnInit(): void {
