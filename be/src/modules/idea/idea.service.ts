@@ -338,7 +338,7 @@ export class IdeaService {
         const dislikes = await this.reactionService.countIdeaDislikes(
           idea.idea_id,
         );
-        idea['point'] = likes - dislikes;
+        idea['point'] = likes + dislikes;
         ideasToSort.push(idea);
       }
       ideas = ideasToSort.sort((a, b) => b.point - a.point);
