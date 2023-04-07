@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Comment } from '@core/database/mysql/entity/comment.entity';
 import { IUserData } from '@core/interface/default.interface';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -9,7 +10,7 @@ import { DeepPartial, EntityManager, Repository } from 'typeorm';
 
 @Injectable()
 export class CommentService {
-  maxLevel: number = 3;
+  maxLevel = 3;
 
   constructor(
     @InjectRepository(Comment)
@@ -27,10 +28,7 @@ export class CommentService {
     });
   }
 
-  async getIdeaCommentsLv1(
-    idea_id: number,
-    entityManager?: EntityManager,
-  ) {
+  async getIdeaCommentsLv1(idea_id: number, entityManager?: EntityManager) {
     const commentRepository = entityManager
       ? entityManager.getRepository<Comment>('comment')
       : this.commentRepository;
@@ -66,16 +64,13 @@ export class CommentService {
     });
   }
 
-  async getCommentsByParent(
-    parent_id: number,
-    entityManager?: EntityManager,
-  ) {
+  async getCommentsByParent(parent_id: number, entityManager?: EntityManager) {
     const commentRepository = entityManager
       ? entityManager.getRepository<Comment>('comment')
       : this.commentRepository;
 
     const parent = await this.commentExist(parent_id);
-    if(!parent) {
+    if (!parent) {
       throw new HttpException(
         ErrorMessage.COMMENT_NOT_EXIST,
         HttpStatus.BAD_REQUEST,
@@ -117,8 +112,11 @@ export class CommentService {
       : this.commentRepository;
 
     const newComment = new Comment();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     newComment.idea_id = params.idea_id!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     newComment.author_id = params.author_id!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     newComment.content = params.content!;
 
     if (params.parent_id != null) {
@@ -173,11 +171,11 @@ export class CommentService {
       .innerJoinAndSelect('comment.idea', 'idea')
       .innerJoinAndSelect('idea.event', 'event')
       .where('comment.comment_id = :comment_id', { comment_id })
-      .andWhere('comment.is_deleted = :is_deleted', { 
-        is_deleted: EIsDelete.NOT_DELETED, 
+      .andWhere('comment.is_deleted = :is_deleted', {
+        is_deleted: EIsDelete.NOT_DELETED,
       })
-      .andWhere('idea.is_deleted = :is_deleted', { 
-        is_deleted: EIsDelete.NOT_DELETED, 
+      .andWhere('idea.is_deleted = :is_deleted', {
+        is_deleted: EIsDelete.NOT_DELETED,
       })
       .getOne();
 
@@ -199,17 +197,16 @@ export class CommentService {
     }
 
     const event = comment.idea.event;
-    if(event.final_closure_date <= new Date()) {
+    if (event.final_closure_date <= new Date()) {
       throw new HttpException(
         ErrorMessage.FINAL_CLOSURE_DATE_UNAVAILABLE,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const result = await commentRepository.update(
-      comment_id,
-      { is_deleted: EIsDelete.DELETED },
-    );
+    const result = await commentRepository.update(comment_id, {
+      is_deleted: EIsDelete.DELETED,
+    });
     return {
       affected: result.affected!,
     };
@@ -237,14 +234,14 @@ export class CommentService {
       .innerJoinAndSelect('comment.idea', 'idea')
       .innerJoinAndSelect('idea.event', 'event')
       .where('comment.comment_id = :comment_id', { comment_id })
-      .andWhere('comment.is_deleted = :is_deleted', { 
-        is_deleted: EIsDelete.NOT_DELETED, 
+      .andWhere('comment.is_deleted = :is_deleted', {
+        is_deleted: EIsDelete.NOT_DELETED,
       })
-      .andWhere('idea.is_deleted = :is_deleted', { 
-        is_deleted: EIsDelete.NOT_DELETED, 
+      .andWhere('idea.is_deleted = :is_deleted', {
+        is_deleted: EIsDelete.NOT_DELETED,
       })
       .getOne();
-  
+
     if (!comment) {
       throw new HttpException(
         ErrorMessage.COMMENT_NOT_EXIST,
@@ -259,33 +256,29 @@ export class CommentService {
     }
 
     const event = comment.idea.event;
-    if(event.final_closure_date <= new Date()) {
+    if (event.final_closure_date <= new Date()) {
       throw new HttpException(
         ErrorMessage.FINAL_CLOSURE_DATE_UNAVAILABLE,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const result = await commentRepository.update(
-      comment_id,
-      { content: value.content },
-    );
+    const result = await commentRepository.update(comment_id, {
+      content: value.content,
+    });
     return {
       affected: result.affected,
     };
   }
 
-  async countIdeaComments(
-    idea_id: number,
-    entityManager?: EntityManager,
-  ) {
+  async countIdeaComments(idea_id: number, entityManager?: EntityManager) {
     const commentRepository = entityManager
       ? entityManager.getRepository<Comment>('comment')
       : this.commentRepository;
-    
+
     const total = await commentRepository.count({ idea_id });
     return {
-      "comments": total,
+      comments: total,
     };
   }
 }

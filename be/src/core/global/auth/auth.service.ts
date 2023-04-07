@@ -130,8 +130,6 @@ export class AuthService {
         }
       }
 
-
-      
       const department = await this.departmentSerivce.departmentExists(
         body.department_id,
       );
@@ -155,7 +153,6 @@ export class AuthService {
           HttpStatus.BAD_REQUEST,
         );
       }
-
 
       if (
         body.role_id != EUserRole.ADMIN &&

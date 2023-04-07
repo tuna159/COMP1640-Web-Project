@@ -18,10 +18,21 @@ export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 
   @Public()
-  @Post()
+  @Post('files')
   @UseInterceptors(FilesInterceptor('files'))
-  async uploadS3V2(@UploadedFiles() files: Array<Express.Multer.File>) {
-    return await this.uploadService.uploadFireBase(files);
+  async uploadFileToFireBase(
+    @UploadedFiles() files: Array<Express.Multer.File>,
+  ) {
+    return await this.uploadService.uploadFileToFireBase(files);
+  }
+
+  @Public()
+  @Post('images')
+  @UseInterceptors(FilesInterceptor('files'))
+  async uploadImageFireBase(
+    @UploadedFiles() files: Array<Express.Multer.File>,
+  ) {
+    return await this.uploadService.uploadImageFireBase(files);
   }
 
   @Public()

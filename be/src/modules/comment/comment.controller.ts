@@ -26,9 +26,7 @@ export class CommentController {
   }
 
   @Get(':parent_id')
-  getCommentsByParent(
-    @Param('parent_id') parent_id: number,
-  ) {
+  getCommentsByParent(@Param('parent_id') parent_id: number) {
     return this.commentService.getCommentsByParent(parent_id);
   }
 }

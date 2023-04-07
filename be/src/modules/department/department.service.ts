@@ -3,7 +3,6 @@ import { IUserData } from '@core/interface/default.interface';
 import { EventService } from '@modules/event/event.service';
 import { IdeaService } from '@modules/idea/idea.service';
 import { ReactionService } from '@modules/reaction/reaction.service';
-import { UserService } from '@modules/user/user.service';
 import {
   forwardRef,
   HttpException,
@@ -15,7 +14,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EIsDelete } from 'enum';
 import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
-import { EIdeaFilter } from 'enum/idea.enum';
 import {
   CreateDepartmentDto,
   UpdateDepartmentDto,
@@ -362,11 +360,7 @@ export class DepartmentService {
     };
   }
 
-  async getDepartmentStaffReaction(
-    department_id: number,
-    userData: IUserData,
-    entityManager?: EntityManager,
-  ) {
+  async getDepartmentStaffReaction(department_id: number, userData: IUserData) {
     if (userData.role_id != EUserRole.ADMIN) {
       throw new HttpException(
         ErrorMessage.GENERAL_PERMISSION,

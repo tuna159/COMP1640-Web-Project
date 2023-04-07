@@ -8,9 +8,7 @@ import {
   Param,
   Post,
   Put,
-  Query,
 } from '@nestjs/common';
-import { EIdeaFilter } from 'enum/idea.enum';
 import { CategoryDto } from 'global/dto/category.dto';
 import { CategoryService } from './category.service';
 
@@ -24,9 +22,7 @@ export class CategoryController {
   }
 
   @Get(':category_id/ideas?')
-  getCategoryValidIdeas(
-    @Param('category_id') category_id: number,
-  ) {
+  getCategoryValidIdeas(@Param('category_id') category_id: number) {
     return this.categoryService.getCategoryValidIdeas(category_id);
   }
 

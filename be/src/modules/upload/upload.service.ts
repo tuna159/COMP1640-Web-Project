@@ -3,15 +3,12 @@
 import { IUserData } from '@core/interface/default.interface';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ErrorMessage } from 'enum/error';
 import type { Response } from 'express';
-import e from 'express';
 
 import {
   getBytes,
   getDownloadURL,
   getMetadata,
-  getStorage,
   listAll,
   ref,
   uploadBytes,
@@ -20,6 +17,9 @@ import { join } from 'path';
 import { storage } from 'src/config/firebase.config';
 import * as fs from 'fs';
 import * as archiver from 'archiver';
+import { ErrorMessage } from 'enum/error';
+import { log } from 'console';
+import { IsEmpty } from 'class-validator';
 // import { initializeFireBaseApp } from 'src/config/firebase';
 
 // const md5 = require('md5');
@@ -35,34 +35,32 @@ export class UploadService {
    * @param folder
    * @returns
    */
-  async uploadFireBase(files: Array<Express.Multer.File>) {
+  async uploadFileToFireBase(files: Array<Express.Multer.File>) {
     const data = [];
-    // const pdf = files.filter((el) => el.mimetype == 'application/pdf');
-    // if (pdf.length > 10) {
-    //   throw new HttpException(
-    //     ErrorMessage.FILE_PDF_MAX,
-    //     HttpStatus.BAD_REQUEST,
-    //   );
-    // }
-    for (const file of files) {
-      const fileUpload = await this.save(file);
 
-      // const fileUpload = files
-      //   .replace(
-      //     'https://firebasestorage.googleapis.com/v0/b/uploadfb-6dc7e.appspot.com/o/files%2F',
-      //     '',
-      //   )
-      //   .split('?')[0];
+    const pdf = files.filter((el) => el.mimetype == 'application/pdf');
 
-      data.push({
-        file_url: fileUpload,
-        size: file.size,
-      });
+    if (pdf.length === 0) {
+      throw new HttpException(
+        ErrorMessage.YOU_CAN_CHOOSE_FILE_PDF,
+        HttpStatus.BAD_REQUEST,
+      );
     }
-    return data;
+
+    if (pdf) {
+      for (const file of pdf) {
+        const fileUpload = await this.saveFile(file);
+
+        data.push({
+          file_url: fileUpload,
+          size: file.size,
+        });
+        return data;
+      }
+    }
   }
 
-  async save(file: Express.Multer.File) {
+  async saveFile(file: Express.Multer.File) {
     try {
       const imageRef = ref(storage, `files/${file.originalname}`);
       const snapshot = await uploadBytes(imageRef, file.buffer);
@@ -70,16 +68,41 @@ export class UploadService {
 
       console.log(url);
       return url;
+    } catch (e) {
+      return e.ErrorMessage;
+    }
+  }
 
-      // console.log(bucket);
+  async uploadImageFireBase(image: Array<Express.Multer.File>) {
+    const data = [];
+    const images = image.filter((el) => el.mimetype != 'application/pdf');
 
-      // const storage = getStorage();
-      // console.log(storage);
-      // const storageRef = ref(storage, `files/${file.originalname}`);
+    if (images.length == 0) {
+      throw new HttpException(
+        ErrorMessage.YOU_CAN_CHOOSE_FILE_IMAGE,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
-      // const snapshot = await uploadBytesResumable(storageRef, file.buffer);
+    for (const image of images) {
+      const imageUpload = await this.saveImage(image);
 
-      // const downloadURL = await getDownloadURL(snapshot.ref);
+      data.push({
+        file_url: imageUpload,
+        size: image.size,
+      });
+      return data;
+    }
+  }
+
+  async saveImage(file: Express.Multer.File) {
+    try {
+      const imageRef = ref(storage, `images/${file.originalname}`);
+      const snapshot = await uploadBytes(imageRef, file.buffer);
+      const url = await getDownloadURL(snapshot.ref);
+
+      console.log(url);
+      return url;
     } catch (e) {
       return e.ErrorMessage;
     }

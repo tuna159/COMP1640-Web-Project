@@ -455,11 +455,7 @@ export class EventService {
     }
   }
 
-  async getAllEvents(userData: IUserData, entityManager?: EntityManager) {
-    const eventRepository = entityManager
-      ? entityManager.getRepository<Event>('event')
-      : this.eventRepository;
-
+  async getAllEvents(userData: IUserData) {
     if (userData.role_id != EUserRole.ADMIN) {
       throw new HttpException(
         ErrorMessage.EVENT_PERMISSION,
@@ -598,7 +594,4 @@ export class EventService {
     }
     return data;
   }
-}
-function innerJoinAndSelect(arg0: string, arg1: string) {
-  throw new Error('Function not implemented.');
 }
