@@ -32,6 +32,7 @@ export class DetailComponent {
   comment_value: any
   totalComment: any;
   commentChildren_value: any;
+  commentChildren_value1: any = [];
   public userArray: any = [];
   apiUrl:string = "http://localhost:3009/api/idea/";
 
@@ -123,6 +124,17 @@ export class DetailComponent {
               this.listCommentData = resultComment.data;
               //list comment cha
               this.listCommentData = this.listCommentData.filter(x => x.level == 1)
+              
+              
+              this.listCommentData.filter(x => x.level == 1).forEach(item => {
+                let bodyData = {
+                  id_cmt: item.comment_id
+                }
+                this.commentChildren_value1.push(bodyData)
+              })
+
+              console.log("commentChildren_value1", this.commentChildren_value1);
+              
               //list comment con
               listAllCmtChildren = resultComment.data.filter(x => x.level == 2)
               this.listCommentData.forEach(cmt => {

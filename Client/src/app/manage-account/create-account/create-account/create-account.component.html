@@ -17,9 +17,8 @@
 
     <div class="field" style="margin-top: 5%;" *ngIf="data.user_id == null">
         <label for="name" style="width: 100%;">Password</label>
-        
-        <input type="text" pInputText id="name" formControlName="password" required  style=" width: 100%;"
-            [ngClass]="(formGroup.controls.password.invalid && (formGroup.controls.password.dirty || formGroup.controls.password.touched)) ? 'ng-invalid ng-dirty' : ''">
+        <p-password [style]="{'width':'100%'}" formControlName="password" [toggleMask]="true" 
+        [inputStyleClass]="(formGroup.controls.password.invalid && (formGroup.controls.password.dirty || formGroup.controls.password.touched)) ? 'ng-invalid ng-dirty' : ''"></p-password>
     
         <div class="form-group mb-2" [hidden]="formGroup.controls.password.valid|| formGroup.controls.password.untouched">
             <span *ngIf="formGroup.controls.password.hasError('required') || formGroup.controls.password.hasError('blankString') "

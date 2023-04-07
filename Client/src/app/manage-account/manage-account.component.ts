@@ -59,7 +59,7 @@ export class ManageAccountComponent {
               Stt: index + 1,
             }, item));
             this.listData.forEach(item => {
-              item.status = item.is_deleted == 0 ? "Đang Hoạt động" : "Không hoạt động"
+              item.status = item.is_deleted == 0 ? "Active" : "UnActive"
             })
         });
   }
@@ -99,7 +99,7 @@ export class ManageAccountComponent {
   // }
 
   showMessage(severity: string, detail: string) {
-    this.messageService.add({ severity: severity, summary: 'Thông báo:', detail: detail });
+    this.messageService.add({ severity: severity, summary: 'Notification:', detail: detail });
   }
 
   openNewUser(data) {

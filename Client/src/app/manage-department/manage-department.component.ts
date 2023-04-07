@@ -96,7 +96,7 @@ export class ManageDepartmentComponent {
   }
 
   showMessage(severity: string, detail: string) {
-    this.messageService.add({ severity: severity, summary: 'Thông báo:', detail: detail });
+    this.messageService.add({ severity: severity, summary: 'Notification:', detail: detail });
   }
 
   openNewDepartment(data) {

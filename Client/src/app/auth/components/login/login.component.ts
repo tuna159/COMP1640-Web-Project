@@ -27,13 +27,8 @@ export class LoginComponent implements OnInit {
   ) {
     // redirect to home if already logged in
     if (this.authService.getUser()) {
-      
-      if(this.authService.getRole() == 1){
-        this.router.navigate(['/chart']);
-      }
-      else{
-        this.router.navigate(['/']);
-      }
+
+      this.router.navigate(['/']);
     }
   }
 
@@ -44,7 +39,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  signUp(){
+  signUp() {
     if (this.formGroup.invalid) {
       if (!this.formGroup.value.email && !this.formGroup.value.password) {
         this.showMessage('error', 'Email and password cannot be empty');
@@ -62,21 +57,23 @@ export class LoginComponent implements OnInit {
     }
 
     this.authService.login(this.formGroup.value.email, this.formGroup.value.password)
-    .pipe(first())
-    .subscribe((result: any) => {
-      if(result.status_code == 200){
-        if(this.authService.getRole() == 1){
-          this.router.navigate(['/chart']);
-        }
-        else{
+      .pipe(first())
+      .subscribe(
+        (result: any) => {
           this.router.navigate(['/']);
+        },
+        err => {
+          console.log("err", err.error)
+          if (err.error.message === "error.USER_NAME_INCORRECT") {
+            this.showMessage('error', 'Incorrect Email');
+          }
+          if (err.error.message === "error.PASSWORD_INCORRECT") {
+            this.showMessage('error', 'Incorrect Password');
+          }
+          return;
         }
-        
-      }else{
-        this.showMessage('error', "Please log in again");
-      }
-    }
-    );
+        ,
+      );
   }
 
   showMessage(status: string, message: string) {

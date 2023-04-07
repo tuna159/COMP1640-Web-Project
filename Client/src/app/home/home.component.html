@@ -46,7 +46,7 @@
 					<div class="col-md-12">
 						<p-table #myTab [value]="listData" [tableStyle]="{ 'width': '100%' }" [rowHover]="true"
 							[scrollable]="true"
-							[globalFilterFields]="['user.full_name','event.nameEvent','title', 'nameTag']"
+							[globalFilterFields]="['user.full_name','event.nameEvent','title', 'nameTag', 'category']"
 							[paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 50]">
 							<ng-template pTemplate="body" let-idea>
 								<tr>
@@ -82,12 +82,17 @@
 
 														<p>{{idea.views}} Views</p>
 													</div>
+
 													<div class="row"
 														style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; ">
 														<p style="width: 60%;">Start at: {{idea.created_at |
 															date:'mediumDate'}}</p>
-														<p>{{idea.views}} Likes</p>
-														<p>{{idea.views}} Dislikes</p>
+														<p>{{idea.like}} Likes</p>
+														<p>{{idea.dislike}} Dislikes</p>
+													</div>
+													<div class="row"
+														style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; margin-top: 1%;">
+														<p>Category: {{idea.category}}</p>
 													</div>
 													<div class="row" style="margin-left: auto; margin-right: auto;">
 														<p style="display: none;">{{idea.tags}}</p>
@@ -118,22 +123,21 @@
 <p-dialog header="Sort Ideas Options" [(visible)]="sortEvent" [modal]="true" [responsive]="true" [closable]="false"
 	[style]="{width: '30%'}" [minY]="70" [baseZIndex]="10000">
 
-
-	<form [formGroup]="formGroup" (ngSubmit)="SaveSort()">
+	<!-- (ngSubmit)="SaveSort()" -->
+	<form [formGroup]="formGroup">
 		<div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: 100%;">
 
-			<div class="form-check form-check-inline w-50">
-				<input class="form-check-input h-10" type="checkbox" formControlName="newest">
-				<label class="form-check-label h6" for="inlineCheckbox1">Newest</label>
+			<div class="custom-control custom-radio custom-control-inline">
+				<input type="radio" id="customRadioInline1" name="customRadioInline1" class="custom-control-input" formControlName="sort">
+				<label class="custom-control-label" for="customRadioInline1">Newest</label>
 			</div>
-			<div class="form-check form-check-inline w-50">
-
-				<input class="form-check-input" type="checkbox"  formControlName="mostPopular">
-				<label class="form-check-label h6" for="inlineCheckbox2">Most popular</label>
+			<div class="custom-control custom-radio custom-control-inline">
+				<input type="radio" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" formControlName="sort">
+				<label class="custom-control-label" for="customRadioInline2">Most popular</label>
 			</div>
-			<div class="form-check form-check-inline w-50">
-				<input class="form-check-input" type="checkbox" formControlName="mostView">
-				<label class="form-check-label h6" for="inlineCheckbox2">Most Views</label>
+			<div class="custom-control custom-radio custom-control-inline">
+				<input type="radio" id="customRadioInline3" name="customRadioInline1" class="custom-control-input" formControlName="sort">
+				<label class="custom-control-label" for="customRadioInline3">Most Views</label>
 			</div>
 		</div>
 
@@ -148,7 +152,7 @@
 				<label class="form-check-label h6" for="inlineCheckbox2">End Date: </label>
 				<p-calendar formControlName="endDate" inputId="basic" [required] appendTo="body"></p-calendar>
 			</div>
-			
+
 		</div>
 
 

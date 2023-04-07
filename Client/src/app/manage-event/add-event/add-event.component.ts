@@ -4,12 +4,13 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 import { DatePipe } from '@angular/common';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-add-event',
   templateUrl: './add-event.component.html',
   styleUrls: ['./add-event.component.css'],
-  providers: [DatePipe] 
+  providers: [DatePipe, MessageService] 
 })
 export class AddEventComponent implements OnInit {
   apiUrl: string = "http://localhost:3009/api/event";
@@ -24,7 +25,7 @@ export class AddEventComponent implements OnInit {
   }>;
 
   constructor(private dialogService: DialogService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
-    private http: HttpClient, private authService: AuthenticationService, private datepipe: DatePipe) {
+    private http: HttpClient, private authService: AuthenticationService, private datepipe: DatePipe, private messageService: MessageService,) {
       this.data = this.config.data;
       console.log(this.data);
       this.getAllDepartment();
@@ -52,9 +53,14 @@ export class AddEventComponent implements OnInit {
   }
   }
 
+  showMessage(status: string, message: string) {
+    let msg = { severity: status, summary: 'Notification', detail: message };
+    this.messageService.add(msg);
+  }
+
   SaveEvent() {
     if(new Date(this.formGroup.controls.closureDate.value) > new Date(this.formGroup.controls.finalDate.value)) {
-      alert("please enter the closure date before the final date")
+      this.showMessage('error', 'Closure Date must before Final Date');
     }
     if(this.data.event_id == null) {
       this.http.post(this.apiUrl, {
