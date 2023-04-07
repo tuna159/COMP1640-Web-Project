@@ -74,6 +74,7 @@ import { IdeaEventComponent } from './idea-event/idea-event.component';
 import { AddEventComponent } from './manage-event/add-event/add-event.component';
 import { ManageDepartmentComponent } from './manage-department/manage-department.component';
 import { AddDepartmentComponent } from './manage-department/add-department/add-department.component';
+import { IdeaCategoryComponent } from './idea-category/idea-category.component';
 
 @NgModule({
     declarations: [
@@ -99,7 +100,8 @@ import { AddDepartmentComponent } from './manage-department/add-department/add-d
         IdeaEventComponent,
         AddEventComponent,
         ManageDepartmentComponent,
-        AddDepartmentComponent
+        AddDepartmentComponent,
+        IdeaCategoryComponent
     ],
     providers: [MessageService, RoleGuardService, DataViewLayoutOptions],
     bootstrap: [AppComponent],

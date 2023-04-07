@@ -9,7 +9,7 @@
         </div>
 
         <div class="" style="margin-top: 5rem">
-            <div *ngIf="role == 4 && userDepartment == eventInfo.department_id"
+            <div *ngIf="role == 4"
                 style="width: 55%; margin-bottom: 2em; margin-left: auto; margin-right: auto; background-color: white; border-radius: 5px; height: 80px; padding-top: 5px; padding-left: 20px;"
                 class="row">
                 <div style="margin-top: auto; margin-bottom: auto; width: 7%;">
@@ -143,11 +143,11 @@
         <div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: 100%;">
 			<div class="form-check form-check-inline w-50">
 				<label class="form-check-label h6" for="inlineCheckbox2">Start Date: </label>
-				<p-calendar [style] = "{'margin-left' : '2%'}" formControlName="startDate" inputId="basic" [required] appendTo="body"></p-calendar>
+				<p-calendar [style] = "{'margin-left' : '2%'}" formControlName="startDate" inputId="basic" [required] appendTo="body">{{eventInfo.first_closure_date}}</p-calendar>
 			</div>
 			<div class="form-check form-check-inline w-50">
 				<label class="form-check-label h6" for="inlineCheckbox2">End Date: </label>
-				<p-calendar [style] = "{'margin-left' : '2%'}" formControlName="endDate" inputId="basic" [required] appendTo="body"></p-calendar>
+				<p-calendar [style] = "{'margin-left' : '2%'}" formControlName="endDate" inputId="basic" [required] appendTo="body">{{eventInfo.final_closure_date}}</p-calendar>
 			</div>
 
 		</div>
