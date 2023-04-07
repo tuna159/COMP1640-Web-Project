@@ -20,12 +20,11 @@ export class IdeaEventComponent implements OnInit {
   name: any;
   role: number;
   eventInfo: any;
-  file: any
+  userDepartment: number;
   content: any;
   first_closure_date: any;
   final_closure_date: any;
-  dialogDownloadEvent: boolean;
-  userDepartment :any
+  downloadEvent: boolean;
   listDepartments = [];
   listCategories = [];
   formGroup: FormGroup<{
@@ -38,10 +37,10 @@ export class IdeaEventComponent implements OnInit {
   constructor(private dialogService: DialogService, private http: HttpClient, private route: ActivatedRoute,
     private authService: AuthenticationService, private router: Router, private messageService: MessageService) {
       this.role = authService.getRole();
+      this.userDepartment = authService.getDepartment();
       this.Id = this.router.getCurrentNavigation().extras.state.Id;
       this.getAllIdeaByEvent();
       this.getAllDepartment();
-      this.getAllCategory();
   }
 
 
@@ -51,15 +50,18 @@ export class IdeaEventComponent implements OnInit {
           Authorization: 'Bearer ' + this.authService.getToken()
         }
       }).subscribe((res: any) => {
-        this.listIdea = res.data[0].ideas;
-        this.eventInfo = res.data[0];
-        
-        this.name = res.data[0].name;
-        this.content = res.data[0].content;
-        this.final_closure_date = res.data[0].final_closure_date;
-        this.first_closure_date = res.data[0].first_closure_date;
-      })
+        console.log("res", res.data);
+        console.log("event", res.data.event);
+          
+          this.listIdea = res.data.ideas;
+          this.eventInfo = res.data.event;
 
+          this.name = res.data.event.name;
+          this.content = res.data.event.content;
+          this.final_closure_date = res.data.event.final_closure_date;
+          this.first_closure_date = res.data.event.first_closure_date;
+        }
+      )
   }
 
   getAllDepartment() {
@@ -70,52 +72,16 @@ export class IdeaEventComponent implements OnInit {
     }).subscribe((res: any) => {
       this.listDepartments = res.data;
     })
-  }
-
-  getAllCategory() {
-    this.http.get<any>("http://localhost:3009/api/category", {headers: {
-      Authorization: 'Bearer ' + this.authService.getToken()}
-    }).subscribe((result: any) => {
-            if (result.status_code != 200) {
-              this.showMessage('error', result.error_message);
-              return;
-            }
-            this.listCategories = result.data
-        });
+  
   }
 
   showDialogDownload() {
-    this.dialogDownloadEvent = true;
-  }
-
-  async downloadEvent() {
-    if(this.formGroup.controls.category.value == null || 
-      this.formGroup.controls.department.value == null||
-      this.formGroup.controls.startDate.value == null||
-      this.formGroup.controls.endDate.value== null) {
-        this.dialogDownloadEvent = false;
-      } else {
-        if(this.file.name.length) {
-          const formData: FormData = new FormData();
-    
-          formData.append('files', this.file, this.file.name);
-    
-          await this.http.post<any>("http://localhost:3009/api/upload/images", formData , {headers: { Authorization: 'Bearer ' + this.authService.getToken()}
-            }).subscribe((result: any) => {
-              this.save(result.data[0].file_url)
-            });
-        }else{
-          this.save('')
-        }
-        this.dialogDownloadEvent = false;
-      }
-  }
-  
-  save(file_url: any) {
-    throw new Error('Method not implemented.');
+    this.downloadEvent = true;
   }
 
   ngOnInit(): void {
+    this.userDepartment = this.authService.getDepartment();
+    this.getAllIdeaByEvent();
     this.getAllDepartment();
     this.formGroup = new FormGroup({
       category: new FormControl(null, [Validators.required]),

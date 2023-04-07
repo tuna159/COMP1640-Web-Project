@@ -1,71 +1,70 @@
 <header>
   <!-- Sidebar -->
   <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
-    <div class="position-sticky">
-      <div class="list-group list-group-flush mx-3">
+      <div class="position-sticky">
+          <div class="list-group list-group-flush mx-3">
 
-        <p-chip *ngIf="role != 1 && dataUser.avatar_url != null" label="{{dataUser.nick_name}}"
-          image="{{dataUser.avatar_url}}" styleClass="mr-2"></p-chip>
-        <p-chip *ngIf="role != 1 && dataUser.avatar_url == null" label="{{dataUser.nick_name}}"
-          image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleClass="mr-2"></p-chip>
-        <p-chip *ngIf="role == 1" label="Admin" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg"
-          styleClass="mr-2"></p-chip>
+              <p-chip *ngIf="role != 1 && dataUser.avatar_url != null" label="{{dataUser.nick_name}}"
+                  image="{{dataUser.avatar_url}}" styleClass="mr-2"></p-chip>
+              <p-chip *ngIf="role != 1 && dataUser.avatar_url == null" label="{{dataUser.nick_name}}"
+                  image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleClass="mr-2"></p-chip>
+              <p-chip *ngIf="role == 1" label="Admin"
+                  image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleClass="mr-2"></p-chip>
 
-        <ul id="collapseExample1" class="collapse show list-group list-group-flush">
-          <li *ngIf="role != 1" class="list-group-item py-1 mt-4 border-0">
-            <i class="pi pi-user"></i>
-            <a href="/view/profile" class="text-dark ml-2">View profile</a>
-          </li>
-          <li *ngIf="role == 1" class="list-group-item py-1 mt-4 border-0">
-            <i class="pi pi-chart-bar"></i>
-            <a href="/chart" class="text-dark ml-2">Dashboard</a>
-          </li>
-          <li *ngIf="role == 1" class="list-group-item py-1 mt-4 border-0">
-            <i class="pi pi-users"></i>
-            <a href="/manage/account" class="text-dark ml-2">Manage Account</a>
-          </li>
-          <li *ngIf="role == 2" class="list-group-item py-1 mt-4 border-0">
-            <i class="pi pi-database"></i>
-            <a href="/manage/category" class="text-dark ml-2">Manage Category</a>
-          </li>
-          <li *ngIf="role == 1" class="list-group-item py-1 mt-4 border-0">
-            <i class="pi pi-building"></i>
-            <a href="/manage/department" class="text-dark ml-2">Manage Department</a>
-          </li>
-          <li *ngIf="role == 1" class="list-group-item py-1 mt-4 border-0">
-            <i class="pi pi-stopwatch"></i>
-            <a href="/manage/event" class="text-dark ml-2">Manage Event</a>
-          </li>
-          <li class="list-group-item py-1 mt-4 border-0">
-            <i class="pi pi-slack"></i>
-            <button (click)="categoryDialog=true"
-              style="border: none;  background-color: white; padding-left: 5px">Category</button>
-          </li>
-          <li class="list-group-item py-1 mt-4 border-0">
-            <i class="pi pi-sign-out"></i>
-            <button (click)="logout()" style="border: none;  background-color: white; padding-left: 5px">Log
-              out</button>
-          </li>
-        </ul>
+              <ul id="collapseExample1" class="collapse show list-group list-group-flush">
+                  <li *ngIf="role != 1" class="list-group-item py-1 mt-4 border-0">
+                      <i class="pi pi-user"></i>
+                      <a href="/view/profile" class="text-dark ml-2">View profile</a>
+                  </li>
+                  <li *ngIf="role == 1" class="list-group-item py-1 mt-4 border-0">
+                      <i class="pi pi-chart-bar"></i>
+                      <a href="/chart" class="text-dark ml-2">Dashboard</a>
+                  </li>
+                  <li *ngIf="role == 1" class="list-group-item py-1 mt-4 border-0">
+                      <i class="pi pi-users"></i>
+                      <a href="/manage/account" class="text-dark ml-2">Manage Account</a>
+                  </li>
+                  <li *ngIf="role == 2" class="list-group-item py-1 mt-4 border-0">
+                      <i class="pi pi-database"></i> 
+                      <a href="/manage/category" class="text-dark ml-2">Manage Category</a>
+                  </li>
+                  <li *ngIf="role == 1" class="list-group-item py-1 mt-4 border-0">
+                      <i class="pi pi-building"></i>
+                      <a href="/manage/department" class="text-dark ml-2">Manage Department</a>
+                  </li>
+                  <li *ngIf="role == 1" class="list-group-item py-1 mt-4 border-0">
+                      <i class="pi pi-stopwatch"></i>
+                      <a href="/manage/event" class="text-dark ml-2">Manage Event</a>
+                  </li>
+                  <li class="list-group-item py-1 mt-4 border-0">
+                      <i class="pi pi-slack"></i>
+                      <button (click)="categoryDialog=true" style="border: none;  background-color: white; padding-left: 5px">Category</button>
+                  </li>
+                  <li class="list-group-item py-1 mt-4 border-0">
+                      <i class="pi pi-sign-out"></i>
+                      <button (click)="logout()" style="border: none;  background-color: white; padding-left: 5px">Log
+                          out</button>
+                  </li>
+              </ul>
+          </div>
       </div>
-    </div>
   </nav>
 </header>
 
 <p-dialog header="Category" [(visible)]="categoryDialog" [modal]="true" [responsive]="true" [closable]="false"
-  [style]="{width: '60%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
-  <!-- [queryParams]="{ Id: lc.category_id, name: lc.name}" [routerLink]="['/category/ideas']" -->
+[style]="{width: '60%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
+<!-- [queryParams]="{ Id: lc.category_id, name: lc.name}" [routerLink]="['/category/ideas']" -->
+<form [formGroup]="formGroup" >
   <div class="row" style="width: 100%; margin-right: auto; margin-left: auto; justify-content: space-between;">
-    <div *ngFor="let lc of listCategories; index as i;" style="margin-right: 10px;">
-      <a class="btn btn-primary" [queryParams]="{ Id: lc.category_id, name: lc.name}" [routerLink]="['/category/ideas']"
-        role="button" style="width: 150px; margin-top: 10px;">{{lc.name}}</a>
-    </div>
+      <div  *ngFor="let lc of listCategories; index as i;" style="margin-right: 10px;" >
+          <a class="btn btn-primary" [queryParams]="{ Id: lc.category_id, name: lc.name}" [routerLink]="['/category/ideas']"  role="button" style="width: 150px; margin-top: 10px;">{{lc.name}}</a>
+      </div>
   </div>
-
+  
   <div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: fit-content;">
-    <button type="button" pButton icon="pi pi-close" (click)="categoryDialog=false" label="Cancel" class="btn btn-light"
+      <button type="button" pButton icon="pi pi-close" (click)="categoryDialog=false" label="Cancel" class="btn btn-light"
       style="width:100px; height:38px"></button>
   </div>
+</form>
 
 </p-dialog>
-

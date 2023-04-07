@@ -16,6 +16,7 @@ import { PostComponent } from '../idea-event/post/post.component';
 export class IdeaCategoryComponent {
   ref: DynamicDialogRef;
   listIdea = [];
+  listData = [];
   Id: any;
   name: any;
   role: number;
@@ -26,36 +27,54 @@ export class IdeaCategoryComponent {
   downloadEvent: boolean;
   listDepartments = [];
   listCategories = [];
+  nameCt: any;
   formGroup: FormGroup<{
     category: FormControl<string>;
     department: FormControl<string>;
     startDate: FormControl<Date>;
     endDate: FormControl<Date>;
   }>;
-  apiUrl = 'http://localhost:3009/api/event/';
+  apiUrl = 'http://localhost:3009/api/category/';
   constructor(private dialogService: DialogService, private http: HttpClient, private route: ActivatedRoute,
     private authService: AuthenticationService, private router: Router, private messageService: MessageService) {
       this.role = authService.getRole();
-      this.Id = this.router.getCurrentNavigation().extras.state.Id;
-      this.getAllIdeaByEvent();
+      
+      this.getAllIdeaByCategory();
       this.getAllDepartment();
   }
 
 
-  getAllIdeaByEvent() {
+  getAllIdeaByCategory() {
       this.http.get<any>(this.apiUrl + this.Id + "/ideas", {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken()
         }
       }).subscribe((res: any) => {
-        this.listIdea = res.data[0].ideas;
-        this.eventInfo = res.data[0];
-        console.log("idea: ", res.data[0]);
-        
-        this.name = res.data[0].name;
-        this.content = res.data[0].content;
-        this.final_closure_date = res.data[0].final_closure_date;
-        this.first_closure_date = res.data[0].first_closure_date;
+        console.log("res.data", res.data);
+  
+        this.listIdea = res.data;
+        this.listData = [];
+        res.data.forEach(item => {
+          const tmp = item.tags.map(x => x.name);
+          let bodyData = {
+            full_name: item.user.full_name,
+            idea_id: item.idea_id,
+            title: item.title,
+            nameEvent: item.event.name,
+            created_at: item.created_at,
+            views: item.views,
+            tag: item.tags,
+            is_anonymous: item.is_anonymous,
+            url_avatar: item.user.avatar_url == null ? "https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" : item.user.avatar_url,
+            nameTag: tmp.toString(),
+            category: item.category.name,
+            like: item.likes,
+            dislike: item.dislikes
+          }
+          this.listData.push(bodyData)
+        })
+        console.log("data: ", this.listData);
+  
       })
 
   }
@@ -76,7 +95,19 @@ export class IdeaCategoryComponent {
   }
 
   ngOnInit(): void {
+
+    let obj: any
+    this.route.queryParamMap.subscribe((params) => {
+      obj = params;
+      this.Id = obj.params.Id;
+      this.nameCt = obj.params.name;
+      this.getAllIdeaByCategory();
+    }
+
+  );
+
     this.getAllDepartment();
+    this.getAllIdeaByCategory();
     this.formGroup = new FormGroup({
       category: new FormControl(null, [Validators.required]),
       department: new FormControl(this.listDepartments[0].name, [Validators.required]),
@@ -107,7 +138,7 @@ export class IdeaCategoryComponent {
         if (result) {
             this.showMessage("Add success: ", result);
         }
-        this.getAllIdeaByEvent();
+        this.getAllDepartment();
     });
   }
 }

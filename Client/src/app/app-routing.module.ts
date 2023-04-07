@@ -17,6 +17,7 @@ import { RoleGuardService } from './shared/guard/RoleGuardService';
 import { IdeaEventComponent } from './idea-event/idea-event.component';
 import { ManageDepartmentComponent } from './manage-department/manage-department.component';
 import { IdeaCategoryComponent } from './idea-category/idea-category.component';
+// import { IdeaCategoryComponent } from './idea-category/idea-category.component';
 
 
 
