@@ -53,6 +53,7 @@ export class UploadService {
 
         data.push({
           file_url: fileUpload,
+          file_name: file.originalname,
           size: file.size,
         });
         return data;
@@ -86,9 +87,10 @@ export class UploadService {
 
     for (const image of images) {
       const imageUpload = await this.saveImage(image);
-
+      
       data.push({
         file_url: imageUpload,
+        file_name: image.originalname,
         size: image.size,
       });
       return data;
