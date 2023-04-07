@@ -123,25 +123,24 @@
 <p-dialog header="Sort Ideas Options" [(visible)]="sortEvent" [modal]="true" [responsive]="true" [closable]="false"
 	[style]="{width: '30%'}" [minY]="70" [baseZIndex]="10000">
 
-	<!-- (ngSubmit)="SaveSort()" -->
-	<form [formGroup]="formGroup">
-		<div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: 100%;">
-
-			<div class="custom-control custom-radio custom-control-inline">
-				<input type="radio" id="customRadioInline1" name="customRadioInline1" class="custom-control-input" formControlName="sort">
-				<label class="custom-control-label" for="customRadioInline1">Newest</label>
+	<form [formGroup]="formGroup" (ngSubmit)="SaveSort()">
+		<div class="row">
+			<div class="field-radiobutton col-4" style="display: flex;">
+				<input type="radio" id="newest" name="sort" value="newest" formControlName="sort" checked
+					style="height: 20px; width: 20px;">
+				<label for="newest" style="margin-bottom: 0; margin-left: 5px;">Newest</label>
 			</div>
-			<div class="custom-control custom-radio custom-control-inline">
-				<input type="radio" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" formControlName="sort">
-				<label class="custom-control-label" for="customRadioInline2">Most popular</label>
+			<div class="field-radiobutton col-4" style="display: flex; ">
+				<input type="radio" id="popular" name="sort" value="popular" formControlName="sort"
+					style="height: 20px; width: 20px;">
+				<label for="popular" style="margin-bottom: 0; margin-left: 5px;">Most popular</label>
 			</div>
-			<div class="custom-control custom-radio custom-control-inline">
-				<input type="radio" id="customRadioInline3" name="customRadioInline1" class="custom-control-input" formControlName="sort">
-				<label class="custom-control-label" for="customRadioInline3">Most Views</label>
+			<div class="field-radiobutton col-4" style="display: flex; ">
+				<input type="radio" id="views" name="sort" value="views" formControlName="sort"
+					style="height: 20px; width: 20px;">
+				<label for="views" style="margin-bottom: 0; margin-left: 5px;">Most views</label>
 			</div>
 		</div>
-
-		<br>
 
 		<div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: 100%;">
 			<div class="form-check form-check-inline w-50">
@@ -152,9 +151,7 @@
 				<label class="form-check-label h6" for="inlineCheckbox2">End Date: </label>
 				<p-calendar formControlName="endDate" inputId="basic" [required] appendTo="body"></p-calendar>
 			</div>
-
 		</div>
-
 
 		<div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: fit-content;">
 			<button type="button" pButton icon="pi pi-close" (click)="sortEvent=false" label="Cancel"

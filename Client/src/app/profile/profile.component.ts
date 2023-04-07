@@ -109,7 +109,7 @@ export class ProfileComponent implements OnInit {
 
       formData.append('files', this.fileImage, this.fileImage.name);
 
-      await this.http.post<any>("http://localhost:3009/api/upload", formData , {headers: { Authorization: 'Bearer ' + this.authService.getToken()}
+      await this.http.post<any>("http://localhost:3009/api/upload/images", formData , {headers: { Authorization: 'Bearer ' + this.authService.getToken()}
         }).subscribe((result: any) => {
           this.save(result.data[0].file_url)
         });

@@ -26,6 +26,9 @@ export class HeaderHomeComponent {
         Authorization: 'Bearer ' + this.authService.getToken()
       }
     }).subscribe((res: any) => {
+      if (res.status_code != 200) {
+        return;
+      }
       this.listDepartment = res.data;
       // for (let i = 0; i < this.listDepartment.length; i++) {
       //   let item: MenuItem = {
