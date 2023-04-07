@@ -50,26 +50,17 @@ export class IdeaEventComponent implements OnInit {
           Authorization: 'Bearer ' + this.authService.getToken()
         }
       }).subscribe((res: any) => {
+        console.log("res", res.data);
+        console.log("event", res.data.event);
+          
+          this.listIdea = res.data.ideas;
+          this.eventInfo = res.data.event;
 
-        if(res.data.length != 0)
-        {
-          this.listIdea = res.data[0].ideas;
-          this.eventInfo = res.data[0];
-  
-          console.log("idea: ", res.data[0]);
-  
-          console.log("department: ", this.userDepartment);
-          this.name = res.data[0].name;
-          this.content = res.data[0].content;
-          this.final_closure_date = res.data[0].final_closure_date;
-          this.first_closure_date = res.data[0].first_closure_date;
+          this.name = res.data.event.name;
+          this.content = res.data.event.content;
+          this.final_closure_date = res.data.event.final_closure_date;
+          this.first_closure_date = res.data.event.first_closure_date;
         }
-        else{
-          this.eventInfo = {}
-        }
-        
-        
-      }
       )
   }
 
