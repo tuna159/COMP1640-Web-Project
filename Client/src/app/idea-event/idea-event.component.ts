@@ -16,6 +16,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 export class IdeaEventComponent implements OnInit {
   ref: DynamicDialogRef;
   listIdea = [];
+  listData = [];
   Id: any;
   name: any;
   role: number;
@@ -37,7 +38,10 @@ export class IdeaEventComponent implements OnInit {
   constructor(private dialogService: DialogService, private http: HttpClient, private route: ActivatedRoute,
     private authService: AuthenticationService, private router: Router, private messageService: MessageService) {
       this.role = authService.getRole();
-      this.userDepartment = authService.getDepartment();
+      
+        this.userDepartment = authService.getDepartment();
+      
+      
       this.Id = this.router.getCurrentNavigation().extras.state.Id;
       this.getAllIdeaByEvent();
       this.getAllDepartment();
@@ -50,16 +54,30 @@ export class IdeaEventComponent implements OnInit {
           Authorization: 'Bearer ' + this.authService.getToken()
         }
       }).subscribe((res: any) => {
-        console.log("res", res.data);
-        console.log("event", res.data.event);
-          
-          this.listIdea = res.data.ideas;
-          this.eventInfo = res.data.event;
-
-          this.name = res.data.event.name;
-          this.content = res.data.event.content;
-          this.final_closure_date = res.data.event.final_closure_date;
-          this.first_closure_date = res.data.event.first_closure_date;
+        console.log("res.data", res.data.ideas);
+  
+        this.listIdea = res.data;
+        this.listData = [];
+        res.data.ideas.forEach(item => {
+          const tmp = item.tags.map(x => x.name);
+          let bodyData = {
+            full_name: item.user.full_name,
+            idea_id: item.idea_id,
+            title: item.title,
+            nameEvent: item.event.name,
+            created_at: item.created_at,
+            views: item.views,
+            tag: item.tags,
+            is_anonymous: item.is_anonymous,
+            url_avatar: item.user.avatar_url == null ? "https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" : item.user.avatar_url,
+            nameTag: tmp.toString(),
+            category: item.category.name,
+            like: item.likes,
+            dislike: item.dislikes
+          }
+          this.listData.push(bodyData)
+        })
+        console.log("data: ", this.listData);
         }
       )
   }
@@ -80,14 +98,16 @@ export class IdeaEventComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.userDepartment = this.authService.getDepartment();
+    
+      this.userDepartment = this.authService.getDepartment();
+    
     this.getAllIdeaByEvent();
     this.getAllDepartment();
     this.formGroup = new FormGroup({
       category: new FormControl(null, [Validators.required]),
-      department: new FormControl(this.listDepartments[0].name, [Validators.required]),
-      startDate: new FormControl(this.eventInfo.first_closure_date, [Validators.required]),
-      endDate: new FormControl(this.eventInfo.final_closure_date, [Validators.required]),
+      department: new FormControl(null, [Validators.required]),
+      startDate: new FormControl(null, [Validators.required]),
+      endDate: new FormControl(null, [Validators.required]),
     });
   }
   
