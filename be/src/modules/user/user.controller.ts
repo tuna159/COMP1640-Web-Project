@@ -27,8 +27,10 @@ export class UserController {
   }
 
   @Get()
-  getAllUser() {
-    return this.userService.getAllUsers();
+  getAllUser(
+    @UserData() userData: IUserData, 
+  ) {
+    return this.userService.getAllUsers(userData);
   }
 
   @Get(':user_id')

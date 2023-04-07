@@ -115,25 +115,34 @@ export class UserService {
     });
   }
 
-  async getAllUsers(entityManager?: EntityManager) {
+  async getAllUsers(
+    userData: IUserData,
+    entityManager?: EntityManager,
+  ) {
     const userRepository = entityManager
       ? entityManager.getRepository<User>('user')
       : this.userRepository;
 
+    if (userData.role_id != EUserRole.ADMIN) {
+      throw new HttpException(
+        ErrorMessage.ACCOUNT_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const users = await userRepository
       .createQueryBuilder('user')
-      .innerJoinAndSelect('user.role', 'role')
+      .innerJoinAndSelect('user.department', 'department')
       .getMany();
-
+      
     return users.map((user) => {
       return {
         user_id: user.user_id,
         email: user.email,
         is_deleted: user.is_deleted,
-        role: {
-          role_id: user.role_id,
-          name: user.role.name,
-        },
+        department: user.department,
+        created_at: user.created_at,
+        updated_at: user.updated_at,
       };
     });
   }
