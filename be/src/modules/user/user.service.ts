@@ -268,12 +268,19 @@ export class UserService {
     });
   }
 
-  async getUserDetail(userData: IUserData, targetUserId: string) {
-    const user = await this.findUserByUserId(targetUserId);
+  async getUserDetail(userData: IUserData, user_id: string) {
+    const user = await this.findUserByUserId(user_id);
 
     if (!user) {
       throw new HttpException(
         ErrorMessage.USER_NOT_EXISTS,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (user.user_id != userData.user_id) {
+      throw new HttpException(
+        ErrorMessage.GENERAL_PERMISSION,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -285,6 +292,7 @@ export class UserService {
       birthday: user?.userDetail?.birthday,
       email: user.email,
       gender: user.userDetail.gender,
+      department: user.department,
     };
     return data;
   }

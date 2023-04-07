@@ -81,7 +81,8 @@ export class IdeaService {
     const files = idea.files.map((file) => {
       return {
         file_id: file.file_id,
-        file_url: file.file,
+        file_url: file.file_url,
+        file_name: file.file_name,
         size: file.size,
       };
     });
@@ -508,11 +509,12 @@ export class IdeaService {
 
         const postFileParams = [];
         if (body?.files && body?.files.length) {
-          body.files.forEach((files) => {
+          body.files.forEach((file) => {
             const ideaFileParam = new IdeaFile();
             ideaFileParam.idea_id = idea.idea_id;
-            ideaFileParam.file = files.file;
-            ideaFileParam.size = files.size;
+            ideaFileParam.file_url = file.file_url;
+            ideaFileParam.file_name = file.file_name;
+            ideaFileParam.size = file.size;
 
             postFileParams.push(ideaFileParam);
           });
@@ -730,11 +732,12 @@ export class IdeaService {
 
         const postFileParams = [];
         if (body?.files && body?.files.length) {
-          body.files.forEach((files) => {
+          body.files.forEach((file) => {
             const ideaFileParam = new IdeaFile();
             ideaFileParam.idea_id = idea_id;
-            ideaFileParam.file = files.file;
-            ideaFileParam.size = files.size;
+            ideaFileParam.file_url = file.file_url;
+            ideaFileParam.file_name = file.file_name;
+            ideaFileParam.size = file.size;
             postFileParams.push(ideaFileParam);
           });
         }

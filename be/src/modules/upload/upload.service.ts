@@ -56,8 +56,8 @@ export class UploadService {
           file_name: file.originalname,
           size: file.size,
         });
-        return data;
       }
+      return data;
     }
   }
 

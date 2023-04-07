@@ -32,8 +32,11 @@ export class UserController {
   }
 
   @Get(':user_id')
-  async getUserDetail(@UserData() userData: IUserData, @Param() param) {
-    return await this.userService.getUserDetail(userData, param.user_id);
+  async getUserDetail(
+    @UserData() userData: IUserData, 
+    @Param('user_id') user_id: string,
+  ) {
+    return await this.userService.getUserDetail(userData, user_id);
   }
 
   @Post('/logout')

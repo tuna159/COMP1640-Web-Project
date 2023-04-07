@@ -471,9 +471,9 @@ export class EventService {
     event_id: number,
     entityManager?: EntityManager,
   ) {
-    const checkEvent = await this.eventExists(event_id);
+    const event = await this.eventExists(event_id);
 
-    if (!checkEvent) {
+    if (!event) {
       throw new HttpException(
         ErrorMessage.EVENT_NOT_EXIST,
         HttpStatus.BAD_REQUEST,
@@ -486,10 +486,9 @@ export class EventService {
 
     const data = eventRepository
       .createQueryBuilder('event')
-      .select()
       .leftJoinAndSelect('event.ideas', 'ideas')
       .leftJoinAndSelect('ideas.user', 'user')
-      .leftJoinAndSelect('user.department', 'deparment')
+      .leftJoinAndSelect('user.department', 'department')
       .leftJoinAndSelect('ideas.ideaTags', 'ideaTags')
       .leftJoinAndSelect('ideaTags.tag', 'tag')
       .innerJoinAndSelect('user.userDetail', 'userDetail')
@@ -502,17 +501,16 @@ export class EventService {
       .andWhere('event.created_date <= :now_date', {
         now_date: new Date(),
       })
-      .andWhere('event.final_closure_date >=  :now_date', {
+      .andWhere('event.final_closure_date >= :now_date', {
         now_date: new Date(),
       });
 
-    const [listIdea] = await data.getManyAndCount();
+    const eventDetails = await data.getOne();
 
-    return listIdea;
-
-    // const dataOfIdea = listIdea.map((e) => {
-    //   return {};
-    // });
+    return {
+      event,
+      ideas: eventDetails?.ideas == null ? [] : eventDetails.ideas,
+    };
   }
 
   async getStaffContributionOfPublicEvent(
