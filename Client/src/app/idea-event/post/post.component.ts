@@ -18,7 +18,7 @@ export class PostComponent implements OnInit {
   categories = [];
   uploadedFiles: any[] = [];
   Id; any;
-  file: any
+  listFile: any[] = [];
   url: string;
   formGroup: FormGroup<{
     category: FormControl<string>;
@@ -30,7 +30,7 @@ export class PostComponent implements OnInit {
   }>;
 
   constructor(private dialogService: DialogService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
-    private http: HttpClient, private authService: AuthenticationService, private messageService: MessageService) {
+    private http: HttpClient, private authService: AuthenticationService, private messageService: MessageService, private router: Router) {
       this.Id = this.config.data;
       // console.log(this.data)
       this.getListCategory();
@@ -43,38 +43,42 @@ export class PostComponent implements OnInit {
       }
     }).subscribe((res: any) => {
       this.categories = res.data;
-      console.log(this.categories);
     })
   }
   async SaveIdea() {
-    if(this.file.name.length) {
-
+    if(this.listFile.length) {
       const formData: FormData = new FormData();
-
-      formData.append('files', this.file, this.file.name);
-      await this.http.post<any>("http://localhost:3009/api/upload", formData , {headers: { Authorization: 'Bearer ' + this.authService.getToken()}
+      for(let i = 0; i < this.listFile.length; i++) {
+        formData.append('files', this.listFile[i], this.listFile[i].name);
+      }
+      await this.http.post<any>("http://localhost:3009/api/upload/files", formData ,
+      {headers: { Authorization: 'Bearer ' + this.authService.getToken()}
         }).subscribe((result: any) => {
           this.save(result.data)
         });
     } else {
       this.save('')
     }
-    this.closeDialog()
+    // this.closeDialog()
   }
 
   save(data: any) {
-    this.http.post(this.apiUrl +  this.Id + '/ideas', {
+
+    let bodyData = {
       "title": this.formGroup.controls.title.value,
       "content": this.formGroup.controls.content.value,
       "category_ids": this.formGroup.controls.category.value['category_id'],
       "files": data,
       "is_anonymous": this.formGroup.controls.anonymous.value == true ? 1 : 0
-    }, {
+    }
+
+    this.http.post(this.apiUrl +  this.Id + '/ideas', bodyData, {
       headers: {
         Authorization: 'Bearer ' + this.authService.getToken()
       }
     }).subscribe((result: any) => {
-      console.log(result);
+      this.router.navigateByUrl('/event/ideas', { state: { Id: this.Id } });
+
     });
   }
 
@@ -93,21 +97,24 @@ export class PostComponent implements OnInit {
     this.ref.close();
   }
 
-  onUpload(event) {
-    for (let file of event.files) {
-      this.uploadedFiles.push(file);
-    }
-    this.messageService.add({ severity: 'info', summary: 'File Uploaded', detail: '' });
-  }
+  // onUpload(event) {
+  //   for (let file of event.files) {
+  //     this.uploadedFiles.push(file);
+  //   }
+  //   this.messageService.add({ severity: 'info', summary: 'File Uploaded', detail: '' });
+  // }
   
   onselectFile(e){
     if(e.target.files){
-      var reader = new FileReader();
-      reader.readAsDataURL(e.target.files[0]);
-      reader.onload=(event:any)=>{
-        this.url = event.target.result;
+      for(let i = 0; i < e.target.files.length; i++) {
+        var reader = new FileReader();
+        reader.readAsDataURL(e.target.files[i]);
+        reader.onload=(event:any)=>{
+          this.url = event.target.result;
+        }
+        this.listFile.push(e.target.files[i]) 
       }
-      this.file = e.target.files[0]
+      console.log(this.listFile);
     }
   }
 }
