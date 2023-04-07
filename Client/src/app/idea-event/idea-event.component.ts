@@ -21,10 +21,11 @@ export class IdeaEventComponent implements OnInit {
   role: number;
   eventInfo: any;
   userDepartment: number;
+  file: any
   content: any;
   first_closure_date: any;
   final_closure_date: any;
-  downloadEvent: boolean;
+  dialogDownloadEvent: boolean;
   listDepartments = [];
   listCategories = [];
   formGroup: FormGroup<{
@@ -41,6 +42,7 @@ export class IdeaEventComponent implements OnInit {
       this.Id = this.router.getCurrentNavigation().extras.state.Id;
       this.getAllIdeaByEvent();
       this.getAllDepartment();
+      this.getAllCategory();
   }
 
 
@@ -50,18 +52,17 @@ export class IdeaEventComponent implements OnInit {
           Authorization: 'Bearer ' + this.authService.getToken()
         }
       }).subscribe((res: any) => {
-        
-        this.listIdea = res.data[0].ideas;
-        this.eventInfo = res.data[0];
+        console.log("res", res.data);
+        console.log("event", res.data.event);
+          
+          this.listIdea = res.data.ideas;
+          this.eventInfo = res.data.event;
 
-        console.log("idea: ", res.data[0]);
-
-        console.log("department: ", this.userDepartment);
-        this.name = res.data[0].name;
-        this.content = res.data[0].content;
-        this.final_closure_date = res.data[0].final_closure_date;
-        this.first_closure_date = res.data[0].first_closure_date;
-      }
+          this.name = res.data.event.name;
+          this.content = res.data.event.content;
+          this.final_closure_date = res.data.event.final_closure_date;
+          this.first_closure_date = res.data.event.first_closure_date;
+        }
       )
   }
 
@@ -73,11 +74,47 @@ export class IdeaEventComponent implements OnInit {
     }).subscribe((res: any) => {
       this.listDepartments = res.data;
     })
-  
+  }
+
+  getAllCategory() {
+    this.http.get<any>("http://localhost:3009/api/category", {headers: {
+      Authorization: 'Bearer ' + this.authService.getToken()}
+    }).subscribe((result: any) => {
+            if (result.status_code != 200) {
+              this.showMessage('error', result.error_message);
+              return;
+            }
+            this.listCategories = result.data
+        });
   }
 
   showDialogDownload() {
-    this.downloadEvent = true;
+    this.dialogDownloadEvent = true;
+  }
+
+  async downloadEvent() {
+    if(this.formGroup.controls.category.value == null || 
+      this.formGroup.controls.department.value == null||
+      this.formGroup.controls.startDate.value == null||
+      this.formGroup.controls.endDate.value== null) {
+        this.dialogDownloadEvent = false;
+      } else {
+        if(this.file.name.length) {
+          const formData: FormData = new FormData();
+          formData.append('files', this.file, this.file.name);
+          await this.http.post<any>("http://localhost:3009/api/upload/images", formData , {headers: { Authorization: 'Bearer ' + this.authService.getToken()}
+            }).subscribe((result: any) => {
+              this.save(result.data[0].file_url)
+            });
+        }else{
+          this.save('')
+        }
+        this.dialogDownloadEvent = false;
+      }
+  }
+
+  save(file_url: any) {
+    throw new Error('Method not implemented.');
   }
 
   ngOnInit(): void {

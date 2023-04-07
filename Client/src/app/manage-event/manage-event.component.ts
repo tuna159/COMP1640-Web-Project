@@ -54,7 +54,7 @@ export class ManageEventComponent {
       }
     }).subscribe((result: any) => {
       if (result.status_code != 200) {
-        this.showMessage('error', result.error_message);
+        this.showMessage('error', result.message);
         return;
       }
       this.http.get<any>("http://localhost:3009/api/department", {
@@ -78,6 +78,10 @@ export class ManageEventComponent {
         Authorization: 'Bearer ' + this.authService.getToken()
       }
     }).subscribe((res: any) => {
+      if (res.status_code != 200) {
+        this.showMessage('error', res.message);
+        return;
+      }
       this.listDepartments = res.data;
     })
   }
@@ -109,7 +113,11 @@ export class ManageEventComponent {
       headers: {
         Authorization: 'Bearer ' + this.authService.getToken()
       }
-    }).subscribe(() => {
+    }).subscribe((result: any) => {
+      if (result.status_code != 200) {
+        this.showMessage('error', result.message);
+        return;
+      }
       this.showMessage('success', 'Delete success')
       this.displayDeleteEvent = false;
       this.displayDeleteEvents = false;

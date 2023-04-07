@@ -111,6 +111,10 @@ export class ProfileComponent implements OnInit {
 
       await this.http.post<any>("http://localhost:3009/api/upload/images", formData , {headers: { Authorization: 'Bearer ' + this.authService.getToken()}
         }).subscribe((result: any) => {
+          if(result.statusCode != 200) {
+            this.messageService.add({ severity: 'error', summary: result.message, detail: '' });
+            return
+          }
           this.save(result.data[0].file_url)
         });
     }else{
