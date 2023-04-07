@@ -5,6 +5,7 @@ import { AuthenticationService } from '../auth/services/authentication.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { PostComponent } from './post/post.component';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-idea-event',
@@ -18,15 +19,26 @@ export class IdeaEventComponent implements OnInit {
   Id: any;
   name: any;
   role: number;
+  eventInfo: any;
   content: any;
   first_closure_date: any;
   final_closure_date: any;
+  downloadEvent: boolean;
+  listDepartments = [];
+  listCategories = [];
+  formGroup: FormGroup<{
+    category: FormControl<string>;
+    department: FormControl<string>;
+    startDate: FormControl<Date>;
+    endDate: FormControl<Date>;
+  }>;
   apiUrl = 'http://localhost:3009/api/event/';
   constructor(private dialogService: DialogService, private http: HttpClient, private route: ActivatedRoute,
     private authService: AuthenticationService, private router: Router, private messageService: MessageService) {
       this.role = authService.getRole();
       this.Id = this.router.getCurrentNavigation().extras.state.Id;
       this.getAllIdeaByEvent();
+      this.getAllDepartment();
   }
 
 
@@ -37,7 +49,8 @@ export class IdeaEventComponent implements OnInit {
         }
       }).subscribe((res: any) => {
         this.listIdea = res.data[0].ideas;
-        console.log("idea: ", res.data[0].ideas);
+        this.eventInfo = res.data[0];
+        console.log("idea: ", res.data[0]);
         
         this.name = res.data[0].name;
         this.content = res.data[0].content;
@@ -47,8 +60,29 @@ export class IdeaEventComponent implements OnInit {
 
   }
 
+  getAllDepartment() {
+    this.http.get<any>("http://localhost:3009/api/department", {
+      headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()
+      }
+    }).subscribe((res: any) => {
+      this.listDepartments = res.data;
+    })
+  
+  }
+
+  showDialogDownload() {
+    this.downloadEvent = true;
+  }
+
   ngOnInit(): void {
-    
+    this.getAllDepartment();
+    this.formGroup = new FormGroup({
+      category: new FormControl(null, [Validators.required]),
+      department: new FormControl(this.listDepartments[0].name, [Validators.required]),
+      startDate: new FormControl(this.eventInfo.first_closure_date, [Validators.required]),
+      endDate: new FormControl(this.eventInfo.final_closure_date, [Validators.required]),
+    });
   }
   
   showMessage(severity: string, detail: string) {

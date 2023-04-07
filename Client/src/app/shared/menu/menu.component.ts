@@ -22,19 +22,17 @@ export class MenuComponent {
   role: number;
   items: MenuItem[];
   itemsAdmin: MenuItem[];
-  downloadEvent: boolean;
+  categoryDialog: boolean;
   itemsQA: MenuItem[];
   itemsQAM: MenuItem[];
   categories!: MegaMenuItem[];
+  listCategories = [];
   formGroup: FormGroup<{
-    name: FormControl<string>;
-    department: FormControl<string>;
-    startDate: FormControl<Date>;
-    endDate: FormControl<Date>;
+    category: FormControl<number>;
   }>;
   constructor(private authService: AuthenticationService, private http : HttpClient,
     public router: Router, ){
-      this.role = authService.getRole();
+    this.role = authService.getRole();
     this.getDataUser(); 
     this.role = this.authService.getRole()
   }
@@ -47,14 +45,21 @@ export class MenuComponent {
         });
     }
   }
+
+  
+  getAllCategory() {
+    this.http.get<any>("http://localhost:3009/api/department", {
+      headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()
+      }
+    }).subscribe((res: any) => {
+      this.listCategories = res.data;
+    })
+  
+  }
   
   ngOnInit() {
-    this.formGroup = new FormGroup({
-      name: new FormControl(null, [Validators.required]),
-      department: new FormControl(null, [Validators.required]),
-      startDate: new FormControl(null, [Validators.required]),
-      endDate: new FormControl(null, [Validators.required]),
-    });
+    
     
 
     this.items = [
@@ -123,7 +128,5 @@ export class MenuComponent {
     this.router.navigateByUrl('/login')
   }
 
-  showDialogDownload() {
-    this.downloadEvent = true;
-  }
+
 }

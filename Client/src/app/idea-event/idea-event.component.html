@@ -27,12 +27,17 @@
                     <div class="row"
                         style="width: 100%; margin-left: auto; margin-right: auto; justify-content: space-between;">
 
-                        <div style="position: static; width: 100%; text-align: center;">
+                        <div style="position: static; width: 70%; text-align: center;  margin-left: 10%;">
                             <p
                                 style="text-align: center; margin-left: 10px; font-size: 25px; font-weight: bold; color: black;">
                                 Ideas of {{name}}
                             </p>
 
+                        </div>
+                        
+                        <div class="field" style="width: 20%;">
+
+                            <button (click)="showDialogDownload()" class="btn btn-light btn-outline-secondary">Download Ideas</button>
                         </div>
 
 
@@ -118,3 +123,40 @@
 
         <p-toast position="bottom-right"></p-toast>
     </div>
+
+    <p-dialog header="Confirm" [(visible)]="downloadEvent" [modal]="true" [responsive]="true" [closable]="false"
+    [style]="{width: '60%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
+    
+    <form [formGroup]="formGroup" >
+        <div class="field">
+            <label for="name" style="width: 100%;">Name Category</label>
+            <p-dropdown [options]="listCategories" formControlName="category" optionLabel="name" appendTo="body" [style] = "{'width' : '100%'}"
+                    [filter]="true" ></p-dropdown>
+        </div>
+
+        <div class="field" style="margin-top: 5%;">
+            <label for="name" style="width: 100%;">Name Department</label>
+            <p-dropdown [options]="listDepartments" formControlName="department" optionLabel="name" appendTo="body" [style] = "{'width' : '100%'}"
+                    [filter]="true" ></p-dropdown>
+        </div>
+
+        <div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: 100%;">
+			<div class="form-check form-check-inline w-50">
+				<label class="form-check-label h6" for="inlineCheckbox2">Start Date: </label>
+				<p-calendar [style] = "{'margin-left' : '2%'}" formControlName="startDate" inputId="basic" [required] appendTo="body">{{eventInfo.first_closure_date}}</p-calendar>
+			</div>
+			<div class="form-check form-check-inline w-50">
+				<label class="form-check-label h6" for="inlineCheckbox2">End Date: </label>
+				<p-calendar [style] = "{'margin-left' : '2%'}" formControlName="endDate" inputId="basic" [required] appendTo="body">{{eventInfo.final_closure_date}}</p-calendar>
+			</div>
+
+		</div>
+        
+        <div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: fit-content;">
+            <button type="button" pButton icon="pi pi-close" (click)="downloadEvent=false" label="Cancel" class="btn btn-light"
+            style="width:100px; height:38px"></button>
+            <button type="submit" class="btn btn-primary ml-5">Download</button>
+        </div>
+    </form>
+
+</p-dialog>
