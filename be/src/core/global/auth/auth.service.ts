@@ -48,6 +48,7 @@ export class AuthService {
     const payloadToken = {
       user_id: userExist.user_id,
       role_id: userExist.role_id,
+      deparment_id: userExist.department_id,
     };
 
     const token = this.jwtService.sign(payloadToken, {
@@ -82,6 +83,7 @@ export class AuthService {
       );
 
     const data = await this.returnResponseAuth(email);
+
     return {
       user_id: email.user_id,
       token: data.token,
