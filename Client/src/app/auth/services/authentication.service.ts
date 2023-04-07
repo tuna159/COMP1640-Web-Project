@@ -44,8 +44,19 @@ export class AuthenticationService {
             localStorage.removeItem('user');
         }
         const tokenInfo = this.getDecodedAccessToken(this.userSubject.value.data.token); // decode token
-       
+        
+        
         return tokenInfo.role_id
+    }
+
+    public getDepartment(){
+        if(!this.userSubject.value.data){
+            localStorage.removeItem('user');
+        }
+        const tokenInfo = this.getDecodedAccessToken(this.userSubject.value.data.token); // decode token
+       
+        
+        return tokenInfo.deparment_id        ;
     }
 
     public getDecodedAccessToken(token: string): any {
