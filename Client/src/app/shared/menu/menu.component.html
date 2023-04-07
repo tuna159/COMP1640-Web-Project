@@ -1,13 +1,15 @@
-
 <header>
     <!-- Sidebar -->
     <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
         <div class="position-sticky">
             <div class="list-group list-group-flush mx-3">
 
-                <p-chip *ngIf="role != 1 && dataUser.avatar_url != null" label="{{dataUser.nick_name}}" image="{{dataUser.avatar_url}}" styleClass="mr-2"></p-chip>
-                <p-chip *ngIf="role != 1 && dataUser.avatar_url == null" label="{{dataUser.nick_name}}" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleClass="mr-2"></p-chip>
-                <p-chip *ngIf="role == 1" label="Admin" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleClass="mr-2"></p-chip>
+                <p-chip *ngIf="role != 1 && dataUser.avatar_url != null" label="{{dataUser.nick_name}}"
+                    image="{{dataUser.avatar_url}}" styleClass="mr-2"></p-chip>
+                <p-chip *ngIf="role != 1 && dataUser.avatar_url == null" label="{{dataUser.nick_name}}"
+                    image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleClass="mr-2"></p-chip>
+                <p-chip *ngIf="role == 1" label="Admin"
+                    image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleClass="mr-2"></p-chip>
 
                 <ul id="collapseExample1" class="collapse show list-group list-group-flush">
                     <li *ngIf="role != 1" class="list-group-item py-1 mt-4 border-0">
@@ -23,28 +25,25 @@
                         <a href="/manage/account" class="text-dark ml-2">Manage Account</a>
                     </li>
                     <li *ngIf="role == 2" class="list-group-item py-1 mt-4 border-0">
-                        <i class="pi pi-database"></i>
+                        <i class="pi pi-database"></i> 
                         <a href="/manage/category" class="text-dark ml-2">Manage Category</a>
                     </li>
                     <li *ngIf="role == 1" class="list-group-item py-1 mt-4 border-0">
                         <i class="pi pi-building"></i>
                         <a href="/manage/department" class="text-dark ml-2">Manage Department</a>
                     </li>
-                    <li *ngIf="role == 2" class="list-group-item py-1 mt-4 border-0">
-                        <i class="pi pi-download"></i>
-                        <button (click)="showDialogDownload()" style="border: none;  background-color: white; padding-left: 5px">Download</button>
-                    </li>
                     <li *ngIf="role == 1" class="list-group-item py-1 mt-4 border-0">
                         <i class="pi pi-stopwatch"></i>
                         <a href="/manage/event" class="text-dark ml-2">Manage Event</a>
                     </li>
-                    <li *ngIf="role != 1" class="list-group-item py-1 mt-4 border-0">
-                        <i class="pi pi-stopwatch"></i>
-                        <a href="" class="text-dark ml-2">Category</a>
+                    <li class="list-group-item py-1 mt-4 border-0">
+                        <i class="pi pi-slack"></i>
+                        <button (click)="categoryDialog=true" style="border: none;  background-color: white; padding-left: 5px">Category</button>
                     </li>
                     <li class="list-group-item py-1 mt-4 border-0">
                         <i class="pi pi-sign-out"></i>
-                        <button (click)="logout()" style="border: none;  background-color: white; padding-left: 5px">Log out</button>
+                        <button (click)="logout()" style="border: none;  background-color: white; padding-left: 5px">Log
+                            out</button>
                     </li>
                 </ul>
             </div>
@@ -52,30 +51,18 @@
     </nav>
 </header>
 
+<p-dialog header="Confirm" [(visible)]="categoryDialog" [modal]="true" [responsive]="true" [closable]="false"
+[style]="{width: '60%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
 
-<p-dialog header="Confirm" [(visible)]="downloadEvent" [modal]="true" [responsive]="true" [closable]="false"
-    [style]="{width: '60%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
+<form [formGroup]="formGroup" >
+    <div class="row">
+        <a class="btn btn-primary" href="#" role="button">Link</a>
+    </div>
     
-    <form [formGroup]="formGroup" >
-        <div class="field">
-            <label for="name" style="width: 100%;">Name Category</label>
-            
-            <input type="text" pInputText id="name" formControlName="name" required  style=" width: 100%;"
-                [ngClass]="(formGroup.controls.name.invalid && (formGroup.controls.name.dirty || formGroup.controls.name.touched)) ? 'ng-invalid ng-dirty' : ''">
-        
-            <div class="form-group mb-2" [hidden]="formGroup.controls.name.valid|| formGroup.controls.name.untouched">
-                <span *ngIf="formGroup.controls.name.hasError('required') || formGroup.controls.name.hasError('blankString') "
-                    class="error-message-span" style="color: #FD0B0B; font-size: small;">
-                    Please enter name of category
-                </span>
-            </div>
-        </div>
-        
-        <div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: fit-content;">
-            <button type="button" pButton icon="pi pi-close" (click)="downloadEvent=false" label="Cancel" class="btn btn-light"
-            style="width:100px; height:38px"></button>
-            <button type="submit" class="btn btn-primary ml-5">Download</button>
-        </div>
-    </form>
+    <div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: fit-content;">
+        <button type="button" pButton icon="pi pi-close" (click)="categoryDialog=false" label="Cancel" class="btn btn-light"
+        style="width:100px; height:38px"></button>
+    </div>
+</form>
 
 </p-dialog>
