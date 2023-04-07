@@ -57,7 +57,7 @@
 <form [formGroup]="formGroup" >
     <div class="row" style="width: 100%; margin-right: auto; margin-left: auto; justify-content: space-between;">
         <div  *ngFor="let lc of listCategories; index as i;" style="margin-right: 10px;" >
-            <a class="btn btn-primary"   role="button" style="width: 150px; margin-top: 10px;">{{lc.name}}</a>
+            <a class="btn btn-primary" [queryParams]="{ Id: lc.category_id, name: lc.name}" [routerLink]="['/category/ideas']"  role="button" style="width: 150px; margin-top: 10px;">{{lc.name}}</a>
         </div>
     </div>
     
