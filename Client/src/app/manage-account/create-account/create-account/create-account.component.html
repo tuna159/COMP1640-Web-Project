@@ -95,7 +95,7 @@
             <option>Quality Assurance Coordinator</option>
         </select>
         -->
-        <p-dropdown [options]="listRole" formControlName="role" optionLabel="name" appendTo="body" [style] = "{'width' : '100%'}"
+        <p-dropdown [options]="listRole" formControlName="role" optionLabel="name" appendTo="body" [style] = "{'width' : '100%'}" (onChange)="changeRole()"
                     [filter]="true" ></p-dropdown>
     </div>
     
@@ -113,16 +113,11 @@
         
         <p-dropdown [options]="listStatus" formControlName="status" optionLabel="name" appendTo="body" [style] = "{'width' : '100%'}"
                     [filter]="true" ></p-dropdown>
-        <!--
-        <select class="form-control" formControlName="status" id="status">
-            <option>Using</option>
-            <option>Not Using</option>
-        </select>
-        -->
+
     </div>
     
 
-    <div>
+    <div style="margin-top: 2%;">
         <button pButton type="Submit" label="Save"></button>
     </div>
 </form>

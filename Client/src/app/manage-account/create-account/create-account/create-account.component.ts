@@ -22,13 +22,13 @@ export class CreateAccountComponent {
   ]
 
   genders = [
-    { name: 'Male'},
-    { name: 'Female'},
+    { name: 'Male' },
+    { name: 'Female' },
   ];
-  listRole = [ 
-    {name: 'Staff', Id: '4'},
-    {name: 'Quality Assurance Manager', Id: '2'},
-    {name: 'Quality Assurance Coordinator', Id: '3'}
+  listRole = [
+    { name: 'Staff', Id: '4' },
+    { name: 'Quality Assurance Manager', Id: '2' },
+    { name: 'Quality Assurance Coordinator', Id: '3' }
   ]
   listDepartments = [];
   formGroup: FormGroup<{
@@ -46,26 +46,25 @@ export class CreateAccountComponent {
   value: any;
   constructor(private dialogService: DialogService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
     private http: HttpClient, private authService: AuthenticationService,) {
-      this.data = this.config.data;
-      // console.log(this.data)
-      this.getAllDepartment();
+    this.data = this.config.data;
+    // console.log(this.data)
   }
-  
+
   ngOnInit(): void {
-    this.getAllDepartment();
     this.formGroup = new FormGroup({
       email: new FormControl(null, [Validators.required]),
       password: new FormControl(null, [Validators.required]),
       fullName: new FormControl(null, [Validators.required]),
       nickName: new FormControl(null, [Validators.required]),
       gender: new FormControl(null, [Validators.required]),
-      role: new FormControl(null, [Validators.required]),
+      role: new FormControl(this.listRole.find(x => x.Id == '4'), [Validators.required]),
       department: new FormControl(null, [Validators.required]),
       birthday: new FormControl(null, [Validators.required]),
       status: new FormControl(null, [Validators.required]),
     });
+    this.changeRole()
 
-    if(this.data.user_id != null) {
+    if (this.data.user_id != null) {
       this.setValueF();
     }
   }
@@ -89,29 +88,50 @@ export class CreateAccountComponent {
     }).subscribe((res: any) => {
       this.listDepartments = res.data;
     })
-  
+  }
+
+  changeRole() {
+    if (this.formGroup.controls.role.value['Id'] == 4) {
+      this.http.get<any>("http://localhost:3009/api/department", {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken()
+        }
+      }).subscribe((res: any) => {
+        this.listDepartments = res.data;
+      })
+    }else if (this.formGroup.controls.role.value['Id'] == 3) {
+      this.http.get<any>("http://localhost:3009/api/department/available", {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken()
+        }
+      }).subscribe((res: any) => {
+        this.listDepartments = res.data;
+      })
+    }else{ 
+      this.listDepartments = []
+    }
   }
 
   SaveIdea() {
-    if(this.data.user_id == null) {
-      let birthdate =""
-      if(this.formGroup.controls.birthday.value.getMonth() + 1 <= 9){
-        birthdate = this.formGroup.controls.birthday.value.getFullYear() + "-0" + 
-        (this.formGroup.controls.birthday.value.getMonth() +1 ) + "-"+ 
-        this.formGroup.controls.birthday.value.getDate();
-      }else{
-        birthdate = this.formGroup.controls.birthday.value.getFullYear() + "-" + 
-        this.formGroup.controls.birthday.value.getMonth() + "-"+ 
-        this.formGroup.controls.birthday.value.getDate();
+    if (this.data.user_id == null) {
+      let birthdate = ""
+      if (this.formGroup.controls.birthday.value.getMonth() + 1 <= 9) {
+        birthdate = this.formGroup.controls.birthday.value.getFullYear() + "-0" +
+          (this.formGroup.controls.birthday.value.getMonth() + 1) + "-" +
+          this.formGroup.controls.birthday.value.getDate();
+      } else {
+        birthdate = this.formGroup.controls.birthday.value.getFullYear() + "-" +
+          this.formGroup.controls.birthday.value.getMonth() + "-" +
+          this.formGroup.controls.birthday.value.getDate();
       }
       this.http.post(this.apiUrl, {
-        "email" : this.formGroup.controls.email.value,
-        "password" : this.formGroup.controls.password.value,
-        "role_id" : this.formGroup.controls.role.value['Id'],
-        "full_name" : this.formGroup.controls.fullName.value,
-        "nick_name" : this.formGroup.controls.nickName.value,
-        "gender" : this.formGroup.controls.nickName.value,
-        "department_id" : this.formGroup.controls.department.value['department_id'],
+        "email": this.formGroup.controls.email.value,
+        "password": this.formGroup.controls.password.value,
+        "role_id": this.formGroup.controls.role.value['Id'],
+        "full_name": this.formGroup.controls.fullName.value,
+        "nick_name": this.formGroup.controls.nickName.value,
+        "gender": this.formGroup.controls.nickName.value,
+        "department_id": this.formGroup.controls.department.value['department_id'],
         "birthdate": birthdate
       }, {
         headers: {
@@ -123,15 +143,15 @@ export class CreateAccountComponent {
       this.closeDialog()
     } else {
       let data = {
-        "role_id" : Number(this.formGroup.controls.role.value['Id']),
-        "department_id" : this.formGroup.controls.department.value['department_id'],
-        "is_deleted": this.formGroup.controls.status.value['name'] == "Using" ? 0:1
+        "role_id": Number(this.formGroup.controls.role.value['Id']),
+        "department_id": this.formGroup.controls.department.value['department_id'],
+        "is_deleted": this.formGroup.controls.status.value['name'] == "Using" ? 0 : 1
       }
       console.log(data)
-      this.http.put("http://localhost:3009/api/user/" + this.data.user_id, {      
-        "role_id" : Number(this.formGroup.controls.role.value['Id']),
-        "department_id" : this.formGroup.controls.department.value['department_id'],
-        "is_deleted": this.formGroup.controls.status.value['name'] == "Using" ? 0:1
+      this.http.put("http://localhost:3009/api/user/" + this.data.user_id, {
+        "role_id": Number(this.formGroup.controls.role.value['Id']),
+        "department_id": this.formGroup.controls.department.value['department_id'],
+        "is_deleted": this.formGroup.controls.status.value['name'] == "Using" ? 0 : 1
       }, {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken()
@@ -141,7 +161,7 @@ export class CreateAccountComponent {
       });
       this.closeDialog()
     }
-    
+
   }
 
   closeDialog() {

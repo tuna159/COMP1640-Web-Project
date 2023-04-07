@@ -11,31 +11,18 @@ import { AuthenticationService } from 'src/app/auth/services/authentication.serv
   styleUrls: ['./add-department.component.css']
 })
 export class AddDepartmentComponent implements OnInit{
-  listManagers = [];
   apiUrl: string = "http://localhost:3009/api/department";
   data: any;
   formGroup: FormGroup<{
     name: FormControl<string>;
-    manager: FormControl<string>;
   }>;
 
   constructor(private dialogService: DialogService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
     private http: HttpClient, private authService: AuthenticationService,) {
       this.data = this.config.data;
-      console.log("this.data", this.data)
-      this.getListManager();
+
   }
-  getListManager() {
-    this.http.get<any>("http://localhost:3009/api/user", {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe((res: any) => {
-      let listRole = []
-      listRole = res.data.map(x => x.role);
-      this.listManagers = listRole
-    })
-  }
+  
 
   SaveDepartment() {
     if(this.data.department_id == null) {
@@ -65,7 +52,6 @@ export class AddDepartmentComponent implements OnInit{
   ngOnInit(): void {
     this.formGroup = new FormGroup({
       name: new FormControl(null, [Validators.required]),
-      manager: new FormControl(null, [Validators.required]),
     });
     this.setValueF()
   }
