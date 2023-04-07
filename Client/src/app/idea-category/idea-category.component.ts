@@ -38,13 +38,21 @@ export class IdeaCategoryComponent {
   constructor(private dialogService: DialogService, private http: HttpClient, private route: ActivatedRoute,
     private authService: AuthenticationService, private router: Router, private messageService: MessageService) {
       this.role = authService.getRole();
-      
+      let obj: any
+    this.route.queryParamMap.subscribe((params) => {
+      obj = params;
+      this.Id = obj.params.Id;
+      this.nameCt = obj.params.name;
+      this.getAllIdeaByCategory();
+    })
       this.getAllIdeaByCategory();
       this.getAllDepartment();
   }
 
 
   getAllIdeaByCategory() {
+    
+    
       this.http.get<any>(this.apiUrl + this.Id + "/ideas", {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken()
@@ -110,9 +118,9 @@ export class IdeaCategoryComponent {
     this.getAllIdeaByCategory();
     this.formGroup = new FormGroup({
       category: new FormControl(null, [Validators.required]),
-      department: new FormControl(this.listDepartments[0].name, [Validators.required]),
-      startDate: new FormControl(this.eventInfo.first_closure_date, [Validators.required]),
-      endDate: new FormControl(this.eventInfo.final_closure_date, [Validators.required]),
+      department: new FormControl(null, [Validators.required]),
+      startDate: new FormControl(null, [Validators.required]),
+      endDate: new FormControl(null, [Validators.required]),
     });
   }
   

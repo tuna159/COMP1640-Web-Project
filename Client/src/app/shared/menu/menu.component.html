@@ -54,17 +54,19 @@
 <p-dialog header="Category" [(visible)]="categoryDialog" [modal]="true" [responsive]="true" [closable]="false"
 [style]="{width: '60%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
 <!-- [queryParams]="{ Id: lc.category_id, name: lc.name}" [routerLink]="['/category/ideas']" -->
-<form [formGroup]="formGroup" >
-  <div class="row" style="width: 100%; margin-right: auto; margin-left: auto; justify-content: space-between;">
-      <div  *ngFor="let lc of listCategories; index as i;" style="margin-right: 10px;" >
-          <a class="btn btn-primary" [queryParams]="{ Id: lc.category_id, name: lc.name}" [routerLink]="['/category/ideas']"  role="button" style="width: 150px; margin-top: 10px;">{{lc.name}}</a>
-      </div>
-  </div>
-  
-  <div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: fit-content;">
-      <button type="button" pButton icon="pi pi-close" (click)="categoryDialog=false" label="Cancel" class="btn btn-light"
-      style="width:100px; height:38px"></button>
-  </div>
-</form>
+
+
+    <div class="row" style="width: 100%; margin-right: auto; margin-left: auto; justify-content: space-between;">
+        <div  *ngFor="let lc of listCategories; index as i;" style="margin-right: 10px;" >
+            <a class="btn btn-primary" [queryParams]="{ Id: lc.category_id, name: lc.name}" [routerLink]="['/category/ideas']"  role="button" style="width: 150px; margin-top: 10px;">{{lc.name}}</a>
+        </div>
+    </div>
+    
+    <div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: fit-content;">
+        <button type="button" pButton icon="pi pi-close" (click)="categoryDialog=false" label="Cancel" class="btn btn-light"
+        style="width:100px; height:38px"></button>
+    </div>
+
+
 
 </p-dialog>
