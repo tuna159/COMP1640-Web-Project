@@ -42,7 +42,7 @@ export class UploadService {
 
     if (pdf.length === 0) {
       throw new HttpException(
-        ErrorMessage.YOU_CAN_CHOOSE_FILE_PDF,
+        ErrorMessage.IDEA_ATTACHMENTS,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -50,7 +50,6 @@ export class UploadService {
     if (pdf) {
       for (const file of pdf) {
         const fileUpload = await this.saveFile(file);
-
         data.push({
           file_url: fileUpload,
           file_name: file.originalname,
@@ -76,25 +75,25 @@ export class UploadService {
 
   async uploadImageFireBase(image: Array<Express.Multer.File>) {
     const data = [];
-    const images = image.filter((el) => el.mimetype != 'application/pdf');
-
+    const images = image.filter((el) => 
+        el.mimetype == 'image/jpeg' || el.mimetype == "image/png",
+    );
     if (images.length == 0) {
       throw new HttpException(
-        ErrorMessage.YOU_CAN_CHOOSE_FILE_IMAGE,
+        ErrorMessage.IMAGE_UPLOAD_FORMAT,
         HttpStatus.BAD_REQUEST,
       );
     }
 
     for (const image of images) {
       const imageUpload = await this.saveImage(image);
-      
       data.push({
         file_url: imageUpload,
         file_name: image.originalname,
         size: image.size,
       });
-      return data;
     }
+    return data;
   }
 
   async saveImage(file: Express.Multer.File) {
