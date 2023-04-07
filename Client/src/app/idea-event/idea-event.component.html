@@ -7,9 +7,9 @@
     <div class="menu" style="position: fixed;">
       <app-menu></app-menu>
     </div>
-    <!-- && userDepartment == eventInfo.department_id -->
+    <!-- && userDepartment == eventInfo.department_id || eventInfo.department_id == null -->
     <div class="" style="margin-top: 5rem">
-      <div *ngIf="role == 4 && userDepartment == eventInfo.department_id || eventInfo.department_id == null"
+      <div *ngIf="role == 4 "
         style="width: 55%; margin-bottom: 2em; margin-left: auto; margin-right: auto; background-color: white; border-radius: 5px; height: 80px; padding-top: 5px; padding-left: 20px;"
         class="row">
         <div style="margin-top: auto; margin-bottom: auto; width: 7%;">
@@ -40,68 +40,75 @@
 
 
 
-            <div class="row" style="width: 100%; margin-left: auto; margin-right: auto;">
-              <div class="col-md-12">
-                <p-table [value]="listIdea" [tableStyle]="{ 'width': '100%' }" [rowHover]="true" [scrollable]="true"
-                  [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 50]">
-                  <ng-template pTemplate="body" let-idea>
-                    <tr>
-                      <td>
-                        <div style="width: 100%;">
-                          <div class="row"
-                            style="margin-top: 2rem; margin-bottom: 1rem; background-color: #F2F2F2; padding: 10px; border-radius: 10px; width: 100%; margin-left: auto; margin-right:auto;">
-                            <div class="personal-info col-3" style="position: static;">
-                              <p></p>
-                              <p-avatar *ngIf="idea.is_anonymous == 0 && idea.user.userDetail.avatar_url "
-                                image="{{idea.avatar_url}}" styleclass="mr-2" size="xlarge" shape="circle"></p-avatar>
+            <div class="row" style="margin-top: 20px; width: 100%; margin-left: auto; margin-right: auto;">
+                <div class="col-md-12">
+                    <p-table #myTab [value]="listData" [tableStyle]="{ 'width': '100%' }" [rowHover]="true"
+                        [scrollable]="true"
+                        [globalFilterFields]="['user.full_name','event.nameEvent','title', 'nameTag', 'category']"
+                        [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 50]">
+                        <ng-template pTemplate="body" let-idea>
+                            <tr>
+                                <td>
+                                    <div style="width: 100%;">
+                                        <div class="row"
+                                            style="margin-top: 2rem; margin-bottom: 1rem; background-color: #F2F2F2; padding: 10px; border-radius: 10px; width: 100%; margin-left: auto; margin-right:auto;">
+                                            <div class="personal-info col-3" style="position: static;">
+                                                <p-avatar *ngIf="idea.is_anonymous == 0 && idea.url_avatar"
+                                                    image="{{idea.url_avatar}}" styleclass="mr-2" size="xlarge"
+                                                    shape="circle"></p-avatar>
+                                                <p-avatar *ngIf="idea.is_anonymous == 0 && idea.url_avatar == null"
+                                                    image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg"
+                                                    styleclass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                                <p></p>
 
-                              <p-avatar *ngIf="idea.is_anonymous == 0 && idea.user.userDetail.avatar_url == null"
-                                image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleclass="mr-2"
-                                size="xlarge" shape="circle"></p-avatar>
+                                                <p-avatar *ngIf="idea.is_anonymous == 1"
+                                                    image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg"
+                                                    styleclass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                                <p></p>
+                                                <p *ngIf="idea.is_anonymous == 0">{{idea.full_name}}</p>
+                                                <p *ngIf="idea.is_anonymous == 1">User</p>
 
-                              <p-avatar *ngIf="idea.is_anonymous == 1"
-                                image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleclass="mr-2"
-                                size="xlarge" shape="circle"></p-avatar>
-                              <p></p>
-                              <p *ngIf="idea.is_anonymous == 0">
-                                {{idea.user.userDetail.full_name}}</p>
-                              <p *ngIf="idea.is_anonymous == 1">User</p>
+                                            </div>
+                                            <div class="col-9" style="position: static;">
+                                                <button pbutton pripple type="button" label=""
+                                                    class="p-button-text p-button-plain border-0 text-left w-100 p-0"
+                                                    style="color: black; font-size: 19px; font-weight: 700;"
+                                                    (click)="IdeaDetail(idea.idea_id)">{{idea.title}}</button>
+                                                <div class="row"
+                                                    style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; margin-top: 1%;">
+                                                    <p>Event: {{idea.nameEvent}}</p>
 
-                            </div>
-                            <div class="col-9" style="position: static;">
-                              <button pbutton pripple type="button" label=""
-                                class="p-button-text p-button-plain border-0 text-left w-100 p-0"
-                                style="color: black; font-size: 19px; height: max-content; font-weight: 700;"
-                                (click)="IdeaDetail(idea.idea_id)">{{idea.title}}</button>
-                              <div class="row"
-                                style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; margin-top: 1%;">
-                                <p>Event: {{name}}</p>
+                                                    <p>{{idea.views}} Views</p>
+                                                </div>
 
-                                <p>{{idea.views}} Views</p>
-                              </div>
-                              <div class="row"
-                                style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; ">
-                                <p style="width: 60%;">Start at: {{idea.created_at |
-                                  date:'mediumDate'}}</p>
-                                <p>{{idea.likes}} Likes</p>
-                                <p>{{idea.dislikes}} Dislikes</p>
-                              </div>
-                              <!-- <div class="row" style="margin-left: auto; margin-right: auto;">
-                                                              <p style="display: none;">{{idea.nameTag}}</p>
-                                                          </div> -->
-                              <div class="row">
-                                <p-chip label="#{{lc.tag.name}}" *ngFor="let lc of idea.ideaTags; index as i;"></p-chip>
+                                                <div class="row"
+                                                    style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; ">
+                                                    <p style="width: 60%;">Start at: {{idea.created_at |
+                                                        date:'mediumDate'}}</p>
+                                                    <p>{{idea.like}} Likes</p>
+                                                    <p>{{idea.dislike}} Dislikes</p>
+                                                </div>
+                                                <div class="row"
+                                                    style="width: 100%; justify-content: space-between; margin-left: auto; margin-right: auto; margin-top: 1%;">
+                                                    <p>Category: {{idea.category}}</p>
+                                                </div>
+                                                <div class="row" style="margin-left: auto; margin-right: auto;">
+                                                    <p style="display: none;">{{idea.tags}}</p>
+                                                </div>
+                                                <div class="row">
+                                                    <p-chip label="#{{lc.name}}"
+                                                        *ngFor="let lc of idea.tag; index as i;"></p-chip>
 
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </td>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
 
-                    </tr>
-                  </ng-template>
-                </p-table>
-              </div>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
             </div>
           </div>
 
