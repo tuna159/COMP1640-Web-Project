@@ -35,6 +35,7 @@ export class MenuComponent {
     this.role = authService.getRole();
     this.getDataUser(); 
     this.role = this.authService.getRole()
+    this.getListCategory()
   }
   getDataUser() {
     if(this.authService.getRole() != 1) {
@@ -47,81 +48,23 @@ export class MenuComponent {
   }
 
   
-  getAllCategory() {
-    this.http.get<any>("http://localhost:3009/api/department", {
+  getListCategory() {
+    this.http.get<any>("http://localhost:3009/api/category", {
       headers: {
         Authorization: 'Bearer ' + this.authService.getToken()
       }
     }).subscribe((res: any) => {
       this.listCategories = res.data;
     })
-  
   }
   
   ngOnInit() {
     
-    
+  }
 
-    this.items = [
-      { label: 'View profile', icon: 'pi pi-users', routerLink: '/view/profile' },
-      { label: 'Settings', icon: 'pi pi-fw pi-download' },
-      { label: 'Log out', icon: 'pi pi-sign-out', command: () => {
-        this.logout()
-      }}
-    ];
-
-    this.itemsAdmin = [
-      // { label: 'View profile', icon: 'pi pi-users', routerLink: '/view/profile' },
-      { label: 'Manage Account', icon: 'pi pi-fw pi-download' },
-      { label: 'Manage Event', icon: 'pi pi-fw pi-download' },
-      {
-        label: 'Log out', icon: 'pi pi-sign-out', command: () => {
-          this.logout()
-        }
-      }
-    ];
-
-    this.itemsQA = [
-      // { label: 'View profile', icon: 'pi pi-users', routerLink: '/view/profile' },
-      { label: 'Manage Category', icon: 'pi pi-fw pi-download' },
-      {
-        label: 'Log out', icon: 'pi pi-sign-out', command: () => {
-          this.logout()
-        }
-      }
-    ];
-
-    this.categories = [
-      {
-        label: 'Categories', icon: 'pi pi-list',
-        items: [
-          [
-            {
-
-              items: [{ label: 'Video 1.1' }, { label: 'Video 1.2' }, { label: 'Video 1.3' }, { label: 'Video 1.4' }]
-            },
-          ],
-          [
-            {
-
-              items: [{ label: 'Video 3.1' }, { label: 'Video 3.2' }, { label: 'Video 3.2' }, { label: 'Video 3.2' }]
-            },
-          ],
-          [
-            {
-
-              items: [{ label: 'Video 3.1' }, { label: 'Video 3.2' }, { label: 'Video 3.2' }, { label: 'Video 3.2' }]
-            },
-          ],
-          [
-            {
-
-              items: [{ label: 'Video 3.1' }, { label: 'Video 3.2' }, { label: 'Video 3.2' }, { label: 'Video 3.2' }]
-            },
-          ]
-        ]
-      },
-    ]
+  isLinkActive(link) {
+    const url = this.router.url;
+    return link.id === url.substring(1, url.indexOf('?'));
   }
   logout() {
     this.authService.logout();
