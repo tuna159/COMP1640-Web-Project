@@ -15,8 +15,11 @@ export class IdeaFile {
   @Column({ name: 'idea_id', type: 'int', unsigned: true })
   idea_id: number;
 
-  @Column({ name: 'file', type: 'varchar', length: 300 })
-  file: string;
+  @Column({ name: 'file_url', type: 'varchar', length: 3000 })
+  file_url: string;
+
+  @Column({ name: 'file_name', type: 'varchar', length: 300 })
+  file_name: string;
 
   @Column({ name: 'size', type: 'double', unsigned: true })
   size: number;
