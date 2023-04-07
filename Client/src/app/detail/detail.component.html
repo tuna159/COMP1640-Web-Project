@@ -27,6 +27,9 @@
 
                 <p-button label="Attachment" icon="pi pi-file-word"></p-button>
                 <br>
+                <div *ngFor="let file of listFileData; index as i;">
+                    <a href="{{file.file_url}}">{{file.file_url}}</a>
+                </div>
                 <button pButton type="button" (click)="DownloadFile()" label="File đính kèm.doc" class="p-button-text"
                     id="file"></button>
                 <button pButton type="button" (click)="DownloadFile()" label="File đính kèm.doc" class="p-button-text"

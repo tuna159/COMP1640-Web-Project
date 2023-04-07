@@ -22,6 +22,7 @@ export class DetailComponent {
   totalLike: any;
   totalDislike: any;
   listCommentData = [];
+  listFileData = [];
   title: string;
   avatar: string;
   content: string;
@@ -102,7 +103,7 @@ export class DetailComponent {
         Authorization: 'Bearer ' + this.authService.getToken()}
       }).subscribe((result: any) => {
         console.log("result", result.data);
-        
+              this.listFileData = result.data.files;
               this.title = result.data.title;
               this.views = result.data.views;
               this.user = result.data.user.nick_name;
