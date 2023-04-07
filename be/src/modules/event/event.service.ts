@@ -480,6 +480,12 @@ export class EventService {
       );
     }
 
+    const ideas = await this.ideaService.getIdeasOfSystem(event_id);
+    return {
+      event,
+      ideas,
+    };
+
     const eventRepository = entityManager
       ? entityManager.getRepository<Event>('event')
       : this.eventRepository;
