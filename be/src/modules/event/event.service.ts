@@ -506,9 +506,7 @@ export class EventService {
   }
 
   async getIdeasByEvent(
-    userData: IUserData,
     event_id: number,
-    entityManager?: EntityManager,
   ) {
     const event = await this.eventExists(event_id);
 
@@ -523,38 +521,6 @@ export class EventService {
     return {
       event,
       ideas,
-    };
-
-    const eventRepository = entityManager
-      ? entityManager.getRepository<Event>('event')
-      : this.eventRepository;
-
-    const data = eventRepository
-      .createQueryBuilder('event')
-      .leftJoinAndSelect('event.ideas', 'ideas')
-      .leftJoinAndSelect('ideas.user', 'user')
-      .leftJoinAndSelect('user.department', 'department')
-      .leftJoinAndSelect('ideas.ideaTags', 'ideaTags')
-      .leftJoinAndSelect('ideaTags.tag', 'tag')
-      .innerJoinAndSelect('user.userDetail', 'userDetail')
-      .where('event.event_id = :event_id', {
-        event_id: event_id,
-      })
-      .andWhere('user.is_deleted = :is_deleted', {
-        is_deleted: EIsDelete.NOT_DELETED,
-      })
-      .andWhere('event.created_date <= :now_date', {
-        now_date: new Date(),
-      })
-      .andWhere('event.final_closure_date >= :now_date', {
-        now_date: new Date(),
-      });
-
-    const eventDetails = await data.getOne();
-
-    return {
-      event,
-      ideas: eventDetails?.ideas == null ? [] : eventDetails.ideas,
     };
   }
 

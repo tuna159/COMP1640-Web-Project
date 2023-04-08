@@ -22,7 +22,7 @@ export class EventController {
   constructor(private readonly eventService: EventService) {}
 
   @Get()
-  getAllEvents(@UserData() userData: IUserData) {
+  getEvents(@UserData() userData: IUserData) {
     return this.eventService.getAllEvents(userData);
   }
 
@@ -87,10 +87,9 @@ export class EventController {
 
   @Get(':event_id/ideas')
   getIdeasByEvent(
-    @UserData() userData: IUserData,
     @Param('event_id') event_id: number,
   ) {
-    return this.eventService.getIdeasByEvent(userData, event_id);
+    return this.eventService.getIdeasByEvent(event_id);
   }
 
   @Get('university')
