@@ -12,7 +12,6 @@ import { EUserRole } from 'enum/default.enum';
 import { ErrorMessage } from 'enum/error';
 import {
   EntityManager,
-  IsNull,
   LessThanOrEqual,
   MoreThanOrEqual,
   Repository,
@@ -428,7 +427,7 @@ export class EventService {
 
     const fileName = 'ideas.csv';
     const path = join(process.cwd(), fileName);
-    const writableStream = fs.createWriteStream(path);
+    const writeStream = fs.createWriteStream(path);
     const columns = [
       'idea_id',
       'title',
@@ -462,7 +461,12 @@ export class EventService {
       data.forEach((row) => {
         stringifier.write(row);
       });
-      stringifier.pipe(writableStream);
+      stringifier.pipe(writeStream);
+
+      writeStream.on("finish", () => {
+        writeStream.close();
+        console.log("Writing file CSV Completed");
+      });
 
       const readStream = fs.createReadStream(path);
       res.set({
@@ -470,6 +474,11 @@ export class EventService {
         'Content-Disposition': `attachment; filename="${fileName}"`,
       });
       readStream.pipe(res);
+
+      readStream.on("end", () => {
+        readStream.close();
+        console.log("File CSV Download Completed");
+      });
     } catch (error) {
       throw new HttpException(
         ErrorMessage.DATA_DOWNLOAD_FAILED,

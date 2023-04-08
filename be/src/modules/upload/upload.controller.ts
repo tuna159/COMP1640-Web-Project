@@ -37,10 +37,10 @@ export class UploadController {
 
   @Public()
   @Get('files')
-  async downloadAllIdeas(
+  async downloadIdeasFiles(
     @UserData() userData: IUserData,
-    @Res() res: Response,
+    // @Res() res: Response,
   ) {
-    return await this.uploadService.downloadAllIdeas(res, userData);
+    return await this.uploadService.downloadIdeasFiles(userData);
   }
 }

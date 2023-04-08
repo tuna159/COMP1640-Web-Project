@@ -109,7 +109,7 @@ export class UploadService {
     }
   }
 
-  async downloadAllIdeas(res: Response, userData: IUserData) {
+  async downloadIdeasFiles(userData: IUserData) {
     const listRef = ref(storage, 'files');
     const folderName = 'static';
 
@@ -118,23 +118,35 @@ export class UploadService {
       console.log(ref);
       const a = await getMetadata(ref);
       console.log(a.name);
-
-      const bytes = await getBytes(ref);
-      const buffer = Buffer.from(bytes);
-      const path = join(process.cwd(), folderName, a.name);
-      console.log(path);
-      fs.writeFileSync(path, buffer);
+      fs.writeFileSync
+      // const bytes = await getBytes(ref);
+      // const buffer = Buffer.from(bytes);
+      // const path = join(process.cwd(), folderName, a.name);
+      // console.log(path);
+      // fs.writeFileSync(path, buffer);
+      return ref;
     }
-    // .then((resI) => {
-    // })
-    // .catch((error) => {
-    //   console.log(error);
-    // });
-
-    const archive = archiver('zip', { zlib: { level: 9 } });
-    archive.directory(folderName, false);
-    res.attachment(`${folderName}.zip`);
-    archive.pipe(res);
-    archive.finalize();
+    // const archive = archiver('zip', { zlib: { level: 9 } });
+    // archive.directory(folderName, false);
+    // res.attachment(`${folderName}.zip`);
+    // archive.pipe(res);
+    // archive.finalize();
   }
+
+//   async downloadImage() {
+//     const writer = fs.createWriteStream('./image.png');
+
+//     const response = await this.httpService.axiosRef({
+//         url: 'https://example.com/image.png',
+//         method: 'GET',
+//         responseType: 'stream',
+//     });
+
+//     response.data.pipe(writer);
+
+//     return new Promise((resolve, reject) => {
+//         writer.on('finish', resolve);
+//         writer.on('error', reject);
+//     });
+// }
 }
