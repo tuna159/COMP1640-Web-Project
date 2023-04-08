@@ -45,9 +45,20 @@ export class IdeaEventComponent implements OnInit {
       this.Id = this.router.getCurrentNavigation().extras.state.Id;
       this.getAllIdeaByEvent();
       this.getAllDepartment();
+      this.getListCategory();
   }
 
-
+  getListCategory() {
+    this.http.get<any>("http://localhost:3009/api/category", {
+      headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()
+      }
+    }).subscribe((res: any) => {
+      this.listCategories = res.data;
+      console.log("list", res.data);
+      
+    })
+  }
   getAllIdeaByEvent() {
       this.http.get<any>(this.apiUrl + this.Id + "/ideas", {
         headers: {
@@ -102,6 +113,7 @@ export class IdeaEventComponent implements OnInit {
     
     this.getAllIdeaByEvent();
     this.getAllDepartment();
+    this.getListCategory();
     this.formGroup = new FormGroup({
       category: new FormControl(null, [Validators.required]),
       department: new FormControl(null, [Validators.required]),
