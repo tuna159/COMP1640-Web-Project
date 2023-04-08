@@ -8,6 +8,7 @@ import { EventController } from './event.controller';
 import { EventService } from './event.service';
 import { ReactionModule } from '@modules/reaction/reaction.module';
 import { CommentModule } from '@modules/comment/comment.module';
+import { IdeaFileModule } from '@modules/idea-file/idea-file.module';
 
 @Module({
   controllers: [EventController],
@@ -19,6 +20,7 @@ import { CommentModule } from '@modules/comment/comment.module';
     UserModule,
     ReactionModule,
     CommentModule,
+    IdeaFileModule,
   ],
   exports: [TypeOrmModule, EventService],
 })

@@ -1,10 +1,13 @@
+import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsDateString,
   IsNumber,
   IsOptional,
   IsString,
   MaxLength,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
 import { ErrorMessage } from 'enum/error';
 
@@ -46,4 +49,10 @@ export class VUpdateEventDto {
 
   @IsDateString()
   final_closure_date: Date;
+}
+
+export class VGetIdeasAttachmentsDto {
+  @IsArray()
+  @IsNumber({},{each: true})
+  file_ids: number[];
 }

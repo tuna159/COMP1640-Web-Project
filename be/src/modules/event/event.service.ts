@@ -18,7 +18,7 @@ import {
   Repository,
 } from 'typeorm';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
-import { VCreateEventDto, VUpdateEventDto } from 'global/dto/event.dto.';
+import { VCreateEventDto, VGetIdeasAttachmentsDto, VUpdateEventDto } from 'global/dto/event.dto.';
 import { DepartmentService } from '@modules/department/department.service';
 import { IdeaService } from '@modules/idea/idea.service';
 import { UserService } from '@modules/user/user.service';
@@ -30,6 +30,7 @@ import { EIsDelete } from 'enum';
 import { VDownloadIdeaDto } from 'global/dto/downloadIdeas.dto';
 import { ReactionService } from '@modules/reaction/reaction.service';
 import { CommentService } from '@modules/comment/comment.service';
+import { IdeaFileService } from '@modules/idea-file/idea-file.service';
 
 @Injectable()
 export class EventService {
@@ -42,6 +43,7 @@ export class EventService {
     private userService: UserService,
     private reactionService: ReactionService,
     private commentService: CommentService,
+    private readonly fileService: IdeaFileService,
   ) {}
 
   async getEventsByDepartment(
@@ -453,6 +455,43 @@ export class EventService {
         HttpStatus.BAD_REQUEST,
       );
     }
+  }
+
+  async getEventIdeasAttachments(
+    event_id: number,
+    body: VGetIdeasAttachmentsDto,
+    userData: IUserData,
+  ) {
+    if (userData.role_id != EUserRole.QA_MANAGER) {
+      throw new HttpException(
+        ErrorMessage.GENERAL_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const event = await this.eventExists(event_id);
+    if (!event) {
+      throw new HttpException(
+        ErrorMessage.EVENT_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (event.final_closure_date) {
+      throw new HttpException(
+        ErrorMessage.DATA_DOWNLOAD_DATE_TIME,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    for (const fId of body.file_ids) {
+      const count = await this.fileService.fileExists(fId);
+      if(count == 0) {
+        throw new HttpException(
+          `File (id: ${fId}) doesn't exist`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+    return this.fileService.getListOfFiles(body.file_ids);
   }
 
   async getAllEvents(userData: IUserData) {

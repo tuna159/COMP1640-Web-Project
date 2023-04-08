@@ -12,7 +12,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
-import { VCreateEventDto, VUpdateEventDto } from 'global/dto/event.dto.';
+import { VCreateEventDto, VGetIdeasAttachmentsDto, VUpdateEventDto } from 'global/dto/event.dto.';
 import type { Response } from 'express';
 import { EventService } from './event.service';
 import { VDownloadIdeaDto } from 'global/dto/downloadIdeas.dto';
@@ -68,6 +68,19 @@ export class EventController {
       event_id,
       body,
       res,
+      userData,
+    );
+  }
+
+  @Get(':event_id/attachments')
+  getEventIdeasAttachments(
+    @UserData() userData: IUserData,
+    @Param('event_id') event_id: number,
+    @Body() body: VGetIdeasAttachmentsDto,
+  ) {
+    return this.eventService.getEventIdeasAttachments(
+      event_id,
+      body,
       userData,
     );
   }
