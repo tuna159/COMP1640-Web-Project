@@ -1,22 +1,14 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { IUserData } from '@core/interface/default.interface';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import type { Response } from 'express';
 
 import {
-  getBytes,
   getDownloadURL,
-  getMetadata,
-  listAll,
   ref,
   uploadBytes,
 } from 'firebase/storage';
-import { join } from 'path';
 import { storage } from 'src/config/firebase.config';
-import * as fs from 'fs';
-import * as archiver from 'archiver';
 import { ErrorMessage } from 'enum/error';
 import { log } from 'console';
 import { IsEmpty } from 'class-validator';
@@ -109,44 +101,26 @@ export class UploadService {
     }
   }
 
-  async downloadIdeasFiles(userData: IUserData) {
-    const listRef = ref(storage, 'files');
-    const folderName = 'static';
+  // async downloadIdeasFiles(res: Response, userData: IUserData) {
+  //   const listRef = ref(storage, 'files');
+  //   const folderName = 'static';
 
-    const a = await listAll(listRef);
-    for (const ref of a.items) {
-      console.log(ref);
-      const a = await getMetadata(ref);
-      console.log(a.name);
-      fs.writeFileSync
-      // const bytes = await getBytes(ref);
-      // const buffer = Buffer.from(bytes);
-      // const path = join(process.cwd(), folderName, a.name);
-      // console.log(path);
-      // fs.writeFileSync(path, buffer);
-      return ref;
-    }
-    // const archive = archiver('zip', { zlib: { level: 9 } });
-    // archive.directory(folderName, false);
-    // res.attachment(`${folderName}.zip`);
-    // archive.pipe(res);
-    // archive.finalize();
-  }
-
-//   async downloadImage() {
-//     const writer = fs.createWriteStream('./image.png');
-
-//     const response = await this.httpService.axiosRef({
-//         url: 'https://example.com/image.png',
-//         method: 'GET',
-//         responseType: 'stream',
-//     });
-
-//     response.data.pipe(writer);
-
-//     return new Promise((resolve, reject) => {
-//         writer.on('finish', resolve);
-//         writer.on('error', reject);
-//     });
-// }
+  //   const a = await listAll(listRef);
+  //   for (const ref of a.items) {
+  //     console.log(ref);
+  //     const a = await getMetadata(ref);
+  //     console.log(a.name);
+  //     fs.writeFileSync
+  //     const bytes = await getBytes(ref);
+  //     const buffer = Buffer.from(bytes);
+  //     const path = join(process.cwd(), folderName, a.name);
+  //     console.log(path);
+  //     fs.writeFileSync(path, buffer);
+  //   }
+  //   const archive = archiver('zip', { zlib: { level: 9 } });
+  //   archive.directory(folderName, false);
+  //   res.attachment(`${folderName}.zip`);
+  //   archive.pipe(res);
+  //   archive.finalize();
+  // }
 }

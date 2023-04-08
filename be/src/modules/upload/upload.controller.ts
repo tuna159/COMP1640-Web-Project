@@ -34,13 +34,4 @@ export class UploadController {
   ) {
     return await this.uploadService.uploadImageFireBase(files);
   }
-
-  @Public()
-  @Get('files')
-  async downloadIdeasFiles(
-    @UserData() userData: IUserData,
-    // @Res() res: Response,
-  ) {
-    return await this.uploadService.downloadIdeasFiles(userData);
-  }
 }

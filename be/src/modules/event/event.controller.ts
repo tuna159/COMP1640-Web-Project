@@ -76,11 +76,9 @@ export class EventController {
   getEventIdeasAttachments(
     @UserData() userData: IUserData,
     @Param('event_id') event_id: number,
-    @Body() body: VGetIdeasAttachmentsDto,
   ) {
     return this.eventService.getEventIdeasAttachments(
       event_id,
-      body,
       userData,
     );
   }
@@ -118,6 +116,21 @@ export class EventController {
     return this.eventService.getDepartmentIdeasContributionInTime(
       year,
       userData,
+    );
+  }
+
+  @Get(':event_id/files/download')
+  async downloadIdeasAttachments(
+    @UserData() userData: IUserData,
+    @Param('event_id') event_id: number,
+    @Res() res: Response,
+    @Body() body: VGetIdeasAttachmentsDto,
+  ) {
+    return await this.eventService.downloadIdeasAttachments(
+      event_id,
+      userData,
+      res,
+      body,
     );
   }
 }

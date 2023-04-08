@@ -17,7 +17,11 @@ import {
   Repository,
 } from 'typeorm';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
-import { VCreateEventDto, VGetIdeasAttachmentsDto, VUpdateEventDto } from 'global/dto/event.dto.';
+import {
+  VCreateEventDto,
+  VGetIdeasAttachmentsDto,
+  VUpdateEventDto,
+} from 'global/dto/event.dto.';
 import { DepartmentService } from '@modules/department/department.service';
 import { IdeaService } from '@modules/idea/idea.service';
 import { UserService } from '@modules/user/user.service';
@@ -30,6 +34,9 @@ import { VDownloadIdeaDto } from 'global/dto/downloadIdeas.dto';
 import { ReactionService } from '@modules/reaction/reaction.service';
 import { CommentService } from '@modules/comment/comment.service';
 import { IdeaFileService } from '@modules/idea-file/idea-file.service';
+import * as https from 'https';
+import * as archiver from 'archiver';
+import * as fsExtra from "fs-extra";
 
 @Injectable()
 export class EventService {
@@ -62,7 +69,7 @@ export class EventService {
       .addOrderBy('event.created_date', 'DESC');
 
     if (userData.role_id == EUserRole.STAFF) {
-      queryBuilder.andWhere("event.final_closure_date > :now", {
+      queryBuilder.andWhere('event.final_closure_date > :now', {
         now: new Date(),
       });
     }
@@ -91,13 +98,13 @@ export class EventService {
       : this.eventRepository;
 
     const queryBuilder = eventRepository
-      .createQueryBuilder("event")
-      .where("event.department_id IS NULL")
+      .createQueryBuilder('event')
+      .where('event.department_id IS NULL')
       .orderBy('event.final_closure_date', 'DESC')
-      .addOrderBy('event.created_date', 'DESC')
+      .addOrderBy('event.created_date', 'DESC');
 
     if (userData.role_id == EUserRole.STAFF) {
-      queryBuilder.andWhere("event.final_closure_date > :now", {
+      queryBuilder.andWhere('event.final_closure_date > :now', {
         now: new Date(),
       });
     }
@@ -463,9 +470,9 @@ export class EventService {
       });
       stringifier.pipe(writeStream);
 
-      writeStream.on("finish", () => {
+      writeStream.on('finish', () => {
         writeStream.close();
-        console.log("Writing file CSV Completed");
+        console.log('Writing file CSV Completed');
       });
 
       const readStream = fs.createReadStream(path);
@@ -475,9 +482,9 @@ export class EventService {
       });
       readStream.pipe(res);
 
-      readStream.on("end", () => {
+      readStream.on('end', () => {
         readStream.close();
-        console.log("File CSV Download Completed");
+        console.log('File CSV Download Completed');
       });
     } catch (error) {
       throw new HttpException(
@@ -489,7 +496,6 @@ export class EventService {
 
   async getEventIdeasAttachments(
     event_id: number,
-    body: VGetIdeasAttachmentsDto,
     userData: IUserData,
   ) {
     if (userData.role_id != EUserRole.QA_MANAGER) {
@@ -505,23 +511,14 @@ export class EventService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    if (event.final_closure_date) {
+    if (event.final_closure_date > new Date()) {
       throw new HttpException(
         ErrorMessage.DATA_DOWNLOAD_DATE_TIME,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    for (const fId of body.file_ids) {
-      const count = await this.fileService.fileExists(fId);
-      if(count == 0) {
-        throw new HttpException(
-          `File (id: ${fId}) doesn't exist`,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-    }
-    return this.fileService.getListOfFiles(body.file_ids);
+    return this.fileService.getFilesByEvent(event_id, []);
   }
 
   async getAllEvents(userData: IUserData) {
@@ -535,9 +532,7 @@ export class EventService {
     return await this.eventRepository.find();
   }
 
-  async getIdeasByEvent(
-    event_id: number,
-  ) {
+  async getIdeasByEvent(event_id: number) {
     const event = await this.eventExists(event_id);
 
     if (!event) {
@@ -632,5 +627,97 @@ export class EventService {
       });
     }
     return data;
+  }
+
+  async downloadIdeasAttachments(
+    event_id: number,
+    userData: IUserData,
+    res: Response,
+    body: VGetIdeasAttachmentsDto
+  ) {
+    if (userData.role_id != EUserRole.QA_MANAGER) {
+      throw new HttpException(
+        ErrorMessage.DATA_DOWNLOAD_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const event = await this.eventExists(event_id);
+    if (!event) {
+      throw new HttpException(
+        ErrorMessage.EVENT_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (event.final_closure_date > new Date()) {
+      throw new HttpException(
+        ErrorMessage.DATA_DOWNLOAD_DATE_TIME,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const file_ids = body.file_ids;
+    for (const fId of file_ids) {
+      const count = await this.fileService.fileExists(fId);
+      if (count == 0) {
+        throw new HttpException(
+          `File (id: ${fId}) doesn't exist`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+
+    const folderName = 'static';
+    const files = await this.fileService.getFilesByEvent(event_id, file_ids);
+    const downloadTasks = [];
+    for (const f of files) {
+      const path = join(process.cwd(), folderName, f.file_name);
+      downloadTasks.push(
+        this.downloadFileFromUrl(path, f.file_url),
+      );
+    }
+    await Promise.all(downloadTasks);
+
+    const archive = archiver('zip', { zlib: { level: 9 } });
+    archive.directory(folderName, false);
+    res.set({
+      'Content-Type': 'application/zip',
+      'Content-Disposition': `attachment; filename="${folderName}.zip"`,
+    });
+    const response = archive.pipe(res);
+    archive.finalize();
+    response.on('finish', () => {
+      fsExtra.emptyDirSync(folderName);
+    });
+
+    return {
+      statusCode: response.statusCode,
+      message: response.statusMessage,
+    };
+  }
+
+  async downloadFileFromUrl(filePath: string, fileUrl: string) {
+    return new Promise ((resolve, reject) => {
+      https.get(fileUrl, res => {
+        if(res.statusCode === 200) {
+          const writer = fs.createWriteStream(filePath);
+          res.pipe(writer);
+          writer.on('finish', () => {
+            writer.close();
+            console.log('Ideas Attachments Download Completed');
+            resolve({
+              "statusCode": res.statusCode,
+              "message": res.statusMessage,
+            });
+            res.destroy();
+          });
+        }else {
+          res.destroy();
+          reject({
+            "statusCode": res.statusCode,
+            "message": res.statusMessage,
+          });
+        }
+      });
+    });
   }
 }
