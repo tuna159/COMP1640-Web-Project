@@ -32,11 +32,12 @@ export class PostComponent implements OnInit {
   constructor(private dialogService: DialogService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
     private http: HttpClient, private authService: AuthenticationService, private messageService: MessageService, private router: Router) {
       this.Id = this.config.data;
-      // console.log(this.data)
+      console.log(this.Id)
       this.getListCategory();
   }
 
   getListCategory() {
+    
     this.http.get<any>("http://localhost:3009/api/category", {
       headers: {
         Authorization: 'Bearer ' + this.authService.getToken()
@@ -59,7 +60,7 @@ export class PostComponent implements OnInit {
     } else {
       this.save('')
     }
-    // this.closeDialog()
+    this.closeDialog()
   }
 
   save(data: any) {
@@ -67,17 +68,18 @@ export class PostComponent implements OnInit {
     let bodyData = {
       "title": this.formGroup.controls.title.value,
       "content": this.formGroup.controls.content.value,
-      "category_ids": this.formGroup.controls.category.value['category_id'],
+      "category_id": this.formGroup.controls.category.value['category_id'],
       "files": data,
+      "tag_names": [{"name": this.formGroup.controls.tagName.value}],
       "is_anonymous": this.formGroup.controls.anonymous.value == true ? 1 : 0
     }
 
-    this.http.post(this.apiUrl +  this.Id + '/ideas', bodyData, {
+    this.http.post(this.apiUrl +  this.Id.Id + '/ideas', bodyData, {
       headers: {
         Authorization: 'Bearer ' + this.authService.getToken()
       }
     }).subscribe((result: any) => {
-      this.router.navigateByUrl('/event/ideas', { state: { Id: this.Id } });
+      this.router.navigateByUrl('/event/ideas', { state: { Id: this.Id.Id } });
 
     });
   }

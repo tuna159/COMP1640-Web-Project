@@ -47,6 +47,19 @@ export class IdeaCategoryComponent {
     })
       this.getAllIdeaByCategory();
       this.getAllDepartment();
+      this.getListCategory();
+  }
+
+  getListCategory() {
+    this.http.get<any>("http://localhost:3009/api/category", {
+      headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()
+      }
+    }).subscribe((res: any) => {
+      this.listCategories = res.data;
+      console.log("list", res.data);
+      
+    })
   }
 
 
@@ -103,7 +116,7 @@ export class IdeaCategoryComponent {
   }
 
   ngOnInit(): void {
-
+    
     let obj: any
     this.route.queryParamMap.subscribe((params) => {
       obj = params;
@@ -113,7 +126,7 @@ export class IdeaCategoryComponent {
     }
 
   );
-
+    this.getListCategory();
     this.getAllDepartment();
     this.getAllIdeaByCategory();
     this.formGroup = new FormGroup({
