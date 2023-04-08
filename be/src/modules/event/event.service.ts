@@ -47,6 +47,7 @@ export class EventService {
   ) {}
 
   async getEventsByDepartment(
+    userData: IUserData,
     department_id: number,
     entityManager?: EntityManager,
   ) {
@@ -54,11 +55,20 @@ export class EventService {
       ? entityManager.getRepository<Event>('event')
       : this.eventRepository;
 
-    const events = await eventRepository
+    const queryBuilder = eventRepository
       .createQueryBuilder('event')
       .innerJoinAndSelect('event.department', 'department')
       .where('department.department_id = :department_id', { department_id })
-      .getMany();
+      .orderBy('event.final_closure_date', 'DESC')
+      .addOrderBy('event.created_date', 'DESC');
+
+    if (userData.role_id == EUserRole.STAFF) {
+      queryBuilder.andWhere("event.final_closure_date > :now", {
+        now: new Date(),
+      });
+    }
+
+    const events = await queryBuilder.getMany();
 
     return events.map((e) => {
       return {
