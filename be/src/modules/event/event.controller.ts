@@ -93,8 +93,10 @@ export class EventController {
   }
 
   @Get('university')
-  getEventsByUniversity() {
-    return this.eventService.getEventsByUniversity();
+  getEventsByUniversity(
+    @UserData() userData: IUserData,
+  ) {
+    return this.eventService.getEventsByUniversity(userData);
   }
 
   @Get(':event_id/dashboard/staff-contribution')

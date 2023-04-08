@@ -73,16 +73,27 @@ export class EventService {
     });
   }
 
-  async getEventsByUniversity(entityManager?: EntityManager) {
+  async getEventsByUniversity(
+    userData: IUserData,
+    entityManager?: EntityManager,
+  ) {
     const eventRepository = entityManager
       ? entityManager.getRepository<Event>('event')
       : this.eventRepository;
 
-    const events = await eventRepository.find({
-      where: {
-        department_id: IsNull(),
-      },
-    });
+    const queryBuilder = eventRepository
+      .createQueryBuilder("event")
+      .where("event.department_id IS NULL")
+      .orderBy('event.final_closure_date', 'DESC')
+      .addOrderBy('event.created_date', 'DESC')
+
+    if (userData.role_id == EUserRole.STAFF) {
+      queryBuilder.andWhere("event.final_closure_date > :now", {
+        now: new Date(),
+      });
+    }
+
+    const events = await queryBuilder.getMany();
 
     return events.map((e) => {
       return {

@@ -141,10 +141,6 @@ export class DepartmentService {
     return this.eventService.getEventsByDepartment(department_id);
   }
 
-  async getEventsByUniversity() {
-    return this.eventService.getEventsByUniversity();
-  }
-
   async getDepartmentValidIdeas(department_id: number) {
     const department = await this.departmentExists(department_id);
     if (!department) {
