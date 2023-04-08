@@ -54,7 +54,8 @@ export class IdeaEventComponent implements OnInit {
           Authorization: 'Bearer ' + this.authService.getToken()
         }
       }).subscribe((res: any) => {
-  
+        console.log("res.data", res.data);
+        this.eventInfo = res.data.event
         this.listIdea = res.data;
         this.listData = [];
         res.data.ideas.forEach(item => {
@@ -87,7 +88,6 @@ export class IdeaEventComponent implements OnInit {
       }
     }).subscribe((res: any) => {
       this.listDepartments = res.data;
-      this.name = res.data.find(i => i.department_id == this.Id).name
     })
   
   }
