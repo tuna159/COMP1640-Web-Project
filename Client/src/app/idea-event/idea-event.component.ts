@@ -134,5 +134,6 @@ export class IdeaEventComponent implements OnInit {
         }
         this.getAllIdeaByEvent();
     });
+    
   }
 }

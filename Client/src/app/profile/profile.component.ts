@@ -115,6 +115,8 @@ export class ProfileComponent implements OnInit {
             this.messageService.add({ severity: 'error', summary: result.message, detail: '' });
             return
           }
+          console.log("done image")
+
           this.save(result.data[0].file_url)
         });
     }else{
@@ -142,6 +144,7 @@ export class ProfileComponent implements OnInit {
   } , {headers: {
       Authorization: 'Bearer ' + this.authService.getToken()}
     }).subscribe((result: any) => {
+      console.log("done")
       this.getDataUser();
       this.hideDialog() ;
     });
@@ -149,10 +152,18 @@ export class ProfileComponent implements OnInit {
   
 
   SaveEditAccount() {
-    if(this.formEditAccount.controls.password != this.formEditAccount.controls.confirmPassword) {
+    if(this.formEditAccount.controls.password.value != this.formEditAccount.controls.confirmPassword.value) {
       alert("Please re-enter your password. Password and confirm password are not the same")
     }
-    
+    this.http.put<any>("http://localhost:3009/api/me/profile/password",{
+      "oldPassword" : this.formEditAccount.controls.oldPassword,
+      "newPassword" : this.formEditAccount.controls.password
+  } , {headers: {
+      Authorization: 'Bearer ' + this.authService.getToken()}
+    }).subscribe((result: any) => {
+      this.getDataUser();
+      this.hideDialog() ;
+    });
   }
 
   openEditYourInformation() {
