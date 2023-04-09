@@ -20,6 +20,7 @@ export class DetailComponent {
   like: boolean = false;
   dislike: boolean = false;
   totalLike: any;
+  dialogDownloadAtt: boolean;
   totalDislike: any;
   listCommentData = [];
   listFileData = [];

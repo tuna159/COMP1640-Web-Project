@@ -33,7 +33,7 @@
 
             </div>
 
-            <div class="field" style="width: 20%;">
+            <div class="field" style="width: 20%;" *ngIf="role == 2 && exEvent == true">
 
               <button (click)="showDialogDownload()" class="btn btn-light btn-outline-secondary">Download Ideas</button>
             </div>

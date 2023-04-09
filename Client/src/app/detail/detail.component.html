@@ -25,7 +25,7 @@
                         {{content}}</p>
                 </div>
 
-                <p-button label="Attachment" icon="pi pi-file-word"></p-button>
+                <p-button (click)="dialogDownloadAtt=true" label="Attachment" icon="pi pi-file-word"></p-button>
                 <br>
                 <div *ngFor="let file of listFileData; index as i;">
                     <a href="{{file.file_url}}">{{file.file_url}}</a>
@@ -110,3 +110,78 @@
             </p-card>
         </div>
     </div>
+
+    <p-dialog header="Download Idea" [(visible)]="dialogDownloadAtt" [modal]="true" [responsive]="true" [closable]="false"
+    [style]="{width: '60%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
+    <div style="width: 100%; display: flex; ">
+        <div class="ds-category">
+            <div class="col-md-12 body-page">
+                <div class="row">
+                    <div class="col-md-6"></div>
+                    <div class="col-md-6">
+                        <div class="row text-right">
+                            <div class="col-md-12 mt-10">
+                                <!-- <div class="group_btn" [style]="{'float': 'right'}">
+                                    <span class="p-input-icon-right">
+                                        <i class="pi pi-search"></i>
+                                        <input pInputText type="text" class="input-search"
+                                            (input)="myTab.filterGlobal($any($event.target).value, 'contains')"
+                                            placeholder="Search..." style="margin-left: 7.5px; height: 30px !important; " />
+                                    </span>
+                                    <button pButton type="button" (click)="openNewCategory(null)" label="Add" icon="pi pi-plus"
+                                        style="background-color:#f97c39; width: 120px !important; height: 30px !important; margin-left: 5px; border: 0px;"></button>
+                                    <button pButton type="button" label="Delete" icon="pi pi-trash"
+                                        style="background-color:red; width: 120px !important; height: 30px !important; margin-left: 5px; border: 0px"
+                                        (click)="showDialogXoaN()"></button>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 20px">
+                    <div class="col-md-12">
+                        <!-- <p-table #myTab [columns]="cols" [value]="listData" [tableStyle]="{ 'min-width': '50rem' }"
+                            [(selection)]="listSelectedData" dataKey="category_id" [rowHover]="true" [scrollable]="true"
+                            [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
+                            [globalFilterFields]="['Stt','name',]">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th style="width: 2rem" class="text-center">
+                                        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                    </th>
+                                    <th *ngFor="let col of columns"
+                                        [ngStyle]="{ 'text-align': 'center', 'min-width': col.width }">
+                                        {{ col.header }}
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-category>
+                                <tr>
+                                    <td style="width: 2rem" class="text-center">
+                                        <p-tableCheckbox [value]="category"></p-tableCheckbox>
+                                    </td>
+                                    <td style="text-align: center">{{category.Stt}}</td>
+                                    <td style="text-align: center">{{category.name}}</td>
+                                    <td style="text-align: center">
+                                        <span>
+                                            <button pButton icon="pi pi-pencil" class="ui-button-primary edit-button"
+                                                ></button>
+                                            <button pButton icon="pi pi-trash" class="ui-button-danger delete-button"
+                                                style="margin-left: 5px"></button>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: fit-content;">
+        <button type="button" pButton icon="pi pi-close" (click)="dialogDownloadAtt=false" label="Cancel"
+          class="btn btn-light" style="width:100px; height:38px"></button>
+        <button type="submit" class="btn btn-primary ml-5">Download</button>
+      </div>
+</p-dialog>
+    

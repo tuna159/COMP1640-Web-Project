@@ -27,6 +27,7 @@ export class IdeaEventComponent implements OnInit {
   first_closure_date: any;
   final_closure_date: any;
   dialogDownloadEvent: boolean;
+  exEvent: boolean = false;
   listDepartments = [];
   listCategories = [];
   formGroup: FormGroup<{
@@ -67,6 +68,16 @@ export class IdeaEventComponent implements OnInit {
       }).subscribe((res: any) => {
         console.log("res.data", res.data);
         this.eventInfo = res.data.event
+        console.log("eventInfo", res.data.event);
+        console.log(new Date(new Date().toDateString()).getTime() > new Date(new Date(res.data.event.final_closure_date).toDateString()).getTime());
+        
+
+        if(new Date(new Date().toDateString()).getTime() > new Date(new Date(res.data.event.final_closure_date).toDateString()).getTime())
+        {
+          this.exEvent = true;
+        }
+        
+        
         this.listIdea = res.data;
         this.listData = [];
         res.data.ideas.forEach(item => {
