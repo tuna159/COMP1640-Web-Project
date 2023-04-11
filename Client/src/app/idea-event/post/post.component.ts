@@ -32,7 +32,6 @@ export class PostComponent implements OnInit {
   constructor(private dialogService: DialogService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
     private http: HttpClient, private authService: AuthenticationService, private messageService: MessageService, private router: Router) {
       this.Id = this.config.data;
-      console.log(this.Id)
       this.getListCategory();
   }
 
@@ -64,7 +63,9 @@ export class PostComponent implements OnInit {
   }
 
   save(data: any) {
-
+    if(this.formGroup.controls.checked.value == false) {
+      alert("Please agree term")
+    }
     let bodyData = {
       "title": this.formGroup.controls.title.value,
       "content": this.formGroup.controls.content.value,
@@ -80,9 +81,21 @@ export class PostComponent implements OnInit {
       }
     }).subscribe((result: any) => {
       this.router.navigateByUrl('/event/ideas', { state: { Id: this.Id.Id } });
-
+    },
+    err => {
+      if (err.error.message === "error.USER_NAME_INCORRECT") {
+        this.showMessage('error', 'Incorrect Email');
+      }
+      if (err.error.message === "error.PASSWORD_INCORRECT") {
+        this.showMessage('error', 'Incorrect Password');
+      }
+      this.showMessage('error', err.error.message);
+      return;
     });
   }
+    showMessage(severity: string, detail: string) {
+      this.messageService.add({ severity: severity, summary: 'Notification:', detail: detail });
+    }
 
   ngOnInit(): void {
     this.formGroup = new FormGroup({
@@ -116,7 +129,6 @@ export class PostComponent implements OnInit {
         }
         this.listFile.push(e.target.files[i]) 
       }
-      console.log(this.listFile);
     }
   }
 }
