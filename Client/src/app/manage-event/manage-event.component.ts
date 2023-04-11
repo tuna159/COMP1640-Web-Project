@@ -114,8 +114,11 @@ export class ManageEventComponent {
         Authorization: 'Bearer ' + this.authService.getToken()
       }
     }).subscribe((result: any) => {
-      if (result.status_code != 200) {
-        this.showMessage('error', result.message);
+      if (result.statusCode != 400) {
+        this.showMessage('success', result.message)
+        // this.displayDeleteEvent = false;
+        // this.displayDeleteEvents = false;
+        // this.getAllData();
         return;
       }
       this.showMessage('success', 'Delete success')

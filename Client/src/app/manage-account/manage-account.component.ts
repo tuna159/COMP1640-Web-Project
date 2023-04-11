@@ -35,7 +35,7 @@ export class ManageAccountComponent {
       { field: 'Number', header: 'Number', width: '5%', textAlign: 'center' },
       { field: 'email', header: 'Email', width: '25%', textAlign: 'center' },
       { field: 'department', header: 'Department', width: '25%', textAlign: 'center' },
-      { field: 'role', header: 'Role', width: '10%', textAlign: 'center' },
+      { field: 'Create at', header: 'Create at', width: '10%', textAlign: 'center' },
       { field: 'status', header: 'Status', width: '25%', textAlign: 'center' },
       {
         field: 'edit',

@@ -20,6 +20,9 @@ export class ChartsComponent implements OnInit{
   xStaffDepartment: any;
   dataStaffDepartment: any;
   
+  years: number[] = [];
+  yearValue: any;
+
   events: any;
   eventValue: any;
 
@@ -56,8 +59,8 @@ export class ChartsComponent implements OnInit{
     private authService: AuthenticationService, private router: Router) {
     this.getListEvent();
     this.getListDepartment();
-
-
+    this.getListYear();
+    
     // line chart Thống kê react department
     this.optionsLineCharIdeaDepartment = chartsService.createLineCharIdeaDepartment(3, this.dataStaffDepartment);
     this.lineCharIdeaDepartment = new Chart(this.optionsLineCharIdeaDepartment);
@@ -66,6 +69,15 @@ export class ChartsComponent implements OnInit{
   ngOnInit(): void {
     
   }
+
+  getListYear() {
+    let currentYear: number = new Date().getFullYear();
+    this.yearValue = currentYear;
+    for(let i = (currentYear - 7); i < (currentYear + 7); i++) {
+        this.years.push(i);
+    }
+  }
+
   getListDepartment() {
     this.http.get<any>("http://localhost:3009/api/department", {
       headers: {
@@ -127,6 +139,8 @@ export class ChartsComponent implements OnInit{
         return;
       }
       this.events = result.data;
+      this.events = this.events.filter(event => event.department_id == null)
+      console.log(this.events)
       this.getEvent(this.events[0].event_id)
     })
   }
@@ -145,6 +159,11 @@ export class ChartsComponent implements OnInit{
           this.optionsBarChartStaffDepartment = this.chartsService.createBarChartStaffDepartment(result.data.map(x =>x.department_name),result.data.map(x =>x.total_staff), result.data.map(x =>x.staff_contributed));
           this.barChartStaffDepartment = new Chart(this.optionsBarChartStaffDepartment);
       })
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigateByUrl('/login')
   }
 
   getReactDepartment(id: any) {

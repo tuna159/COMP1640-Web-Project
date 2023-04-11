@@ -53,7 +53,7 @@
                         <p-table #myTab [columns]="cols" [value]="listData" [tableStyle]="{ 'min-width': '50rem' }"
                             [(selection)]="listSelectedData" dataKey="account_id" [rowHover]="true" [scrollable]="true"
                             [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [scrollHeight]="'flex'" [scrollable]="true"
-                            [globalFilterFields]="['Number','name',]"  >
+                            [globalFilterFields]="['Number','email',]"  >
                             <ng-template pTemplate="header" let-columns>
                                 <tr>
                                     <th *ngFor="let col of columns"
@@ -66,8 +66,8 @@
                                 <tr>
                                     <td style="text-align: center">{{account.Stt}}</td>
                                     <td style="text-align: center">{{account.email}}</td>
-                                    <td style="text-align: center">{{account.email}}</td>
-                                    <td style="text-align: center">{{account.role.name}}</td>
+                                    <td style="text-align: center">{{account.department.name}}</td>
+                                    <td style="text-align: center">{{account.created_at| date:'mediumDate'}}</td>
                                     <td style="text-align: center">{{account.status}}</td>
                                     <td style="text-align: center">
                                         <span>

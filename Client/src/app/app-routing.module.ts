@@ -12,7 +12,6 @@ import { ManageCategoryComponent } from './manage-category/manage-category.compo
 import { ProfileComponent } from './profile/profile.component';
 import { ManageEventComponent } from './manage-event/manage-event.component';
 import { EventComponent } from './event/event.component';
-import { ChartComponent } from './chart/chart.component';
 import { RoleGuardService } from './shared/guard/RoleGuardService';
 import { IdeaEventComponent } from './idea-event/idea-event.component';
 import { ManageDepartmentComponent } from './manage-department/manage-department.component';
@@ -106,13 +105,13 @@ const routes: Routes = [
         component: HomeComponent
     },
     {
-        path: 'chart',
+        path: 'charts',
         canActivate: [RoleGuardService],
         data: {
             expectedRole: [1],
         },
         // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
-        component: ChartComponent
+        component: ChartsComponent
     },
     {
         path: 'event/ideas',
