@@ -2,7 +2,7 @@ export const configuration = () => ({
   port: parseInt(process.env.PORT, 10) || 3000,
   databaseMysql: {
     host: process.env.DB_MYSQL_HOST,
-    port: parseInt(process.env.DB_MYSQL_PORT, 10) || 5432,
+    port: parseInt(process.env.DB_MYSQL_LOCAL_PORT, 10) || 3306,
     user: process.env.DB_MYSQL_USER,
     password: process.env.DB_MYSQL_PASSWORD,
     name: process.env.DB_MYSQL_NAME,
@@ -34,7 +34,7 @@ export enum EConfiguration {
   APP_NAME = 'appName',
   PORT = 'port',
   DB_MYSQL_HOST = 'databaseMysql.host',
-  DB_MYSQL_PORT = 'databaseMysql.port',
+  DB_MYSQL_LOCAL_PORT = 'databaseMysql.port',
   DB_MYSQL_USER = 'databaseMysql.user',
   DB_MYSQL_PASSWORD = 'databaseMysql.password',
   DB_MYSQL_NAME = 'databaseMysql.name',

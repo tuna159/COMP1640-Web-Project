@@ -9,7 +9,7 @@ class EnvironmentVariables {
   DB_MYSQL_USER: string;
 
   @IsNumber()
-  DB_MYSQL_PORT: number;
+  DB_MYSQL_LOCAL_PORT: number;
 
   @IsString()
   DB_MYSQL_PASSWORD: string;

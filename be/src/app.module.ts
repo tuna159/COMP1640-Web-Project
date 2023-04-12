@@ -40,7 +40,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
         host: configService.get(EConfiguration.DB_MYSQL_HOST),
-        port: +configService.get<number>(EConfiguration.DB_MYSQL_PORT),
+        port: +configService.get<number>(EConfiguration.DB_MYSQL_LOCAL_PORT),
         username: configService.get(EConfiguration.DB_MYSQL_USER),
         password: configService.get(EConfiguration.DB_MYSQL_PASSWORD),
         database: configService.get(EConfiguration.DB_MYSQL_NAME),
