@@ -28,7 +28,7 @@
                 <p-button (click)="dialogDownloadAtt=true" label="Attachment" icon="pi pi-file-word"></p-button>
                 <br>
                 <div *ngFor="let file of listFileData; index as i;" style="padding-left: 25px">
-                    <a href="{{file.file_name}}">{{file.file_name}}</a>
+                    <a href="{{file.file_url}}">{{file.file_name}}</a>
                 </div>
                 
                 <div class="row"

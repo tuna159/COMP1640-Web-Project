@@ -16,6 +16,7 @@ import { VCreateEventDto, VGetIdeasAttachmentsDto, VUpdateEventDto } from 'globa
 import type { Response } from 'express';
 import { EventService } from './event.service';
 import { VDownloadIdeaDto } from 'global/dto/downloadIdeas.dto';
+import { Public } from '@core/decorator/public.decorator';
 
 @Controller('event')
 export class EventController {
@@ -57,7 +58,8 @@ export class EventController {
     return this.eventService.createIdea(userData, body, event_id);
   }
 
-  @Get(':event_id/download?')
+  @Public()
+  @Get(':event_id/download')
   downloadIdeasByEvent(
     @UserData() userData: IUserData,
     @Param('event_id') event_id: number,

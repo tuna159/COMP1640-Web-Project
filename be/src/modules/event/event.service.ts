@@ -353,7 +353,7 @@ export class EventService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    if (event.final_closure_date) {
+    if (event.final_closure_date > new Date()) {
       throw new HttpException(
         ErrorMessage.DATA_DOWNLOAD_DATE_TIME,
         HttpStatus.BAD_REQUEST,
