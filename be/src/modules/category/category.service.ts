@@ -51,7 +51,7 @@ export class CategoryService {
   }
 
   async createCategory(userData: IUserData, body: CategoryDto) {
-    if (userData.role_id != EUserRole.ADMIN) {
+    if (userData.role_id != EUserRole.QA_MANAGER) {
       throw new HttpException(
         ErrorMessage.CATEGORY_PERMISSION,
         HttpStatus.BAD_REQUEST,
@@ -68,7 +68,7 @@ export class CategoryService {
     body: CategoryDto,
     userData: IUserData,
   ) {
-    if (userData.role_id != EUserRole.ADMIN) {
+    if (userData.role_id != EUserRole.QA_MANAGER) {
       throw new HttpException(
         ErrorMessage.CATEGORY_PERMISSION,
         HttpStatus.BAD_REQUEST,
@@ -103,7 +103,7 @@ export class CategoryService {
       ? entityManager.getRepository<Category>('category')
       : this.categoryRepository;
 
-    if (userData.role_id != EUserRole.ADMIN) {
+    if (userData.role_id != EUserRole.QA_MANAGER) {
       throw new HttpException(
         ErrorMessage.CATEGORY_PERMISSION,
         HttpStatus.BAD_REQUEST,
