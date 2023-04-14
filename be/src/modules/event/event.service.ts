@@ -53,7 +53,6 @@ export class EventService {
   ) {}
 
   async getEventsByDepartment(
-    userData: IUserData,
     department_id: number,
     entityManager?: EntityManager,
   ) {
@@ -68,11 +67,11 @@ export class EventService {
       .orderBy('event.final_closure_date', 'DESC')
       .addOrderBy('event.created_date', 'DESC');
 
-    if (userData.role_id == EUserRole.STAFF) {
-      queryBuilder.andWhere('event.final_closure_date > :now', {
-        now: new Date(),
-      });
-    }
+    // if (userData.role_id == EUserRole.STAFF) {
+    //   queryBuilder.andWhere('event.final_closure_date > :now', {
+    //     now: new Date(),
+    //   });
+    // }
 
     const events = await queryBuilder.getMany();
 
