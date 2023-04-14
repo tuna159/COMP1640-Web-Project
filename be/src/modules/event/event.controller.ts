@@ -22,7 +22,6 @@ import {
 import type { Response } from 'express';
 import { EventService } from './event.service';
 import { VDownloadIdeaDto } from 'global/dto/downloadIdeas.dto';
-import { Public } from '@core/decorator/public.decorator';
 
 @Controller('event')
 export class EventController {
@@ -31,6 +30,7 @@ export class EventController {
   getEvents(@UserData() userData: IUserData) {
     return this.eventService.getAllEvents(userData);
   }
+
   @Post()
   createEvent(@UserData() userData: IUserData, @Body() body: VCreateEventDto) {
     return this.eventService.createEvent(userData, body);
@@ -43,6 +43,7 @@ export class EventController {
   ) {
     return this.eventService.updateEvent(userData, event_id, body);
   }
+
   @Delete(':event_id')
   deleteEvent(
     @UserData() userData: IUserData,
@@ -50,6 +51,7 @@ export class EventController {
   ) {
     return this.eventService.deleteEvent(userData, event_id);
   }
+
   @Post(':event_id/ideas')
   createIdea(
     @UserData() userData: IUserData,
@@ -84,7 +86,7 @@ export class EventController {
       throw new HttpException(
         {
           message: formattedErrors,
-          statusCode: 400, 
+          statusCode: 400,
         },
         HttpStatus.BAD_REQUEST,
       );
@@ -97,6 +99,7 @@ export class EventController {
       userData,
     );
   }
+
   @Get(':event_id/attachments')
   getEventIdeasAttachments(
     @UserData() userData: IUserData,
@@ -125,6 +128,7 @@ export class EventController {
       userData,
     );
   }
+  
   @Get('dashboard/staff-contribution?')
   getDepartmentIdeasContributionInTime(
     @Query('year') year: number,
@@ -155,15 +159,14 @@ export class EventController {
         throw new HttpException(
           {
             message: formattedErrors,
-            statusCode: 400, 
+            statusCode: 400,
           },
           HttpStatus.BAD_REQUEST,
         );
       }
-
     } catch (error) {
       throw new HttpException(
-        "SyntaxError: file_ids must be an array",
+        'SyntaxError: file_ids must be an array',
         HttpStatus.BAD_REQUEST,
       );
     }

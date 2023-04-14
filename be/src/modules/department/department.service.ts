@@ -131,7 +131,6 @@ export class DepartmentService {
   }
 
   async getEventsByDepartment(
-    userData: IUserData,
     department_id: number,
   ) {
     const department = await this.departmentExists(department_id);
@@ -141,7 +140,7 @@ export class DepartmentService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    return this.eventService.getEventsByDepartment(userData, department_id);
+    return this.eventService.getEventsByDepartment(department_id);
   }
 
   async getDepartmentValidIdeas(department_id: number) {
