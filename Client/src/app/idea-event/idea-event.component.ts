@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -17,8 +18,12 @@ export class IdeaEventComponent implements OnInit {
   ref: DynamicDialogRef;
   listIdea = [];
   listData = [];
+  listFileData = [];
+  cols: Array<any> = [];
+  listSelectedData: Array<any> = [];
+
   Id: any;
-  
+  dialogDownloadAtt: boolean;
   name: any;
   role: number;
   eventInfo: any;
@@ -27,6 +32,7 @@ export class IdeaEventComponent implements OnInit {
   first_closure_date: any;
   final_closure_date: any;
   dialogDownloadEvent: boolean;
+  exEvent: boolean = false;
   listDepartments = [];
   listCategories = [];
   formGroup: FormGroup<{
@@ -55,7 +61,6 @@ export class IdeaEventComponent implements OnInit {
       }
     }).subscribe((res: any) => {
       this.listCategories = res.data;
-      console.log("list", res.data);
       
     })
   }
@@ -65,8 +70,16 @@ export class IdeaEventComponent implements OnInit {
           Authorization: 'Bearer ' + this.authService.getToken()
         }
       }).subscribe((res: any) => {
-        console.log("res.data", res.data);
         this.eventInfo = res.data.event
+        console.log(new Date(new Date().toDateString()).getTime() > new Date(new Date(res.data.event.final_closure_date).toDateString()).getTime());
+        
+
+        if(new Date(new Date().toDateString()).getTime() > new Date(new Date(res.data.event.final_closure_date).toDateString()).getTime())
+        {
+          this.exEvent = true;
+        }
+        
+        
         this.listIdea = res.data;
         this.listData = [];
         res.data.ideas.forEach(item => {
@@ -108,9 +121,14 @@ export class IdeaEventComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
-      this.userDepartment = this.authService.getDepartment();
-    
+    this.cols = [
+      { field: 'Number', header: 'Number', width: '10%', textAlign: 'center' },
+      { field: 'name', header: 'Name', width: '20%', textAlign: 'center' },
+      { field: 'name', header: 'Download Link', width: '70%', textAlign: 'center' },
+    ];
+
+    this.userDepartment = this.authService.getDepartment();
+    this.getListFile();
     this.getAllIdeaByEvent();
     this.getAllDepartment();
     this.getListCategory();
@@ -121,6 +139,15 @@ export class IdeaEventComponent implements OnInit {
       endDate: new FormControl(null, [Validators.required]),
     });
   }
+  getListFile() {
+    this.http.get<any>("http://localhost:3009/api/event/" + this.Id + "/attachments", {
+      headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()
+      }
+    }).subscribe((res: any) => {
+      this.listFileData = res.data;
+    })
+  }
   
   showMessage(severity: string, detail: string) {
     this.messageService.add({ severity: severity, summary: 'Notification:', detail: detail });
@@ -128,6 +155,21 @@ export class IdeaEventComponent implements OnInit {
 
   IdeaDetail(IdIdeal) : void{
     this.router.navigateByUrl('/detail', { state: { Id: IdIdeal } });
+  }
+
+  downloadAtt() {
+    let bodyData = {
+      "file_ids": this.listSelectedData.map(x => x.file_id)
+    }
+    console.log(this.listSelectedData.map(x => x.file_id))
+    this.http.get<any>("http://localhost:3009/api/event/" + this.Id + "/files/download", {
+      headers: {
+        Authorization: 'Bearer ' + this.authService.getToken(),
+        params: JSON.stringify({"file_ids": this.listSelectedData.map(x => x.file_id)})
+      },
+    },).subscribe((res: any) => {
+      console.log(res);
+    })
   }
 
   postIdeal(){
@@ -147,5 +189,20 @@ export class IdeaEventComponent implements OnInit {
         this.getAllIdeaByEvent();
     });
     
+  }
+  downloadEvent() {
+    let bodyData = {
+    
+    }
+    this.http.post<any>("http://localhost:3009/api/event/" + this.Id + "/download" , bodyData,{
+      headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()
+      }
+    } ).subscribe((res: any) => {
+      console.log(res)
+    }, (err: any) => {
+      this.showMessage("Add success: ", err.error.message);
+
+    })
   }
 }

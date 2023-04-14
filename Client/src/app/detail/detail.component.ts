@@ -20,11 +20,13 @@ export class DetailComponent {
   like: boolean = false;
   dislike: boolean = false;
   totalLike: any;
+  dialogDownloadAtt: boolean;
   totalDislike: any;
   listCommentData = [];
   listFileData = [];
   title: string;
   avatar: string;
+  cols: Array<any> = [];
   content: string;
   anonymous: number
   date: any
@@ -35,6 +37,7 @@ export class DetailComponent {
   commentChildren_value: any;
   commentChildren_value1: any = [];
   public userArray: any = [];
+  listSelectedData: Array<any> = [];
   apiUrl:string = "http://localhost:3009/api/idea/";
 
 
@@ -174,6 +177,12 @@ export class DetailComponent {
 
   ngOnInit(): void {
     this.role = this.authService.getRole();
+
+    this.cols = [
+      { field: 'Number', header: 'Number', width: '5%', textAlign: 'center' },
+      { field: 'name', header: 'Name', width: '25%', textAlign: 'center' },
+      { field: 'size', header: 'Size', width: '25%', textAlign: 'center' },
+    ];
   }
   
   dislikeIdeal() {

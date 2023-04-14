@@ -1,101 +1,149 @@
 <form [formGroup]="formGroup" (ngSubmit)="SaveIdea()">
-    <div class="field" style="margin-top: 5%;">
-        <label for="name" style="width: 100%;">Category</label>
-        <p-dropdown [options]="categories" placeholder="Select a category" optionLabel="name" [showClear]="true"
-            formControlName="category"
-            [ngClass]="(formGroup.controls.category.invalid && (formGroup.controls.category.dirty || formGroup.controls.category.touched)) ? 'ng-invalid ng-dirty' : ''"></p-dropdown>
+  <div class="field" style="margin-top: 5%;">
+    <label for="name" style="width: 100%;">Category</label>
+    <p-dropdown [options]="categories" placeholder="Select a category" optionLabel="name" [showClear]="true"
+      formControlName="category"
+      [ngClass]="(formGroup.controls.category.invalid && (formGroup.controls.category.dirty || formGroup.controls.category.touched)) ? 'ng-invalid ng-dirty' : ''"></p-dropdown>
 
-        <div class="form-group mb-2"
-            [hidden]="formGroup.controls.category.valid|| formGroup.controls.category.untouched">
-            <span
-                *ngIf="formGroup.controls.category.hasError('required') || formGroup.controls.category.hasError('blankString') "
-                class="error-message-span" style="color: #FD0B0B; font-size: small;">
-                Please choose category
-            </span>
+    <div class="form-group mb-2" [hidden]="formGroup.controls.category.valid|| formGroup.controls.category.untouched">
+      <span
+        *ngIf="formGroup.controls.category.hasError('required') || formGroup.controls.category.hasError('blankString') "
+        class="error-message-span" style="color: #FD0B0B; font-size: small;">
+        Please choose category
+      </span>
+    </div>
+  </div>
+
+
+  <div class="field" style="margin-top: 5%;">
+
+    <label for="name" style="width: 100%;">Title</label>
+    <input id="float-input" type="text" pInputText formControlName="title" required style=" width: 100%;"
+      [ngClass]="(formGroup.controls.title.invalid && (formGroup.controls.title.dirty || formGroup.controls.title.touched)) ? 'ng-invalid ng-dirty' : ''">
+
+    <div class="form-group mb-2" [hidden]="formGroup.controls.title.valid|| formGroup.controls.title.untouched">
+      <span *ngIf="formGroup.controls.title.hasError('required') || formGroup.controls.title.hasError('blankString') "
+        class="error-message-span" style="color: #FD0B0B; font-size: small;">
+        Please enter title
+      </span>
+    </div>
+
+  </div>
+
+  <div class="field" style="margin-top: 5%;">
+
+    <label for="name" style="width: 100%;">Tag name (Ex: #data #visual)</label>
+    <input id="float-input" type="text" pInputText formControlName="tagName" required style=" width: 100%;"
+      [ngClass]="(formGroup.controls.tagName.invalid && (formGroup.controls.tagName.dirty || formGroup.controls.tagName.touched)) ? 'ng-invalid ng-dirty' : ''">
+
+    <div class="form-group mb-2" [hidden]="formGroup.controls.tagName.valid|| formGroup.controls.tagName.untouched">
+      <span
+        *ngIf="formGroup.controls.tagName.hasError('required') || formGroup.controls.tagName.hasError('blankString') "
+        class="error-message-span" style="color: #FD0B0B; font-size: small;">
+        Please enter tag name
+      </span>
+    </div>
+
+  </div>
+
+
+  <div class="field" style="margin-top: 5%;">
+    <label for="name" style="width: 100%;">Content</label>
+    <textarea id="float-input" rows="5" cols="30" pInputTextarea formControlName="content" required
+      style=" width: 100%;"
+      [ngClass]="(formGroup.controls.content.invalid && (formGroup.controls.content.dirty || formGroup.controls.content.touched)) ? 'ng-invalid ng-dirty' : ''"></textarea>
+
+    <div class="form-group mb-2" [hidden]="formGroup.controls.content.valid|| formGroup.controls.content.untouched">
+      <span
+        *ngIf="formGroup.controls.content.hasError('required') || formGroup.controls.content.hasError('blankString') "
+        class="error-message-span" style="color: #FD0B0B; font-size: small;">
+        Please enter content
+      </span>
+    </div>
+  </div>
+
+
+  <div class="field" style="display: flex; margin-top: 5%;">
+    <p>{{url}}</p>
+    <label for="files" class="btn" style="height: 40px; width: 30%; border-width: 1px; border-color: black;">Select
+      File</label>
+    <input type="file" id="files" (change)="onselectFile($event)" multiple="multiple"
+      style="margin-top: auto; margin-bottom: auto; margin-left: 5%; display: none;" required>
+  </div>
+
+  <div class="form-check" style=" margin-top: 5%;">
+    <input class="form-check-input" type="checkbox" value="" id="Anonymous" formControlName="anonymous">
+    <label class="form-check-label" for="Anonymous">
+      Anonymous
+    </label>
+  </div>
+  <div class="form-check" style=" margin-top: 5%;">
+    <h4>Terms & Conditions</h4>
+    <div  class="col-md-12" style="height: 250px;overflow: auto; overflow-x: hidden; border: 1px solid #ccc;">
+      <div  class="row" style="border-bottom: 1px groove; margin: 10px" >
+        <div class="col-md-12" style="padding: 0px">
+          <div class="row">
+            <p>Welcome to our website for staff to submit ideas to Greewich University! By accessing or using our website,you agree to be bound by the following Terms and Conditions:</p>
+            <p>1. Eligibility</p>
+            <p>You must be a current staff member of Greenwich University to submit an idea on this website.</p>
+            
+
+            <p>2. Idea Submission</p>
+            <p>When you submit an idea, you grant Greenwich a non-exclusive, worldwide, royalty-free license to use,
+              reproduce, and modify your idea in any way we see fit. You also agree that your idea does not infringe on
+              any third-party rights, including intellectual property rights.</p>
+
+            <p>3. Confidentiality</p>
+            <p>You understand and agree that any ideas submitted on this website are not confidential and may be shared
+              with others inside Greenwich. You should not submit any ideas that you wish to keep confidential.</p>
+
+            <p>4. User Conduct</p>
+            <p>You agree to use our website only for lawful purposes and in a manner that does not infringe on the rights
+              of others. You will not submit any content that is defamatory, obscene, or discriminatory in nature.</p>
+
+            <p>5. Disclaimer of Warranties</p>
+            <p>We make no warranties or representations about the accuracy or completeness of the content on our website.
+              We are not responsible for any errors or omissions in the content, or for any loss or damage of any kind
+              arising from the use of the website.</p>
+
+            <p>6. Limitation of Liability</p>
+            <p>In no event shall Greenwich be liable for any direct, indirect, incidental, special, or consequential
+              damages arising out of or in connection with the use or inability to use the website.</p>
+
+            <p>7. Indemnification</p>
+            <p>You agree to indemnify and hold Greenwich, its officers, directors, employees, and agents harmless from any
+              and all claims, liabilities, damages, and expenses arising out of or in connection with your use of the
+              website or any breach of these Terms and Conditions.</p>
+
+            <p>8. Modification of Terms and Conditions</p>
+            <p>We reserve the right to modify these Terms and Conditions at any time without prior notice. By continuing to
+              use the website, you agree to be bound by the modified Terms and Conditions.</p>
+
+            <p>9. Governing Law</p>
+            <p>These Terms and Conditions shall be governed by and construed in accordance with the laws of the state or
+              country where Greenwich campus is located.</p>
+            <p>10. Contact Us</p>
+            <p>If you have any questions or concerns about these Terms and Conditions, please contact us at
+              greenwich.gic.support@gmail.com or 0325634232.</p>
+          </div>
         </div>
+      </div>
     </div>
-
-
-    <div class="field" style="margin-top: 5%;">
-
-        <label for="name" style="width: 100%;">Title</label>
-        <input id="float-input" type="text" pInputText formControlName="title" required style=" width: 100%;"
-            [ngClass]="(formGroup.controls.title.invalid && (formGroup.controls.title.dirty || formGroup.controls.title.touched)) ? 'ng-invalid ng-dirty' : ''">
-
-        <div class="form-group mb-2" [hidden]="formGroup.controls.title.valid|| formGroup.controls.title.untouched">
-            <span
-                *ngIf="formGroup.controls.title.hasError('required') || formGroup.controls.title.hasError('blankString') "
-                class="error-message-span" style="color: #FD0B0B; font-size: small;">
-                Please enter title
-            </span>
-        </div>
-
+    <input class="form-check-input" type="checkbox" value="" id="Agree" formControlName="checked" required
+      [ngClass]="(formGroup.controls.checked.invalid && (formGroup.controls.checked.dirty || formGroup.controls.checked.touched)) ? 'ng-invalid ng-dirty' : ''">
+    <label class="form-check-label" for="Agree">
+      Agree term
+    </label>
+    <div class="form-group mb-2" [hidden]="formGroup.controls.checked.valid|| formGroup.controls.checked.untouched">
+      <span
+        *ngIf="formGroup.controls.checked.hasError('required') || formGroup.controls.checked.hasError('blankString') "
+        class="error-message-span" style="color: #FD0B0B; font-size: small;">
+        Please enter checked
+      </span>
     </div>
+  </div>
 
-    <div class="field" style="margin-top: 5%;">
-
-        <label for="name" style="width: 100%;">Tag name (Ex: #data #visual)</label>
-        <input id="float-input" type="text" pInputText formControlName="tagName" required style=" width: 100%;"
-            [ngClass]="(formGroup.controls.tagName.invalid && (formGroup.controls.tagName.dirty || formGroup.controls.tagName.touched)) ? 'ng-invalid ng-dirty' : ''">
-
-        <div class="form-group mb-2" [hidden]="formGroup.controls.tagName.valid|| formGroup.controls.tagName.untouched">
-            <span
-                *ngIf="formGroup.controls.tagName.hasError('required') || formGroup.controls.tagName.hasError('blankString') "
-                class="error-message-span" style="color: #FD0B0B; font-size: small;">
-                Please enter tag name
-            </span>
-        </div>
-
-    </div>
-
-
-    <div class="field" style="margin-top: 5%;">
-        <label for="name" style="width: 100%;">Content</label>
-        <textarea id="float-input" rows="5" cols="30" pInputTextarea formControlName="content" required
-            style=" width: 100%;"
-            [ngClass]="(formGroup.controls.content.invalid && (formGroup.controls.content.dirty || formGroup.controls.content.touched)) ? 'ng-invalid ng-dirty' : ''"></textarea>
-
-        <div class="form-group mb-2" [hidden]="formGroup.controls.content.valid|| formGroup.controls.content.untouched">
-            <span
-                *ngIf="formGroup.controls.content.hasError('required') || formGroup.controls.content.hasError('blankString') "
-                class="error-message-span" style="color: #FD0B0B; font-size: small;">
-                Please enter content
-            </span>
-        </div>
-    </div>
-
-
-    <div class="field" style="display: flex; margin-top: 5%;">
-        <p>{{url}}</p>
-        <label for="files" class="btn" style="height: 40px; width: 30%; border-width: 1px; border-color: black;">Select
-            File</label>
-        <input type="file" id="files" (change)="onselectFile($event)" multiple="multiple"
-            style="margin-top: auto; margin-bottom: auto; margin-left: 5%; display: none;" required>
-    </div>
-
-    <div class="form-check" style=" margin-top: 5%;">
-        <input class="form-check-input" type="checkbox" value="" id="Anonymous" formControlName="anonymous">
-        <label class="form-check-label" for="Anonymous">
-            Anonymous
-        </label>
-    </div>
-    <div class="form-check" style=" margin-top: 5%;">
-        <input class="form-check-input" type="checkbox" value="" id="Agree" formControlName="checked" required
-        [ngClass]="(formGroup.controls.checked.invalid && (formGroup.controls.checked.dirty || formGroup.controls.checked.touched)) ? 'ng-invalid ng-dirty' : ''"
-        >
-        <label class="form-check-label" for="Agree">
-            Agree term
-        </label>
-        <div class="form-group mb-2" [hidden]="formGroup.controls.checked.valid|| formGroup.controls.checked.untouched">
-            <span
-                *ngIf="formGroup.controls.checked.hasError('required') || formGroup.controls.checked.hasError('blankString') "
-                class="error-message-span" style="color: #FD0B0B; font-size: small;">
-                Please enter checked
-            </span>
-        </div>
-    </div>
-
-    <div style=" margin-top: 5%;">
-        <button pButton type="Submit" label="Save"></button>
-    </div>
+  <div style=" margin-top: 5%;">
+    <button pButton type="Submit" label="Save"></button>
+  </div>
 </form>

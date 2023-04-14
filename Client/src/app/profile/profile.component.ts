@@ -111,12 +111,7 @@ export class ProfileComponent implements OnInit {
 
       await this.http.post<any>("http://localhost:3009/api/upload/images", formData , {headers: { Authorization: 'Bearer ' + this.authService.getToken()}
         }).subscribe((result: any) => {
-          if(result.statusCode != 200) {
-            this.messageService.add({ severity: 'error', summary: result.message, detail: '' });
-            return
-          }
-          console.log("done image")
-
+          console.log(result);
           this.save(result.data[0].file_url)
         });
     }else{
@@ -136,15 +131,17 @@ export class ProfileComponent implements OnInit {
       this.formGroup.controls.birthday.value.getMonth() + "-"+ 
       this.formGroup.controls.birthday.value.getDate();
     }
-    this.http.put<any>(this.apiURLEditInfor,{
+    let bodyData = {
       "nick_name" : this.formGroup.controls.name.value,
       "gender" : this.formGroup.controls.gender.value == "Male" ? 1 : 2,
       "birthdate": dateBirth,
       "avatar_url": url
-  } , {headers: {
+    }
+    this.http.put<any>(this.apiURLEditInfor, bodyData , {headers: {
       Authorization: 'Bearer ' + this.authService.getToken()}
     }).subscribe((result: any) => {
-      console.log("done")
+      console.log(result);
+
       this.getDataUser();
       this.hideDialog() ;
     });
@@ -156,8 +153,8 @@ export class ProfileComponent implements OnInit {
       alert("Please re-enter your password. Password and confirm password are not the same")
     }
     this.http.put<any>("http://localhost:3009/api/me/profile/password",{
-      "oldPassword" : this.formEditAccount.controls.oldPassword,
-      "newPassword" : this.formEditAccount.controls.password
+      "oldPassword" : this.formEditAccount.controls.oldPassword.value,
+      "newPassword" : this.formEditAccount.controls.password.value
   } , {headers: {
       Authorization: 'Bearer ' + this.authService.getToken()}
     }).subscribe((result: any) => {

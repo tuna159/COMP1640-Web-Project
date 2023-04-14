@@ -78,4 +78,17 @@ a:hover {
     height: 100% !important;
 }
 
+:host ::ng-deep .p-toggleButton[_ngcontent-tis-c109] {
+    margin: 0;
+    display: inline-flex;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    align-items: center;
+    vertical-align: bottom;
+    text-align: center;
+    overflow: hidden;
+    position: static;
+}
+
 

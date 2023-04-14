@@ -36,7 +36,6 @@ export class VDownloadIdeaDto {
   @IsOptional()
   @IsInt()
   author_department_id: number;
-
   @IsOptional()
   @IsInt()
   category_id: number;

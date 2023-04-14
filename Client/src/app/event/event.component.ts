@@ -45,6 +45,7 @@ export class EventComponent implements OnInit {
         }
       }).subscribe((res: any) => {
         this.listEvent = res.data;
+      
     })
   }
   }

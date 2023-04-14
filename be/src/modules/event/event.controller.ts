@@ -27,17 +27,14 @@ import { Public } from '@core/decorator/public.decorator';
 @Controller('event')
 export class EventController {
   constructor(private readonly eventService: EventService) {}
-
   @Get()
   getEvents(@UserData() userData: IUserData) {
     return this.eventService.getAllEvents(userData);
   }
-
   @Post()
   createEvent(@UserData() userData: IUserData, @Body() body: VCreateEventDto) {
     return this.eventService.createEvent(userData, body);
   }
-
   @Put(':event_id')
   updateEvent(
     @UserData() userData: IUserData,
@@ -46,7 +43,6 @@ export class EventController {
   ) {
     return this.eventService.updateEvent(userData, event_id, body);
   }
-
   @Delete(':event_id')
   deleteEvent(
     @UserData() userData: IUserData,
@@ -54,7 +50,6 @@ export class EventController {
   ) {
     return this.eventService.deleteEvent(userData, event_id);
   }
-
   @Post(':event_id/ideas')
   createIdea(
     @UserData() userData: IUserData,
@@ -102,7 +97,6 @@ export class EventController {
       userData,
     );
   }
-
   @Get(':event_id/attachments')
   getEventIdeasAttachments(
     @UserData() userData: IUserData,
@@ -131,7 +125,6 @@ export class EventController {
       userData,
     );
   }
-
   @Get('dashboard/staff-contribution?')
   getDepartmentIdeasContributionInTime(
     @Query('year') year: number,
