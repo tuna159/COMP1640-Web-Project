@@ -45,9 +45,9 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
         password: configService.get(EConfiguration.DB_MYSQL_PASSWORD),
         database: configService.get(EConfiguration.DB_MYSQL_NAME),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        // synchronize: true,
+        synchronize: true,
         autoLoadEntities: true,
-        // logging: true,
+        logging: true,
         // logger: new DatabaseMysqlLogger(),
         timezone: configService.get(EConfiguration.DB_MYSQL_TZ) || '+07:00',
         legacySpatialSupport: false, //fix version mysql 8

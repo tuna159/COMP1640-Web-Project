@@ -4,11 +4,12 @@ services:
   mysql-db:
     container_name: mysql-db
     image: mysql:5.7
-    command: --default-authentication-plugin=mysql_native_password
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_bin',--default-authentication-plugin=mysql_native_password]
     restart: unless-stopped
     env_file: ./.env
     environment:
       MYSQL_ROOT_PASSWORD: $DB_MYSQL_PASSWORD
+      MYSQL_DATABASENAME: $DB_MYSQL_NAME
     ports:
       - $DB_MYSQL_LOCAL_PORT:$DB_MYSQL_DOCKER_PORT
     volumes:
@@ -31,6 +32,7 @@ services:
       - DB_PASSWORD=$DB_MYSQL_PASSWORD
       - DB_DATABASE=$DB_MYSQL_NAME
       - DB_PORT=$DB_MYSQL_LOCAL_PORT
+    command: ["npm run db:generate", "npm run db:run", "npm run db:seed"]
     stdin_open: true
     tty: true
     volumes:

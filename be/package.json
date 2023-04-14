@@ -18,7 +18,14 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm",
+    "db:create": "func() { yarn typeorm migration:create -n \"$1\" -d src/core/database/mysql/migrations; }; func",
+    "db:run": "yarn typeorm migration:run",
+    "db:revert": "yarn typeorm migration:revert",
+    "db:generate": "func() { yarn typeorm migration:generate -n \"$1\"; }; func",
+    "db:generate:win": "ts-node ./node_modules/typeorm/cli.js migration:generate",
+    "db:seed": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js seed"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
