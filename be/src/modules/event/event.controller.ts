@@ -5,6 +5,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -12,7 +14,11 @@ import {
   Res,
 } from '@nestjs/common';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
-import { VCreateEventDto, VGetIdeasAttachmentsDto, VUpdateEventDto } from 'global/dto/event.dto.';
+import {
+  VCreateEventDto,
+  VGetIdeasAttachmentsDto,
+  VUpdateEventDto,
+} from 'global/dto/event.dto.';
 import type { Response } from 'express';
 import { EventService } from './event.service';
 import { VDownloadIdeaDto } from 'global/dto/downloadIdeas.dto';
@@ -21,17 +27,14 @@ import { Public } from '@core/decorator/public.decorator';
 @Controller('event')
 export class EventController {
   constructor(private readonly eventService: EventService) {}
-
   @Get()
   getEvents(@UserData() userData: IUserData) {
     return this.eventService.getAllEvents(userData);
   }
-
   @Post()
   createEvent(@UserData() userData: IUserData, @Body() body: VCreateEventDto) {
     return this.eventService.createEvent(userData, body);
   }
-
   @Put(':event_id')
   updateEvent(
     @UserData() userData: IUserData,
@@ -40,7 +43,6 @@ export class EventController {
   ) {
     return this.eventService.updateEvent(userData, event_id, body);
   }
-
   @Delete(':event_id')
   deleteEvent(
     @UserData() userData: IUserData,
@@ -48,7 +50,6 @@ export class EventController {
   ) {
     return this.eventService.deleteEvent(userData, event_id);
   }
-
   @Post(':event_id/ideas')
   createIdea(
     @UserData() userData: IUserData,
@@ -58,44 +59,59 @@ export class EventController {
     return this.eventService.createIdea(userData, body, event_id);
   }
 
-  @Public()
-  @Get(':event_id/download')
-  downloadIdeasByEvent(
+  @Get(':event_id/download?')
+  async downloadIdeasByEvent(
     @UserData() userData: IUserData,
     @Param('event_id') event_id: number,
-    @Body() body: VDownloadIdeaDto,
+    @Query('category_id') categoryId: number,
+    @Query('author_department_id') authorDepartmentId: number,
+    @Query('start_date') startDate: string,
+    @Query('end_date') endDate: string,
     @Res() res: Response,
   ) {
+    const options = new VDownloadIdeaDto(
+      Number(categoryId),
+      Number(authorDepartmentId),
+      startDate,
+      endDate,
+    );
+    const errors = await options.isValid();
+    if (errors.length != 0) {
+      const formattedErrors = [];
+      errors.forEach((e) => {
+        formattedErrors.push(...Object.values(e.constraints));
+      });
+      throw new HttpException(
+        {
+          message: formattedErrors,
+          statusCode: 400, 
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     return this.eventService.downloadIdeasByEvent(
       event_id,
-      body,
+      options,
       res,
       userData,
     );
   }
-
   @Get(':event_id/attachments')
   getEventIdeasAttachments(
     @UserData() userData: IUserData,
     @Param('event_id') event_id: number,
   ) {
-    return this.eventService.getEventIdeasAttachments(
-      event_id,
-      userData,
-    );
+    return this.eventService.getEventIdeasAttachments(event_id, userData);
   }
 
   @Get(':event_id/ideas')
-  getIdeasByEvent(
-    @Param('event_id') event_id: number,
-  ) {
+  getIdeasByEvent(@Param('event_id') event_id: number) {
     return this.eventService.getIdeasByEvent(event_id);
   }
 
   @Get('university')
-  getEventsByUniversity(
-    @UserData() userData: IUserData,
-  ) {
+  getEventsByUniversity(@UserData() userData: IUserData) {
     return this.eventService.getEventsByUniversity(userData);
   }
 
@@ -109,7 +125,6 @@ export class EventController {
       userData,
     );
   }
-
   @Get('dashboard/staff-contribution?')
   getDepartmentIdeasContributionInTime(
     @Query('year') year: number,
@@ -121,18 +136,43 @@ export class EventController {
     );
   }
 
-  @Get(':event_id/files/download')
+  @Get(':event_id/files/download?')
   async downloadIdeasAttachments(
     @UserData() userData: IUserData,
     @Param('event_id') event_id: number,
+    @Query('file_ids') txtFileIds: string,
     @Res() res: Response,
-    @Body() body: VGetIdeasAttachmentsDto,
   ) {
+    try {
+      const options = new VGetIdeasAttachmentsDto();
+      options.file_ids = JSON.parse(txtFileIds);
+      const errors = await options.isValid();
+      if (errors.length != 0) {
+        const formattedErrors = [];
+        errors.forEach((e) => {
+          formattedErrors.push(...Object.values(e.constraints));
+        });
+        throw new HttpException(
+          {
+            message: formattedErrors,
+            statusCode: 400, 
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+    } catch (error) {
+      throw new HttpException(
+        "SyntaxError: file_ids must be an array",
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     return await this.eventService.downloadIdeasAttachments(
       event_id,
       userData,
       res,
-      body,
+      JSON.parse(txtFileIds),
     );
   }
 }

@@ -336,7 +336,7 @@ export class EventService {
 
   async downloadIdeasByEvent(
     event_id: number,
-    body: VDownloadIdeaDto,
+    options: VDownloadIdeaDto,
     res: Response,
     userData: IUserData,
   ) {
@@ -360,8 +360,8 @@ export class EventService {
       );
     }
 
-    const start_date = new Date(body.start_date);
-    const end_date = new Date(body.end_date);
+    const start_date = new Date(options.start_date);
+    const end_date = new Date(options.end_date);
     if (start_date > end_date) {
       throw new HttpException(
         'Start date must be less than or equal to end date',
@@ -382,16 +382,15 @@ export class EventService {
 
     const ideas = await this.ideaService.getIdeasOfSystem(
       event_id,
-      body.category_id,
+      options.category_id,
       null,
-      body.author_department_id,
+      options.author_department_id,
       false,
       null,
       start_date,
       end_date,
       true,
     );
-
     const data = [];
     for (const idea of ideas) {
       const row = [];
@@ -431,7 +430,6 @@ export class EventService {
       row.push(idea.category.name);
       data.push(row);
     }
-
     const fileName = 'ideas.csv';
     const path = join(process.cwd(), fileName);
     const writeStream = fs.createWriteStream(path);
@@ -462,29 +460,26 @@ export class EventService {
       'category_id',
       'category_name',
     ];
-
     try {
       const stringifier = stringify({ header: true, columns: columns });
       data.forEach((row) => {
         stringifier.write(row);
       });
       stringifier.pipe(writeStream);
-
       writeStream.on('finish', () => {
         writeStream.close();
         console.log('Writing file CSV Completed');
       });
-
       const readStream = fs.createReadStream(path);
       res.set({
         'Content-Type': 'text/csv',
         'Content-Disposition': `attachment; filename="${fileName}"`,
       });
       readStream.pipe(res);
-
       readStream.on('end', () => {
         readStream.close();
         console.log('File CSV Download Completed');
+        fs.unlinkSync(path);
       });
     } catch (error) {
       throw new HttpException(
@@ -633,7 +628,7 @@ export class EventService {
     event_id: number,
     userData: IUserData,
     res: Response,
-    body: VGetIdeasAttachmentsDto
+    file_ids: number[],
   ) {
     if (userData.role_id != EUserRole.QA_MANAGER) {
       throw new HttpException(
@@ -655,7 +650,6 @@ export class EventService {
       );
     }
 
-    const file_ids = body.file_ids;
     for (const fId of file_ids) {
       const count = await this.fileService.fileExists(fId);
       if (count == 0) {

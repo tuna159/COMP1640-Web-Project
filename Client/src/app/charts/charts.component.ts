@@ -128,6 +128,24 @@ export class ChartsComponent implements OnInit{
       })
   }
 
+  getIdeaDepartment(id: any) {
+    this.http.get<any>("http://localhost:3009/api/event/dashboard/staff-contribution?year=2020", {
+      headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()
+      }
+    }).subscribe((result: any) => {
+      if (result.status_code != 200) {
+        this.showMessage('error', result.error_message);
+        return;
+      }
+        let StaffContribute = result.data.staff_contributed
+        let totalStaff = result.data.total_staff
+        // pie chart Thống kê staff contribute
+        this.optionsPieChartStaffContribute = this.chartsService.createPieChartStaffContributeDepartment((totalStaff - StaffContribute)/totalStaff * 1000, StaffContribute/totalStaff *100);
+        this.pieChartStaffContribute = new Chart(this.optionsPieChartStaffContribute);
+      })
+  }
+
   getListEvent() {
     this.http.get<any>("http://localhost:3009/api/event", {
       headers: {

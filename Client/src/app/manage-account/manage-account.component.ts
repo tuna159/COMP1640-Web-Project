@@ -142,6 +142,10 @@ export class ManageAccountComponent {
       }
     }).subscribe((result: any) => {
       this.getAllData();
+    },
+    err => {
+      this.showMessage('error', err.error.message);
+      return;
     });
     
   }
