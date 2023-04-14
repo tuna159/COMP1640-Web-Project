@@ -32,7 +32,6 @@ services:
       - DB_PASSWORD=$DB_MYSQL_PASSWORD
       - DB_DATABASE=$DB_MYSQL_NAME
       - DB_PORT=$DB_MYSQL_LOCAL_PORT
-    command: ["npm run db:generate", "npm run db:run", "npm run db:seed"]
     stdin_open: true
     tty: true
     volumes:

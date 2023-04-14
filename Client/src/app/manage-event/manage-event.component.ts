@@ -10,7 +10,7 @@ import { AddEventComponent } from './add-event/add-event.component';
   selector: 'app-manage-event',
   templateUrl: './manage-event.component.html',
   styleUrls: ['./manage-event.component.css'],
-  providers: [MessageService, ConfirmationService, DialogService]
+  providers: [MessageService, ConfirmationService, DialogService],
 })
 export class ManageEventComponent {
   cols: Array<any> = [];
@@ -21,22 +21,47 @@ export class ManageEventComponent {
   listDepartments = [];
   ref: DynamicDialogRef;
   name: string;
-  apiUrl: string = "http://localhost:3009/api/event";
+  apiUrl: string = 'http://52.199.43.174:3009/api/event';
   listSelectedData: Array<any> = [];
-  constructor(private messageService: MessageService, private confirmationService: ConfirmationService, private router: Router,
-    private http: HttpClient, private authService: AuthenticationService, private dialogService: DialogService) {
+  constructor(
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService,
+    private router: Router,
+    private http: HttpClient,
+    private authService: AuthenticationService,
+    private dialogService: DialogService
+  ) {
     this.getAllData();
   }
 
   ngOnInit() {
-
     this.cols = [
       { field: 'Number', header: 'Number', width: '5%', textAlign: 'center' },
       { field: 'name', header: 'Name', width: '15%', textAlign: 'center' },
-      { field: 'Create on', header: 'Create on', width: '15%', textAlign: 'center' },
-      { field: 'Closure Date', header: 'Closure Date', width: '10%', textAlign: 'center' },
-      { field: 'Final Date', header: 'Final Date', width: '10%', textAlign: 'center' },
-      { field: 'Department', header: 'Department', width: '10%', textAlign: 'center' },
+      {
+        field: 'Create on',
+        header: 'Create on',
+        width: '15%',
+        textAlign: 'center',
+      },
+      {
+        field: 'Closure Date',
+        header: 'Closure Date',
+        width: '10%',
+        textAlign: 'center',
+      },
+      {
+        field: 'Final Date',
+        header: 'Final Date',
+        width: '10%',
+        textAlign: 'center',
+      },
+      {
+        field: 'Department',
+        header: 'Department',
+        width: '10%',
+        textAlign: 'center',
+      },
       {
         field: 'Edit/Delete',
         header: 'Edit/Delete',
@@ -47,43 +72,54 @@ export class ManageEventComponent {
   }
 
   async getAllData() {
-    let listDepartment = []
-    this.http.get<any>(this.apiUrl, {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe((result: any) => {
-      if (result.status_code != 200) {
-        this.showMessage('error', result.message);
-        return;
-      }
-      this.http.get<any>("http://localhost:3009/api/department", {
+    let listDepartment = [];
+    this.http
+      .get<any>(this.apiUrl, {
         headers: {
-          Authorization: 'Bearer ' + this.authService.getToken()
-        }
-      }).subscribe((res: any) => {
-        listDepartment = res.data;
-        this.listData = result.data.map((item, index) => Object.assign({
-          Stt: index + 1,
-          department: listDepartment.find(x => x.department_id == item.department_id),
-        }, item));
+          Authorization: 'Bearer ' + this.authService.getToken(),
+        },
       })
-
-    });
-
+      .subscribe((result: any) => {
+        if (result.status_code != 200) {
+          this.showMessage('error', result.message);
+          return;
+        }
+        this.http
+          .get<any>('http://52.199.43.174:3009/api/department', {
+            headers: {
+              Authorization: 'Bearer ' + this.authService.getToken(),
+            },
+          })
+          .subscribe((res: any) => {
+            listDepartment = res.data;
+            this.listData = result.data.map((item, index) =>
+              Object.assign(
+                {
+                  Stt: index + 1,
+                  department: listDepartment.find(
+                    (x) => x.department_id == item.department_id
+                  ),
+                },
+                item
+              )
+            );
+          });
+      });
   }
   getAllDepartment() {
-    this.http.get<any>("http://localhost:3009/api/department", {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe((res: any) => {
-      if (res.status_code != 200) {
-        this.showMessage('error', res.message);
-        return;
-      }
-      this.listDepartments = res.data;
-    })
+    this.http
+      .get<any>('http://52.199.43.174:3009/api/department', {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken(),
+        },
+      })
+      .subscribe((res: any) => {
+        if (res.status_code != 200) {
+          this.showMessage('error', res.message);
+          return;
+        }
+        this.listDepartments = res.data;
+      });
   }
 
   showDialogDelete(data) {
@@ -105,31 +141,36 @@ export class ManageEventComponent {
     } else {
       this.displayDeleteEvents = false;
     }
-
   }
 
   async deleteEvent() {
-    this.http.delete(this.apiUrl + '/' + this.id, {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe((result: any) => {
-      if (result.statusCode != 400) {
-        this.showMessage('success', result.message)
-        // this.displayDeleteEvent = false;
-        // this.displayDeleteEvents = false;
-        // this.getAllData();
-        return;
-      }
-      this.showMessage('success', 'Delete success')
-      this.displayDeleteEvent = false;
-      this.displayDeleteEvents = false;
-      this.getAllData();
-    });
+    this.http
+      .delete(this.apiUrl + '/' + this.id, {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken(),
+        },
+      })
+      .subscribe((result: any) => {
+        if (result.statusCode != 400) {
+          this.showMessage('success', result.message);
+          // this.displayDeleteEvent = false;
+          // this.displayDeleteEvents = false;
+          // this.getAllData();
+          return;
+        }
+        this.showMessage('success', 'Delete success');
+        this.displayDeleteEvent = false;
+        this.displayDeleteEvents = false;
+        this.getAllData();
+      });
   }
 
   showMessage(severity: string, detail: string) {
-    this.messageService.add({ severity: severity, summary: 'Notification:', detail: detail });
+    this.messageService.add({
+      severity: severity,
+      summary: 'Notification:',
+      detail: detail,
+    });
   }
 
   openNewEvent(data) {
@@ -137,15 +178,13 @@ export class ManageEventComponent {
       this.ref = this.dialogService.open(AddEventComponent, {
         header: 'Add Event',
         width: '40%',
-        contentStyle: { "max-height": "800px", "overflow": "auto" },
+        contentStyle: { 'max-height': '800px', overflow: 'auto' },
         baseZIndex: 10000,
-        data: {
-
-        }
+        data: {},
       });
       this.ref.onClose.subscribe((result) => {
         if (result) {
-          this.showMessage("Add success: ", result);
+          this.showMessage('Add success: ', result);
         }
         this.getAllData();
       });
@@ -153,13 +192,13 @@ export class ManageEventComponent {
       this.ref = this.dialogService.open(AddEventComponent, {
         header: 'Edit Event',
         width: '40%',
-        contentStyle: { "max-height": "800px", "overflow": "auto" },
+        contentStyle: { 'max-height': '800px', overflow: 'auto' },
         baseZIndex: 10000,
-        data: data
+        data: data,
       });
       this.ref.onClose.subscribe((result) => {
         if (result) {
-          this.showMessage("Edit success: ", result);
+          this.showMessage('Edit success: ', result);
         }
         this.getAllData();
       });

@@ -10,7 +10,7 @@ import { AddDepartmentComponent } from './add-department/add-department.componen
   selector: 'app-manage-department',
   templateUrl: './manage-department.component.html',
   styleUrls: ['./manage-department.component.css'],
-  providers: [MessageService, ConfirmationService, DialogService]
+  providers: [MessageService, ConfirmationService, DialogService],
 })
 export class ManageDepartmentComponent {
   cols: Array<any> = [];
@@ -20,19 +20,29 @@ export class ManageDepartmentComponent {
   id: number;
   ref: DynamicDialogRef;
   name: string;
-  apiUrl: string = "http://localhost:3009/api/department";
+  apiUrl: string = 'http://52.199.43.174:3009/api/department';
   listSelectedData: Array<any> = [];
-  constructor(private messageService: MessageService, private confirmationService: ConfirmationService, private router: Router,
-    private http: HttpClient, private authService: AuthenticationService, private dialogService: DialogService) {
+  constructor(
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService,
+    private router: Router,
+    private http: HttpClient,
+    private authService: AuthenticationService,
+    private dialogService: DialogService
+  ) {
     this.getAllData();
   }
 
   ngOnInit() {
-
     this.cols = [
       { field: 'Number', header: 'Number', width: '5%', textAlign: 'center' },
       { field: 'name', header: 'Name', width: '15%', textAlign: 'center' },
-      { field: 'Manager Name', header: 'Manager Name', width: '15%', textAlign: 'center' },
+      {
+        field: 'Manager Name',
+        header: 'Manager Name',
+        width: '15%',
+        textAlign: 'center',
+      },
       {
         field: 'Edit/Delete',
         header: 'Edit/Delete',
@@ -43,21 +53,26 @@ export class ManageDepartmentComponent {
   }
 
   async getAllData() {
-    this.http.get<any>(this.apiUrl, {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe((result: any) => {
-      if (result.status_code != 200) {
-        this.showMessage('error', result.error_message);
-        return;
-      }
-      this.listData = result.data.map((item, index) => Object.assign({
-        Stt: index + 1,
-      }, item));
-    });
-
-
+    this.http
+      .get<any>(this.apiUrl, {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken(),
+        },
+      })
+      .subscribe((result: any) => {
+        if (result.status_code != 200) {
+          this.showMessage('error', result.error_message);
+          return;
+        }
+        this.listData = result.data.map((item, index) =>
+          Object.assign(
+            {
+              Stt: index + 1,
+            },
+            item
+          )
+        );
+      });
   }
 
   showDialogDelete(data) {
@@ -79,24 +94,29 @@ export class ManageDepartmentComponent {
     } else {
       this.displayDeleteDepartments = false;
     }
-
   }
 
   async deleteDepartment() {
-    this.http.delete(this.apiUrl + '/' + this.id, {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe(() => {
-      this.showMessage('success', 'Delete success')
-      this.displayDeleteDepartment = false;
-      this.displayDeleteDepartments = false;
-      this.getAllData();
-    });
+    this.http
+      .delete(this.apiUrl + '/' + this.id, {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken(),
+        },
+      })
+      .subscribe(() => {
+        this.showMessage('success', 'Delete success');
+        this.displayDeleteDepartment = false;
+        this.displayDeleteDepartments = false;
+        this.getAllData();
+      });
   }
 
   showMessage(severity: string, detail: string) {
-    this.messageService.add({ severity: severity, summary: 'Notification:', detail: detail });
+    this.messageService.add({
+      severity: severity,
+      summary: 'Notification:',
+      detail: detail,
+    });
   }
 
   openNewDepartment(data) {
@@ -104,15 +124,13 @@ export class ManageDepartmentComponent {
       this.ref = this.dialogService.open(AddDepartmentComponent, {
         header: 'Add Department',
         width: '40%',
-        contentStyle: { "max-height": "800px", "overflow": "auto" },
+        contentStyle: { 'max-height': '800px', overflow: 'auto' },
         baseZIndex: 10000,
-        data: {
-
-        }
+        data: {},
       });
       this.ref.onClose.subscribe((result) => {
         if (result) {
-          this.showMessage("Add success: ", result);
+          this.showMessage('Add success: ', result);
         }
         this.getAllData();
       });
@@ -120,13 +138,13 @@ export class ManageDepartmentComponent {
       this.ref = this.dialogService.open(AddDepartmentComponent, {
         header: 'Edit Department',
         width: '40%',
-        contentStyle: { "max-height": "800px", "overflow": "auto" },
+        contentStyle: { 'max-height': '800px', overflow: 'auto' },
         baseZIndex: 10000,
-        data: data
+        data: data,
       });
       this.ref.onClose.subscribe((result) => {
         if (result) {
-          this.showMessage("Edit success: ", result);
+          this.showMessage('Edit success: ', result);
         }
         this.getAllData();
       });

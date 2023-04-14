@@ -6,14 +6,14 @@ import { MenuItem } from 'primeng/api';
 import { MegaMenuItem } from 'primeng/api';
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 interface Country {
-  name: string,
-  code: string
+  name: string;
+  code: string;
 }
 
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.css']
+  styleUrls: ['./menu.component.css'],
 })
 export class MenuComponent {
   display: any;
@@ -30,37 +30,46 @@ export class MenuComponent {
   formGroup: FormGroup<{
     category: FormControl<number>;
   }>;
-  constructor(private authService: AuthenticationService, private http : HttpClient,
-    public router: Router, ){
+  constructor(
+    private authService: AuthenticationService,
+    private http: HttpClient,
+    public router: Router
+  ) {
     this.role = authService.getRole();
-    this.getDataUser(); 
-    this.role = this.authService.getRole()
-    this.getListCategory()
+    this.getDataUser();
+    this.role = this.authService.getRole();
+    this.getListCategory();
   }
   getDataUser() {
-    if(this.authService.getRole() != 1) {
-      this.http.get<any>("http://localhost:3009/api/user/" + this.authService.getUserID(), {headers: {
-      Authorization: 'Bearer ' + this.authService.getToken()}
-    }).subscribe((result: any) => {
-            this.dataUser = result.data;
+    if (this.authService.getRole() != 1) {
+      this.http
+        .get<any>(
+          'http://52.199.43.174:3009/api/user/' + this.authService.getUserID(),
+          {
+            headers: {
+              Authorization: 'Bearer ' + this.authService.getToken(),
+            },
+          }
+        )
+        .subscribe((result: any) => {
+          this.dataUser = result.data;
         });
     }
   }
 
-  
   getListCategory() {
-    this.http.get<any>("http://localhost:3009/api/category", {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe((res: any) => {
-      this.listCategories = res.data;
-    })
+    this.http
+      .get<any>('http://52.199.43.174:3009/api/category', {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken(),
+        },
+      })
+      .subscribe((res: any) => {
+        this.listCategories = res.data;
+      });
   }
-  
-  ngOnInit() {
-    
-  }
+
+  ngOnInit() {}
 
   isLinkActive(link) {
     const url = this.router.url;
@@ -68,8 +77,6 @@ export class MenuComponent {
   }
   logout() {
     this.authService.logout();
-    this.router.navigateByUrl('/login')
+    this.router.navigateByUrl('/login');
   }
-
-
 }

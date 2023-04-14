@@ -21,21 +21,20 @@ export class UserController {
     return this.userService.login(body);
   }
 
+  @Public()
   @Post('create-account')
   async createAccount(@UserData() userData: IUserData, @Body() body: VSignUp) {
     return this.userService.createAccount(userData, body);
   }
 
   @Get()
-  getAllUser(
-    @UserData() userData: IUserData, 
-  ) {
+  getAllUser(@UserData() userData: IUserData) {
     return this.userService.getAllUsers(userData);
   }
 
   @Get(':user_id')
   async getUserDetail(
-    @UserData() userData: IUserData, 
+    @UserData() userData: IUserData,
     @Param('user_id') user_id: string,
   ) {
     return await this.userService.getUserDetail(userData, user_id);

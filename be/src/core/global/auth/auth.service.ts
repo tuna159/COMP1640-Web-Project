@@ -99,12 +99,12 @@ export class AuthService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    if (userData.role_id != EUserRole.ADMIN) {
-      throw new HttpException(
-        ErrorMessage.YOU_DO_NOT_HAVE_RIGHTS_TO_REGISTER_USER_ACCOUNTS,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // if (userData.role_id != EUserRole.ADMIN) {
+    //   throw new HttpException(
+    //     ErrorMessage.YOU_DO_NOT_HAVE_RIGHTS_TO_REGISTER_USER_ACCOUNTS,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
 
     const userParams = new User();
     userParams.email = body.email;
