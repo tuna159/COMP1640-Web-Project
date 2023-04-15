@@ -40,12 +40,7 @@ export class HomeComponent implements OnInit {
         Authorization: 'Bearer ' + this.authService.getToken()
       }
     }).subscribe((res: any) => {
-      if (res.status_code != 200) {
-        this.showMessage('error', res.message);
-        return;
-      }
       console.log("res.data", res.data);
-
       this.listIdea = res.data;
       this.listData = [];
       res.data.forEach(item => {
@@ -68,7 +63,6 @@ export class HomeComponent implements OnInit {
         this.listData.push(bodyData)
       })
       console.log("data: ", this.listData);
-
     })
   }
 
@@ -87,50 +81,14 @@ export class HomeComponent implements OnInit {
 
   SaveSort() {
     let api = 'http://localhost:3009/api/idea'
-    if (this.formGroup.controls.startDate.value && this.formGroup.controls.endDate.value && this.formGroup.controls.startDate.value.getTime() > this.formGroup.controls.endDate.value.getTime()) {
+    if (this.formGroup.controls.startDate.value && this.formGroup.controls.endDate.value && 
+      this.formGroup.controls.startDate.value.getTime() > this.formGroup.controls.endDate.value.getTime()) {
       this.showMessage('error', 'Start Date must less than end date');
-
     }
-    if (this.formGroup.controls.sort.value != null ||
-      this.formGroup.controls.startDate.value != null ||
+    if (this.formGroup.controls.sort.value != null || this.formGroup.controls.startDate.value != null ||
       this.formGroup.controls.endDate.value != null) {
       api = api + '?'
     }
-    // if(this.formGroup.controls.newest.value == true){
-    //   if(api.slice(-1) == '?') {
-    //     api = api + 'sorting_setting=RECENT_IDEAS'
-    //   } else {
-    //     api = api + '&sorting_setting=RECENT_IDEAS'
-    //   }
-    // }
-    // if(this.formGroup.controls.mostPopular.value == true){
-    //   if(api.slice(-1) == '?') {
-    //     api = api + 'sorting_setting=MOST_POPULAR_IDEAS'
-    //   } else {
-    //     api = api + '&sorting_setting=MOST_POPULAR_IDEAS'
-    //   }
-    // }
-    // if(this.formGroup.controls.mostView.value == true){
-    //   if(api.slice(-1) == '?') {
-    //     api = api + 'sorting_setting=MOST_VIEWED_IDEAS'
-    //   } else {
-    //     api = api + '&sorting_setting=MOST_VIEWED_IDEAS'
-    //   }
-    // }
-    // if(this.formGroup.controls.startDate.value != null){
-    //   if(api.slice(-1) == '?') {
-    //     api = api + 'start_date=' + this.formGroup.controls.startDate.value.getFullYear()
-    //   } else {
-    //     api = api + '&start_date=' + this.formGroup.controls.startDate.value.getFullYear()
-    //   }
-    // }
-    // if(this.formGroup.controls.endDate.value != null){
-    //   if(api.slice(-1) == '?') {
-    //     api = api + 'end_date=' + this.formGroup.controls.startDate.value.getFullYear()
-    //   } else {
-    //     api = api + '&end_date=' + this.formGroup.controls.startDate.value.getFullYear()
-    //   }
-    // }
     if (this.formGroup.controls.sort.value == "newest") {
       if (api.slice(-1) == '?') {
         api = api + 'sorting_setting=RECENT_IDEAS'
@@ -154,20 +112,18 @@ export class HomeComponent implements OnInit {
     }
     if (this.formGroup.controls.startDate.value != null) {
       if (api.slice(-1) == '?') {
-        api = api + 'start_date=' + this.formGroup.controls.startDate.value.getFullYear()
+        api = api + 'start_date=' + new Date(this.formGroup.controls.startDate.value)
       } else {
-        api = api + '&start_date=' + this.formGroup.controls.startDate.value.getFullYear()
+        api = api + '&start_date=' + new Date(this.formGroup.controls.startDate.value)
       }
     }
     if (this.formGroup.controls.endDate.value != null) {
       if (api.slice(-1) == '?') {
-        api = api + 'end_date=' + this.formGroup.controls.startDate.value.getFullYear()
+        api = api + 'end_date=' + new Date(this.formGroup.controls.endDate.value)
       } else {
-        api = api + '&end_date=' + this.formGroup.controls.startDate.value.getFullYear()
+        api = api + '&end_date=' + new Date(this.formGroup.controls.endDate.value)
       }
     }
-    console.log(api)
-
     this.apiUrl = api;
     this.getAllIdeas()
     this.sortEvent = false;

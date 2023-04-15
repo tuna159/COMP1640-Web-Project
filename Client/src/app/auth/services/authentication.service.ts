@@ -8,6 +8,8 @@ import jwt_decode from 'jwt-decode';
 })
 export class AuthenticationService {
     private userSubject: BehaviorSubject<any>;
+    //, bạn tạo một Observable phiên bản xác định chức năng người đăng ký
+    //Observable: “lắng nghe” các thay đổi trạng thái do các hàm ( next(), error() và complete()) observable phát ra.
     public user: Observable<any>;
     public Roles = [];
     constructor(private http: HttpClient, private router: Router) {
@@ -54,7 +56,6 @@ export class AuthenticationService {
             localStorage.removeItem('user');
         }
         const tokenInfo = this.getDecodedAccessToken(this.userSubject.value.data.token); // decode token
-       
         
         return tokenInfo.deparment_id        ;
     }
@@ -68,12 +69,11 @@ export class AuthenticationService {
     }
 
     public login(username: string, password: string) {
-        return this.http.post<any>('http://localhost:3009/api/user/login', { "email": username,"password": password }).pipe(
+        return this.http.post<any>('http://localhost:3009/api/user/login', 
+        { "email": username,"password": password }).pipe(
             map((user) => {
-                // store user details jwt token in localStorage
                 localStorage.setItem('user', JSON.stringify(user));
                 this.setUser(user)
-                console.log(this.userSubject.value.data.token)
                 this.userSubject.next(user);
                 return user;
             },

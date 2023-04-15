@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-add-department',
@@ -18,7 +19,7 @@ export class AddDepartmentComponent implements OnInit{
   }>;
 
   constructor(private dialogService: DialogService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
-    private http: HttpClient, private authService: AuthenticationService,) {
+    private http: HttpClient, private authService: AuthenticationService, private messageService: MessageService) {
       this.data = this.config.data;
 
   }
@@ -34,6 +35,9 @@ export class AddDepartmentComponent implements OnInit{
         }
       }).subscribe((result: any) => {
         this.ref.close(this.formGroup.controls.name.value);
+      }, (err: any) => {
+        this.showMessage("error: ", err.error.message);
+  
       });
     } else {
       this.http.put(this.apiUrl + "/" + this.data.department_id, {
@@ -44,6 +48,9 @@ export class AddDepartmentComponent implements OnInit{
         }
       }).subscribe((result: any) => {
         this.ref.close(this.formGroup.controls.name.value);
+      }, (err: any) => {
+        this.showMessage("error: ", err.error.message);
+  
       });
     }
 
@@ -62,7 +69,9 @@ export class AddDepartmentComponent implements OnInit{
     })
   }
 
-  
+  showMessage(severity: string, detail: string) {
+    this.messageService.add({ severity: severity, summary: 'Notification:', detail: detail });
+  }
 
   closeDialog() {
     this.ref.close();

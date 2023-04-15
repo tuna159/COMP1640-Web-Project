@@ -31,7 +31,7 @@ export class PostComponent implements OnInit {
 
   constructor(private dialogService: DialogService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
     private http: HttpClient, private authService: AuthenticationService, private messageService: MessageService, private router: Router) {
-      this.Id = this.config.data;
+      this.Id = this.config.data.Id;
       this.getListCategory();
   }
 
@@ -46,6 +46,10 @@ export class PostComponent implements OnInit {
     })
   }
   async SaveIdea() {
+    if(this.formGroup.controls.checked.value == false) {
+      this.showMessage('error', 'Please agree to the terms');
+      return
+    }
     if(this.listFile.length) {
       const formData: FormData = new FormData();
       for(let i = 0; i < this.listFile.length; i++) {
@@ -55,17 +59,19 @@ export class PostComponent implements OnInit {
       {headers: { Authorization: 'Bearer ' + this.authService.getToken()}
         }).subscribe((result: any) => {
           this.save(result.data)
+        },
+        err => {
+          this.showMessage('error', err.error.message);
+          return;
         });
     } else {
       this.save('')
     }
+    
     this.closeDialog()
   }
 
   save(data: any) {
-    if(this.formGroup.controls.checked.value == false) {
-      alert("Please agree term")
-    }
     let bodyData = {
       "title": this.formGroup.controls.title.value,
       "content": this.formGroup.controls.content.value,
@@ -74,21 +80,14 @@ export class PostComponent implements OnInit {
       "tag_names": [{"name": this.formGroup.controls.tagName.value}],
       "is_anonymous": this.formGroup.controls.anonymous.value == true ? 1 : 0
     }
-
-    this.http.post(this.apiUrl +  this.Id.Id + '/ideas', bodyData, {
+    this.http.post(this.apiUrl +  this.Id + '/ideas', bodyData, {
       headers: {
         Authorization: 'Bearer ' + this.authService.getToken()
       }
     }).subscribe((result: any) => {
-      this.router.navigateByUrl('/event/ideas', { state: { Id: this.Id.Id } });
+      this.router.navigateByUrl('/event/ideas', { state: { Id: this.Id } });
     },
     err => {
-      if (err.error.message === "error.USER_NAME_INCORRECT") {
-        this.showMessage('error', 'Incorrect Email');
-      }
-      if (err.error.message === "error.PASSWORD_INCORRECT") {
-        this.showMessage('error', 'Incorrect Password');
-      }
       this.showMessage('error', err.error.message);
       return;
     });
@@ -98,8 +97,9 @@ export class PostComponent implements OnInit {
     }
 
   ngOnInit(): void {
+    this.getListCategory();
     this.formGroup = new FormGroup({
-      category: new FormControl(null, [Validators.required]),
+      category: new FormControl(this.categories != null ? this.categories[0] : null, [Validators.required]),
       title: new FormControl(null, [Validators.required]),
       tagName: new FormControl(null, [Validators.required]),
       content: new FormControl(null, [Validators.required]),
@@ -121,12 +121,14 @@ export class PostComponent implements OnInit {
   
   onselectFile(e){
     if(e.target.files){
+      console.log(e.target.files)
+      // duyệt qua các phần tử trong files, sử dụng FileReader để đọc file và thêm vào listFile
       for(let i = 0; i < e.target.files.length; i++) {
         var reader = new FileReader();
         reader.readAsDataURL(e.target.files[i]);
-        reader.onload=(event:any)=>{
-          this.url = event.target.result;
-        }
+        // reader.onload=(event:any)=>{
+        //   this.url = event.target.result;
+        // }
         this.listFile.push(e.target.files[i]) 
       }
     }

@@ -85,11 +85,11 @@ export class ManageCategoryComponent implements OnInit {
     this.displayXoaN = true;
   }
 
-  xoaNTo() {
+  deleteCategories() {
     if(this.listSelectedData.length){
       for(let i = 0; i < this.listSelectedData.length; i++) {
         this.id = this.listSelectedData[i].category_id;
-        this.xoaTo();
+        this.deleteCategory();
       }
       this.listSelectedData = null;
     }else{
@@ -98,17 +98,18 @@ export class ManageCategoryComponent implements OnInit {
     
   }
 
-  async xoaTo() { 
+  async deleteCategory() { 
     this.http.delete(this.apiUrl +'/'+ this.id, {headers: {
       Authorization: 'Bearer ' + this.authService.getToken()}
     }).subscribe(() => {
       this.showMessage('success', 'Delete success');
       this.displayXoa = false;
       this.displayXoaN = false;
-      
       this.getAllData();
+    }, (err: any) => {
+      this.showMessage("error: ", err.error.message);
+
     });
-    
   }
 
   showMessage(severity: string, detail: string) {
@@ -129,8 +130,9 @@ export class ManageCategoryComponent implements OnInit {
         this.ref.onClose.subscribe((result) => {
           if (result) {
               this.showMessage("Add success: ", result);
+              this.getAllData();
+
           }
-          this.getAllData();
       });
     } else {
       this.ref = this.dialogService.open(AddCategoryComponent, {
@@ -143,8 +145,8 @@ export class ManageCategoryComponent implements OnInit {
       this.ref.onClose.subscribe((result) => {
         if (result) {
             this.showMessage("Edit success: ", result);
+            this.getAllData();
         }
-        this.getAllData();
     });
     }
     

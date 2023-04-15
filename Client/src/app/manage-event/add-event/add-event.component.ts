@@ -75,6 +75,9 @@ export class AddEventComponent implements OnInit {
         }
       }).subscribe((result: any) => {
         this.ref.close(this.formGroup.controls.name.value);
+      }, (err: any) => {
+        this.showMessage("error: ", err.error.message);
+          return;
       });
     } else {
       this.http.put(this.apiUrl + "/" + this.data.event_id, {
@@ -88,6 +91,9 @@ export class AddEventComponent implements OnInit {
         }
       }).subscribe((result: any) => {
         this.ref.close(this.formGroup.controls.name.value);
+      }, (err: any) => {
+        this.showMessage("error: ", err.error.message);
+        return;
       });
     }
 

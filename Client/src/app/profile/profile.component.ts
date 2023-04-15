@@ -144,6 +144,9 @@ export class ProfileComponent implements OnInit {
 
       this.getDataUser();
       this.hideDialog() ;
+    }, (err: any) => {
+      this.showMessage("error: ", err.error.message);
+
     });
   }
   
@@ -160,6 +163,9 @@ export class ProfileComponent implements OnInit {
     }).subscribe((result: any) => {
       this.getDataUser();
       this.hideDialog() ;
+    }, (err: any) => {
+      this.showMessage("error: ", err.error.message);
+
     });
   }
 
@@ -203,6 +209,9 @@ export class ProfileComponent implements OnInit {
     }
   }
   
+  showMessage(severity: string, detail: string) {
+    this.messageService.add({ severity: severity, summary: 'Notification:', detail: detail });
+  }
 
 }
 

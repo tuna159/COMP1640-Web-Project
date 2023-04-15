@@ -114,17 +114,13 @@ export class ManageEventComponent {
         Authorization: 'Bearer ' + this.authService.getToken()
       }
     }).subscribe((result: any) => {
-      if (result.statusCode != 400) {
-        this.showMessage('success', result.message)
-        // this.displayDeleteEvent = false;
-        // this.displayDeleteEvents = false;
-        // this.getAllData();
-        return;
-      }
       this.showMessage('success', 'Delete success')
       this.displayDeleteEvent = false;
       this.displayDeleteEvents = false;
       this.getAllData();
+    }, (err: any) => {
+      this.showMessage("error: ", err.error.message);
+
     });
   }
 
@@ -146,8 +142,9 @@ export class ManageEventComponent {
       this.ref.onClose.subscribe((result) => {
         if (result) {
           this.showMessage("Add success: ", result);
+          this.getAllData();
+
         }
-        this.getAllData();
       });
     } else {
       this.ref = this.dialogService.open(AddEventComponent, {
@@ -160,8 +157,8 @@ export class ManageEventComponent {
       this.ref.onClose.subscribe((result) => {
         if (result) {
           this.showMessage("Edit success: ", result);
+          this.getAllData();
         }
-        this.getAllData();
       });
     }
   }

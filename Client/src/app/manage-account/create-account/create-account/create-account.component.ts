@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 
@@ -41,7 +42,7 @@ export class CreateAccountComponent {
   data: any;
   value: any;
   constructor(private dialogService: DialogService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
-    private http: HttpClient, private authService: AuthenticationService,) {
+    private http: HttpClient, private authService: AuthenticationService, private messageService: MessageService) {
     this.data = this.config.data;
   }
 
@@ -103,17 +104,24 @@ export class CreateAccountComponent {
     }
   }
 
-  SaveIdea() {
+  SaveAccount() {
     if (this.data.user_id == null) {
+      if (this.formGroup.controls.birthday.value  && 
+        this.formGroup.controls.birthday.value.getTime() > Date.now() ){
+        this.showMessage('error', 'birthday must less than current date ');
+        return
+      }
       let birthdate = ""
       if (this.formGroup.controls.birthday.value.getMonth() + 1 <= 9) {
         birthdate = this.formGroup.controls.birthday.value.getFullYear() + "-0" +
-          (this.formGroup.controls.birthday.value.getMonth() + 1) + "-0" +
-          this.formGroup.controls.birthday.value.getDate();
+          (this.formGroup.controls.birthday.value.getMonth() + 1) + "-" +
+          (this.formGroup.controls.birthday.value.getDate() < 10 ? "0" + this.formGroup.controls.birthday.value.getDate() 
+                                                                        : this.formGroup.controls.birthday.value.getDate());
       } else {
         birthdate = this.formGroup.controls.birthday.value.getFullYear() + "-" +
           this.formGroup.controls.birthday.value.getMonth() + "-" +
-          this.formGroup.controls.birthday.value.getDate();
+          (this.formGroup.controls.birthday.value.getDate() < 10 ? "0" + this.formGroup.controls.birthday.value.getDate() 
+                                                                        : this.formGroup.controls.birthday.value.getDate());
       }
       let bodyData = {
         "email": this.formGroup.controls.email.value,
@@ -125,15 +133,17 @@ export class CreateAccountComponent {
         "department_id": this.formGroup.controls.department.value['department_id'],
         "birthdate": birthdate
       }
-      console.log(bodyData)
       this.http.post(this.apiUrl,bodyData, {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken()
         }
       }).subscribe((result: any) => {
         this.closeDialog()
+      },
+      err => {
+        this.showMessage('error', err.error.message);
+        return;
       });
-
     } else {
       this.http.put("http://localhost:3009/api/user/" + this.data.user_id, {
         "role_id": Number(this.formGroup.controls.role.value['Id']),
@@ -145,12 +155,19 @@ export class CreateAccountComponent {
         }
       }).subscribe((result: any) => {
         this.closeDialog()
+      },
+      err => {
+        this.showMessage('error', err.error.message);
+        return;
       });
     }
-
   }
 
   closeDialog() {
     this.ref.close();
+  }
+
+  showMessage(severity: string, detail: string) {
+    this.messageService.add({ severity: severity, summary: 'Notification:', detail: detail });
   }
 }
