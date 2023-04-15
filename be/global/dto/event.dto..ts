@@ -1,4 +1,3 @@
-import { Type } from 'class-transformer';
 import {
   IsArray,
   IsDateString,
@@ -8,6 +7,8 @@ import {
   MaxLength,
   MinLength,
   ValidateNested,
+  ValidationError,
+  Validator,
 } from 'class-validator';
 import { ErrorMessage } from 'enum/error';
 
@@ -52,7 +53,12 @@ export class VUpdateEventDto {
 }
 
 export class VGetIdeasAttachmentsDto {
+  isValid(): Promise<ValidationError[]> {
+    const validator = new Validator();
+    return validator.validate(this);
+  }
+
   @IsArray()
   @IsNumber({},{each: true})
-  file_ids: number[];
+  file_ids: string;
 }
