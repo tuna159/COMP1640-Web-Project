@@ -102,7 +102,7 @@
 												appendTo="body" [filter]="true" (onChange)="changeEvent()"></p-dropdown>
 										</div>
 										<div class="col-md-12 mt-10" style="display: flex;justify-content: center;">
-											<div class="chart" [chart]="barChartStaffDepartment"></div>
+											<div class="chart" [chart]="barChartStaffEvent"></div>
 										</div>
 									</div>
 								</p-fieldset>
@@ -158,10 +158,9 @@
 								<p-fieldset legend="Ideal statistics by department">
 									<div class="row">
 										<div class="col-md-12 text-right">
-											<p-dropdown [options]="departments" [(ngModel)]="departmentValue"
-												optionLabel="name" [filter]="true"
-												[style]="{'height': '30px', 'width': '280px'}"
-												(onChange)="changeEvent()" [autoDisplayFirst]="false"
+											<p-dropdown [options]="years" [(ngModel)]="yearValue"
+												optionLabel="name" [filter]="true" [autofocusFilter] = "true"
+												(onChange)="changeIdeaDepartment()" [autoDisplayFirst]="false"
 												appendTo="body"></p-dropdown>
 										</div>
 										<div class="col-md-12 mt-10" style="display: flex;justify-content: center;">

@@ -191,25 +191,18 @@ export class IdeaEventComponent implements OnInit {
   }
 
   downloadAtt() {
-    let bodyData = {
-      file_ids: this.listSelectedData.map((x) => x.file_id),
-    };
-    console.log(this.listSelectedData.map((x) => x.file_id));
-    this.http
-      .get<any>(
-        'http://52.199.43.174:3009/api/event/' + this.Id + '/files/download',
-        {
-          headers: {
-            Authorization: 'Bearer ' + this.authService.getToken(),
-            params: JSON.stringify({
-              file_ids: this.listSelectedData.map((x) => x.file_id),
-            }),
-          },
-        }
-      )
-      .subscribe((res: any) => {
-        console.log(res);
-      });
+    let listData = this.listSelectedData.map(x => x.file_id)
+    if(listData.length == 0) {
+      this.showMessage("error: ", "please select the file you want to download");
+    }else{
+    this.http.get<any>("http://localhost:3009/api/event/" + this.Id + "/files/download?file_ids=["+ listData + "]", {
+      headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()
+      },
+    },).subscribe((res: any) => {
+      this.showMessage("Add success: ", res);
+    })
+    }
   }
 
   postIdeal() {
@@ -230,24 +223,18 @@ export class IdeaEventComponent implements OnInit {
     });
   }
   downloadEvent() {
-    let bodyData = {};
-    this.http
-      .post<any>(
-        'http://52.199.43.174:3009/api/event/' + this.Id + '/download',
-        bodyData,
-        {
-          headers: {
-            Authorization: 'Bearer ' + this.authService.getToken(),
-          },
-        }
-      )
-      .subscribe(
-        (res: any) => {
-          console.log(res);
-        },
-        (err: any) => {
-          this.showMessage('Add success: ', err.error.message);
-        }
-      );
+    let bodyData = {
+    
+    }
+    this.http.post<any>("http://localhost:3009/api/event/" + this.Id + "/download" , bodyData,{
+      headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()
+      }
+    } ).subscribe((res: any) => {
+      console.log(res)
+    }, (err: any) => {
+      this.showMessage("err: ", err.error.message);
+
+    })
   }
 }

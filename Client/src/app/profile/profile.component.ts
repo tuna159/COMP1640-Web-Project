@@ -168,9 +168,12 @@ export class ProfileComponent implements OnInit {
       .subscribe((result: any) => {
         console.log(result);
 
-        this.getDataUser();
-        this.hideDialog();
-      });
+      this.getDataUser();
+      this.hideDialog() ;
+    }, (err: any) => {
+      this.showMessage("error: ", err.error.message);
+
+    });
   }
 
   SaveEditAccount() {
@@ -239,4 +242,9 @@ export class ProfileComponent implements OnInit {
       this.fileImage = e.target.files[0];
     }
   }
+  
+  showMessage(severity: string, detail: string) {
+    this.messageService.add({ severity: severity, summary: 'Notification:', detail: detail });
+  }
+
 }

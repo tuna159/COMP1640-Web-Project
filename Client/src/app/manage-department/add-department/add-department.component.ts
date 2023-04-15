@@ -8,6 +8,7 @@ import {
   DynamicDialogRef,
 } from 'primeng/dynamicdialog';
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-add-department',
@@ -21,49 +22,39 @@ export class AddDepartmentComponent implements OnInit {
     name: FormControl<string>;
   }>;
 
-  constructor(
-    private dialogService: DialogService,
-    public ref: DynamicDialogRef,
-    public config: DynamicDialogConfig,
-    private http: HttpClient,
-    private authService: AuthenticationService
-  ) {
-    this.data = this.config.data;
+  constructor(private dialogService: DialogService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
+    private http: HttpClient, private authService: AuthenticationService, private messageService: MessageService) {
+      this.data = this.config.data;
+
   }
 
   SaveDepartment() {
-    if (this.data.department_id == null) {
-      this.http
-        .post(
-          this.apiUrl,
-          {
-            name: this.formGroup.controls.name.value,
-          },
-          {
-            headers: {
-              Authorization: 'Bearer ' + this.authService.getToken(),
-            },
-          }
-        )
-        .subscribe((result: any) => {
-          this.ref.close(this.formGroup.controls.name.value);
-        });
+    if(this.data.department_id == null) {
+      this.http.post(this.apiUrl, {
+        "name": this.formGroup.controls.name.value,
+        }, {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken()
+        }
+      }).subscribe((result: any) => {
+        this.ref.close(this.formGroup.controls.name.value);
+      }, (err: any) => {
+        this.showMessage("error: ", err.error.message);
+  
+      });
     } else {
-      this.http
-        .put(
-          this.apiUrl + '/' + this.data.department_id,
-          {
-            name: this.formGroup.controls.name.value,
-          },
-          {
-            headers: {
-              Authorization: 'Bearer ' + this.authService.getToken(),
-            },
-          }
-        )
-        .subscribe((result: any) => {
-          this.ref.close(this.formGroup.controls.name.value);
-        });
+      this.http.put(this.apiUrl + "/" + this.data.department_id, {
+        "name": this.formGroup.controls.name.value,
+        }, {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken()
+        }
+      }).subscribe((result: any) => {
+        this.ref.close(this.formGroup.controls.name.value);
+      }, (err: any) => {
+        this.showMessage("error: ", err.error.message);
+  
+      });
     }
   }
 
@@ -78,6 +69,10 @@ export class AddDepartmentComponent implements OnInit {
     this.formGroup.patchValue({
       name: this.data.name,
     });
+  }
+
+  showMessage(severity: string, detail: string) {
+    this.messageService.add({ severity: severity, summary: 'Notification:', detail: detail });
   }
 
   closeDialog() {

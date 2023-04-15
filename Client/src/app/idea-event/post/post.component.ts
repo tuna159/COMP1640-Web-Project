@@ -32,17 +32,10 @@ export class PostComponent implements OnInit {
     anonymous: FormControl<boolean>;
   }>;
 
-  constructor(
-    private dialogService: DialogService,
-    public ref: DynamicDialogRef,
-    public config: DynamicDialogConfig,
-    private http: HttpClient,
-    private authService: AuthenticationService,
-    private messageService: MessageService,
-    private router: Router
-  ) {
-    this.Id = this.config.data;
-    this.getListCategory();
+  constructor(private dialogService: DialogService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
+    private http: HttpClient, private authService: AuthenticationService, private messageService: MessageService, private router: Router) {
+      this.Id = this.config.data.Id;
+      this.getListCategory();
   }
 
   getListCategory() {
@@ -57,72 +50,57 @@ export class PostComponent implements OnInit {
       });
   }
   async SaveIdea() {
-    if (this.listFile.length) {
+    if(this.formGroup.controls.checked.value == false) {
+      this.showMessage('error', 'Please agree to the terms');
+      return
+    }
+    if(this.listFile.length) {
       const formData: FormData = new FormData();
       for (let i = 0; i < this.listFile.length; i++) {
         formData.append('files', this.listFile[i], this.listFile[i].name);
       }
-      await this.http
-        .post<any>('http://52.199.43.174:3009/api/upload/files', formData, {
-          headers: { Authorization: 'Bearer ' + this.authService.getToken() },
-        })
-        .subscribe((result: any) => {
-          this.save(result.data);
+      await this.http.post<any>("http://localhost:3009/api/upload/files", formData ,
+      {headers: { Authorization: 'Bearer ' + this.authService.getToken()}
+        }).subscribe((result: any) => {
+          this.save(result.data)
+        },
+        err => {
+          this.showMessage('error', err.error.message);
+          return;
         });
     } else {
       this.save('');
     }
-    this.closeDialog();
+    
+    this.closeDialog()
   }
 
   save(data: any) {
-    if (this.formGroup.controls.checked.value == false) {
-      alert('Please agree term');
-    }
     let bodyData = {
-      title: this.formGroup.controls.title.value,
-      content: this.formGroup.controls.content.value,
-      category_id: this.formGroup.controls.category.value['category_id'],
-      files: data,
-      tag_names: [{ name: this.formGroup.controls.tagName.value }],
-      is_anonymous: this.formGroup.controls.anonymous.value == true ? 1 : 0,
-    };
-
-    this.http
-      .post(this.apiUrl + this.Id.Id + '/ideas', bodyData, {
-        headers: {
-          Authorization: 'Bearer ' + this.authService.getToken(),
-        },
-      })
-      .subscribe(
-        (result: any) => {
-          this.router.navigateByUrl('/event/ideas', {
-            state: { Id: this.Id.Id },
-          });
-        },
-        (err) => {
-          if (err.error.message === 'error.USER_NAME_INCORRECT') {
-            this.showMessage('error', 'Incorrect Email');
-          }
-          if (err.error.message === 'error.PASSWORD_INCORRECT') {
-            this.showMessage('error', 'Incorrect Password');
-          }
-          this.showMessage('error', err.error.message);
-          return;
-        }
-      );
-  }
-  showMessage(severity: string, detail: string) {
-    this.messageService.add({
-      severity: severity,
-      summary: 'Notification:',
-      detail: detail,
+      "title": this.formGroup.controls.title.value,
+      "content": this.formGroup.controls.content.value,
+      "category_id": this.formGroup.controls.category.value['category_id'],
+      "files": data,
+      "tag_names": [{"name": this.formGroup.controls.tagName.value}],
+      "is_anonymous": this.formGroup.controls.anonymous.value == true ? 1 : 0
+    }
+    this.http.post(this.apiUrl +  this.Id + '/ideas', bodyData, {
+      headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()
+      }
+    }).subscribe((result: any) => {
+      this.router.navigateByUrl('/event/ideas', { state: { Id: this.Id } });
+    },
+    err => {
+      this.showMessage('error', err.error.message);
+      return;
     });
   }
 
   ngOnInit(): void {
+    this.getListCategory();
     this.formGroup = new FormGroup({
-      category: new FormControl(null, [Validators.required]),
+      category: new FormControl(this.categories != null ? this.categories[0] : null, [Validators.required]),
       title: new FormControl(null, [Validators.required]),
       tagName: new FormControl(null, [Validators.required]),
       content: new FormControl(null, [Validators.required]),
@@ -141,17 +119,26 @@ export class PostComponent implements OnInit {
   //   }
   //   this.messageService.add({ severity: 'info', summary: 'File Uploaded', detail: '' });
   // }
-
-  onselectFile(e) {
-    if (e.target.files) {
-      for (let i = 0; i < e.target.files.length; i++) {
+  
+  onselectFile(e){
+    if(e.target.files){
+      console.log(e.target.files)
+      // duyệt qua các phần tử trong files, sử dụng FileReader để đọc file và thêm vào listFile
+      for(let i = 0; i < e.target.files.length; i++) {
         var reader = new FileReader();
         reader.readAsDataURL(e.target.files[i]);
-        reader.onload = (event: any) => {
-          this.url = event.target.result;
-        };
-        this.listFile.push(e.target.files[i]);
+        // reader.onload=(event:any)=>{
+        //   this.url = event.target.result;
+        // }
+        this.listFile.push(e.target.files[i]) 
       }
     }
+  }
+  showMessage(severity: string, detail: string) {
+    this.messageService.add({
+      severity: severity,
+      summary: 'Notification:',
+      detail: detail,
+    });
   }
 }
