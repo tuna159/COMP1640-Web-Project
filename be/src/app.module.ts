@@ -47,7 +47,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: true,
         autoLoadEntities: true,
-        logging: true,
+        // logging: true,
         // logger: new DatabaseMysqlLogger(),
         timezone: configService.get(EConfiguration.DB_MYSQL_TZ) || '+07:00',
         legacySpatialSupport: false, //fix version mysql 8

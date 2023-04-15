@@ -99,12 +99,12 @@ export class AuthService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    // if (userData.role_id != EUserRole.ADMIN) {
-    //   throw new HttpException(
-    //     ErrorMessage.YOU_DO_NOT_HAVE_RIGHTS_TO_REGISTER_USER_ACCOUNTS,
-    //     HttpStatus.BAD_REQUEST,
-    //   );
-    // }
+    if (userData.role_id != EUserRole.ADMIN) {
+      throw new HttpException(
+        ErrorMessage.YOU_DO_NOT_HAVE_RIGHTS_TO_REGISTER_USER_ACCOUNTS,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     const userParams = new User();
     userParams.email = body.email;
@@ -123,8 +123,9 @@ export class AuthService {
         const checkmanage = this.departmentSerivce.getAvailableDepartment(
           newUser.user_id,
         );
+        
 
-        if (checkmanage) {
+        if (!checkmanage) {
           throw new HttpException(
             ErrorMessage.DEPARTMENT_PERMISSION,
             HttpStatus.BAD_REQUEST,
@@ -157,8 +158,8 @@ export class AuthService {
       }
 
       if (
-        body.role_id != EUserRole.ADMIN &&
-        body.role_id != EUserRole.QA_MANAGER
+     
+        body.role_id == EUserRole.QA_COORDINATOR
       ) {
         const deparmentParam = new Department();
         deparmentParam.manager_id = newUser.user_id;
@@ -173,6 +174,7 @@ export class AuthService {
       const userDetailParams = new UserDetail();
       userDetailParams.user_id = newUser.user_id;
       userDetailParams.full_name = body.full_name;
+      userDetailParams.nick_name = body.nick_name;
       userDetailParams.gender = body.gender;
       userDetailParams.birthday = new Date(body?.birthdate);
       await this.userDetailService.createUserDetail(userDetailParams, manager);
@@ -188,6 +190,8 @@ export class AuthService {
         username: user.userDetail.nick_name ?? user.userDetail.full_name,
       },
     );
+    
+    
 
     return {
       // token: data.token,

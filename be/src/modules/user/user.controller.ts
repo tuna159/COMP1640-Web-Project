@@ -21,7 +21,6 @@ export class UserController {
     return this.userService.login(body);
   }
 
-  @Public()
   @Post('create-account')
   async createAccount(@UserData() userData: IUserData, @Body() body: VSignUp) {
     return this.userService.createAccount(userData, body);

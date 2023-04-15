@@ -20,7 +20,7 @@ export class ManageDepartmentComponent {
   id: number;
   ref: DynamicDialogRef;
   name: string;
-  apiUrl: string = 'http://52.199.43.174:3009/api/department';
+  apiUrl: string = 'http://localhost:3009/api/department';
   listSelectedData: Array<any> = [];
   constructor(
     private messageService: MessageService,

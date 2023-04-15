@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./charts.component.css'],
 })
 export class ChartsComponent implements OnInit {
-  apiUrlStaffDepartment: string = 'http://52.199.43.174:3009/api/event/';
+  apiUrlStaffDepartment: string = 'http://localhost:3009/api/event/';
   xStaffDepartment: any;
   dataStaffDepartment: any;
 

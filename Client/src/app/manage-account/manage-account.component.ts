@@ -21,7 +21,7 @@ export class ManageAccountComponent {
   id: number;
   ref: DynamicDialogRef;
   name: string;
-  apiUrl: string = 'http://52.199.43.174:3009/api/user';
+  apiUrl: string = 'http://localhost:3009/api/user';
   listSelectedData: Array<any> = [];
   constructor(
     private messageService: MessageService,

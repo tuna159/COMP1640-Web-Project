@@ -51,8 +51,8 @@ export class ProfileComponent implements OnInit {
   fileImage: any;
   urlImage: any;
   avatar_url: any;
-  apiUrl: string = 'http://52.199.43.174:3009/api/user/';
-  apiURLEditInfor = 'http://52.199.43.174:3009/api/me';
+  apiUrl: string = 'http://localhost:3009/api/user/';
+  apiURLEditInfor = 'http://localhost:3009/api/me';
 
   formGroup: FormGroup<{
     name: FormControl<string>;
@@ -124,7 +124,7 @@ export class ProfileComponent implements OnInit {
       formData.append('files', this.fileImage, this.fileImage.name);
 
       await this.http
-        .post<any>('http://52.199.43.174:3009/api/upload/images', formData, {
+        .post<any>('http://localhost:3009/api/upload/images', formData, {
           headers: { Authorization: 'Bearer ' + this.authService.getToken() },
         })
         .subscribe((result: any) => {

@@ -1,11 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import {
-  DialogService,
-  DynamicDialogConfig,
-  DynamicDialogRef,
-} from 'primeng/dynamicdialog';
+import { MessageService } from 'primeng/api';
+import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 
 @Component({
@@ -14,7 +11,7 @@ import { AuthenticationService } from 'src/app/auth/services/authentication.serv
   styleUrls: ['./create-account.component.css'],
 })
 export class CreateAccountComponent {
-  apiUrl: string = 'http://52.199.43.174:3009/api/user/create-account';
+  apiUrl: string = 'http://localhost:3009/api/user/create-account';
 
   listStatus = [{ name: 'Using' }, { name: 'Not Using' }];
 
@@ -38,13 +35,8 @@ export class CreateAccountComponent {
   }>;
   data: any;
   value: any;
-  constructor(
-    private dialogService: DialogService,
-    public ref: DynamicDialogRef,
-    public config: DynamicDialogConfig,
-    private http: HttpClient,
-    private authService: AuthenticationService
-  ) {
+  constructor(private dialogService: DialogService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
+    private http: HttpClient, private authService: AuthenticationService, private messageService: MessageService) {
     this.data = this.config.data;
   }
 
@@ -81,7 +73,7 @@ export class CreateAccountComponent {
 
   getAllDepartment() {
     this.http
-      .get<any>('http://52.199.43.174:3009/api/department', {
+      .get<any>('http://localhost:3009/api/department', {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },
@@ -94,7 +86,7 @@ export class CreateAccountComponent {
   changeRole() {
     if (this.formGroup.controls.role.value['Id'] == 4) {
       this.http
-        .get<any>('http://52.199.43.174:3009/api/department', {
+        .get<any>('http://localhost:3009/api/department', {
           headers: {
             Authorization: 'Bearer ' + this.authService.getToken(),
           },
@@ -104,7 +96,7 @@ export class CreateAccountComponent {
         });
     } else if (this.formGroup.controls.role.value['Id'] == 3) {
       this.http
-        .get<any>('http://52.199.43.174:3009/api/department/available', {
+        .get<any>('http://localhost:3009/api/department/available', {
           headers: {
             Authorization: 'Bearer ' + this.authService.getToken(),
           },
@@ -117,71 +109,70 @@ export class CreateAccountComponent {
     }
   }
 
-  SaveIdea() {
+  SaveAccount() {
     if (this.data.user_id == null) {
-      let birthdate = '';
+      if (this.formGroup.controls.birthday.value  && 
+        this.formGroup.controls.birthday.value.getTime() > Date.now() ){
+        this.showMessage('error', 'birthday must less than current date ');
+        return
+      }
+      let birthdate = ""
       if (this.formGroup.controls.birthday.value.getMonth() + 1 <= 9) {
-        birthdate =
-          this.formGroup.controls.birthday.value.getFullYear() +
-          '-0' +
-          (this.formGroup.controls.birthday.value.getMonth() + 1) +
-          '-0' +
-          this.formGroup.controls.birthday.value.getDate();
+        birthdate = this.formGroup.controls.birthday.value.getFullYear() + "-0" +
+          (this.formGroup.controls.birthday.value.getMonth() + 1) + "-" +
+          (this.formGroup.controls.birthday.value.getDate() < 10 ? "0" + this.formGroup.controls.birthday.value.getDate() 
+                                                                        : this.formGroup.controls.birthday.value.getDate());
       } else {
-        birthdate =
-          this.formGroup.controls.birthday.value.getFullYear() +
-          '-' +
-          this.formGroup.controls.birthday.value.getMonth() +
-          '-' +
-          this.formGroup.controls.birthday.value.getDate();
+        birthdate = this.formGroup.controls.birthday.value.getFullYear() + "-" +
+          this.formGroup.controls.birthday.value.getMonth() + "-" +
+          (this.formGroup.controls.birthday.value.getDate() < 10 ? "0" + this.formGroup.controls.birthday.value.getDate() 
+                                                                        : this.formGroup.controls.birthday.value.getDate());
       }
       let bodyData = {
-        email: this.formGroup.controls.email.value,
-        password: this.formGroup.controls.password.value,
-        role_id: this.formGroup.controls.role.value['Id'],
-        full_name: this.formGroup.controls.fullName.value,
-        nick_name: this.formGroup.controls.nickName.value,
-        gender: this.formGroup.controls.gender.value['name'] == 'Male' ? 1 : 2,
-        department_id:
-          this.formGroup.controls.department.value['department_id'],
-        birthdate: birthdate,
-      };
-      console.log(bodyData);
-      this.http
-        .post(this.apiUrl, bodyData, {
-          headers: {
-            Authorization: 'Bearer ' + this.authService.getToken(),
-          },
-        })
-        .subscribe((result: any) => {
-          this.closeDialog();
-        });
+        "email": this.formGroup.controls.email.value,
+        "password": this.formGroup.controls.password.value,
+        "role_id": this.formGroup.controls.role.value['Id'],
+        "full_name": this.formGroup.controls.fullName.value,
+        "nick_name": this.formGroup.controls.nickName.value,
+        "gender": this.formGroup.controls.gender.value['name'] == "Male" ? 1 : 2,
+        "department_id": this.formGroup.controls.department.value['department_id'],
+        "birthdate": birthdate
+      }
+      this.http.post(this.apiUrl,bodyData, {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken()
+        }
+      }).subscribe((result: any) => {
+        this.closeDialog()
+      },
+      err => {
+        this.showMessage('error', err.error.message);
+        return;
+      });
     } else {
-      this.http
-        .put(
-          'http://52.199.43.174:3009/api/user/' + this.data.user_id,
-          {
-            role_id: Number(this.formGroup.controls.role.value['Id']),
-            department_id:
-              this.formGroup.controls.department.value['department_id'] != null
-                ? this.formGroup.controls.department.value['department_id']
-                : null,
-            is_deleted:
-              this.formGroup.controls.status.value['name'] == 'Using' ? 0 : 1,
-          },
-          {
-            headers: {
-              Authorization: 'Bearer ' + this.authService.getToken(),
-            },
-          }
-        )
-        .subscribe((result: any) => {
-          this.closeDialog();
-        });
+      this.http.put("http://localhost:3009//api/user/" + this.data.user_id, {
+        "role_id": Number(this.formGroup.controls.role.value['Id']),
+        "department_id": this.formGroup.controls.department.value['department_id'] != null ?this.formGroup.controls.department.value['department_id'] : null,
+        "is_deleted": this.formGroup.controls.status.value['name'] == "Using" ? 0 : 1
+      }, {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken()
+        }
+      }).subscribe((result: any) => {
+        this.closeDialog()
+      },
+      err => {
+        this.showMessage('error', err.error.message);
+        return;
+      });
     }
   }
 
   closeDialog() {
     this.ref.close();
+  }
+
+  showMessage(severity: string, detail: string) {
+    this.messageService.add({ severity: severity, summary: 'Notification:', detail: detail });
   }
 }
