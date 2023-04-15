@@ -64,6 +64,8 @@ export class ChartsComponent implements OnInit {
     
     
   }
+  
+
 
   ngOnInit(): void {}
 
@@ -198,6 +200,7 @@ export class ChartsComponent implements OnInit {
       this.getIdeaDepartment(this.yearValue.name)
     }
   }
+
 
   showMessage(severity: string, detail: string) {
     this.messageService.add({
