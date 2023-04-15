@@ -130,9 +130,7 @@ export class DepartmentService {
     };
   }
 
-  async getEventsByDepartment(
-    department_id: number,
-  ) {
+  async getEventsByDepartment(department_id: number) {
     const department = await this.departmentExists(department_id);
     if (!department) {
       throw new HttpException(
@@ -231,7 +229,6 @@ export class DepartmentService {
     const departmentRepository = entityManager
       ? entityManager.getRepository<Department>('department')
       : this.departmentRepository;
-console.log("hello world")
     if (userData.role_id != EUserRole.ADMIN) {
       throw new HttpException(
         ErrorMessage.DEPARTMENT_PERMISSION,

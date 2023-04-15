@@ -123,7 +123,6 @@ export class AuthService {
         const checkmanage = this.departmentSerivce.getAvailableDepartment(
           newUser.user_id,
         );
-        
 
         if (!checkmanage) {
           throw new HttpException(
@@ -143,12 +142,8 @@ export class AuthService {
         );
       }
 
-      console.log(newUser.department_id);
-
       const checkDeparment =
         await this.departmentSerivce.checkManagerDepartment(body.department_id);
-
-      console.log(body.department_id, 11111111111);
 
       if (!checkDeparment) {
         throw new HttpException(
@@ -157,10 +152,7 @@ export class AuthService {
         );
       }
 
-      if (
-     
-        body.role_id == EUserRole.QA_COORDINATOR
-      ) {
+      if (body.role_id == EUserRole.QA_COORDINATOR) {
         const deparmentParam = new Department();
         deparmentParam.manager_id = newUser.user_id;
 
@@ -190,11 +182,8 @@ export class AuthService {
         username: user.userDetail.nick_name ?? user.userDetail.full_name,
       },
     );
-    
-    
 
     return {
-      // token: data.token,
       user_id: user.user_id,
     };
   }

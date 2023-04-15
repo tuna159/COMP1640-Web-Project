@@ -17,11 +17,7 @@ import {
   Repository,
 } from 'typeorm';
 import { VCreateIdeaDto } from 'global/dto/create-idea.dto';
-import {
-  VCreateEventDto,
-  VGetIdeasAttachmentsDto,
-  VUpdateEventDto,
-} from 'global/dto/event.dto.';
+import { VCreateEventDto, VUpdateEventDto } from 'global/dto/event.dto.';
 import { DepartmentService } from '@modules/department/department.service';
 import { IdeaService } from '@modules/idea/idea.service';
 import { UserService } from '@modules/user/user.service';
@@ -36,7 +32,7 @@ import { CommentService } from '@modules/comment/comment.service';
 import { IdeaFileService } from '@modules/idea-file/idea-file.service';
 import * as https from 'https';
 import * as archiver from 'archiver';
-import * as fsExtra from "fs-extra";
+import * as fsExtra from 'fs-extra';
 
 @Injectable()
 export class EventService {
@@ -488,10 +484,7 @@ export class EventService {
     }
   }
 
-  async getEventIdeasAttachments(
-    event_id: number,
-    userData: IUserData,
-  ) {
+  async getEventIdeasAttachments(event_id: number, userData: IUserData) {
     if (userData.role_id != EUserRole.QA_MANAGER) {
       throw new HttpException(
         ErrorMessage.GENERAL_PERMISSION,
@@ -664,9 +657,7 @@ export class EventService {
     const downloadTasks = [];
     for (const f of files) {
       const path = join(process.cwd(), folderName, f.file_name);
-      downloadTasks.push(
-        this.downloadFileFromUrl(path, f.file_url),
-      );
+      downloadTasks.push(this.downloadFileFromUrl(path, f.file_url));
     }
     await Promise.all(downloadTasks);
 
@@ -689,25 +680,25 @@ export class EventService {
   }
 
   async downloadFileFromUrl(filePath: string, fileUrl: string) {
-    return new Promise ((resolve, reject) => {
-      https.get(fileUrl, res => {
-        if(res.statusCode === 200) {
+    return new Promise((resolve, reject) => {
+      https.get(fileUrl, (res) => {
+        if (res.statusCode === 200) {
           const writer = fs.createWriteStream(filePath);
           res.pipe(writer);
           writer.on('finish', () => {
             writer.close();
             console.log('Ideas Attachments Download Completed');
             resolve({
-              "statusCode": res.statusCode,
-              "message": res.statusMessage,
+              statusCode: res.statusCode,
+              message: res.statusMessage,
             });
             res.destroy();
           });
-        }else {
+        } else {
           res.destroy();
           reject({
-            "statusCode": res.statusCode,
-            "message": res.statusMessage,
+            statusCode: res.statusCode,
+            message: res.statusMessage,
           });
         }
       });

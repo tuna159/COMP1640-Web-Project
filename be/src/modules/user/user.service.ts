@@ -115,10 +115,7 @@ export class UserService {
     });
   }
 
-  async getAllUsers(
-    userData: IUserData,
-    entityManager?: EntityManager,
-  ) {
+  async getAllUsers(userData: IUserData, entityManager?: EntityManager) {
     const userRepository = entityManager
       ? entityManager.getRepository<User>('user')
       : this.userRepository;
@@ -134,7 +131,7 @@ export class UserService {
       .createQueryBuilder('user')
       .innerJoinAndSelect('user.department', 'department')
       .getMany();
-      
+
     return users.map((user) => {
       return {
         user_id: user.user_id,

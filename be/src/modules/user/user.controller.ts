@@ -51,12 +51,4 @@ export class UserController {
   ) {
     return await this.userService.updateAccount(userData, user_id, body);
   }
-
-  // @Delete(':user_id')
-  // deleteUser(
-  //   @Param('user_id') user_id: string,
-  //   @UserData() userData: IUserData,
-  // ) {
-  //   return this.userService.deleteUser(user_id, userData);
-  // }
 }

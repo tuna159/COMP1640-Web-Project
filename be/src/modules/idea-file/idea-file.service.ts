@@ -46,7 +46,7 @@ export class IdeaFileService {
   }
 
   async getFilesByEvent(
-    event_id: number, 
+    event_id: number,
     file_ids: number[],
     entityManager?: EntityManager,
   ) {
@@ -56,14 +56,14 @@ export class IdeaFileService {
 
     const queryBuilder = fileRepository
       .createQueryBuilder('file')
-      .innerJoin("file.idea", "idea")
-      .innerJoin("idea.event", "event")
-      .where("event.event_id = :event_id", { event_id })
-      
-    if(file_ids.length != 0) {
-      queryBuilder.andWhere("file.file_id IN (:...file_ids )", { file_ids  });
+      .innerJoin('file.idea', 'idea')
+      .innerJoin('idea.event', 'event')
+      .where('event.event_id = :event_id', { event_id });
+
+    if (file_ids.length != 0) {
+      queryBuilder.andWhere('file.file_id IN (:...file_ids )', { file_ids });
     }
 
     return queryBuilder.getMany();
-  } 
+  }
 }
