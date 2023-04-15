@@ -112,11 +112,8 @@ export class CommentService {
       : this.commentRepository;
 
     const newComment = new Comment();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     newComment.idea_id = params.idea_id!;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     newComment.author_id = params.author_id!;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     newComment.content = params.content!;
 
     if (params.parent_id != null) {

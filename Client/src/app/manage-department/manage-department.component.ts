@@ -97,18 +97,19 @@ export class ManageDepartmentComponent {
   }
 
   async deleteDepartment() {
-    this.http
-      .delete(this.apiUrl + '/' + this.id, {
-        headers: {
-          Authorization: 'Bearer ' + this.authService.getToken(),
-        },
-      })
-      .subscribe(() => {
-        this.showMessage('success', 'Delete success');
-        this.displayDeleteDepartment = false;
-        this.displayDeleteDepartments = false;
-        this.getAllData();
-      });
+    this.http.delete(this.apiUrl + '/' + this.id, {
+      headers: {
+        Authorization: 'Bearer ' + this.authService.getToken()
+      }
+    }).subscribe(() => {
+      this.showMessage('success', 'Delete success')
+      this.displayDeleteDepartment = false;
+      this.displayDeleteDepartments = false;
+      this.getAllData();
+    }, (err: any) => {
+      this.showMessage("error: ", err.error.message);
+
+    });
   }
 
   showMessage(severity: string, detail: string) {
@@ -130,9 +131,9 @@ export class ManageDepartmentComponent {
       });
       this.ref.onClose.subscribe((result) => {
         if (result) {
-          this.showMessage('Add success: ', result);
+          this.showMessage("Add success: ", result);
+          this.getAllData();
         }
-        this.getAllData();
       });
     } else {
       this.ref = this.dialogService.open(AddDepartmentComponent, {
@@ -144,9 +145,9 @@ export class ManageDepartmentComponent {
       });
       this.ref.onClose.subscribe((result) => {
         if (result) {
-          this.showMessage('Edit success: ', result);
+          this.showMessage("Edit success: ", result);
+          this.getAllData();
         }
-        this.getAllData();
       });
     }
   }

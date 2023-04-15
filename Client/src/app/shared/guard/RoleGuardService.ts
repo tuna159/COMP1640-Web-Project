@@ -14,11 +14,8 @@ export class RoleGuardService implements CanActivate {
 
     canActivate(route: ActivatedRouteSnapshot): boolean {
         // this will be passed from the route config
-        // on the data property
-        
+        // on the data property 
         const expectedRole = route.data.expectedRole;
-        // console.log(expectedRole)
-        // console.log(expectedRole.includes(this.authService.getRole()))
         // decode the token to get its payload
         if (
             !this.authService.getUser() ||

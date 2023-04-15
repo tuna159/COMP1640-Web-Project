@@ -168,9 +168,12 @@ export class ProfileComponent implements OnInit {
       .subscribe((result: any) => {
         console.log(result);
 
-        this.getDataUser();
-        this.hideDialog();
-      });
+      this.getDataUser();
+      this.hideDialog() ;
+    }, (err: any) => {
+      this.showMessage("error: ", err.error.message);
+
+    });
   }
 
   SaveEditAccount() {
@@ -182,23 +185,18 @@ export class ProfileComponent implements OnInit {
         'Please re-enter your password. Password and confirm password are not the same'
       );
     }
-    this.http
-      .put<any>(
-        'http://52.199.43.174:3009/api/me/profile/password',
-        {
-          oldPassword: this.formEditAccount.controls.oldPassword.value,
-          newPassword: this.formEditAccount.controls.password.value,
-        },
-        {
-          headers: {
-            Authorization: 'Bearer ' + this.authService.getToken(),
-          },
-        }
-      )
-      .subscribe((result: any) => {
-        this.getDataUser();
-        this.hideDialog();
-      });
+    this.http.put<any>("http://localhost:3009/api/me/profile/password",{
+      "oldPassword" : this.formEditAccount.controls.oldPassword.value,
+      "newPassword" : this.formEditAccount.controls.password.value
+  } , {headers: {
+      Authorization: 'Bearer ' + this.authService.getToken()}
+    }).subscribe((result: any) => {
+      this.getDataUser();
+      this.hideDialog() ;
+    }, (err: any) => {
+      this.showMessage("error: ", err.error.message);
+
+    });
   }
 
   openEditYourInformation() {
@@ -239,4 +237,9 @@ export class ProfileComponent implements OnInit {
       this.fileImage = e.target.files[0];
     }
   }
+  
+  showMessage(severity: string, detail: string) {
+    this.messageService.add({ severity: severity, summary: 'Notification:', detail: detail });
+  }
+
 }

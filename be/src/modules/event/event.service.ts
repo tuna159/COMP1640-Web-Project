@@ -53,7 +53,6 @@ export class EventService {
   ) {}
 
   async getEventsByDepartment(
-    userData: IUserData,
     department_id: number,
     entityManager?: EntityManager,
   ) {
@@ -68,11 +67,11 @@ export class EventService {
       .orderBy('event.final_closure_date', 'DESC')
       .addOrderBy('event.created_date', 'DESC');
 
-    if (userData.role_id == EUserRole.STAFF) {
-      queryBuilder.andWhere('event.final_closure_date > :now', {
-        now: new Date(),
-      });
-    }
+    // if (userData.role_id == EUserRole.STAFF) {
+    //   queryBuilder.andWhere('event.final_closure_date > :now', {
+    //     now: new Date(),
+    //   });
+    // }
 
     const events = await queryBuilder.getMany();
 
@@ -391,7 +390,6 @@ export class EventService {
       end_date,
       true,
     );
-
     const data = [];
     for (const idea of ideas) {
       const row = [];
@@ -431,7 +429,6 @@ export class EventService {
       row.push(idea.category.name);
       data.push(row);
     }
-
     const fileName = 'ideas.csv';
     const path = join(process.cwd(), fileName);
     const writeStream = fs.createWriteStream(path);
@@ -462,26 +459,22 @@ export class EventService {
       'category_id',
       'category_name',
     ];
-
     try {
       const stringifier = stringify({ header: true, columns: columns });
       data.forEach((row) => {
         stringifier.write(row);
       });
       stringifier.pipe(writeStream);
-
       writeStream.on('finish', () => {
         writeStream.close();
         console.log('Writing file CSV Completed');
       });
-
       const readStream = fs.createReadStream(path);
       res.set({
         'Content-Type': 'text/csv',
         'Content-Disposition': `attachment; filename="${fileName}"`,
       });
       readStream.pipe(res);
-
       readStream.on('end', () => {
         readStream.close();
         console.log('File CSV Download Completed');
