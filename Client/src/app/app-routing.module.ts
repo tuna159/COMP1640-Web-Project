@@ -40,7 +40,6 @@ const routes: Routes = [
     {
         path: 'detail',
         canActivate: [AuthGuard],
-        // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: DetailComponent
     },
     {
@@ -49,7 +48,6 @@ const routes: Routes = [
         data: {
             expectedRole: [2],
         },
-        // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: ManageCategoryComponent
     },
     {
@@ -58,7 +56,6 @@ const routes: Routes = [
         data: {
             expectedRole: [2,3,4],
         },
-        // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: ProfileComponent
     },
     {
@@ -67,7 +64,6 @@ const routes: Routes = [
         data: {
             expectedRole: [1],
         },
-        // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: ChartsComponent
     },
     // { path: '**', component: PageNotFoundComponent },
@@ -77,7 +73,6 @@ const routes: Routes = [
         data: {
             expectedRole: [1],
         },
-        // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: ManageAccountComponent
     },
     {
@@ -95,13 +90,11 @@ const routes: Routes = [
         data: {
             expectedRole: [1],
         },
-        // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: ManageDepartmentComponent
     },
     {
         path: 'home',
         canActivate: [AuthGuard],
-        // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: HomeComponent
     },
     {
@@ -110,19 +103,16 @@ const routes: Routes = [
         data: {
             expectedRole: [1],
         },
-        // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: ChartsComponent
     },
     {
         path: 'event/ideas',
         canActivate: [AuthGuard],
-        // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: IdeaEventComponent
     },
     {
         path: 'category/ideas',
         canActivate: [AuthGuard],
-        // loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
         component: IdeaCategoryComponent
     },
 ];

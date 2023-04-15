@@ -33,10 +33,6 @@ export class DepartmentController {
   getDepartmentById(@Param('department_id') department_id: number) {
     return this.departmentService.getDepartmentDetails(department_id);
   }
-  // @Get(':department_id')
-  // getDepartmentById(@Param('department_id') department_id: number) {
-  //   return this.departmentService.getDepartmentDetails(department_id);
-  // }
 
   @Post()
   createDepartment(
@@ -69,10 +65,9 @@ export class DepartmentController {
 
   @Get(':department_id/events')
   getEventsByDepartment(
-    @UserData() userData: IUserData,
     @Param('department_id') department_id: number,
   ) {
-    return this.departmentService.getEventsByDepartment(userData, department_id);
+    return this.departmentService.getEventsByDepartment(department_id);
   }
 
   @Get(':department_id/ideas')

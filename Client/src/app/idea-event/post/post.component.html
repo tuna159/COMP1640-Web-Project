@@ -1,7 +1,7 @@
 <form [formGroup]="formGroup" (ngSubmit)="SaveIdea()">
   <div class="field" style="margin-top: 5%;">
     <label for="name" style="width: 100%;">Category</label>
-    <p-dropdown [options]="categories" placeholder="Select a category" optionLabel="name" [showClear]="true"
+    <p-dropdown [options]="categories" placeholder="Select a category" optionLabel="name" [showClear]="true" 
       formControlName="category"
       [ngClass]="(formGroup.controls.category.invalid && (formGroup.controls.category.dirty || formGroup.controls.category.touched)) ? 'ng-invalid ng-dirty' : ''"></p-dropdown>
 

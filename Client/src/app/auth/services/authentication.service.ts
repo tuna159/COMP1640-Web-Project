@@ -7,15 +7,17 @@ import jwt_decode from 'jwt-decode';
   providedIn: 'root',
 })
 export class AuthenticationService {
-  private userSubject: BehaviorSubject<any>;
-  public user: Observable<any>;
-  public Roles = [];
-  constructor(private http: HttpClient, private router: Router) {
-    this.userSubject = new BehaviorSubject<any>(
-      JSON.parse(localStorage.getItem('user'))
-    );
-    this.user = this.userSubject.asObservable();
-  }
+    private userSubject: BehaviorSubject<any>;
+    //, bạn tạo một Observable phiên bản xác định chức năng người đăng ký
+    //Observable: “lắng nghe” các thay đổi trạng thái do các hàm ( next(), error() và complete()) observable phát ra.
+    public user: Observable<any>;
+    public Roles = [];
+    constructor(private http: HttpClient, private router: Router) {
+        this.userSubject = new BehaviorSubject<any>(
+            JSON.parse(localStorage.getItem('user'))
+        );
+        this.user = this.userSubject.asObservable();
+    }
 
   public setUser(value): any {
     this.userSubject.next(value);

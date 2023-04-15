@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  signUp() {
+  signIn() {
     if (this.formGroup.invalid) {
       if (!this.formGroup.value.email && !this.formGroup.value.password) {
         this.showMessage('error', 'Email and password cannot be empty');

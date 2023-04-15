@@ -76,58 +76,39 @@ export class AddEventComponent implements OnInit {
     ) {
       this.showMessage('error', 'Closure Date must before Final Date');
     }
-    if (this.data.event_id == null) {
-      this.http
-        .post(
-          this.apiUrl,
-          {
-            name: this.formGroup.controls.name.value,
-            content: this.formGroup.controls.content.value,
-            first_closure_date: this.datepipe.transform(
-              new Date(this.formGroup.controls.closureDate.value),
-              'yyyy-MM-ddThh:mm:ssZ'
-            ),
-            department_id:
-              this.formGroup.controls.department.value['department_id'],
-            final_closure_date: this.datepipe.transform(
-              new Date(this.formGroup.controls.finalDate.value),
-              'yyyy-MM-ddThh:mm:ssZ'
-            ),
-          },
-          {
-            headers: {
-              Authorization: 'Bearer ' + this.authService.getToken(),
-            },
-          }
-        )
-        .subscribe((result: any) => {
-          this.ref.close(this.formGroup.controls.name.value);
-        });
+    if(this.data.event_id == null) {
+      this.http.post(this.apiUrl, {
+          "name": this.formGroup.controls.name.value,
+          "content": this.formGroup.controls.content.value,
+          "first_closure_date" : this.datepipe.transform( new Date(this.formGroup.controls.closureDate.value),'yyyy-MM-ddThh:mm:ssZ'),
+          "department_id" : this.formGroup.controls.department.value['department_id'],
+          "final_closure_date" : this.datepipe.transform( new Date(this.formGroup.controls.finalDate.value),'yyyy-MM-ddThh:mm:ssZ'),
+        }, {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken()
+        }
+      }).subscribe((result: any) => {
+        this.ref.close(this.formGroup.controls.name.value);
+      }, (err: any) => {
+        this.showMessage("error: ", err.error.message);
+          return;
+      });
     } else {
-      this.http
-        .put(
-          this.apiUrl + '/' + this.data.event_id,
-          {
-            name: this.formGroup.controls.name.value,
-            content: this.formGroup.controls.content.value,
-            first_closure_date: this.datepipe.transform(
-              new Date(this.formGroup.controls.closureDate.value),
-              'yyyy-MM-ddThh:mm:ssZ'
-            ),
-            final_closure_date: this.datepipe.transform(
-              new Date(this.formGroup.controls.finalDate.value),
-              'yyyy-MM-ddThh:mm:ssZ'
-            ),
-          },
-          {
-            headers: {
-              Authorization: 'Bearer ' + this.authService.getToken(),
-            },
-          }
-        )
-        .subscribe((result: any) => {
-          this.ref.close(this.formGroup.controls.name.value);
-        });
+      this.http.put(this.apiUrl + "/" + this.data.event_id, {
+      "name": this.formGroup.controls.name.value,
+      "content": this.formGroup.controls.content.value,
+      "first_closure_date" : this.datepipe.transform( new Date(this.formGroup.controls.closureDate.value),'yyyy-MM-ddThh:mm:ssZ'),
+      "final_closure_date" : this.datepipe.transform( new Date(this.formGroup.controls.finalDate.value),'yyyy-MM-ddThh:mm:ssZ'),
+    } , {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken()
+        }
+      }).subscribe((result: any) => {
+        this.ref.close(this.formGroup.controls.name.value);
+      }, (err: any) => {
+        this.showMessage("error: ", err.error.message);
+        return;
+      });
     }
   }
 
