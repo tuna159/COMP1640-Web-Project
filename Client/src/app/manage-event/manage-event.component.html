@@ -9,13 +9,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item active col-md-5">
-                    <a class="nav-link" href="/manage/account">Manage Account<span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="#/manage/account">Manage Account<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item active col-md-5">
-                    <a class="nav-link" href="/manage/event">Manage Event</a>
+                    <a class="nav-link" href="#/manage/event">Manage Event</a>
                 </li>
                 <li class="nav-item active col-md-5">
-                    <a class="nav-link" href="/manage/department">Manage Department</a>
+                    <a class="nav-link" href="#/manage/department">Manage Department</a>
                 </li>
                 <li class="nav-item active col-md-5">
                     <a class="nav-link" href="#">Log out</a>
@@ -79,9 +79,11 @@
                                     <td style="text-align: center">{{event.first_closure_date | date:'mediumDate'}}</td>
                                     <td style="text-align: center">{{event.final_closure_date | date:'mediumDate'}}</td>
                                     <td style="text-align: center" *ngIf="event.department == null"></td>
-                                    <td style="text-align: center" *ngIf="event.department != null">{{event.department.name}}</td>
+                                    <td style="text-align: center" *ngIf="event.department != null">
+                                        {{event.department.name}}</td>
                                     <td style="text-align: center; ">
-                                        <span style="display: flex; text-align: center; width: fit-content; margin-right: auto; margin-left: auto;">
+                                        <span
+                                            style="display: flex; text-align: center; width: fit-content; margin-right: auto; margin-left: auto;">
                                             <button pButton icon="pi pi-pencil" class="ui-button-primary edit-button"
                                                 (click)="openNewEvent(event)"></button>
                                             <button pButton icon="pi pi-trash" class="ui-button-danger delete-button"
@@ -107,8 +109,8 @@
     [style]="{width: '20%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
     <p>Are you sure to delete this event?</p>
     <p-footer>
-        <button type="button" pButton icon="pi pi-close" (click)="displayDeleteEvent=false" label="Cancel" class="btn btn-light"
-            style="width:100px; height:38px"></button>
+        <button type="button" pButton icon="pi pi-close" (click)="displayDeleteEvent=false" label="Cancel"
+            class="btn btn-light" style="width:100px; height:38px"></button>
         <button type="button" pButton icon="pi pi-close" (click)="deleteEvent()" label="OK" class="btn btn-primary"
             style="width:72px; height:38px"></button>
     </p-footer>
@@ -119,8 +121,8 @@
     [style]="{width: '20%', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
     <p>Are you sure to delete these events?</p>
     <p-footer>
-        <button type="button" pButton icon="pi pi-close" (click)="displayDeleteEvents = false" label="Cancel" class="btn btn-light"
-            style="width: 100px; height:38px"></button>
+        <button type="button" pButton icon="pi pi-close" (click)="displayDeleteEvents = false" label="Cancel"
+            class="btn btn-light" style="width: 100px; height:38px"></button>
         <button type="button" pButton icon="pi pi-close" (click)="deleteEvents()" label="OK" class="btn btn-primary"
             style="width:72px; height:38px"></button>
     </p-footer>
