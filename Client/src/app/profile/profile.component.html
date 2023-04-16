@@ -89,6 +89,11 @@
                     class="error-message-span" style="color: #FD0B0B; font-size: small;">
                     Please enter your Full Name
                 </span>
+
+                <span *ngIf="formGroup.controls.name.hasError('pattern')" class="error-message-span"
+                style="color: #FD0B0B; font-size: small;">
+                Full name cannot contain special characters
+              </span>
             </div>
         </div>
         <div class="field" style="margin-top: 5%;">

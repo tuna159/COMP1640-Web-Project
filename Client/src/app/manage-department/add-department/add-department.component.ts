@@ -60,7 +60,7 @@ export class AddDepartmentComponent implements OnInit {
 
   ngOnInit(): void {
     this.formGroup = new FormGroup({
-      name: new FormControl(null, [Validators.required]),
+      name: new FormControl(null, [Validators.required, Validators.pattern('[a-zA-Z ]*')]),
     });
     this.setValueF();
   }

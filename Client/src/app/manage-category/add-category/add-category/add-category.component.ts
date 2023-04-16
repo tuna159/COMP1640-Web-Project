@@ -52,7 +52,7 @@ export class AddCategoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.formGroup = new FormGroup({
-      name: new FormControl(null, [Validators.required]),
+      name: new FormControl(null, [Validators.required, Validators.pattern('[a-zA-Z ]*')]),
     });
     if (this.data.category_id != null) {
       this.setValueF();
