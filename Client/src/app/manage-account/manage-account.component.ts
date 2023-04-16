@@ -60,6 +60,11 @@ export class ManageAccountComponent {
     ];
   }
 
+  logout() {
+    this.authService.logout();
+    this.router.navigateByUrl('/login');
+  }
+
   async getAllData() {
     this.http
       .get<any>(this.apiUrl, {
