@@ -91,6 +91,7 @@ export class ManageDepartmentComponent {
         this.deleteDepartment();
       }
       this.listSelectedData = null;
+      this.displayDeleteDepartments = false;
     } else {
       this.displayDeleteDepartments = false;
     }

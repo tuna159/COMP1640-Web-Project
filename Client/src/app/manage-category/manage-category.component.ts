@@ -77,14 +77,6 @@ export class ManageCategoryComponent implements OnInit {
       });
   }
 
-  chinhSua(data) {
-    this.ref = this.dialogService.open(AddCategoryComponent, {
-      header: 'Edit Category',
-      width: '30%',
-      contentStyle: { 'max-height': '800px', overflow: 'auto' },
-      baseZIndex: 10000,
-    });
-  }
 
   showDialogXoa(data) {
     this.displayXoa = true;

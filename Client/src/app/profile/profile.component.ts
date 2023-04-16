@@ -128,7 +128,6 @@ export class ProfileComponent implements OnInit {
           headers: { Authorization: 'Bearer ' + this.authService.getToken() },
         })
         .subscribe((result: any) => {
-          console.log(result);
           this.save(result.data[0].file_url);
         });
     } else {
@@ -138,6 +137,10 @@ export class ProfileComponent implements OnInit {
 
   save(url: any) {
     let dateBirth = '';
+    if (this.formGroup.controls.birthday.value == null) {
+      this.showMessage('error', 'birthday must less than current date ');
+      return
+    }
     if (this.formGroup.controls.birthday.value.getMonth() + 1 <= 9) {
       dateBirth =
         this.formGroup.controls.birthday.value.getFullYear() +
@@ -166,13 +169,11 @@ export class ProfileComponent implements OnInit {
         },
       })
       .subscribe((result: any) => {
-        console.log(result);
-
       this.getDataUser();
       this.hideDialog() ;
     }, (err: any) => {
       this.showMessage("error: ", err.error.message);
-
+      return
     });
   }
 

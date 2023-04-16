@@ -139,7 +139,7 @@ export class CreateAccountComponent {
         "full_name": this.formGroup.controls.fullName.value,
         "nick_name": this.formGroup.controls.nickName.value,
         "gender": this.formGroup.controls.gender.value['name'] == "Male" ? 1 : 2,
-        "department_id": this.formGroup.controls.department.value != null ?this.formGroup.controls.department.value['department_id'] : null,
+        "department_id": this.formGroup.controls.department.value != null ?this.formGroup.controls.department.value['department_id'] : 1,
         "birthdate": birthdate
       }
       this.http.post(this.apiUrl,bodyData, {
@@ -156,7 +156,7 @@ export class CreateAccountComponent {
     } else {
       this.http.put("http://localhost:3009//api/user/" + this.data.user_id, {
         "role_id": Number(this.formGroup.controls.role.value['Id']),
-        "department_id": this.formGroup.controls.department.value != null ?this.formGroup.controls.department.value['department_id'] : null,
+        "department_id": this.formGroup.controls.department.value != null ?this.formGroup.controls.department.value['department_id'] : 1,
         "is_deleted": this.formGroup.controls.status.value['name'] == "Using" ? 0 : 1
       }, {
         headers: {

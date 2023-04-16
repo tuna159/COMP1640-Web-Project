@@ -20,7 +20,7 @@ export class AddCategoryComponent implements OnInit {
     private http: HttpClient, private authService: AuthenticationService, private messageService: MessageService) {
       this.data = this.config.data;
   }
-  SaveIdea() {
+  SaveCategory() {
     if(this.data.category_id == null) {
       this.http.post(this.apiUrl, {
         "name": this.formGroup.controls.name.value,
