@@ -68,10 +68,6 @@ export class ManageAccountComponent {
         },
       })
       .subscribe((result: any) => {
-        if (result.status_code != 200) {
-          this.showMessage('error', result.error_message);
-          return;
-        }
         this.listData = result.data.map((item, index) =>
           Object.assign(
             {
@@ -83,41 +79,14 @@ export class ManageAccountComponent {
         this.listData.forEach((item) => {
           item.status = item.is_deleted == 0 ? 'Active' : 'UnActive';
         });
+      },
+      err => {
+        this.showMessage('error', err.error.message);
+        return;
       });
   }
 
-  // showDialogDelete(data) {
-  //   this.displayDeleteUser = true;
-  //   this.id = data.user_id;
-  // }
 
-  // showDialogDeleteUsers() {
-  //   this.displayDeleteUsers = true;
-  // }
-
-  // DeleteAccounts() {
-  //   if(this.listSelectedData.length){
-  //     for(let i = 0; i < this.listSelectedData.length; i++) {
-  //       this.id = this.listSelectedData[i].user_id;
-  //       this.DeleteAccount();
-  //     }
-  //     this.listSelectedData = null;
-  //   }else{
-  //     this.displayDeleteUsers = false;
-  //   }
-
-  // }
-
-  // async DeleteAccount() {
-  //   this.http.delete(this.apiUrl +'/'+ this.id, {headers: {
-  //     Authorization: 'Bearer ' + this.authService.getToken()}
-  //   }).subscribe(() => {
-  //     this.showMessage('success', 'Delete success')
-  //     this.displayDeleteUser = false;
-  //     this.displayDeleteUsers = false;
-  //     this.getAllData();
-  //   });
-  // }
 
   showMessage(severity: string, detail: string) {
     this.messageService.add({
@@ -157,20 +126,5 @@ export class ManageAccountComponent {
         this.getAllData();
       });
     }
-  }
-  addAccount() {
-    this.http
-      .post(
-        this.apiUrl,
-        { name: 'hehe' },
-        {
-          headers: {
-            Authorization: 'Bearer ' + this.authService.getToken(),
-          },
-        }
-      )
-      .subscribe((result: any) => {
-        this.getAllData();
-      });
   }
 }
