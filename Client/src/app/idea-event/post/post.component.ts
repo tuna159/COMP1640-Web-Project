@@ -62,6 +62,7 @@ export class PostComponent implements OnInit {
       await this.http.post<any>("http://localhost:3009/api/upload/files", formData ,
       {headers: { Authorization: 'Bearer ' + this.authService.getToken()}
         }).subscribe((result: any) => {
+          
           this.save(result.data)
         },
         err => {
@@ -89,6 +90,7 @@ export class PostComponent implements OnInit {
         Authorization: 'Bearer ' + this.authService.getToken()
       }
     }).subscribe((result: any) => {
+      this.showMessage('error', "Add successful");
       this.router.navigateByUrl('/event/ideas', { state: { Id: this.Id } });
     },
     err => {
@@ -113,23 +115,18 @@ export class PostComponent implements OnInit {
     this.ref.close();
   }
 
-  // onUpload(event) {
-  //   for (let file of event.files) {
-  //     this.uploadedFiles.push(file);
-  //   }
-  //   this.messageService.add({ severity: 'info', summary: 'File Uploaded', detail: '' });
-  // }
   
   onselectFile(e){
     if(e.target.files){
-      console.log(e.target.files)
+      console.log()
       // duyệt qua các phần tử trong files, sử dụng FileReader để đọc file và thêm vào listFile
       for(let i = 0; i < e.target.files.length; i++) {
         var reader = new FileReader();
         reader.readAsDataURL(e.target.files[i]);
-        // reader.onload=(event:any)=>{
-        //   this.url = event.target.result;
-        // }
+        reader.onload=(event:any)=>{
+          event.target.name = e.target.files[i].name
+          this.url = event.target.name;
+        }
         this.listFile.push(e.target.files[i]) 
       }
     }

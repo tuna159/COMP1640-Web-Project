@@ -41,7 +41,7 @@ export class IdeaEventComponent implements OnInit {
     startDate: FormControl<Date>;
     endDate: FormControl<Date>;
   }>;
-  apiUrl = 'http://52.199.43.174:3009/api/event/';
+  apiUrl = 'http://localhost:3009/api/event/';
   constructor(
     private dialogService: DialogService,
     private http: HttpClient,
@@ -62,7 +62,7 @@ export class IdeaEventComponent implements OnInit {
 
   getListCategory() {
     this.http
-      .get<any>('http://52.199.43.174:3009/api/category', {
+      .get<any>('http://localhost:3009/api/category', {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },
@@ -125,7 +125,7 @@ export class IdeaEventComponent implements OnInit {
 
   getAllDepartment() {
     this.http
-      .get<any>('http://52.199.43.174:3009/api/department', {
+      .get<any>('http://localhost:3009/api/department', {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },
@@ -163,18 +163,56 @@ export class IdeaEventComponent implements OnInit {
       endDate: new FormControl(null, [Validators.required]),
     });
   }
-  getListFile() {
-    this.http
-      .get<any>(
-        'http://52.199.43.174:3009/api/event/' + this.Id + '/attachments',
-        {
+  downloadEvent() {
+    console.log(this.formGroup.controls.category.value)
+    console.log(this.formGroup.controls.department.value)
+    let apiDLFile = 'http://localhost:3009/api/event/' + this.Id + "/download"
+    if (this.formGroup.controls.startDate.value && this.formGroup.controls.endDate.value && 
+      this.formGroup.controls.startDate.value.getTime() > this.formGroup.controls.endDate.value.getTime()) {
+      this.showMessage('error', 'Start Date must less than end date');
+    }
+    if (this.formGroup.controls.category.value != null || this.formGroup.controls.startDate.value != null ||
+      this.formGroup.controls.endDate.value != null|| this.formGroup.controls.department.value != null) {
+        apiDLFile = apiDLFile + '?'
+    } else {
+      this.showMessage('error', 'Select options');
+    }
+    if (this.formGroup.controls.category.value) {
+      if (apiDLFile.slice(-1) == '?') {
+        apiDLFile = apiDLFile + 'category_id=' + this.formGroup.controls.category.value['category_id'];
+      } else {
+        apiDLFile = apiDLFile + '&category_id='+ this.formGroup.controls.category.value['category_id'];
+      }
+    }
+    if (this.formGroup.controls.department.value) {
+      if (apiDLFile.slice(-1) == '?') {
+        apiDLFile = apiDLFile + 'author_department_id=' + this.formGroup.controls.department.value['department_id'];
+      } else {
+        apiDLFile = apiDLFile + '&author_department_id='+ this.formGroup.controls.department.value['department_id'];
+      }
+    }
+    if (this.formGroup.controls.startDate.value != null) {
+      if (apiDLFile.slice(-1) == '?') {
+        apiDLFile = apiDLFile + 'start_date=' + new Date(this.formGroup.controls.startDate.value)
+      } else {
+        apiDLFile = apiDLFile + '&start_date=' + new Date(this.formGroup.controls.startDate.value)
+      }
+    }
+    if (this.formGroup.controls.endDate.value != null) {
+      if (apiDLFile.slice(-1) == '?') {
+        apiDLFile = apiDLFile + 'end_date=' + new Date(this.formGroup.controls.endDate.value)
+      } else {
+        apiDLFile = apiDLFile + '&end_date=' + new Date(this.formGroup.controls.endDate.value)
+      }
+    }
+    this.http.get<any>(apiDLFile,{
           headers: {
             Authorization: 'Bearer ' + this.authService.getToken(),
           },
         }
       )
       .subscribe((res: any) => {
-        this.listFileData = res.data;
+        console.log(res)
       });
   }
 
@@ -218,23 +256,23 @@ export class IdeaEventComponent implements OnInit {
     this.ref.onClose.subscribe((result) => {
       if (result) {
         this.showMessage('Add success: ', result);
+        this.getAllIdeaByEvent();
       }
-      this.getAllIdeaByEvent();
     });
   }
-  downloadEvent() {
-    let bodyData = {
-    
-    }
-    this.http.post<any>("http://localhost:3009/api/event/" + this.Id + "/download" , bodyData,{
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    } ).subscribe((res: any) => {
-      console.log(res)
-    }, (err: any) => {
-      this.showMessage("err: ", err.error.message);
 
-    })
+  getListFile() {
+    this.http
+      .get<any>(
+        'http://localhost:3009/api/event/' + this.Id + '/attachments',
+        {
+          headers: {
+            Authorization: 'Bearer ' + this.authService.getToken(),
+          },
+        }
+      )
+      .subscribe((res: any) => {
+        this.listFileData = res.data;
+      });
   }
 }
