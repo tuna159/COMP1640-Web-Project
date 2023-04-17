@@ -11,6 +11,10 @@
                 class="error-message-span" style="color: #FD0B0B; font-size: small;">
                 Please enter email
             </span>
+            <span *ngIf="formGroup.controls.email.hasError('pattern')" class="error-message-span"
+            style="color: #FD0B0B; font-size: small;">
+            Please enter correct email
+          </span>
         </div>
     </div>
     
@@ -41,6 +45,10 @@
                 class="error-message-span" style="color: #FD0B0B; font-size: small;">
                 Please enter fullName
             </span>
+            <span *ngIf="formGroup.controls.fullName.hasError('pattern')" class="error-message-span"
+                style="color: #FD0B0B; font-size: small;">
+                Full name cannot contain special characters
+              </span>
         </div>
     </div>
     

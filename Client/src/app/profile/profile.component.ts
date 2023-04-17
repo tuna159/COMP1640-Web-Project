@@ -78,7 +78,7 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.formGroup = new FormGroup({
-      name: new FormControl(null, [Validators.required]),
+      name: new FormControl(null, [Validators.required, Validators.pattern('[a-zA-Z ]*')]),
       gender: new FormControl(null, [Validators.required]),
       birthday: new FormControl(null, [Validators.required]),
     });

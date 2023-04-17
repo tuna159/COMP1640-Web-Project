@@ -120,6 +120,10 @@ export class ManageDepartmentComponent {
       detail: detail,
     });
   }
+  logout() {
+    this.authService.logout();
+    this.router.navigateByUrl('/login');
+  }s
 
   openNewDepartment(data) {
     if (!data) {

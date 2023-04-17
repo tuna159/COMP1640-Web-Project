@@ -29,6 +29,7 @@
             <div style="display: flex; justify-content: space-between;">
                 <p style="min-width: 10%;">Full Name</p>
                 <p style="min-width: 20%;">{{name}}</p>
+                <p style="min-width: 50%;"></p>
                 
             </div>
             <div style="display: flex; justify-content: space-between;">
@@ -88,6 +89,10 @@
                     class="error-message-span" style="color: #FD0B0B; font-size: small;">
                     Please enter your Full Name
                 </span>
+                <span *ngIf="formGroup.controls.name.hasError('pattern')" class="error-message-span"
+                style="color: #FD0B0B; font-size: small;">
+                Full name cannot contain special characters
+              </span>
             </div>
         </div>
         <div class="field" style="margin-top: 5%;">

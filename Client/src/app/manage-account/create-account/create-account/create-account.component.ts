@@ -42,9 +42,9 @@ export class CreateAccountComponent {
 
   ngOnInit(): void {
     this.formGroup = new FormGroup({
-      email: new FormControl(null, [Validators.required]),
+      email: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')]),
       password: new FormControl(null, [Validators.required]),
-      fullName: new FormControl(null, [Validators.required]),
+      fullName: new FormControl(null, [Validators.required, Validators.pattern('[a-zA-Z ]*')]),
       nickName: new FormControl(null, [Validators.required]),
       gender: new FormControl({ name: 'Female' }, [Validators.required]),
       role: new FormControl(

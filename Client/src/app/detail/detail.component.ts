@@ -151,7 +151,7 @@ export class DetailComponent {
           this.user = result.data.user.nick_name;
           this.content = result.data.content;
           this.date = result.data.date;
-          this.avatar = result.data.avatar_url;
+          this.avatar = result.data.user.avatar_url;
           this.anonymous = result.data.is_anonymous;
         });
     }

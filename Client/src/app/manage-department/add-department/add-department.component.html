@@ -11,6 +11,10 @@
                 class="error-message-span" style="color: #FD0B0B; font-size: small;">
                 Please enter name of department
             </span>
+            <span *ngIf="formGroup.controls.name.hasError('pattern')" class="error-message-span"
+                style="color: #FD0B0B; font-size: small;">
+                Name of department cannot contain special characters
+              </span>
         </div>
 
     </div>

@@ -96,6 +96,11 @@ export class ManageAccountComponent {
     });
   }
 
+  logout() {
+    this.authService.logout();
+    this.router.navigateByUrl('/login');
+  }
+
   openNewUser(data) {
     if (!data) {
       this.ref = this.dialogService.open(CreateAccountComponent, {

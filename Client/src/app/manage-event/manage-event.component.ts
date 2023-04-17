@@ -71,6 +71,11 @@ export class ManageEventComponent {
     ];
   }
 
+  logout() {
+    this.authService.logout();
+    this.router.navigateByUrl('/login');
+  }
+
   async getAllData() {
     let listDepartment = [];
     this.http
