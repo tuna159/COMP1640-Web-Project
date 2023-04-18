@@ -257,8 +257,18 @@ export class IdeaEventComponent implements OnInit {
         Authorization: 'Bearer ' + this.authService.getToken()
       },
     },).subscribe((res: any) => {
-      this.showMessage("Add success: ", res);
-    })
+      this.showMessage("success: ", res);
+    },
+    error => {
+      if(error.status == 200){
+        window.open("http://localhost:3009/api/event/" + this.Id + "/files/download?file_ids=["+ listData + "]", "_blank");
+        this.dialogDownloadAtt = false
+
+      }else{
+        this.showMessage("error: ", error.error.message);
+        this.dialogDownloadAtt = false
+      }
+      })
     }
   }
 

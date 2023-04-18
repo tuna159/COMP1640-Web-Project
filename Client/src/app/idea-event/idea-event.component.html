@@ -34,9 +34,11 @@
 
             </div>
 
-            <div class="field" style="width: 20%;" *ngIf="role == 2 && exEvent == true">
-              <p-button (click)="dialogDownloadAtt=true" label="Download attachment" icon="pi pi-file-word"></p-button>
-              <button (click)="showDialogDownload()" class="btn btn-light btn-outline-secondary">Download Ideas</button>
+            <div class="col-md-12">
+              <div class="row" style="float : right" *ngIf="role == 2 && exEvent == true">
+                <p-button (click)="dialogDownloadAtt=true" label="Download attachment" icon="pi pi-file-word"></p-button>
+                <button (click)="showDialogDownload()" class="btn btn-light btn-outline-secondary" style="margin-left: 10px">Download Ideas</button>
+              </div>
             </div>
 
 
