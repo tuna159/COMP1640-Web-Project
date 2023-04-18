@@ -173,8 +173,8 @@ export class EventController {
     }
 
     return await this.eventService.downloadIdeasAttachments(
-      event_id,
       userData,
+      event_id,
       res,
       JSON.parse(txtFileIds),
     );

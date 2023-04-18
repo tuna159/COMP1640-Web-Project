@@ -634,8 +634,8 @@ export class EventService {
   }
 
   async downloadIdeasAttachments(
-    event_id: number,
     userData: IUserData,
+    event_id: number,
     res: Response,
     file_ids: number[],
   ) {
