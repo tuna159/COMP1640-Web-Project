@@ -62,7 +62,6 @@ export class PostComponent implements OnInit {
       await this.http.post<any>("http://localhost:3009/api/upload/files", formData ,
       {headers: { Authorization: 'Bearer ' + this.authService.getToken()}
         }).subscribe((result: any) => {
-          
           this.save(result.data)
         },
         err => {
@@ -72,7 +71,6 @@ export class PostComponent implements OnInit {
     } else {
       this.save('');
     }
-    
     this.closeDialog()
   }
 
@@ -90,7 +88,7 @@ export class PostComponent implements OnInit {
         Authorization: 'Bearer ' + this.authService.getToken()
       }
     }).subscribe((result: any) => {
-      this.showMessage('error', "Add successful");
+      this.showMessage('Add success: ', result);
       this.router.navigateByUrl('/event/ideas', { state: { Id: this.Id } });
     },
     err => {

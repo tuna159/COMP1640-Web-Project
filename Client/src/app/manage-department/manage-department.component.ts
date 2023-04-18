@@ -108,6 +108,9 @@ export class ManageDepartmentComponent {
       this.displayDeleteDepartments = false;
       this.getAllData();
     }, (err: any) => {
+      this.displayDeleteDepartment = false;
+      this.displayDeleteDepartments = false;
+
       this.showMessage("error: ", err.error.message);
 
     });

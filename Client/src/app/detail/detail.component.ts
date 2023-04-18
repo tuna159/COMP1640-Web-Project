@@ -214,9 +214,7 @@ export class DetailComponent {
           this.apiUrl + this.Id + '/comments',
           {
             content:
-              this.comment_value == null
-                ? this.commentChildren_value
-                : this.comment_value,
+              this.comment_value == null ? this.commentChildren_value : this.comment_value,
             parent_id: idParent,
           },
           {

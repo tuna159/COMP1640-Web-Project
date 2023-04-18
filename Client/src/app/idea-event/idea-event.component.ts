@@ -175,7 +175,7 @@ export class IdeaEventComponent implements OnInit {
       this.formGroup.controls.endDate.value != null|| this.formGroup.controls.department.value != null) {
         apiDLFile = apiDLFile + '?'
     } else {
-      this.showMessage('error', 'Select options');
+      // this.showMessage('error', 'Select options');
     }
     if (this.formGroup.controls.category.value) {
       if (apiDLFile.slice(-1) == '?') {
