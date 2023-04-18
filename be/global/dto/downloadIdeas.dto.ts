@@ -1,4 +1,5 @@
 import {
+  IsDate,
   IsDateString,
   IsInt,
   IsNumber,
@@ -25,11 +26,13 @@ export class VDownloadIdeaDto {
     return validator.validate(this);
   }
 
-  @IsDateString()
+  // @IsDateString()
+  @IsDate()
   @IsOptional()
   start_date: string;
 
-  @IsDateString()
+  // @IsDateString()
+  @IsDate()
   @IsOptional()
   end_date: string;
 

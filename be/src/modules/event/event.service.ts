@@ -333,14 +333,14 @@ export class EventService {
     event_id: number,
     options: VDownloadIdeaDto,
     res: Response,
-    // userData: IUserData,
+    userData: IUserData,
   ) {
-    // if (userData.role_id != EUserRole.QA_MANAGER) {
-    //   throw new HttpException(
-    //     ErrorMessage.DATA_DOWNLOAD_PERMISSION,
-    //     HttpStatus.BAD_REQUEST,
-    //   );
-    // }
+    if (userData.role_id != EUserRole.QA_MANAGER) {
+      throw new HttpException(
+        ErrorMessage.DATA_DOWNLOAD_PERMISSION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     
     const event = await this.eventExists(event_id);
     if (!event) {
@@ -349,12 +349,12 @@ export class EventService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    // if (event.final_closure_date > new Date()) {
-    //   throw new HttpException(
-    //     ErrorMessage.DATA_DOWNLOAD_DATE_TIME,
-    //     HttpStatus.BAD_REQUEST,
-    //   );
-    // }
+    if (event.final_closure_date > new Date()) {
+      throw new HttpException(
+        ErrorMessage.DATA_DOWNLOAD_DATE_TIME,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     let start_date = null, end_date = null;
     if(options.start_date != null) {
@@ -488,10 +488,10 @@ export class EventService {
       readStream.on('end', () => {
         readStream.close();
         console.log('File CSV Download Completed');
-        // fs.truncate(path, (err) => {
-        //   if (err) throw err;
-        //   console.log('File CSV Was Truncated');
-        // });
+        fs.truncate(path, (err) => {
+          if (err) throw err;
+          console.log('File CSV Was Truncated');
+        });
       });
     } catch (error) {
       throw new HttpException(
