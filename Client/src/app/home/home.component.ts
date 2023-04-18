@@ -127,6 +127,8 @@ export class HomeComponent implements OnInit {
         api = api + '&end_date=' + new Date(this.formGroup.controls.endDate.value)
       }
     }
+    console.log(new Date(this.formGroup.controls.endDate.value))
+
     this.apiUrl = api;
     this.getAllIdeas();
     this.sortEvent = false;

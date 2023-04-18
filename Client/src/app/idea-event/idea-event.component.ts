@@ -205,6 +205,8 @@ export class IdeaEventComponent implements OnInit {
         apiDLFile = apiDLFile + '&end_date=' + new Date(this.formGroup.controls.endDate.value)
       }
     }
+    console.log(new Date(this.formGroup.controls.endDate.value))
+
     this.http.get<any>(apiDLFile,{
           headers: {
             Authorization: 'Bearer ' + this.authService.getToken(),
@@ -212,8 +214,16 @@ export class IdeaEventComponent implements OnInit {
         }
       )
       .subscribe((res: any) => {
-        console.log(res)
-      });
+        window.open(apiDLFile, "_blank");
+      },
+      error => {
+        if(error.status == 200){
+          window.open(apiDLFile, "_blank");
+        }else{
+          this.showMessage("error: ", 'error');
+        }
+      }
+      );
   }
 
   showMessage(severity: string, detail: string) {
