@@ -27,12 +27,12 @@ export class VDownloadIdeaDto {
   }
 
   // @IsDateString()
-  @IsDate()
+  // @IsDate()
   @IsOptional()
   start_date: string;
 
   // @IsDateString()
-  @IsDate()
+  // @IsDate()
   @IsOptional()
   end_date: string;
 
