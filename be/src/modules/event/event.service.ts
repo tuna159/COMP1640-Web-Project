@@ -562,7 +562,7 @@ export class EventService {
       ? entityManager.getRepository<Event>('event')
       : this.eventRepository;
 
-    if (userData.role_id != EUserRole.ADMIN) {
+    if (userData.role_id != EUserRole.QA_MANAGER) {
       throw new HttpException(
         ErrorMessage.GENERAL_PERMISSION,
         HttpStatus.BAD_REQUEST,
@@ -609,7 +609,7 @@ export class EventService {
     year: number,
     userData: IUserData,
   ) {
-    if (userData.role_id != EUserRole.ADMIN) {
+    if (userData.role_id != EUserRole.QA_MANAGER) {
       throw new HttpException(
         ErrorMessage.GENERAL_PERMISSION,
         HttpStatus.BAD_REQUEST,

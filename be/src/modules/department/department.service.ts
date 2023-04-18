@@ -328,7 +328,7 @@ export class DepartmentService {
     userData: IUserData,
     entityManager?: EntityManager,
   ) {
-    if (userData.role_id != EUserRole.ADMIN) {
+    if (userData.role_id != EUserRole.QA_MANAGER) {
       throw new HttpException(
         ErrorMessage.GENERAL_PERMISSION,
         HttpStatus.BAD_REQUEST,
