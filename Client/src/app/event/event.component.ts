@@ -19,7 +19,7 @@ export class EventComponent implements OnInit {
   nodes1: any[];
   Id: any;
   nameDpm: any;
-  apiUrl = 'http://localhost:3009/api/department/';
+  apiUrl = 'http://52.199.43.174:3009/api/department/';
   constructor(
     private dialogService: DialogService,
     private http: HttpClient,
@@ -33,7 +33,7 @@ export class EventComponent implements OnInit {
     this.listEvent = [];
     if (this.Id == 'University') {
       this.http
-        .get<any>('http://localhost:3009/api/event/university', {
+        .get<any>('http://52.199.43.174:3009/api/event/university', {
           headers: {
             Authorization: 'Bearer ' + this.authService.getToken(),
           },

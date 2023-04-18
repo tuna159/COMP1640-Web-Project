@@ -51,8 +51,8 @@ export class ProfileComponent implements OnInit {
   fileImage: any;
   urlImage: any;
   avatar_url: any;
-  apiUrl: string = 'http://localhost:3009/api/user/';
-  apiURLEditInfor = 'http://localhost:3009/api/me';
+  apiUrl: string = 'http://52.199.43.174:3009/api/user/';
+  apiURLEditInfor = 'http://52.199.43.174:3009/api/me';
 
   formGroup: FormGroup<{
     name: FormControl<string>;
@@ -78,7 +78,10 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.formGroup = new FormGroup({
-      name: new FormControl(null, [Validators.required, Validators.pattern('[a-zA-Z ]*')]),
+      name: new FormControl(null, [
+        Validators.required,
+        Validators.pattern('[a-zA-Z ]*'),
+      ]),
       gender: new FormControl(null, [Validators.required]),
       birthday: new FormControl(null, [Validators.required]),
     });
@@ -124,7 +127,7 @@ export class ProfileComponent implements OnInit {
       formData.append('files', this.fileImage, this.fileImage.name);
 
       await this.http
-        .post<any>('http://localhost:3009/api/upload/images', formData, {
+        .post<any>('http://52.199.43.174:3009/api/upload/images', formData, {
           headers: { Authorization: 'Bearer ' + this.authService.getToken() },
         })
         .subscribe((result: any) => {
@@ -139,7 +142,7 @@ export class ProfileComponent implements OnInit {
     let dateBirth = '';
     if (this.formGroup.controls.birthday.value == null) {
       this.showMessage('error', 'birthday must less than current date ');
-      return
+      return;
     }
     if (this.formGroup.controls.birthday.value.getMonth() + 1 <= 9) {
       dateBirth =
@@ -168,13 +171,16 @@ export class ProfileComponent implements OnInit {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },
       })
-      .subscribe((result: any) => {
-      this.getDataUser();
-      this.hideDialog() ;
-    }, (err: any) => {
-      this.showMessage("error: ", err.error.message);
-      return
-    });
+      .subscribe(
+        (result: any) => {
+          this.getDataUser();
+          this.hideDialog();
+        },
+        (err: any) => {
+          this.showMessage('error: ', err.error.message);
+          return;
+        }
+      );
   }
 
   SaveEditAccount() {
@@ -186,18 +192,28 @@ export class ProfileComponent implements OnInit {
         'Please re-enter your password. Password and confirm password are not the same'
       );
     }
-    this.http.put<any>("http://localhost:3009/api/me/profile/password",{
-      "oldPassword" : this.formEditAccount.controls.oldPassword.value,
-      "newPassword" : this.formEditAccount.controls.password.value
-  } , {headers: {
-      Authorization: 'Bearer ' + this.authService.getToken()}
-    }).subscribe((result: any) => {
-      this.getDataUser();
-      this.hideDialog() ;
-    }, (err: any) => {
-      this.showMessage("error: ", err.error.message);
-
-    });
+    this.http
+      .put<any>(
+        'http://52.199.43.174:3009/api/me/profile/password',
+        {
+          oldPassword: this.formEditAccount.controls.oldPassword.value,
+          newPassword: this.formEditAccount.controls.password.value,
+        },
+        {
+          headers: {
+            Authorization: 'Bearer ' + this.authService.getToken(),
+          },
+        }
+      )
+      .subscribe(
+        (result: any) => {
+          this.getDataUser();
+          this.hideDialog();
+        },
+        (err: any) => {
+          this.showMessage('error: ', err.error.message);
+        }
+      );
   }
 
   openEditYourInformation() {
@@ -238,9 +254,12 @@ export class ProfileComponent implements OnInit {
       this.fileImage = e.target.files[0];
     }
   }
-  
-  showMessage(severity: string, detail: string) {
-    this.messageService.add({ severity: severity, summary: 'Notification:', detail: detail });
-  }
 
+  showMessage(severity: string, detail: string) {
+    this.messageService.add({
+      severity: severity,
+      summary: 'Notification:',
+      detail: detail,
+    });
+  }
 }

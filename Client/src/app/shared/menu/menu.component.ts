@@ -44,7 +44,7 @@ export class MenuComponent {
     if (this.authService.getRole() != 1) {
       this.http
         .get<any>(
-          'http://localhost:3009/api/user/' + this.authService.getUserID(),
+          'http://52.199.43.174:3009/api/user/' + this.authService.getUserID(),
           {
             headers: {
               Authorization: 'Bearer ' + this.authService.getToken(),
@@ -59,7 +59,7 @@ export class MenuComponent {
 
   getListCategory() {
     this.http
-      .get<any>('http://localhost:3009/api/category', {
+      .get<any>('http://52.199.43.174:3009/api/category', {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },

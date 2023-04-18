@@ -34,7 +34,7 @@ export class IdeaCategoryComponent {
     startDate: FormControl<Date>;
     endDate: FormControl<Date>;
   }>;
-  apiUrl = 'http://localhost:3009/api/category/';
+  apiUrl = 'http://52.199.43.174:3009/api/category/';
   constructor(
     private dialogService: DialogService,
     private http: HttpClient,
@@ -58,7 +58,7 @@ export class IdeaCategoryComponent {
 
   getListCategory() {
     this.http
-      .get<any>('http://localhost:3009/api/category', {
+      .get<any>('http://52.199.43.174:3009/api/category', {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },
@@ -109,7 +109,7 @@ export class IdeaCategoryComponent {
 
   getAllDepartment() {
     this.http
-      .get<any>('http://localhost:3009/api/department', {
+      .get<any>('http://52.199.43.174:3009/api/department', {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },
