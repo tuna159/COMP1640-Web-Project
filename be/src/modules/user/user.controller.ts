@@ -5,7 +5,6 @@ import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { VSignUp } from 'global/dto/createAccount';
 import { VUpdateAccount } from 'global/dto/update-account.dto';
 import { VLogin } from 'global/user/dto/login.dto';
-import { Public } from 'src/core/decorator/public.decorator';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -15,7 +14,6 @@ export class UserController {
     private readonly userDetailService: UserDetailService,
   ) {}
 
-  @Public()
   @Post('login')
   async login(@Body() body: VLogin) {
     return this.userService.login(body);
