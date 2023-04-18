@@ -34,9 +34,11 @@
 
             </div>
 
-            <div class="field" style="width: 20%;" *ngIf="role == 2 && exEvent == true">
-              <p-button (click)="dialogDownloadAtt=true" label="Download attachment" icon="pi pi-file-word"></p-button>
-              <button (click)="showDialogDownload()" class="btn btn-light btn-outline-secondary">Download Ideas</button>
+            <div class="col-md-12">
+              <div class="row" style="float : right" *ngIf="role == 2 && exEvent == true">
+                <p-button (click)="dialogDownloadAtt=true" label="Download attachment" icon="pi pi-file-word"></p-button>
+                <button (click)="showDialogDownload()" class="btn btn-light btn-outline-secondary" style="margin-left: 10px">Download Ideas</button>
+              </div>
             </div>
 
 
@@ -199,7 +201,7 @@
                                         <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                                     </th>
                                     <th *ngFor="let col of columns"
-                                        [ngStyle]="{ 'text-align': 'center', 'min-width': col.width }">
+                                        [ngStyle]="{ 'text-align': 'center', 'width': col.width }">
                                         {{ col.header }}
                                     </th>
                                 </tr>
@@ -211,6 +213,8 @@
                                     </td>
                                     <td style="text-align: center">{{file.Stt}}</td>
                                     <td style="text-align: center">{{file.file_name}}</td>
+                                    <td style="text-align: center">{{file.size}} KB</td>
+
                                     <td style="text-align: center"><a href="{{file.file_url}}">{{file.file_url}}</a></td>
 
                                 </tr>

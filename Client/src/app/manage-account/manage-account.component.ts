@@ -21,7 +21,7 @@ export class ManageAccountComponent {
   id: number;
   ref: DynamicDialogRef;
   name: string;
-  apiUrl: string = 'http://localhost:3009/api/user';
+  apiUrl: string = 'http://52.199.43.174:3009/api/user';
   listSelectedData: Array<any> = [];
   constructor(
     private messageService: MessageService,
@@ -67,26 +67,26 @@ export class ManageAccountComponent {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },
       })
-      .subscribe((result: any) => {
-        this.listData = result.data.map((item, index) =>
-          Object.assign(
-            {
-              Stt: index + 1,
-            },
-            item
-          )
-        );
-        this.listData.forEach((item) => {
-          item.status = item.is_deleted == 0 ? 'Active' : 'UnActive';
-        });
-      },
-      err => {
-        this.showMessage('error', err.error.message);
-        return;
-      });
+      .subscribe(
+        (result: any) => {
+          this.listData = result.data.map((item, index) =>
+            Object.assign(
+              {
+                Stt: index + 1,
+              },
+              item
+            )
+          );
+          this.listData.forEach((item) => {
+            item.status = item.is_deleted == 0 ? 'Active' : 'UnActive';
+          });
+        },
+        (err) => {
+          this.showMessage('error', err.error.message);
+          return;
+        }
+      );
   }
-
-
 
   showMessage(severity: string, detail: string) {
     this.messageService.add({

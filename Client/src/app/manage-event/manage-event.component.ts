@@ -21,7 +21,7 @@ export class ManageEventComponent {
   listDepartments = [];
   ref: DynamicDialogRef;
   name: string;
-  apiUrl: string = 'http://localhost:3009/api/event';
+  apiUrl: string = 'http://52.199.43.174:3009/api/event';
   listSelectedData: Array<any> = [];
   constructor(
     private messageService: MessageService,
@@ -90,7 +90,7 @@ export class ManageEventComponent {
           return;
         }
         this.http
-          .get<any>('http://localhost:3009/api/department', {
+          .get<any>('http://52.199.43.174:3009/api/department', {
             headers: {
               Authorization: 'Bearer ' + this.authService.getToken(),
             },
@@ -113,7 +113,7 @@ export class ManageEventComponent {
   }
   getAllDepartment() {
     this.http
-      .get<any>('http://localhost:3009/api/department', {
+      .get<any>('http://52.199.43.174:3009/api/department', {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },
@@ -149,19 +149,23 @@ export class ManageEventComponent {
   }
 
   async deleteEvent() {
-    this.http.delete(this.apiUrl + '/' + this.id, {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe((result: any) => {
-      this.showMessage('success', 'Delete success')
-      this.displayDeleteEvent = false;
-      this.displayDeleteEvents = false;
-      this.getAllData();
-    }, (err: any) => {
-      this.showMessage("error: ", err.error.message);
-
-    });
+    this.http
+      .delete(this.apiUrl + '/' + this.id, {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken(),
+        },
+      })
+      .subscribe(
+        (result: any) => {
+          this.showMessage('success', 'Delete success');
+          this.displayDeleteEvent = false;
+          this.displayDeleteEvents = false;
+          this.getAllData();
+        },
+        (err: any) => {
+          this.showMessage('error: ', err.error.message);
+        }
+      );
   }
 
   showMessage(severity: string, detail: string) {
@@ -183,9 +187,8 @@ export class ManageEventComponent {
       });
       this.ref.onClose.subscribe((result) => {
         if (result) {
-          this.showMessage("Add success: ", result);
+          this.showMessage('Add success: ', result);
           this.getAllData();
-
         }
       });
     } else {
@@ -198,7 +201,7 @@ export class ManageEventComponent {
       });
       this.ref.onClose.subscribe((result) => {
         if (result) {
-          this.showMessage("Edit success: ", result);
+          this.showMessage('Edit success: ', result);
           this.getAllData();
         }
       });

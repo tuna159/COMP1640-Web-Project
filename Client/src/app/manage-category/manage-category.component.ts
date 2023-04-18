@@ -27,7 +27,7 @@ export class ManageCategoryComponent implements OnInit {
   displayXoaN: boolean;
   id: number;
   name: string;
-  apiUrl: string = 'http://localhost:3009/api/category';
+  apiUrl: string = 'http://52.199.43.174:3009/api/category';
   listSelectedData: Array<any> = [];
   categoryDialog: boolean;
   constructor(
@@ -77,7 +77,6 @@ export class ManageCategoryComponent implements OnInit {
       });
   }
 
-
   showDialogXoa(data) {
     this.displayXoa = true;
     this.id = data.category_id;
@@ -88,8 +87,8 @@ export class ManageCategoryComponent implements OnInit {
   }
 
   deleteCategories() {
-    if(this.listSelectedData.length){
-      for(let i = 0; i < this.listSelectedData.length; i++) {
+    if (this.listSelectedData.length) {
+      for (let i = 0; i < this.listSelectedData.length; i++) {
         this.id = this.listSelectedData[i].category_id;
         this.deleteCategory();
       }
@@ -99,18 +98,24 @@ export class ManageCategoryComponent implements OnInit {
     }
   }
 
-  async deleteCategory() { 
-    this.http.delete(this.apiUrl +'/'+ this.id, {headers: {
-      Authorization: 'Bearer ' + this.authService.getToken()}
-    }).subscribe(() => {
-      this.showMessage('success', 'Delete success');
-      this.displayXoa = false;
-      this.displayXoaN = false;
-      this.getAllData();
-    }, (err: any) => {
-      this.showMessage("error: ", err.error.message);
-
-    });
+  async deleteCategory() {
+    this.http
+      .delete(this.apiUrl + '/' + this.id, {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken(),
+        },
+      })
+      .subscribe(
+        () => {
+          this.showMessage('success', 'Delete success');
+          this.displayXoa = false;
+          this.displayXoaN = false;
+          this.getAllData();
+        },
+        (err: any) => {
+          this.showMessage('error: ', err.error.message);
+        }
+      );
   }
 
   showMessage(severity: string, detail: string) {
@@ -122,22 +127,19 @@ export class ManageCategoryComponent implements OnInit {
   }
 
   openNewCategory(data) {
-    if(!data) {
-        this.ref = this.dialogService.open(AddCategoryComponent, {
-          header: 'Add Category',
-          width: '30%',
-          contentStyle: { "max-height": "800px", "overflow": "auto" },
-          baseZIndex: 10000,
-          data: {
-
-          }
-        });
-        this.ref.onClose.subscribe((result) => {
-          if (result) {
-              this.showMessage("Add success: ", result);
-              this.getAllData();
-
-          }
+    if (!data) {
+      this.ref = this.dialogService.open(AddCategoryComponent, {
+        header: 'Add Category',
+        width: '30%',
+        contentStyle: { 'max-height': '800px', overflow: 'auto' },
+        baseZIndex: 10000,
+        data: {},
+      });
+      this.ref.onClose.subscribe((result) => {
+        if (result) {
+          this.showMessage('Add success: ', result);
+          this.getAllData();
+        }
       });
     } else {
       this.ref = this.dialogService.open(AddCategoryComponent, {
@@ -149,10 +151,10 @@ export class ManageCategoryComponent implements OnInit {
       });
       this.ref.onClose.subscribe((result) => {
         if (result) {
-            this.showMessage("Edit success: ", result);
-            this.getAllData();
+          this.showMessage('Edit success: ', result);
+          this.getAllData();
         }
-    });
+      });
     }
   }
 }
