@@ -62,9 +62,10 @@ export class EventController {
     return this.eventService.createIdea(userData, body, event_id);
   }
 
+  @Public()
   @Get(':event_id/download?')
   async downloadIdeasByEvent(
-    @UserData() userData: IUserData,
+    // @UserData() userData: IUserData,
     @Param('event_id') event_id: number,
     @Query('category_id') categoryId: number,
     @Query('author_department_id') authorDepartmentId: number,
@@ -98,7 +99,7 @@ export class EventController {
       event_id,
       options,
       res,
-      userData,
+      // userData,
     );
   }
 
