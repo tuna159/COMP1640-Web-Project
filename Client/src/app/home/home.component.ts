@@ -11,14 +11,14 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
-  providers: [DialogService]
+  providers: [DialogService],
 })
 export class HomeComponent implements OnInit {
   ref: DynamicDialogRef;
   listIdea = [];
   listData = [];
   search_value: any;
-  listDepartment = []
+  listDepartment = [];
   selectedNode: any;
   sortEvent: boolean;
   nodes1: any[];
@@ -28,11 +28,15 @@ export class HomeComponent implements OnInit {
     sort: FormControl<any>;
   }>;
   apiUrl = 'http://localhost:3009/api/idea';
-  constructor(private dialogService: DialogService, private http: HttpClient,
-    private authService: AuthenticationService, private router: Router, private messageService: MessageService) {
+  constructor(
+    private dialogService: DialogService,
+    private http: HttpClient,
+    private authService: AuthenticationService,
+    private router: Router,
+    private messageService: MessageService
+  ) {
     this.getAllIdeas();
   }
-
 
   getAllIdeas() {
     this.http.get<any>(this.apiUrl, {
@@ -40,12 +44,7 @@ export class HomeComponent implements OnInit {
         Authorization: 'Bearer ' + this.authService.getToken()
       }
     }).subscribe((res: any) => {
-      if (res.status_code != 200) {
-        this.showMessage('error', res.message);
-        return;
-      }
       console.log("res.data", res.data);
-
       this.listIdea = res.data;
       this.listData = [];
       res.data.forEach(item => {
@@ -68,10 +67,8 @@ export class HomeComponent implements OnInit {
         this.listData.push(bodyData)
       })
       console.log("data: ", this.listData);
-
     })
   }
-
 
   ngOnInit(): void {
     this.formGroup = new FormGroup({
@@ -87,93 +84,59 @@ export class HomeComponent implements OnInit {
 
   SaveSort() {
     let api = 'http://localhost:3009/api/idea'
-    if (this.formGroup.controls.startDate.value && this.formGroup.controls.endDate.value && this.formGroup.controls.startDate.value.getTime() > this.formGroup.controls.endDate.value.getTime()) {
+    if (this.formGroup.controls.startDate.value && this.formGroup.controls.endDate.value && 
+      this.formGroup.controls.startDate.value.getTime() > this.formGroup.controls.endDate.value.getTime()) {
       this.showMessage('error', 'Start Date must less than end date');
-
     }
-    if (this.formGroup.controls.sort.value != null ||
-      this.formGroup.controls.startDate.value != null ||
+    if (this.formGroup.controls.sort.value != null || this.formGroup.controls.startDate.value != null ||
       this.formGroup.controls.endDate.value != null) {
       api = api + '?'
     }
-    // if(this.formGroup.controls.newest.value == true){
-    //   if(api.slice(-1) == '?') {
-    //     api = api + 'sorting_setting=RECENT_IDEAS'
-    //   } else {
-    //     api = api + '&sorting_setting=RECENT_IDEAS'
-    //   }
-    // }
-    // if(this.formGroup.controls.mostPopular.value == true){
-    //   if(api.slice(-1) == '?') {
-    //     api = api + 'sorting_setting=MOST_POPULAR_IDEAS'
-    //   } else {
-    //     api = api + '&sorting_setting=MOST_POPULAR_IDEAS'
-    //   }
-    // }
-    // if(this.formGroup.controls.mostView.value == true){
-    //   if(api.slice(-1) == '?') {
-    //     api = api + 'sorting_setting=MOST_VIEWED_IDEAS'
-    //   } else {
-    //     api = api + '&sorting_setting=MOST_VIEWED_IDEAS'
-    //   }
-    // }
-    // if(this.formGroup.controls.startDate.value != null){
-    //   if(api.slice(-1) == '?') {
-    //     api = api + 'start_date=' + this.formGroup.controls.startDate.value.getFullYear()
-    //   } else {
-    //     api = api + '&start_date=' + this.formGroup.controls.startDate.value.getFullYear()
-    //   }
-    // }
-    // if(this.formGroup.controls.endDate.value != null){
-    //   if(api.slice(-1) == '?') {
-    //     api = api + 'end_date=' + this.formGroup.controls.startDate.value.getFullYear()
-    //   } else {
-    //     api = api + '&end_date=' + this.formGroup.controls.startDate.value.getFullYear()
-    //   }
-    // }
     if (this.formGroup.controls.sort.value == "newest") {
       if (api.slice(-1) == '?') {
-        api = api + 'sorting_setting=RECENT_IDEAS'
+        api = api + 'sorting_setting=RECENT_IDEAS';
       } else {
-        api = api + '&sorting_setting=RECENT_IDEAS'
+        api = api + '&sorting_setting=RECENT_IDEAS';
       }
     }
-    if(this.formGroup.controls.sort.value == "popular"){
-      if(api.slice(-1) == '?') {
-        api = api + 'sorting_setting=MOST_POPULAR_IDEAS'
+    if (this.formGroup.controls.sort.value == 'popular') {
+      if (api.slice(-1) == '?') {
+        api = api + 'sorting_setting=MOST_POPULAR_IDEAS';
       } else {
-        api = api + '&sorting_setting=MOST_POPULAR_IDEAS'
+        api = api + '&sorting_setting=MOST_POPULAR_IDEAS';
       }
     }
-    if(this.formGroup.controls.sort.value == "views"){
-      if(api.slice(-1) == '?') {
-        api = api + 'sorting_setting=MOST_VIEWED_IDEAS'
+    if (this.formGroup.controls.sort.value == 'views') {
+      if (api.slice(-1) == '?') {
+        api = api + 'sorting_setting=MOST_VIEWED_IDEAS';
       } else {
-        api = api + '&sorting_setting=MOST_VIEWED_IDEAS'
+        api = api + '&sorting_setting=MOST_VIEWED_IDEAS';
       }
     }
     if (this.formGroup.controls.startDate.value != null) {
       if (api.slice(-1) == '?') {
-        api = api + 'start_date=' + this.formGroup.controls.startDate.value.getFullYear()
+        api = api + 'start_date=' + new Date(this.formGroup.controls.startDate.value)
       } else {
-        api = api + '&start_date=' + this.formGroup.controls.startDate.value.getFullYear()
+        api = api + '&start_date=' + new Date(this.formGroup.controls.startDate.value)
       }
     }
     if (this.formGroup.controls.endDate.value != null) {
       if (api.slice(-1) == '?') {
-        api = api + 'end_date=' + this.formGroup.controls.startDate.value.getFullYear()
+        api = api + 'end_date=' + new Date(this.formGroup.controls.endDate.value)
       } else {
-        api = api + '&end_date=' + this.formGroup.controls.startDate.value.getFullYear()
+        api = api + '&end_date=' + new Date(this.formGroup.controls.endDate.value)
       }
     }
-    console.log(api)
-
     this.apiUrl = api;
-    this.getAllIdeas()
+    this.getAllIdeas();
     this.sortEvent = false;
   }
 
   showMessage(severity: string, detail: string) {
-    this.messageService.add({ severity: severity, summary: 'Notification:', detail: detail });
+    this.messageService.add({
+      severity: severity,
+      summary: 'Notification:',
+      detail: detail,
+    });
   }
 }

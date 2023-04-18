@@ -29,6 +29,7 @@
             <div style="display: flex; justify-content: space-between;">
                 <p style="min-width: 10%;">Full Name</p>
                 <p style="min-width: 20%;">{{name}}</p>
+                <p style="min-width: 50%;"></p>
                 
             </div>
             <div style="display: flex; justify-content: space-between;">
@@ -68,8 +69,8 @@
     styleClass="p-fluid">
     <form [formGroup]="formGroup">
         <div class="field" style="display: flex;">
-            <p-avatar *ngIf="url != null" [image]="url" shape="circle" size="xlarge"></p-avatar>
-            <p-avatar *ngIf="url == null" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg"  shape="circle" size="xlarge"></p-avatar>
+            <p-avatar *ngIf="avatar_url != null" [image]="avatar_url" shape="circle" size="xlarge"></p-avatar>
+            <p-avatar *ngIf="avatar_url == null" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg"  shape="circle" size="xlarge"></p-avatar>
             <label for="files" class="btn"
                 style="height: 40px; width: 30%; margin-top: 3%; margin-left: 5%; border-width: 1px; border-color: black;">Select
                 Image</label>
@@ -88,6 +89,10 @@
                     class="error-message-span" style="color: #FD0B0B; font-size: small;">
                     Please enter your Full Name
                 </span>
+                <span *ngIf="formGroup.controls.name.hasError('pattern')" class="error-message-span"
+                style="color: #FD0B0B; font-size: small;">
+                Full name cannot contain special characters
+              </span>
             </div>
         </div>
         <div class="field" style="margin-top: 5%;">

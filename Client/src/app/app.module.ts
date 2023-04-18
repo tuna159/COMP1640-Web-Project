@@ -8,15 +8,19 @@ import { ResetPasswordComponent } from './auth/components/reset-password/reset-p
 import { HomeComponent } from './home/home.component';
 import { DetailComponent } from './detail/detail.component';
 import { AppRoutingModule } from './app-routing.module';
-import {AccordionModule} from 'primeng/accordion';     //accordion and accordion tab
-import {PasswordModule} from 'primeng/password';
-import {InputTextModule} from 'primeng/inputtext';
+import { AccordionModule } from 'primeng/accordion'; //accordion and accordion tab
+import { PasswordModule } from 'primeng/password';
+import { InputTextModule } from 'primeng/inputtext';
 import { HeaderHomeComponent } from './shared/header-home/header-home.component';
 import { MenubarModule } from 'primeng/menubar';
 import { SlideMenuModule } from 'primeng/slidemenu';
 import { ButtonModule } from 'primeng/button';
 import { SpeedDialModule } from 'primeng/speeddial';
-import { CommonModule } from '@angular/common';
+import {
+  CommonModule,
+  HashLocationStrategy,
+  LocationStrategy,
+} from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SidebarModule } from 'primeng/sidebar';
 import { TabViewModule } from 'primeng/tabview';
@@ -24,8 +28,8 @@ import { CardModule } from 'primeng/card';
 import { LayoutComponent } from './shared/layout/layout.component';
 import { MenuComponent } from './shared/menu/menu.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {DynamicDialogModule} from 'primeng/dynamicdialog';
-import {DropdownModule} from 'primeng/dropdown';
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { DropdownModule } from 'primeng/dropdown';
 import { MenuModule } from 'primeng/menu';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { TreeSelectModule } from 'primeng/treeselect';
@@ -38,8 +42,8 @@ import { MegaMenuModule } from 'primeng/megamenu';
 import { DialogModule } from 'primeng/dialog';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { InputTextareaModule } from 'primeng/inputtextarea';
-import { HttpClientModule } from "@angular/common/http";
-import {MessagesModule} from 'primeng/messages';
+import { HttpClientModule } from '@angular/common/http';
+import { MessagesModule } from 'primeng/messages';
 import { ProfileComponent } from './profile/profile.component';
 import { ManageCategoryComponent } from './manage-category/manage-category.component';
 import { ManageAccountComponent } from './manage-account/manage-account.component';
@@ -57,7 +61,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { DataViewModule, DataViewLayoutOptions } from 'primeng/dataview';
 
 import { FieldsetModule } from 'primeng/fieldset';
-import { ImageModule } from 'primeng/image'
+import { ImageModule } from 'primeng/image';
 import { MessageService } from 'primeng/api';
 import { PostComponent } from './idea-event/post/post.component';
 import { AddCategoryComponent } from './manage-category/add-category/add-category/add-category.component';
@@ -77,88 +81,91 @@ import { AddDepartmentComponent } from './manage-department/add-department/add-d
 import { IdeaCategoryComponent } from './idea-category/idea-category.component';
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        AuthComponent,
-        LoginComponent,
-        ResetPasswordComponent,
-        HomeComponent,
-        DetailComponent,
-        HeaderHomeComponent,
-        LayoutComponent,
-        MenuComponent,
-        ProfileComponent,
-        ManageCategoryComponent,
-        ManageAccountComponent,
-        PostComponent,
-        AddCategoryComponent,
-        CreateAccountComponent,
-        ChartsComponent,
-        ManageEventComponent,
-        EventComponent,
-        ChartComponent,
-        IdeaEventComponent,
-        AddEventComponent,
-        ManageDepartmentComponent,
-        AddDepartmentComponent,
-        IdeaCategoryComponent
-    ],
-    providers: [MessageService, RoleGuardService, DataViewLayoutOptions],
-    bootstrap: [AppComponent],
-    imports: [
-        BrowserModule,
-        ChartModule,
-        AppRoutingModule,
-        CheckboxModule,
-        CalendarModule,
-        ImageModule,
-        FieldsetModule,
-        AccordionModule,
-        PasswordModule,
-        InputTextModule,
-        DataViewModule,
-        MenubarModule,
-        SlideMenuModule,
-        ButtonModule,
-        SpeedDialModule,
-        SidebarModule,
-        CommonModule,
-        FormsModule,
-        TabViewModule,
-        CardModule,
-        HighchartsChartModule,
-        BrowserAnimationsModule,
-        DynamicDialogModule,
-        DropdownModule,
-        MenuModule,
-        SplitButtonModule,
-        TreeSelectModule,
-        ListboxModule,
-        PanelMenuModule,
-        ChipModule,
-        AvatarModule,
-        ScrollerModule,
-        MegaMenuModule,
-        DialogModule,
-        ToggleButtonModule,
-        InputTextareaModule,
-        HttpClientModule,
-        ReactiveFormsModule,
-        MessagesModule,
-        TableModule,
-        ToastModule,
-        ToolbarModule,
-        FileUploadModule,
-        ConfirmDialogModule,
-        RippleModule,
-        RatingModule,
-        RadioButtonModule,
-        InputNumberModule,
-        CheckboxModule,
-        CalendarModule,
-        ImageModule
-        
-    ]
+  declarations: [
+    AppComponent,
+    AuthComponent,
+    LoginComponent,
+    ResetPasswordComponent,
+    HomeComponent,
+    DetailComponent,
+    HeaderHomeComponent,
+    LayoutComponent,
+    MenuComponent,
+    ProfileComponent,
+    ManageCategoryComponent,
+    ManageAccountComponent,
+    PostComponent,
+    AddCategoryComponent,
+    CreateAccountComponent,
+    ChartsComponent,
+    ManageEventComponent,
+    EventComponent,
+    ChartComponent,
+    IdeaEventComponent,
+    AddEventComponent,
+    ManageDepartmentComponent,
+    AddDepartmentComponent,
+    IdeaCategoryComponent,
+  ],
+  providers: [
+    MessageService,
+    RoleGuardService,
+    DataViewLayoutOptions,
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+  ],
+  bootstrap: [AppComponent],
+  imports: [
+    BrowserModule,
+    ChartModule,
+    AppRoutingModule,
+    CheckboxModule,
+    CalendarModule,
+    ImageModule,
+    FieldsetModule,
+    AccordionModule,
+    PasswordModule,
+    InputTextModule,
+    DataViewModule,
+    MenubarModule,
+    SlideMenuModule,
+    ButtonModule,
+    SpeedDialModule,
+    SidebarModule,
+    CommonModule,
+    FormsModule,
+    TabViewModule,
+    CardModule,
+    HighchartsChartModule,
+    BrowserAnimationsModule,
+    DynamicDialogModule,
+    DropdownModule,
+    MenuModule,
+    SplitButtonModule,
+    TreeSelectModule,
+    ListboxModule,
+    PanelMenuModule,
+    ChipModule,
+    AvatarModule,
+    ScrollerModule,
+    MegaMenuModule,
+    DialogModule,
+    ToggleButtonModule,
+    InputTextareaModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    MessagesModule,
+    TableModule,
+    ToastModule,
+    ToolbarModule,
+    FileUploadModule,
+    ConfirmDialogModule,
+    RippleModule,
+    RatingModule,
+    RadioButtonModule,
+    InputNumberModule,
+    CheckboxModule,
+    CalendarModule,
+    ImageModule,
+  ],
 })
-export class AppModule { }
-
+export class AppModule {}

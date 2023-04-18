@@ -27,15 +27,13 @@ export class UserController {
   }
 
   @Get()
-  getAllUser(
-    @UserData() userData: IUserData, 
-  ) {
+  getAllUser(@UserData() userData: IUserData) {
     return this.userService.getAllUsers(userData);
   }
 
   @Get(':user_id')
   async getUserDetail(
-    @UserData() userData: IUserData, 
+    @UserData() userData: IUserData,
     @Param('user_id') user_id: string,
   ) {
     return await this.userService.getUserDetail(userData, user_id);
@@ -53,12 +51,4 @@ export class UserController {
   ) {
     return await this.userService.updateAccount(userData, user_id, body);
   }
-
-  // @Delete(':user_id')
-  // deleteUser(
-  //   @Param('user_id') user_id: string,
-  //   @UserData() userData: IUserData,
-  // ) {
-  //   return this.userService.deleteUser(user_id, userData);
-  // }
 }

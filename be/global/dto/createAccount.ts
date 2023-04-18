@@ -21,6 +21,9 @@ export class VSignUp {
   @IsString()
   full_name: string;
 
+  @IsString()
+  nick_name: string;
+
   @IsEnum(EGender)
   gender: EGender;
 

@@ -1,0 +1,41 @@
+version: '3.5'
+
+services:
+  mysql-db:
+    container_name: mysql-db
+    image: mysql:5.7
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_bin',--default-authentication-plugin=mysql_native_password]
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      MYSQL_ROOT_PASSWORD: $DB_MYSQL_PASSWORD
+      MYSQL_DATABASENAME: $DB_MYSQL_NAME
+    ports:
+      - $DB_MYSQL_LOCAL_PORT:$DB_MYSQL_DOCKER_PORT
+    volumes:
+      - .docker/data/db:/data/db
+    networks:
+      - default
+
+  nestjs-app:
+    container_name: nestjs-app
+    image: comp1640-image:v1
+    depends_on:
+      - mysql-db
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - '${PORT}:${PORT}'
+    environment:
+      - DB_HOST=$DB_MYSQL_HOST
+      - DB_USER=$DB_MYSQL_USER
+      - DB_PASSWORD=$DB_MYSQL_PASSWORD
+      - DB_DATABASE=$DB_MYSQL_NAME
+      - DB_PORT=$DB_MYSQL_LOCAL_PORT
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    networks:
+      - default

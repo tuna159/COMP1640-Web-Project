@@ -1,4 +1,4 @@
-<form [formGroup]="formGroup" (ngSubmit)="SaveIdea()">
+<form [formGroup]="formGroup" (ngSubmit)="SaveAccount()">
     <div class="field" style="margin-top: 5%;" *ngIf="data.user_id == null">
         <label for="name" style="width: 100%;">Email</label>
         
@@ -11,6 +11,10 @@
                 class="error-message-span" style="color: #FD0B0B; font-size: small;">
                 Please enter email
             </span>
+            <span *ngIf="formGroup.controls.email.hasError('pattern')" class="error-message-span"
+            style="color: #FD0B0B; font-size: small;">
+            Please enter correct email
+          </span>
         </div>
     </div>
     
@@ -41,6 +45,10 @@
                 class="error-message-span" style="color: #FD0B0B; font-size: small;">
                 Please enter fullName
             </span>
+            <span *ngIf="formGroup.controls.fullName.hasError('pattern')" class="error-message-span"
+                style="color: #FD0B0B; font-size: small;">
+                Full name cannot contain special characters
+              </span>
         </div>
     </div>
     

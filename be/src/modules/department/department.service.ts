@@ -40,22 +40,22 @@ export class DepartmentService {
 
     const departments = await departmentRepository
       .createQueryBuilder('department')
-      .innerJoinAndSelect('department.manager', 'manager')
-      .innerJoinAndSelect('manager.userDetail', 'userDetail')
+      .leftJoinAndSelect('department.manager', 'manager')
+      .leftJoinAndSelect('manager.userDetail', 'userDetail')
       .getMany();
 
     const data = departments.map((department) => {
-      const manager = department.manager.userDetail;
+      const manager = department.manager?.userDetail;
       return {
         department_id: department.department_id,
         name: department.name,
         manager: {
-          manager_id: manager.user_id,
-          nick_name: manager.nick_name,
-          full_name: manager.full_name,
-          gender: manager.gender,
-          birthday: manager.birthday,
-          avatar_url: manager.avatar_url,
+          manager_id: manager?.user_id,
+          nick_name: manager?.nick_name,
+          full_name: manager?.full_name,
+          gender: manager?.gender,
+          birthday: manager?.birthday,
+          avatar_url: manager?.avatar_url,
         },
       };
     });
@@ -130,9 +130,7 @@ export class DepartmentService {
     };
   }
 
-  async getEventsByDepartment(
-    department_id: number,
-  ) {
+  async getEventsByDepartment(department_id: number) {
     const department = await this.departmentExists(department_id);
     if (!department) {
       throw new HttpException(
@@ -231,7 +229,6 @@ export class DepartmentService {
     const departmentRepository = entityManager
       ? entityManager.getRepository<Department>('department')
       : this.departmentRepository;
-
     if (userData.role_id != EUserRole.ADMIN) {
       throw new HttpException(
         ErrorMessage.DEPARTMENT_PERMISSION,

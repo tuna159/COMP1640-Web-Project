@@ -124,7 +124,7 @@ export class AuthService {
           newUser.user_id,
         );
 
-        if (checkmanage) {
+        if (!checkmanage) {
           throw new HttpException(
             ErrorMessage.DEPARTMENT_PERMISSION,
             HttpStatus.BAD_REQUEST,
@@ -142,12 +142,8 @@ export class AuthService {
         );
       }
 
-      console.log(newUser.department_id);
-
       const checkDeparment =
         await this.departmentSerivce.checkManagerDepartment(body.department_id);
-
-      console.log(body.department_id, 11111111111);
 
       if (!checkDeparment) {
         throw new HttpException(
@@ -156,10 +152,7 @@ export class AuthService {
         );
       }
 
-      if (
-        body.role_id != EUserRole.ADMIN &&
-        body.role_id != EUserRole.QA_MANAGER
-      ) {
+      if (body.role_id == EUserRole.QA_COORDINATOR) {
         const deparmentParam = new Department();
         deparmentParam.manager_id = newUser.user_id;
 
@@ -173,6 +166,7 @@ export class AuthService {
       const userDetailParams = new UserDetail();
       userDetailParams.user_id = newUser.user_id;
       userDetailParams.full_name = body.full_name;
+      userDetailParams.nick_name = body.nick_name;
       userDetailParams.gender = body.gender;
       userDetailParams.birthday = new Date(body?.birthdate);
       await this.userDetailService.createUserDetail(userDetailParams, manager);
@@ -190,7 +184,6 @@ export class AuthService {
     );
 
     return {
-      // token: data.token,
       user_id: user.user_id,
     };
   }

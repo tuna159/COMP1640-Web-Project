@@ -129,7 +129,7 @@ export class EventController {
       userData,
     );
   }
-  
+
   @Get('dashboard/staff-contribution?')
   getDepartmentIdeasContributionInTime(
     @Query('year') year: number,
