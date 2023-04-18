@@ -349,12 +349,12 @@ export class EventService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    if (event.final_closure_date > new Date()) {
-      throw new HttpException(
-        ErrorMessage.DATA_DOWNLOAD_DATE_TIME,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // if (event.final_closure_date > new Date()) {
+    //   throw new HttpException(
+    //     ErrorMessage.DATA_DOWNLOAD_DATE_TIME,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
 
     let start_date = null, end_date = null;
     if(options.start_date != null) {
@@ -634,17 +634,17 @@ export class EventService {
   }
 
   async downloadIdeasAttachments(
-    userData: IUserData,
+    // userData: IUserData,
     event_id: number,
     res: Response,
     file_ids: number[],
   ) {
-    if (userData.role_id != EUserRole.QA_MANAGER) {
-      throw new HttpException(
-        ErrorMessage.DATA_DOWNLOAD_PERMISSION,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // if (userData.role_id != EUserRole.QA_MANAGER) {
+    //   throw new HttpException(
+    //     ErrorMessage.DATA_DOWNLOAD_PERMISSION,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
     const event = await this.eventExists(event_id);
     if (!event) {
       throw new HttpException(

@@ -146,7 +146,7 @@ export class EventController {
   @Public()
   @Get(':event_id/files/download?')
   async downloadIdeasAttachments(
-    @UserData() userData: IUserData,
+    // @UserData() userData: IUserData,
     @Param('event_id') event_id: number,
     @Query('file_ids') txtFileIds: string,
     @Res() res: Response,
@@ -176,7 +176,7 @@ export class EventController {
     }
 
     return await this.eventService.downloadIdeasAttachments(
-      userData,
+      // userData,
       event_id,
       res,
       JSON.parse(txtFileIds),
