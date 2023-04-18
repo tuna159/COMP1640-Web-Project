@@ -213,28 +213,28 @@ export class EventService {
       );
     }
 
-    const first = new Date(body.first_closure_date);
-    if (first < new Date()) {
-      throw new HttpException(
-        'First closure date must be greater than current date',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // const first = new Date(body.first_closure_date);
+    // if (first < new Date()) {
+    //   throw new HttpException(
+    //     'First closure date must be greater than current date',
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
 
-    const final = new Date(body.final_closure_date);
-    if (final < new Date()) {
-      throw new HttpException(
-        'Final closure date must be greater then current date',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // const final = new Date(body.final_closure_date);
+    // if (final < new Date()) {
+    //   throw new HttpException(
+    //     'Final closure date must be greater then current date',
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
 
-    if (first >= final) {
-      throw new HttpException(
-        'First closure date must be less than final closure date',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // if (first >= final) {
+    //   throw new HttpException(
+    //     'First closure date must be less than final closure date',
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
 
     const newEvent = new Event();
     newEvent.name = body.name;
@@ -341,7 +341,7 @@ export class EventService {
     //     HttpStatus.BAD_REQUEST,
     //   );
     // }
-    
+
     const event = await this.eventExists(event_id);
     if (!event) {
       throw new HttpException(
@@ -356,8 +356,9 @@ export class EventService {
       );
     }
 
-    let start_date = null, end_date = null;
-    if(options.start_date != null) {
+    let start_date = null,
+      end_date = null;
+    if (options.start_date != null) {
       start_date = new Date(options.start_date);
       if (
         start_date < event.first_closure_date ||
@@ -369,7 +370,7 @@ export class EventService {
         );
       }
     }
-    if(options.end_date != null) {
+    if (options.end_date != null) {
       end_date = new Date(options.end_date);
       if (
         end_date < event.first_closure_date ||
@@ -399,7 +400,7 @@ export class EventService {
       end_date,
       true,
     );
-    console.log("Length", ideas);
+    console.log('Length', ideas);
     const data = [];
     for (const idea of ideas) {
       const row = [];
