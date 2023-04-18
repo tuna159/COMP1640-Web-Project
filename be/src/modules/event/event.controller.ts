@@ -62,7 +62,7 @@ export class EventController {
     return this.eventService.createIdea(userData, body, event_id);
   }
 
-  @Public()
+  // @Public()
   @Get(':event_id/download?')
   async downloadIdeasByEvent(
     // @UserData() userData: IUserData,
