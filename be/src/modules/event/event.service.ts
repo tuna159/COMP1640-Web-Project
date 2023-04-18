@@ -345,6 +345,7 @@ export class EventService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    
     const event = await this.eventExists(event_id);
     if (!event) {
       throw new HttpException(
@@ -359,22 +360,34 @@ export class EventService {
       );
     }
 
-    const start_date = new Date(options.start_date);
-    const end_date = new Date(options.end_date);
-    if (start_date > end_date) {
+    let start_date = null, end_date = null;
+    if(options.start_date != null) {
+      start_date = new Date(options.start_date);
+      if (
+        start_date < event.first_closure_date ||
+        start_date > event.final_closure_date
+      ) {
+        throw new HttpException(
+          'Start date must be between fist and final closure date',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+    if(options.end_date != null) {
+      end_date = new Date(options.end_date);
+      if (
+        end_date < event.first_closure_date ||
+        end_date > event.final_closure_date
+      ) {
+        throw new HttpException(
+          'Start date must be between fist and final closure date',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+    if (start_date != null && end_date != null && start_date > end_date) {
       throw new HttpException(
         'Start date must be less than or equal to end date',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    if (
-      start_date < event.first_closure_date ||
-      start_date > event.final_closure_date ||
-      end_date < event.first_closure_date ||
-      end_date > event.final_closure_date
-    ) {
-      throw new HttpException(
-        'Start date must be between fist and final closure date',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -390,6 +403,7 @@ export class EventService {
       end_date,
       true,
     );
+    console.log("Length", ideas.length);
     const data = [];
     for (const idea of ideas) {
       const row = [];
@@ -478,7 +492,10 @@ export class EventService {
       readStream.on('end', () => {
         readStream.close();
         console.log('File CSV Download Completed');
-        fs.unlinkSync(path);
+        fs.truncate(path, (err) => {
+          if (err) throw err;
+          console.log('File CSV Was Truncated');
+        });
       });
     } catch (error) {
       throw new HttpException(

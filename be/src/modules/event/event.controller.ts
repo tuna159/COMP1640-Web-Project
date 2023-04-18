@@ -72,11 +72,12 @@ export class EventController {
     @Res() res: Response,
   ) {
     const options = new VDownloadIdeaDto(
-      Number(categoryId),
-      Number(authorDepartmentId),
-      startDate,
-      endDate,
+      categoryId === undefined ? null : Number(categoryId),
+      authorDepartmentId === undefined ? null : Number(authorDepartmentId),
+      startDate === undefined ? null : startDate,
+      endDate === undefined ? null : endDate,
     );
+
     const errors = await options.isValid();
     if (errors.length != 0) {
       const formattedErrors = [];
