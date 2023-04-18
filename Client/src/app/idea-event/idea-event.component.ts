@@ -143,12 +143,15 @@ export class IdeaEventComponent implements OnInit {
     this.cols = [
       { field: 'Number', header: 'Number', width: '10%', textAlign: 'center' },
       { field: 'name', header: 'Name', width: '20%', textAlign: 'center' },
+      { field: 'size', header: 'Size', width: '10%', textAlign: 'center' },
+
       {
         field: 'name',
         header: 'Download Link',
-        width: '70%',
+        width: '60%',
         textAlign: 'center',
       },
+      
     ];
 
     this.userDepartment = this.authService.getDepartment();
@@ -215,12 +218,18 @@ export class IdeaEventComponent implements OnInit {
       )
       .subscribe((res: any) => {
         window.open(apiDLFile, "_blank");
+        this.dialogDownloadEvent = false
+
       },
       error => {
         if(error.status == 200){
           window.open(apiDLFile, "_blank");
+          this.dialogDownloadEvent = false
+
         }else{
-          this.showMessage("error: ", 'error');
+          this.showMessage("error: ", error.error.message);
+          this.dialogDownloadEvent = false
+
         }
       }
       );
@@ -283,6 +292,10 @@ export class IdeaEventComponent implements OnInit {
       )
       .subscribe((res: any) => {
         this.listFileData = res.data;
+        let i = 1;
+        this.listFileData.forEach((item) => {
+          item.Stt = i++;
+        });
       });
   }
 }
