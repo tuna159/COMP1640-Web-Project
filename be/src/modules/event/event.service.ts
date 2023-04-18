@@ -333,14 +333,14 @@ export class EventService {
     event_id: number,
     options: VDownloadIdeaDto,
     res: Response,
-    userData: IUserData,
+    // userData: IUserData,
   ) {
-    if (userData.role_id != EUserRole.QA_MANAGER) {
-      throw new HttpException(
-        ErrorMessage.DATA_DOWNLOAD_PERMISSION,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // if (userData.role_id != EUserRole.QA_MANAGER) {
+    //   throw new HttpException(
+    //     ErrorMessage.DATA_DOWNLOAD_PERMISSION,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
     
     const event = await this.eventExists(event_id);
     if (!event) {
