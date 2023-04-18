@@ -333,7 +333,7 @@ export class EventService {
     event_id: number,
     options: VDownloadIdeaDto,
     res: Response,
-    // userData: IUserData,
+    userData: IUserData,
   ) {
     // if (userData.role_id != EUserRole.QA_MANAGER) {
     //   throw new HttpException(
