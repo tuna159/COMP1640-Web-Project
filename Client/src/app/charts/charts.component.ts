@@ -14,10 +14,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./charts.component.css'],
 })
 export class ChartsComponent implements OnInit {
-  apiUrlStaffDepartment: string = 'http://localhost:3009/api/event/';
+  apiUrlStaffDepartment: string = 'http://52.199.43.174:3009/api/event/';
   xStaffDepartment: any;
   dataStaffDepartment: any;
-  
+
   years = [];
   yearValue: any;
 
@@ -32,9 +32,9 @@ export class ChartsComponent implements OnInit {
   departmentValue: any;
   role: number;
 
-    // chart Thống kê staff of department by event
-    barChartStaffEvent = null;
-    optionsBarChartStaffEvent: Options = null;
+  // chart Thống kê staff of department by event
+  barChartStaffEvent = null;
+  optionsBarChartStaffEvent: Options = null;
 
   // pie chart Thống kê staff contribute
   pieChartStaffContribute = null;
@@ -49,9 +49,9 @@ export class ChartsComponent implements OnInit {
   optionsLineCharIdeaDepartment: Options = null;
   dataUser: any;
 
-    // chart Thống kê comment of department by event
-    // barChartCommentDepartment = null;
-    // optionsBarChartCommentDepartment: Options = null;
+  // chart Thống kê comment of department by event
+  // barChartCommentDepartment = null;
+  // optionsBarChartCommentDepartment: Options = null;
 
   constructor(
     private chartsService: ChartServeice,
@@ -64,6 +64,7 @@ export class ChartsComponent implements OnInit {
     this.getDataUser();
     this.getListDepartment();
     this.getListYear();
+
     this.role = this.authService.getRole();
     
   }
@@ -85,97 +86,136 @@ export class ChartsComponent implements OnInit {
     }
   }
 
+
   ngOnInit(): void {}
 
   getListYear() {
     let date = new Date();
-    let currentYear =  date.getFullYear()
-    for(let i = (currentYear - 20); i < (currentYear + 20); i++) {
+    let currentYear = date.getFullYear();
+    for (let i = currentYear - 20; i < currentYear + 20; i++) {
       let data = {
-        name: i
-      }
-        this.years.push(data);
+        name: i,
+      };
+      this.years.push(data);
     }
     let setData = {
-      name: currentYear
-    }
+      name: currentYear,
+    };
     this.yearValue = setData;
   }
 
   getListDepartment() {
-    this.http.get<any>("http://localhost:3009/api/department", {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe((result: any) => {
-      this.ListDepartment = result.data;
-      this.getReactDepartment(this.ListDepartment[0].department_id)
-      this.getStaffEvent(this.ListDepartment[0].department_id)
-      let date = new Date();
-      this.getIdeaDepartment(date.getFullYear())
-    })
+    this.http
+      .get<any>('http://52.199.43.174:3009/api/department', {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken(),
+        },
+      })
+      .subscribe((result: any) => {
+        this.ListDepartment = result.data;
+        this.getReactDepartment(this.ListDepartment[0].department_id);
+        this.getStaffEvent(this.ListDepartment[0].department_id);
+        let date = new Date();
+        this.getIdeaDepartment(date.getFullYear());
+      });
   }
 
   getStaffEvent(id: any) {
-    this.http.get<any>("http://localhost:3009/api/department/" + id + '/dashboard/staff-contribution', {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe((result: any) => {
-      
-        let StaffContribute = result.data.staff_contributed
-        let totalStaff = result.data.total_staff
+    this.http
+      .get<any>(
+        'http://52.199.43.174:3009/api/department/' +
+          id +
+          '/dashboard/staff-contribution',
+        {
+          headers: {
+            Authorization: 'Bearer ' + this.authService.getToken(),
+          },
+        }
+      )
+      .subscribe((result: any) => {
+        let StaffContribute = result.data.staff_contributed;
+        let totalStaff = result.data.total_staff;
         // pie chart Thống kê staff contribute
-        this.optionsPieChartStaffContribute = this.chartsService.createPieChartStaffContributeDepartment((totalStaff - StaffContribute)/totalStaff * 100, StaffContribute/totalStaff *100);
-        this.pieChartStaffContribute = new Chart(this.optionsPieChartStaffContribute);
-      })
+        this.optionsPieChartStaffContribute =
+          this.chartsService.createPieChartStaffContributeDepartment(
+            ((totalStaff - StaffContribute) / totalStaff) * 100,
+            (StaffContribute / totalStaff) * 100
+          );
+        this.pieChartStaffContribute = new Chart(
+          this.optionsPieChartStaffContribute
+        );
+      });
   }
 
   getIdeaDepartment(id: any) {
-    this.http.get<any>("http://localhost:3009/api/event/dashboard/staff-contribution?year=" + id, {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe((result: any) => {
-      let data = []
-        result.data.forEach(element => {
+    this.http
+      .get<any>(
+        'http://52.199.43.174:3009/api/event/dashboard/staff-contribution?year=' +
+          id,
+        {
+          headers: {
+            Authorization: 'Bearer ' + this.authService.getToken(),
+          },
+        }
+      )
+      .subscribe((result: any) => {
+        let data = [];
+        result.data.forEach((element) => {
           let bodyData = {
-            name : element.department_name,
-            data: element.contribution
-          }
-          data.push(bodyData)
+            name: element.department_name,
+            data: element.contribution,
+          };
+          data.push(bodyData);
         });
-        console.log(data)
+        console.log(data);
 
         // line chart Thống kê react department
-        this.optionsLineCharIdeaDepartment = this.chartsService.createLineCharIdeaDepartment(id, data);
-        this.lineCharIdeaDepartment = new Chart(this.optionsLineCharIdeaDepartment);
-      })
+        this.optionsLineCharIdeaDepartment =
+          this.chartsService.createLineCharIdeaDepartment(id, data);
+        this.lineCharIdeaDepartment = new Chart(
+          this.optionsLineCharIdeaDepartment
+        );
+      });
   }
 
   getListEvent() {
-    this.http.get<any>("http://localhost:3009/api/event", {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe((result: any) => {
-      this.events = result.data;
-      this.events = this.events.filter(event => event.department_id == null)
-      this.getEvent(this.events[0].event_id)
-    })
+    this.http
+      .get<any>('http://52.199.43.174:3009/api/event', {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken(),
+        },
+      })
+      .subscribe((result: any) => {
+        this.events = result.data;
+        this.events = this.events.filter(
+          (event) => event.department_id == null
+        );
+        this.getEvent(this.events[0].event_id);
+      });
   }
 
   getEvent(id: number) {
-    this.http.get<any>("http://localhost:3009/api/event/" + id + '/dashboard/staff-contribution', {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe((result: any) => {
-      // chart Thống kê staff of department by event
-          this.optionsBarChartStaffEvent = this.chartsService.createBarChartStaffEvent(result.data.map(x =>x.department_name),
-          result.data.map(x =>x.total_staff), result.data.map(x =>x.staff_contributed));
-          this.barChartStaffEvent = new Chart(this.optionsBarChartStaffEvent);
-      })
+    this.http
+      .get<any>(
+        'http://52.199.43.174:3009/api/event/' +
+          id +
+          '/dashboard/staff-contribution',
+        {
+          headers: {
+            Authorization: 'Bearer ' + this.authService.getToken(),
+          },
+        }
+      )
+      .subscribe((result: any) => {
+        // chart Thống kê staff of department by event
+        this.optionsBarChartStaffEvent =
+          this.chartsService.createBarChartStaffEvent(
+            result.data.map((x) => x.department_name),
+            result.data.map((x) => x.total_staff),
+            result.data.map((x) => x.staff_contributed)
+          );
+        this.barChartStaffEvent = new Chart(this.optionsBarChartStaffEvent);
+      });
   }
 
   logout() {
@@ -184,17 +224,30 @@ export class ChartsComponent implements OnInit {
   }
 
   getReactDepartment(id: any) {
-    this.http.get<any>("http://localhost:3009/api/department/" + id + '/dashboard/reaction', {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe((result: any) => {
-      
-      // pie chart Thống kê react department
-      this.optionsPieChartReactDepartment = this.chartsService.createPieChartReactDepartment(result.data.total_like/(result.data.total_like + result.data.total_dislike),
-      result.data.total_dislike/(result.data.total_like + result.data.total_dislike));
-      this.pieChartReactDepartment = new Chart(this.optionsPieChartReactDepartment);
-    })
+    this.http
+      .get<any>(
+        'http://52.199.43.174:3009/api/department/' +
+          id +
+          '/dashboard/reaction',
+        {
+          headers: {
+            Authorization: 'Bearer ' + this.authService.getToken(),
+          },
+        }
+      )
+      .subscribe((result: any) => {
+        // pie chart Thống kê react department
+        this.optionsPieChartReactDepartment =
+          this.chartsService.createPieChartReactDepartment(
+            result.data.total_like /
+              (result.data.total_like + result.data.total_dislike),
+            result.data.total_dislike /
+              (result.data.total_like + result.data.total_dislike)
+          );
+        this.pieChartReactDepartment = new Chart(
+          this.optionsPieChartReactDepartment
+        );
+      });
   }
 
   //Change Event (Dropdown)
@@ -203,8 +256,8 @@ export class ChartsComponent implements OnInit {
   }
 
   changeDepartmentStaff() {
-    if(this.departmentStaffValue != null) {
-      this.getStaffEvent(this.departmentStaffValue.department_id)
+    if (this.departmentStaffValue != null) {
+      this.getStaffEvent(this.departmentStaffValue.department_id);
     }
   }
 
@@ -214,11 +267,10 @@ export class ChartsComponent implements OnInit {
     }
   }
   changeIdeaDepartment() {
-    if(this.yearValue != null) {
-      this.getIdeaDepartment(this.yearValue.name)
+    if (this.yearValue != null) {
+      this.getIdeaDepartment(this.yearValue.name);
     }
   }
-
 
   showMessage(severity: string, detail: string) {
     this.messageService.add({

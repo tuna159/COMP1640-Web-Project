@@ -213,28 +213,28 @@ export class EventService {
       );
     }
 
-    const first = new Date(body.first_closure_date);
-    if (first < new Date()) {
-      throw new HttpException(
-        'First closure date must be greater than current date',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // const first = new Date(body.first_closure_date);
+    // if (first < new Date()) {
+    //   throw new HttpException(
+    //     'First closure date must be greater than current date',
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
 
-    const final = new Date(body.final_closure_date);
-    if (final < new Date()) {
-      throw new HttpException(
-        'Final closure date must be greater then current date',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // const final = new Date(body.final_closure_date);
+    // if (final < new Date()) {
+    //   throw new HttpException(
+    //     'Final closure date must be greater then current date',
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
 
-    if (first >= final) {
-      throw new HttpException(
-        'First closure date must be less than final closure date',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // if (first >= final) {
+    //   throw new HttpException(
+    //     'First closure date must be less than final closure date',
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
 
     const newEvent = new Event();
     newEvent.name = body.name;
@@ -335,12 +335,13 @@ export class EventService {
     res: Response,
     userData: IUserData,
   ) {
-    if (userData.role_id != EUserRole.QA_MANAGER) {
-      throw new HttpException(
-        ErrorMessage.DATA_DOWNLOAD_PERMISSION,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // if (userData.role_id != EUserRole.QA_MANAGER) {
+    //   throw new HttpException(
+    //     ErrorMessage.DATA_DOWNLOAD_PERMISSION,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
+
     const event = await this.eventExists(event_id);
     if (!event) {
       throw new HttpException(
@@ -355,22 +356,35 @@ export class EventService {
       );
     }
 
-    const start_date = new Date(options.start_date);
-    const end_date = new Date(options.end_date);
-    if (start_date > end_date) {
+    let start_date = null,
+      end_date = null;
+    if (options.start_date != null) {
+      start_date = new Date(options.start_date);
+      if (
+        start_date < event.first_closure_date ||
+        start_date > event.final_closure_date
+      ) {
+        throw new HttpException(
+          'Start date must be between fist and final closure date',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+    if (options.end_date != null) {
+      end_date = new Date(options.end_date);
+      if (
+        end_date < event.first_closure_date ||
+        end_date > event.final_closure_date
+      ) {
+        throw new HttpException(
+          'Start date must be between fist and final closure date',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+    if (start_date != null && end_date != null && start_date > end_date) {
       throw new HttpException(
         'Start date must be less than or equal to end date',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    if (
-      start_date < event.first_closure_date ||
-      start_date > event.final_closure_date ||
-      end_date < event.first_closure_date ||
-      end_date > event.final_closure_date
-    ) {
-      throw new HttpException(
-        'Start date must be between fist and final closure date',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -386,6 +400,7 @@ export class EventService {
       end_date,
       true,
     );
+    console.log('Length', ideas);
     const data = [];
     for (const idea of ideas) {
       const row = [];
@@ -474,7 +489,10 @@ export class EventService {
       readStream.on('end', () => {
         readStream.close();
         console.log('File CSV Download Completed');
-        fs.unlinkSync(path);
+        fs.truncate(path, (err) => {
+          if (err) throw err;
+          console.log('File CSV Was Truncated');
+        });
       });
     } catch (error) {
       throw new HttpException(
@@ -545,7 +563,7 @@ export class EventService {
       ? entityManager.getRepository<Event>('event')
       : this.eventRepository;
 
-    if (userData.role_id != EUserRole.ADMIN) {
+    if (userData.role_id != EUserRole.QA_MANAGER) {
       throw new HttpException(
         ErrorMessage.GENERAL_PERMISSION,
         HttpStatus.BAD_REQUEST,
@@ -592,7 +610,7 @@ export class EventService {
     year: number,
     userData: IUserData,
   ) {
-    if (userData.role_id != EUserRole.ADMIN) {
+    if (userData.role_id != EUserRole.QA_MANAGER) {
       throw new HttpException(
         ErrorMessage.GENERAL_PERMISSION,
         HttpStatus.BAD_REQUEST,
@@ -617,17 +635,17 @@ export class EventService {
   }
 
   async downloadIdeasAttachments(
+    // userData: IUserData,
     event_id: number,
-    userData: IUserData,
     res: Response,
     file_ids: number[],
   ) {
-    if (userData.role_id != EUserRole.QA_MANAGER) {
-      throw new HttpException(
-        ErrorMessage.DATA_DOWNLOAD_PERMISSION,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // if (userData.role_id != EUserRole.QA_MANAGER) {
+    //   throw new HttpException(
+    //     ErrorMessage.DATA_DOWNLOAD_PERMISSION,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
     const event = await this.eventExists(event_id);
     if (!event) {
       throw new HttpException(

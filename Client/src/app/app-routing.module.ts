@@ -59,7 +59,7 @@ const routes: Routes = [
     path: 'charts',
     canActivate: [RoleGuardService],
     data: {
-      expectedRole: [1],
+      expectedRole: [2],
     },
     component: ChartsComponent,
   },

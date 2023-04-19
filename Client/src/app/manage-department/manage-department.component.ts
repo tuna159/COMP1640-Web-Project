@@ -20,7 +20,7 @@ export class ManageDepartmentComponent {
   id: number;
   ref: DynamicDialogRef;
   name: string;
-  apiUrl: string = 'http://localhost:3009/api/department';
+  apiUrl: string = 'http://52.199.43.174:3009/api/department';
   listSelectedData: Array<any> = [];
   constructor(
     private messageService: MessageService,
@@ -98,19 +98,26 @@ export class ManageDepartmentComponent {
   }
 
   async deleteDepartment() {
-    this.http.delete(this.apiUrl + '/' + this.id, {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe(() => {
-      this.showMessage('success', 'Delete success')
-      this.displayDeleteDepartment = false;
-      this.displayDeleteDepartments = false;
-      this.getAllData();
-    }, (err: any) => {
-      this.showMessage("error: ", err.error.message);
+    this.http
+      .delete(this.apiUrl + '/' + this.id, {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken(),
+        },
+      })
+      .subscribe(
+        () => {
+          this.showMessage('success', 'Delete success');
+          this.displayDeleteDepartment = false;
+          this.displayDeleteDepartments = false;
+          this.getAllData();
+        },
+        (err: any) => {
+          this.displayDeleteDepartment = false;
+          this.displayDeleteDepartments = false;
 
-    });
+          this.showMessage('error: ', err.error.message);
+        }
+      );
   }
 
   showMessage(severity: string, detail: string) {
@@ -123,7 +130,8 @@ export class ManageDepartmentComponent {
   logout() {
     this.authService.logout();
     this.router.navigateByUrl('/login');
-  }s
+  }
+  s;
 
   openNewDepartment(data) {
     if (!data) {
@@ -136,7 +144,7 @@ export class ManageDepartmentComponent {
       });
       this.ref.onClose.subscribe((result) => {
         if (result) {
-          this.showMessage("Add success: ", result);
+          this.showMessage('Add success: ', result);
           this.getAllData();
         }
       });
@@ -150,7 +158,7 @@ export class ManageDepartmentComponent {
       });
       this.ref.onClose.subscribe((result) => {
         if (result) {
-          this.showMessage("Edit success: ", result);
+          this.showMessage('Edit success: ', result);
           this.getAllData();
         }
       });

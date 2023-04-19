@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit {
     endDate: FormControl<Date>;
     sort: FormControl<any>;
   }>;
-  apiUrl = 'http://localhost:3009/api/idea';
+  apiUrl = 'http://52.199.43.174:3009/api/idea';
   constructor(
     private dialogService: DialogService,
     private http: HttpClient,
@@ -39,35 +39,40 @@ export class HomeComponent implements OnInit {
   }
 
   getAllIdeas() {
-    this.http.get<any>(this.apiUrl, {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe((res: any) => {
-      console.log("res.data", res.data);
-      this.listIdea = res.data;
-      this.listData = [];
-      res.data.forEach(item => {
-        const tmp = item.tags.map(x => x.name);
-        let bodyData = {
-          full_name: item.user.full_name,
-          idea_id: item.idea_id,
-          title: item.title,
-          nameEvent: item.event.name,
-          created_at: item.created_at,
-          views: item.views,
-          tag: item.tags,
-          is_anonymous: item.is_anonymous,
-          url_avatar: item.user.avatar_url == null ? "https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" : item.user.avatar_url,
-          nameTag: tmp.toString(),
-          category: item.category.name,
-          like: item.likes,
-          dislike: item.dislikes
-        }
-        this.listData.push(bodyData)
+    this.http
+      .get<any>(this.apiUrl, {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken(),
+        },
       })
-      console.log("data: ", this.listData);
-    })
+      .subscribe((res: any) => {
+        console.log('res.data', res.data);
+        this.listIdea = res.data;
+        this.listData = [];
+        res.data.forEach((item) => {
+          const tmp = item.tags.map((x) => x.name);
+          let bodyData = {
+            full_name: item.user.full_name,
+            idea_id: item.idea_id,
+            title: item.title,
+            nameEvent: item.event.name,
+            created_at: item.created_at,
+            views: item.views,
+            tag: item.tags,
+            is_anonymous: item.is_anonymous,
+            url_avatar:
+              item.user.avatar_url == null
+                ? 'https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg'
+                : item.user.avatar_url,
+            nameTag: tmp.toString(),
+            category: item.category.name,
+            like: item.likes,
+            dislike: item.dislikes,
+          };
+          this.listData.push(bodyData);
+        });
+        console.log('data: ', this.listData);
+      });
   }
 
   ngOnInit(): void {
@@ -83,16 +88,23 @@ export class HomeComponent implements OnInit {
   }
 
   SaveSort() {
-    let api = 'http://localhost:3009/api/idea'
-    if (this.formGroup.controls.startDate.value && this.formGroup.controls.endDate.value && 
-      this.formGroup.controls.startDate.value.getTime() > this.formGroup.controls.endDate.value.getTime()) {
+    let api = 'http://52.199.43.174:3009/api/idea';
+    if (
+      this.formGroup.controls.startDate.value &&
+      this.formGroup.controls.endDate.value &&
+      this.formGroup.controls.startDate.value.getTime() >
+        this.formGroup.controls.endDate.value.getTime()
+    ) {
       this.showMessage('error', 'Start Date must less than end date');
     }
-    if (this.formGroup.controls.sort.value != null || this.formGroup.controls.startDate.value != null ||
-      this.formGroup.controls.endDate.value != null) {
-      api = api + '?'
+    if (
+      this.formGroup.controls.sort.value != null ||
+      this.formGroup.controls.startDate.value != null ||
+      this.formGroup.controls.endDate.value != null
+    ) {
+      api = api + '?';
     }
-    if (this.formGroup.controls.sort.value == "newest") {
+    if (this.formGroup.controls.sort.value == 'newest') {
       if (api.slice(-1) == '?') {
         api = api + 'sorting_setting=RECENT_IDEAS';
       } else {
@@ -115,18 +127,28 @@ export class HomeComponent implements OnInit {
     }
     if (this.formGroup.controls.startDate.value != null) {
       if (api.slice(-1) == '?') {
-        api = api + 'start_date=' + new Date(this.formGroup.controls.startDate.value)
+        api =
+          api +
+          'start_date=' +
+          new Date(this.formGroup.controls.startDate.value);
       } else {
-        api = api + '&start_date=' + new Date(this.formGroup.controls.startDate.value)
+        api =
+          api +
+          '&start_date=' +
+          new Date(this.formGroup.controls.startDate.value);
       }
     }
     if (this.formGroup.controls.endDate.value != null) {
       if (api.slice(-1) == '?') {
-        api = api + 'end_date=' + new Date(this.formGroup.controls.endDate.value)
+        api =
+          api + 'end_date=' + new Date(this.formGroup.controls.endDate.value);
       } else {
-        api = api + '&end_date=' + new Date(this.formGroup.controls.endDate.value)
+        api =
+          api + '&end_date=' + new Date(this.formGroup.controls.endDate.value);
       }
     }
+    console.log(new Date(this.formGroup.controls.endDate.value));
+
     this.apiUrl = api;
     this.getAllIdeas();
     this.sortEvent = false;

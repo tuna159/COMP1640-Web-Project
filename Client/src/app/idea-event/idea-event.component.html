@@ -34,9 +34,11 @@
 
             </div>
 
-            <div class="field" style="width: 20%;" *ngIf="role == 2 && exEvent == true">
-              <p-button (click)="dialogDownloadAtt=true" label="Download attachment" icon="pi pi-file-word"></p-button>
-              <button (click)="showDialogDownload()" class="btn btn-light btn-outline-secondary">Download Ideas</button>
+            <div class="col-md-12">
+              <div class="row" style="float : right" *ngIf="role == 2 && exEvent == true">
+                <p-button (click)="dialogDownloadAtt=true" label="Download attachment" icon="pi pi-file-word"></p-button>
+                <button (click)="showDialogDownload()" class="btn btn-light btn-outline-secondary" style="margin-left: 10px">Download Ideas</button>
+              </div>
             </div>
 
 
@@ -127,13 +129,13 @@
     <form [formGroup]="formGroup">
       <div class="field">
         <label for="name" style="width: 100%;">Name Category</label>
-        <p-dropdown [options]="listCategories" formControlName="category" optionLabel="name" appendTo="body"
+        <p-dropdown [options]="listCategories" formControlName="category" optionLabel="name" appendTo="body" [autoDisplayFirst] = "false"
           [style]="{'width' : '100%'}" [filter]="true"></p-dropdown>
       </div>
 
       <div class="field" style="margin-top: 5%;">
         <label for="name" style="width: 100%;">Name Department</label>
-        <p-dropdown [options]="listDepartments" formControlName="department" optionLabel="name" appendTo="body"
+        <p-dropdown [options]="listDepartments" formControlName="department" optionLabel="name" appendTo="body" [autoDisplayFirst] = "false"
           [style]="{'width' : '100%'}" [filter]="true"></p-dropdown>
       </div>
 
@@ -154,7 +156,7 @@
       <div style="margin-top: 5%; display: flex; margin-left: auto; margin-right: auto; width: fit-content;">
         <button type="button" pButton icon="pi pi-close" (click)="dialogDownloadEvent=false" label="Cancel"
           class="btn btn-light" style="width:100px; height:38px"></button>
-        <button type="submit" class="btn btn-primary ml-5" (click)="downloadEvent()">Download</button>
+        <button type="submit" class="btn btn-primary ml-5" (click)="downloadEvent()" >Download</button>
       </div>
     </form>
 
@@ -199,7 +201,7 @@
                                         <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                                     </th>
                                     <th *ngFor="let col of columns"
-                                        [ngStyle]="{ 'text-align': 'center', 'min-width': col.width }">
+                                        [ngStyle]="{ 'text-align': 'center', 'width': col.width }">
                                         {{ col.header }}
                                     </th>
                                 </tr>
@@ -211,6 +213,8 @@
                                     </td>
                                     <td style="text-align: center">{{file.Stt}}</td>
                                     <td style="text-align: center">{{file.file_name}}</td>
+                                    <td style="text-align: center">{{file.size}} KB</td>
+
                                     <td style="text-align: center"><a href="{{file.file_url}}">{{file.file_url}}</a></td>
 
                                 </tr>

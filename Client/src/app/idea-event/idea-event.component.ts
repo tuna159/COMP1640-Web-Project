@@ -41,7 +41,7 @@ export class IdeaEventComponent implements OnInit {
     startDate: FormControl<Date>;
     endDate: FormControl<Date>;
   }>;
-  apiUrl = 'http://localhost:3009/api/event/';
+  apiUrl = 'http://52.199.43.174:3009/api/event/';
   constructor(
     private dialogService: DialogService,
     private http: HttpClient,
@@ -62,7 +62,7 @@ export class IdeaEventComponent implements OnInit {
 
   getListCategory() {
     this.http
-      .get<any>('http://localhost:3009/api/category', {
+      .get<any>('http://52.199.43.174:3009/api/category', {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },
@@ -125,7 +125,7 @@ export class IdeaEventComponent implements OnInit {
 
   getAllDepartment() {
     this.http
-      .get<any>('http://localhost:3009/api/department', {
+      .get<any>('http://52.199.43.174:3009/api/department', {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },
@@ -143,10 +143,12 @@ export class IdeaEventComponent implements OnInit {
     this.cols = [
       { field: 'Number', header: 'Number', width: '10%', textAlign: 'center' },
       { field: 'name', header: 'Name', width: '20%', textAlign: 'center' },
+      { field: 'size', header: 'Size', width: '10%', textAlign: 'center' },
+
       {
         field: 'name',
         header: 'Download Link',
-        width: '70%',
+        width: '60%',
         textAlign: 'center',
       },
     ];
@@ -164,56 +166,103 @@ export class IdeaEventComponent implements OnInit {
     });
   }
   downloadEvent() {
-    console.log(this.formGroup.controls.category.value)
-    console.log(this.formGroup.controls.department.value)
-    let apiDLFile = 'http://localhost:3009/api/event/' + this.Id + "/download"
-    if (this.formGroup.controls.startDate.value && this.formGroup.controls.endDate.value && 
-      this.formGroup.controls.startDate.value.getTime() > this.formGroup.controls.endDate.value.getTime()) {
+    console.log(this.formGroup.controls.category.value);
+    console.log(this.formGroup.controls.department.value);
+    let apiDLFile =
+      'http://52.199.43.174:3009/api/event/' + this.Id + '/download';
+    if (
+      this.formGroup.controls.startDate.value &&
+      this.formGroup.controls.endDate.value &&
+      this.formGroup.controls.startDate.value.getTime() >
+        this.formGroup.controls.endDate.value.getTime()
+    ) {
       this.showMessage('error', 'Start Date must less than end date');
     }
-    if (this.formGroup.controls.category.value != null || this.formGroup.controls.startDate.value != null ||
-      this.formGroup.controls.endDate.value != null|| this.formGroup.controls.department.value != null) {
-        apiDLFile = apiDLFile + '?'
+    if (
+      this.formGroup.controls.category.value != null ||
+      this.formGroup.controls.startDate.value != null ||
+      this.formGroup.controls.endDate.value != null ||
+      this.formGroup.controls.department.value != null
+    ) {
+      apiDLFile = apiDLFile + '?';
     } else {
-      this.showMessage('error', 'Select options');
+      // this.showMessage('error', 'Select options');
     }
     if (this.formGroup.controls.category.value) {
       if (apiDLFile.slice(-1) == '?') {
-        apiDLFile = apiDLFile + 'category_id=' + this.formGroup.controls.category.value['category_id'];
+        apiDLFile =
+          apiDLFile +
+          'category_id=' +
+          this.formGroup.controls.category.value['category_id'];
       } else {
-        apiDLFile = apiDLFile + '&category_id='+ this.formGroup.controls.category.value['category_id'];
+        apiDLFile =
+          apiDLFile +
+          '&category_id=' +
+          this.formGroup.controls.category.value['category_id'];
       }
     }
     if (this.formGroup.controls.department.value) {
       if (apiDLFile.slice(-1) == '?') {
-        apiDLFile = apiDLFile + 'author_department_id=' + this.formGroup.controls.department.value['department_id'];
+        apiDLFile =
+          apiDLFile +
+          'author_department_id=' +
+          this.formGroup.controls.department.value['department_id'];
       } else {
-        apiDLFile = apiDLFile + '&author_department_id='+ this.formGroup.controls.department.value['department_id'];
+        apiDLFile =
+          apiDLFile +
+          '&author_department_id=' +
+          this.formGroup.controls.department.value['department_id'];
       }
     }
     if (this.formGroup.controls.startDate.value != null) {
       if (apiDLFile.slice(-1) == '?') {
-        apiDLFile = apiDLFile + 'start_date=' + new Date(this.formGroup.controls.startDate.value)
+        apiDLFile =
+          apiDLFile +
+          'start_date=' +
+          new Date(this.formGroup.controls.startDate.value);
       } else {
-        apiDLFile = apiDLFile + '&start_date=' + new Date(this.formGroup.controls.startDate.value)
+        apiDLFile =
+          apiDLFile +
+          '&start_date=' +
+          new Date(this.formGroup.controls.startDate.value);
       }
     }
     if (this.formGroup.controls.endDate.value != null) {
       if (apiDLFile.slice(-1) == '?') {
-        apiDLFile = apiDLFile + 'end_date=' + new Date(this.formGroup.controls.endDate.value)
+        apiDLFile =
+          apiDLFile +
+          'end_date=' +
+          new Date(this.formGroup.controls.endDate.value);
       } else {
-        apiDLFile = apiDLFile + '&end_date=' + new Date(this.formGroup.controls.endDate.value)
+        apiDLFile =
+          apiDLFile +
+          '&end_date=' +
+          new Date(this.formGroup.controls.endDate.value);
       }
     }
-    this.http.get<any>(apiDLFile,{
-          headers: {
-            Authorization: 'Bearer ' + this.authService.getToken(),
-          },
+    console.log(new Date(this.formGroup.controls.endDate.value));
+
+    this.http
+      .get<any>(apiDLFile, {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken(),
+        },
+      })
+      .subscribe(
+        (res: any) => {
+          window.open(apiDLFile, '_blank');
+          this.dialogDownloadEvent = false;
+        },
+        (error) => {
+          if (error.status == 200) {
+            window.open(apiDLFile, '_blank');
+            this.dialogDownloadEvent = false;
+          } else {
+            this.showMessage('error: ', error.error.message);
+            this.dialogDownloadEvent = false;
+          }
         }
-      )
-      .subscribe((res: any) => {
-        console.log(res)
-      });
+      );
   }
 
   showMessage(severity: string, detail: string) {
@@ -229,17 +278,47 @@ export class IdeaEventComponent implements OnInit {
   }
 
   downloadAtt() {
-    let listData = this.listSelectedData.map(x => x.file_id)
-    if(listData.length == 0) {
-      this.showMessage("error: ", "please select the file you want to download");
-    }else{
-    this.http.get<any>("http://localhost:3009/api/event/" + this.Id + "/files/download?file_ids=["+ listData + "]", {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      },
-    },).subscribe((res: any) => {
-      this.showMessage("Add success: ", res);
-    })
+    let listData = this.listSelectedData.map((x) => x.file_id);
+    if (listData.length == 0) {
+      this.showMessage(
+        'error: ',
+        'please select the file you want to download'
+      );
+    } else {
+      this.http
+        .get<any>(
+          'http://52.199.43.174:3009/api/event/' +
+            this.Id +
+            '/files/download?file_ids=[' +
+            listData +
+            ']',
+          {
+            headers: {
+              Authorization: 'Bearer ' + this.authService.getToken(),
+            },
+          }
+        )
+        .subscribe(
+          (res: any) => {
+            this.showMessage('success: ', res);
+          },
+          (error) => {
+            if (error.status == 200) {
+              window.open(
+                'http://52.199.43.174:3009/api/event/' +
+                  this.Id +
+                  '/files/download?file_ids=[' +
+                  listData +
+                  ']',
+                '_blank'
+              );
+              this.dialogDownloadAtt = false;
+            } else {
+              this.showMessage('error: ', error.error.message);
+              this.dialogDownloadAtt = false;
+            }
+          }
+        );
     }
   }
 
@@ -264,7 +343,7 @@ export class IdeaEventComponent implements OnInit {
   getListFile() {
     this.http
       .get<any>(
-        'http://localhost:3009/api/event/' + this.Id + '/attachments',
+        'http://52.199.43.174:3009/api/event/' + this.Id + '/attachments',
         {
           headers: {
             Authorization: 'Bearer ' + this.authService.getToken(),
@@ -273,6 +352,10 @@ export class IdeaEventComponent implements OnInit {
       )
       .subscribe((res: any) => {
         this.listFileData = res.data;
+        let i = 1;
+        this.listFileData.forEach((item) => {
+          item.Stt = i++;
+        });
       });
   }
 }

@@ -22,6 +22,7 @@ import {
 import type { Response } from 'express';
 import { EventService } from './event.service';
 import { VDownloadIdeaDto } from 'global/dto/downloadIdeas.dto';
+import { Public } from '@core/decorator/public.decorator';
 
 @Controller('event')
 export class EventController {
@@ -61,6 +62,7 @@ export class EventController {
     return this.eventService.createIdea(userData, body, event_id);
   }
 
+  @Public()
   @Get(':event_id/download?')
   async downloadIdeasByEvent(
     @UserData() userData: IUserData,
@@ -72,11 +74,12 @@ export class EventController {
     @Res() res: Response,
   ) {
     const options = new VDownloadIdeaDto(
-      Number(categoryId),
-      Number(authorDepartmentId),
-      startDate,
-      endDate,
+      categoryId === undefined ? null : Number(categoryId),
+      authorDepartmentId === undefined ? null : Number(authorDepartmentId),
+      startDate === undefined ? null : startDate,
+      endDate === undefined ? null : endDate,
     );
+
     const errors = await options.isValid();
     if (errors.length != 0) {
       const formattedErrors = [];
@@ -140,9 +143,10 @@ export class EventController {
     );
   }
 
+  @Public()
   @Get(':event_id/files/download?')
   async downloadIdeasAttachments(
-    @UserData() userData: IUserData,
+    // @UserData() userData: IUserData,
     @Param('event_id') event_id: number,
     @Query('file_ids') txtFileIds: string,
     @Res() res: Response,
@@ -172,8 +176,8 @@ export class EventController {
     }
 
     return await this.eventService.downloadIdeasAttachments(
+      // userData,
       event_id,
-      userData,
       res,
       JSON.parse(txtFileIds),
     );

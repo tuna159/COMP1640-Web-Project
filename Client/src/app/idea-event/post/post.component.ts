@@ -16,7 +16,7 @@ import { MessageService } from 'primeng/api';
   styleUrls: ['./post.component.css'],
 })
 export class PostComponent implements OnInit {
-  apiUrl: string = 'http://localhost:3009/api/event/';
+  apiUrl: string = 'http://52.199.43.174:3009/api/event/';
   categories = [];
   uploadedFiles: any[] = [];
   Id;
@@ -32,15 +32,22 @@ export class PostComponent implements OnInit {
     anonymous: FormControl<boolean>;
   }>;
 
-  constructor(private dialogService: DialogService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
-    private http: HttpClient, private authService: AuthenticationService, private messageService: MessageService, private router: Router) {
-      this.Id = this.config.data.Id;
-      this.getListCategory();
+  constructor(
+    private dialogService: DialogService,
+    public ref: DynamicDialogRef,
+    public config: DynamicDialogConfig,
+    private http: HttpClient,
+    private authService: AuthenticationService,
+    private messageService: MessageService,
+    private router: Router
+  ) {
+    this.Id = this.config.data.Id;
+    this.getListCategory();
   }
 
   getListCategory() {
     this.http
-      .get<any>('http://localhost:3009/api/category', {
+      .get<any>('http://52.199.43.174:3009/api/category', {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },
@@ -50,59 +57,68 @@ export class PostComponent implements OnInit {
       });
   }
   async SaveIdea() {
-    if(this.formGroup.controls.checked.value == false) {
+    if (this.formGroup.controls.checked.value == false) {
       this.showMessage('error', 'Please agree to the terms');
-      return
+      return;
     }
-    if(this.listFile.length) {
+    if (this.listFile.length) {
       const formData: FormData = new FormData();
       for (let i = 0; i < this.listFile.length; i++) {
         formData.append('files', this.listFile[i], this.listFile[i].name);
       }
-      await this.http.post<any>("http://localhost:3009/api/upload/files", formData ,
-      {headers: { Authorization: 'Bearer ' + this.authService.getToken()}
-        }).subscribe((result: any) => {
-          
-          this.save(result.data)
-        },
-        err => {
-          this.showMessage('error', err.error.message);
-          return;
-        });
+      await this.http
+        .post<any>('http://52.199.43.174:3009/api/upload/files', formData, {
+          headers: { Authorization: 'Bearer ' + this.authService.getToken() },
+        })
+        .subscribe(
+          (result: any) => {
+            this.save(result.data);
+          },
+          (err) => {
+            this.showMessage('error', err.error.message);
+            return;
+          }
+        );
     } else {
       this.save('');
     }
-    
-    this.closeDialog()
+    this.closeDialog();
   }
 
   save(data: any) {
     let bodyData = {
-      "title": this.formGroup.controls.title.value,
-      "content": this.formGroup.controls.content.value,
-      "category_id": this.formGroup.controls.category.value['category_id'],
-      "files": data,
-      "tag_names": [{"name": this.formGroup.controls.tagName.value}],
-      "is_anonymous": this.formGroup.controls.anonymous.value == true ? 1 : 0
-    }
-    this.http.post(this.apiUrl +  this.Id + '/ideas', bodyData, {
-      headers: {
-        Authorization: 'Bearer ' + this.authService.getToken()
-      }
-    }).subscribe((result: any) => {
-      this.showMessage('error', "Add successful");
-      this.router.navigateByUrl('/event/ideas', { state: { Id: this.Id } });
-    },
-    err => {
-      this.showMessage('error', err.error.message);
-      return;
-    });
+      title: this.formGroup.controls.title.value,
+      content: this.formGroup.controls.content.value,
+      category_id: this.formGroup.controls.category.value['category_id'],
+      files: data,
+      tag_names: [{ name: this.formGroup.controls.tagName.value }],
+      is_anonymous: this.formGroup.controls.anonymous.value == true ? 1 : 0,
+    };
+    this.http
+      .post(this.apiUrl + this.Id + '/ideas', bodyData, {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken(),
+        },
+      })
+      .subscribe(
+        (result: any) => {
+          this.showMessage('Add success: ', result);
+          this.router.navigateByUrl('/event/ideas', { state: { Id: this.Id } });
+        },
+        (err) => {
+          this.showMessage('error', err.error.message);
+          return;
+        }
+      );
   }
 
   ngOnInit(): void {
     this.getListCategory();
     this.formGroup = new FormGroup({
-      category: new FormControl(this.categories != null ? this.categories[0] : null, [Validators.required]),
+      category: new FormControl(
+        this.categories != null ? this.categories[0] : null,
+        [Validators.required]
+      ),
       title: new FormControl(null, [Validators.required]),
       tagName: new FormControl(null, [Validators.required]),
       content: new FormControl(null, [Validators.required]),
@@ -115,19 +131,18 @@ export class PostComponent implements OnInit {
     this.ref.close();
   }
 
-  
-  onselectFile(e){
-    if(e.target.files){
-      console.log()
+  onselectFile(e) {
+    if (e.target.files) {
+      console.log();
       // duyệt qua các phần tử trong files, sử dụng FileReader để đọc file và thêm vào listFile
-      for(let i = 0; i < e.target.files.length; i++) {
+      for (let i = 0; i < e.target.files.length; i++) {
         var reader = new FileReader();
         reader.readAsDataURL(e.target.files[i]);
-        reader.onload=(event:any)=>{
-          event.target.name = e.target.files[i].name
+        reader.onload = (event: any) => {
+          event.target.name = e.target.files[i].name;
           this.url = event.target.name;
-        }
-        this.listFile.push(e.target.files[i]) 
+        };
+        this.listFile.push(e.target.files[i]);
       }
     }
   }

@@ -265,11 +265,19 @@ export class DepartmentService {
       );
     }
 
-    //? Already contains check if department exists
-    const department = await this.getDepartmentDetails(department_id);
-    if (department.members.length != 0) {
+    const event = await this.eventService.getEventsByDepartment(department_id);
+
+    if (event.length != 0) {
       throw new HttpException(
         ErrorMessage.DEPARTMENT_NOT_EMPTY,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const departmentCheck = await this.departmentExists(department_id);
+    if (!departmentCheck) {
+      throw new HttpException(
+        ErrorMessage.DEPARTMENT_NOT_EXISTS,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -328,7 +336,7 @@ export class DepartmentService {
     userData: IUserData,
     entityManager?: EntityManager,
   ) {
-    if (userData.role_id != EUserRole.ADMIN) {
+    if (userData.role_id != EUserRole.QA_MANAGER) {
       throw new HttpException(
         ErrorMessage.GENERAL_PERMISSION,
         HttpStatus.BAD_REQUEST,

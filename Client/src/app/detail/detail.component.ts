@@ -37,7 +37,7 @@ export class DetailComponent {
   commentChildren_value1: any = [];
   public userArray: any = [];
   listSelectedData: Array<any> = [];
-  apiUrl: string = 'http://localhost:3009/api/idea/';
+  apiUrl: string = 'http://52.199.43.174:3009/api/idea/';
 
   constructor(
     private http: HttpClient,
@@ -58,7 +58,7 @@ export class DetailComponent {
     if (this.Id) {
       this.http
         .get<any>(
-          'http://localhost:3009/api/idea/' + this.Id + '/list-reaction',
+          'http://52.199.43.174:3009/api/idea/' + this.Id + '/list-reaction',
           {
             headers: {
               Authorization: 'Bearer ' + this.authService.getToken(),
@@ -91,7 +91,7 @@ export class DetailComponent {
   getLikeIdea() {
     if (this.Id) {
       this.http
-        .get<any>('http://localhost:3009/api/idea/' + this.Id + '/likes', {
+        .get<any>('http://52.199.43.174:3009/api/idea/' + this.Id + '/likes', {
           headers: {
             Authorization: 'Bearer ' + this.authService.getToken(),
           },
@@ -105,7 +105,7 @@ export class DetailComponent {
     if (this.Id) {
       this.http
         .get<any>(
-          'http://localhost:3009/api/idea/' + this.Id + '/dislikes',
+          'http://52.199.43.174:3009/api/idea/' + this.Id + '/dislikes',
           {
             headers: {
               Authorization: 'Bearer ' + this.authService.getToken(),
@@ -122,7 +122,7 @@ export class DetailComponent {
     if (this.Id) {
       this.http
         .get<any>(
-          'http://localhost:3009/api/idea/' + this.Id + '/comments/total',
+          'http://52.199.43.174:3009/api/idea/' + this.Id + '/comments/total',
           {
             headers: {
               Authorization: 'Bearer ' + this.authService.getToken(),
@@ -246,7 +246,7 @@ export class DetailComponent {
     if (this.Id && this.dislike == true) {
       this.http
         .post<any>(
-          'http://localhost:3009/api/idea/' + this.Id + '/reaction',
+          'http://52.199.43.174:3009/api/idea/' + this.Id + '/reaction',
           {
             reaction: -1,
           },
@@ -266,7 +266,7 @@ export class DetailComponent {
       console.log('dislike');
       this.http
         .delete<any>(
-          'http://localhost:3009/api/idea/' + this.Id + '/reaction',
+          'http://52.199.43.174:3009/api/idea/' + this.Id + '/reaction',
           {
             headers: {
               Authorization: 'Bearer ' + this.authService.getToken(),
@@ -285,7 +285,7 @@ export class DetailComponent {
     if (this.Id && this.like == true) {
       this.http
         .post<any>(
-          'http://localhost:3009/api/idea/' + this.Id + '/reaction',
+          'http://52.199.43.174:3009/api/idea/' + this.Id + '/reaction',
           {
             reaction: 1,
           },
@@ -304,7 +304,7 @@ export class DetailComponent {
     } else {
       this.http
         .delete<any>(
-          'http://localhost:3009/api/idea/' + this.Id + '/reaction',
+          'http://52.199.43.174:3009/api/idea/' + this.Id + '/reaction',
           {
             headers: {
               Authorization: 'Bearer ' + this.authService.getToken(),
@@ -323,7 +323,7 @@ export class DetailComponent {
     let thefile: any;
     if (this.Id) {
       this.http
-        .get<any>('http://localhost:3009/api/event/4/download', {
+        .get<any>('http://52.199.43.174:3009/api/event/4/download', {
           headers: {
             Authorization: 'Bearer ' + this.authService.getToken(),
           },
