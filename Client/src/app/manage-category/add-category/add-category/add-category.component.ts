@@ -15,7 +15,7 @@ import { AuthenticationService } from 'src/app/auth/services/authentication.serv
   styleUrls: ['./add-category.component.css'],
 })
 export class AddCategoryComponent implements OnInit {
-  apiUrl: string = 'http://52.199.43.174:3009/api/category';
+  apiUrl: string = 'http://localhost:3009/api/category';
   data: any;
   formGroup: FormGroup<{
     name: FormControl<string>;

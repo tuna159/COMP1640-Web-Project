@@ -24,7 +24,7 @@ export class HeaderHomeComponent {
 
   getAllDepartment() {
     this.http
-      .get<any>('http://52.199.43.174:3009/api/department', {
+      .get<any>('http://localhost:3009/api/department', {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },

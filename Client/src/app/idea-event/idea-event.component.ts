@@ -41,7 +41,7 @@ export class IdeaEventComponent implements OnInit {
     startDate: FormControl<Date>;
     endDate: FormControl<Date>;
   }>;
-  apiUrl = 'http://52.199.43.174:3009/api/event/';
+  apiUrl = 'http://localhost:3009/api/event/';
   constructor(
     private dialogService: DialogService,
     private http: HttpClient,
@@ -62,7 +62,7 @@ export class IdeaEventComponent implements OnInit {
 
   getListCategory() {
     this.http
-      .get<any>('http://52.199.43.174:3009/api/category', {
+      .get<any>('http://localhost:3009/api/category', {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },
@@ -125,7 +125,7 @@ export class IdeaEventComponent implements OnInit {
 
   getAllDepartment() {
     this.http
-      .get<any>('http://52.199.43.174:3009/api/department', {
+      .get<any>('http://localhost:3009/api/department', {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },
@@ -168,8 +168,7 @@ export class IdeaEventComponent implements OnInit {
   downloadEvent() {
     console.log(this.formGroup.controls.category.value);
     console.log(this.formGroup.controls.department.value);
-    let apiDLFile =
-      'http://52.199.43.174:3009/api/event/' + this.Id + '/download';
+    let apiDLFile = 'http://localhost:3009/api/event/' + this.Id + '/download';
     if (
       this.formGroup.controls.startDate.value &&
       this.formGroup.controls.endDate.value &&
@@ -287,7 +286,7 @@ export class IdeaEventComponent implements OnInit {
     } else {
       this.http
         .get<any>(
-          'http://52.199.43.174:3009/api/event/' +
+          'http://localhost:3009/api/event/' +
             this.Id +
             '/files/download?file_ids=[' +
             listData +
@@ -305,7 +304,7 @@ export class IdeaEventComponent implements OnInit {
           (error) => {
             if (error.status == 200) {
               window.open(
-                'http://52.199.43.174:3009/api/event/' +
+                'http://localhost:3009/api/event/' +
                   this.Id +
                   '/files/download?file_ids=[' +
                   listData +
@@ -342,14 +341,11 @@ export class IdeaEventComponent implements OnInit {
 
   getListFile() {
     this.http
-      .get<any>(
-        'http://52.199.43.174:3009/api/event/' + this.Id + '/attachments',
-        {
-          headers: {
-            Authorization: 'Bearer ' + this.authService.getToken(),
-          },
-        }
-      )
+      .get<any>('http://localhost:3009/api/event/' + this.Id + '/attachments', {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken(),
+        },
+      })
       .subscribe((res: any) => {
         this.listFileData = res.data;
         let i = 1;

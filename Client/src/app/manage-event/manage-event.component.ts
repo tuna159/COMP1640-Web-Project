@@ -21,7 +21,7 @@ export class ManageEventComponent {
   listDepartments = [];
   ref: DynamicDialogRef;
   name: string;
-  apiUrl: string = 'http://52.199.43.174:3009/api/event';
+  apiUrl: string = 'http://localhost:3009/api/event';
   listSelectedData: Array<any> = [];
   constructor(
     private messageService: MessageService,
@@ -90,7 +90,7 @@ export class ManageEventComponent {
           return;
         }
         this.http
-          .get<any>('http://52.199.43.174:3009/api/department', {
+          .get<any>('http://localhost:3009/api/department', {
             headers: {
               Authorization: 'Bearer ' + this.authService.getToken(),
             },
@@ -113,7 +113,7 @@ export class ManageEventComponent {
   }
   getAllDepartment() {
     this.http
-      .get<any>('http://52.199.43.174:3009/api/department', {
+      .get<any>('http://localhost:3009/api/department', {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },
