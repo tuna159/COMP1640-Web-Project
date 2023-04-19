@@ -35,8 +35,8 @@
                     style="border-bottom-width: 1px; border-color: #F2F2F2; border-bottom-style: solid; width: 100%; margin-top: 15px; margin-left: auto; margin-right: auto; padding-left: 10px;">
                     <h6 style="width: 50%;">{{views}} Views</h6>
                     <h6 style="width: 15%;">{{totalLike}} Like</h6>
-                    <h6 style="width: 15%;">{{totalDislike}} Dislikes</h6>
-                    <h6>{{totalComment}} Comments</h6>
+                    <h6 style="width: 15%;">{{totalDislike}} Dislike</h6>
+                    <h6>{{totalComment}} Comment</h6>
                 </div>
                 <div class="row"
                     style="border-bottom-width: 1px; border-color: #F2F2F2; border-bottom-style: solid; width: 100%; margin-top: 15px; margin-left: auto; margin-right: auto;">
@@ -53,21 +53,25 @@
                 </div>
 
                 <br>
-                <div *ngIf="role == 4" style="width: 100%; display: flex;">
-                    <span class="p-float-label" style="width: 90%;">
-                        <textarea [(ngModel)]="comment_value" [rows]="1" pInputTextarea [autoResize]="true"></textarea>
-                        <label for="float-input">Comment something here.............</label>
-                    </span>
-                    <button style="margin-top: 0; margin-left: 10px;" pButton pRipple type="button" icon="pi pi-reply"
-                        class="p-button-rounded p-button-outlined" (click)="postCommentByIdea(null)"></button>
-                </div>
+                <form [formGroup]="formGroup">
+                    <div *ngIf="role == 4" style="width: 100%; display: flex;">
+                        <span class="p-float-label" style="width: 90%;">
+                            <textarea formControlName="comment_value" [rows]="1" pInputTextarea [autoResize]="true"></textarea>
+                            <label for="float-input">Comment something here.............</label>
+                        </span>
+                        <button style="margin-top: 0; margin-left: 10px;" pButton pRipple type="button" icon="pi pi-reply"
+                            class="p-button-rounded p-button-outlined" (click)="postCommentByIdea(null)"></button>
+                    </div>
+                </form>
+                
                 <br>
                 <div *ngFor="let l of listCommentData; index as i;" style="padding-left: 10px; padding-right: 10px;">
-                    <div class="row"
+                    <div
                         style="width: 100%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px; margin-bottom: 10px;">
                         
                         <p-chip *ngIf="l.author.avatar_url != null" label="{{l.author.full_name}}" image="{{l.author.avatar_url}}" styleClass="mr-2"></p-chip>
                         <p-chip *ngIf="l.author.avatar_url == null" label="{{l.author.full_name}}" image="https://vnn-imgs-f.vgcloud.vn/2020/03/23/11/trend-avatar-1.jpg" styleClass="mr-2"></p-chip>
+                        <br>
                         <span style="color: black;">{{l.content}}</span>
                         <br>
                         <span style="color: black;">{{l.created_date | date:'mediumDate'}}</span>
@@ -80,7 +84,7 @@
                     </div>
                 
                     
-                    <div class="collapse"  id="{{l.comment_id}}" style="width: 90%; ">
+                    <div class="collapse"  id="{{l.comment_id}}" style="width: 90%; padding-left:20px">
                         <div *ngFor="let cmtChildren of l.listCommentChildren"
                             style="width: 100%; margin-left: auto; margin-right: auto; border-radius: 10px; border-color: #d8d8d8; border-width: 1px; border-style: solid; padding: 10px; margin-bottom: 10px;">
                             
@@ -92,16 +96,17 @@
                             <span>{{cmtChildren.created_date | date:'mediumDate'}}</span>
                         </div>
 
-
-                        <div *ngIf="role == 4" style="display: flex;  width: 90%; margin-bottom: 10px;">
-                            <span class="p-float-label" style="width: 90%; height: 100%;">
-                                <textarea [(ngModel)]="commentChildren_value" [rows]="1" pInputTextarea [autoResize]="true"></textarea>
-                                <label for="float-input">Comment something here.............</label>
-                            </span>
-                            <button style="margin-top: 0; margin-left: 10px;" pButton pRipple type="button"
-                                icon="pi pi-reply" class="p-button-rounded p-button-outlined"
-                                (click)="postCommentByIdea(l.comment_id)"></button>
-                        </div>
+                        <form [formGroup]="formGroupChildren">
+                            <div *ngIf="role == 4" style="display: flex;  width: 90%; margin-bottom: 10px;">
+                                <span class="p-float-label" style="width: 90%; height: 100%;">
+                                    <textarea formControlName = "commentChildren_value" [rows]="1" pInputTextarea [autoResize]="true"></textarea>
+                                    <label for="float-input">Comment something here.............</label>
+                                </span>
+                                <button style="margin-top: 0; margin-left: 10px;" pButton pRipple type="button"
+                                    icon="pi pi-reply" class="p-button-rounded p-button-outlined"
+                                    (click)="postCommentByIdea(l.comment_id)"></button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </p-card>
@@ -119,17 +124,6 @@
                         <div class="row text-right">
                             <div class="col-md-12 mt-10">
                                 <div class="group_btn" [style]="{'float': 'right'}">
-                                    <!-- <span class="p-input-icon-right">
-                                        <i class="pi pi-search"></i>
-                                        <input pInputText type="text" class="input-search"
-                                            (input)="myTab.filterGlobal($any($event.target).value, 'contains')"
-                                            placeholder="Search..." style="margin-left: 7.5px; height: 30px !important; " />
-                                    </span>
-                                    <button pButton type="button" (click)="openNewCategory(null)" label="Add" icon="pi pi-plus"
-                                        style="background-color:#f97c39; width: 120px !important; height: 30px !important; margin-left: 5px; border: 0px;"></button>
-                                    <button pButton type="button" label="Delete" icon="pi pi-trash"
-                                        style="background-color:red; width: 120px !important; height: 30px !important; margin-left: 5px; border: 0px"
-                                        (click)="showDialogXoaN()"></button> -->
                                 </div>
                             </div>
                         </div>

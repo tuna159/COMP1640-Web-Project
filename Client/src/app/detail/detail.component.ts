@@ -1,16 +1,17 @@
 import { NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from '../auth/services/authentication.service';
 import { Observable } from 'rxjs';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-detail',
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.css'],
 })
-export class DetailComponent {
+export class DetailComponent implements OnInit{
   Id: any;
   views: any;
   role: number;
@@ -31,9 +32,16 @@ export class DetailComponent {
   date: any;
   user: any;
   listReact: any = [];
-  comment_value: any;
+  formGroup: FormGroup<({
+    comment_value: FormControl<string>;
+  })>;
+  formGroupChildren: FormGroup<({
+    commentChildren_value: FormControl<string>;
+  })>;
+  // commentChildren_value: any;
+  // comment_value: any;
   totalComment: any;
-  commentChildren_value: any;
+  
   commentChildren_value1: any = [];
   public userArray: any = [];
   listSelectedData: Array<any> = [];
@@ -52,6 +60,22 @@ export class DetailComponent {
     this.getDislikeIdea();
     this.getCommentbyIdea();
     this.getListReaction();
+  }
+
+  ngOnInit(): void {
+    this.role = this.authService.getRole();
+
+    this.cols = [
+      { field: 'Number', header: 'Number', width: '5%', textAlign: 'center' },
+      { field: 'name', header: 'Name', width: '25%', textAlign: 'center' },
+      { field: 'size', header: 'Size', width: '25%', textAlign: 'center' },
+    ];
+    this.formGroup = new FormGroup({
+      comment_value: new FormControl(null),
+    });
+    this.formGroupChildren = new FormGroup({
+      commentChildren_value: new FormControl(null),
+    });
   }
 
   getListReaction() {
@@ -180,7 +204,6 @@ export class DetailComponent {
               this.commentChildren_value1.push(bodyData);
             });
 
-          console.log('commentChildren_value1', this.commentChildren_value1);
 
           //list comment con
           listAllCmtChildren = resultComment.data.filter((x) => x.level == 2);
@@ -197,11 +220,11 @@ export class DetailComponent {
 
   postCommentByIdea(idParent: number) {
     if (idParent == null) {
-      if (/[a-z0-9]/i.test(this.comment_value) == false) {
+      if (/[a-z0-9]/i.test( this.formGroup.controls.comment_value.value) == false) {
         alert('Please enter a comment');
       }
     } else {
-      if (/[a-z0-9]/i.test(this.commentChildren_value) == false) {
+      if (/[a-z0-9]/i.test(this.formGroupChildren.controls.commentChildren_value.value) == false) {
         alert('Please enter a comment');
       }
     }
@@ -211,9 +234,9 @@ export class DetailComponent {
           this.apiUrl + this.Id + '/comments',
           {
             content:
-              this.comment_value == null
-                ? this.commentChildren_value
-                : this.comment_value,
+              this.formGroup.controls.comment_value.value == null
+                ? this.formGroupChildren.controls.commentChildren_value.value
+                :  this.formGroup.controls.comment_value.value,
             parent_id: idParent,
           },
           {
@@ -221,23 +244,15 @@ export class DetailComponent {
           }
         )
         .subscribe((resultComment: any) => {
-          this.comment_value = '';
-          this.commentChildren_value = '';
+          this.formGroup.controls.comment_value.setValue('');
+          this.formGroupChildren.controls.commentChildren_value.setValue('');
           this.getCountIdeaComment();
           this.getCommentbyIdea();
         });
     }
   }
 
-  ngOnInit(): void {
-    this.role = this.authService.getRole();
-
-    this.cols = [
-      { field: 'Number', header: 'Number', width: '5%', textAlign: 'center' },
-      { field: 'name', header: 'Name', width: '25%', textAlign: 'center' },
-      { field: 'size', header: 'Size', width: '25%', textAlign: 'center' },
-    ];
-  }
+  
 
   dislikeIdeal() {
     if (this.Id && this.dislike == true) {
