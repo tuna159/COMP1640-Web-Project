@@ -14,7 +14,7 @@ export class ChartServeice {
         let chartStaffEvent: Options = {
             chart: {
                 type: 'column',
-                width: 900
+                width: 1100
             },
             credits: {
                 enabled: false,
@@ -75,7 +75,7 @@ export class ChartServeice {
     createPieChartStaffContributeDepartment(dataContribute: any, dataNotContribute: any) {
         let PieChartStaffContribute: Options = {
             chart: {
-                width: 1500,
+                width: 1100,
                 type: 'pie'
             },
             title: {
@@ -123,7 +123,7 @@ export class ChartServeice {
     createPieChartReactDepartment(dataLike: any, dataDislike: any) {
         let PieChartReactDepartment: Options = {
             chart: {
-                width: 1500,
+                width: 1100,
                 type: 'pie'
             },
             title: {
@@ -173,7 +173,7 @@ export class ChartServeice {
         let chartIdeaDepartment: Options = {
             chart: {
                 type: 'line',
-                width: 1500
+                width: 1100
             },
             credits: {
                 enabled: false,
@@ -230,7 +230,7 @@ export class ChartServeice {
         let chartCommentDepartment: Options = {
             chart: {
                 type: 'column',
-                width: 1500
+                width: 1100
             },
             credits: {
                 enabled: false,

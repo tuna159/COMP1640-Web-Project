@@ -178,16 +178,16 @@ export class ChartsComponent implements OnInit {
 
   getListEvent() {
     this.http
-      .get<any>('http://localhost:3009/api/event', {
+      .get<any>('http://localhost:3009/api/event/university', {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },
       })
       .subscribe((result: any) => {
         this.events = result.data;
-        this.events = this.events.filter(
-          (event) => event.department_id == null
-        );
+        // this.events = this.events.filter(
+        //   (event) => event.department_id == null
+        // );
         this.getEvent(this.events[0].event_id);
       });
   }
