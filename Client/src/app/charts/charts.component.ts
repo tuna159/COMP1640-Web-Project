@@ -30,6 +30,7 @@ export class ChartsComponent implements OnInit {
 
   departments = [];
   departmentValue: any;
+  role: number;
 
     // chart Thống kê staff of department by event
     barChartStaffEvent = null;
@@ -46,6 +47,7 @@ export class ChartsComponent implements OnInit {
   // line chart Thống kê react department
   lineCharIdeaDepartment = null;
   optionsLineCharIdeaDepartment: Options = null;
+  dataUser: any;
 
     // chart Thống kê comment of department by event
     // barChartCommentDepartment = null;
@@ -59,13 +61,29 @@ export class ChartsComponent implements OnInit {
     private router: Router
   ) {
     this.getListEvent();
+    this.getDataUser();
     this.getListDepartment();
     this.getListYear();
-    
+    this.role = this.authService.getRole();
     
   }
   
-
+  getDataUser() {
+    if (this.authService.getRole() != 1) {
+      this.http
+        .get<any>(
+          'http://localhost:3009/api/user/' + this.authService.getUserID(),
+          {
+            headers: {
+              Authorization: 'Bearer ' + this.authService.getToken(),
+            },
+          }
+        )
+        .subscribe((result: any) => {
+          this.dataUser = result.data;
+        });
+    }
+  }
 
   ngOnInit(): void {}
 
