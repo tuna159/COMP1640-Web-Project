@@ -73,7 +73,7 @@ export class AuthenticationService {
 
   public login(username: string, password: string) {
     return this.http
-      .post<any>('http://52.199.43.174:3009/api/user/login', {
+      .post<any>('http://localhost:3009/api/user/login', {
         email: username,
         password: password,
       })

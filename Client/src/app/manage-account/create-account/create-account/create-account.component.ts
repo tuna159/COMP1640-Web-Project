@@ -15,7 +15,7 @@ import { AuthenticationService } from 'src/app/auth/services/authentication.serv
   styleUrls: ['./create-account.component.css'],
 })
 export class CreateAccountComponent {
-  apiUrl: string = 'http://52.199.43.174:3009/api/user/create-account';
+  apiUrl: string = 'http://localhost:3009/api/user/create-account';
 
   listStatus = [{ name: 'Using' }, { name: 'Not Using' }];
 
@@ -89,7 +89,7 @@ export class CreateAccountComponent {
 
   getAllDepartment() {
     this.http
-      .get<any>('http://52.199.43.174:3009/api/department', {
+      .get<any>('http://localhost:3009/api/department', {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },
@@ -102,7 +102,7 @@ export class CreateAccountComponent {
   changeRole() {
     if (this.formGroup.controls.role.value['Id'] == 4) {
       this.http
-        .get<any>('http://52.199.43.174:3009/api/department', {
+        .get<any>('http://localhost:3009/api/department', {
           headers: {
             Authorization: 'Bearer ' + this.authService.getToken(),
           },
@@ -112,7 +112,7 @@ export class CreateAccountComponent {
         });
     } else if (this.formGroup.controls.role.value['Id'] == 3) {
       this.http
-        .get<any>('http://52.199.43.174:3009/api/department/available', {
+        .get<any>('http://localhost:3009/api/department/available', {
           headers: {
             Authorization: 'Bearer ' + this.authService.getToken(),
           },
@@ -189,7 +189,7 @@ export class CreateAccountComponent {
     } else {
       this.http
         .put(
-          'http://52.199.43.174:3009/api/user/' + this.data.user_id,
+          'http://localhost:3009/api/user/' + this.data.user_id,
           {
             role_id: Number(this.formGroup.controls.role.value['Id']),
             department_id:

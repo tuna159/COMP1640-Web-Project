@@ -27,7 +27,7 @@ export class ManageCategoryComponent implements OnInit {
   displayXoaN: boolean;
   id: number;
   name: string;
-  apiUrl: string = 'http://52.199.43.174:3009/api/category';
+  apiUrl: string = 'http://localhost:3009/api/category';
   listSelectedData: Array<any> = [];
   categoryDialog: boolean;
   constructor(
