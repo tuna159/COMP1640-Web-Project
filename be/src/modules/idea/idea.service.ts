@@ -904,10 +904,19 @@ export class IdeaService {
       };
 
       const newComment = await this.commentService.createComment(params);
-      if (userData.user_id != idea.user_id) {
+      if (userData.user_id === idea.user_id) {
         return newComment;
       }
-      const email = idea.user['email'];
+
+      const aIdea = await this.ideaRepository
+        .createQueryBuilder('idea')
+        .innerJoinAndSelect('idea.user', 'user')
+        .where('idea.idea_id = :idea_id', { idea_id })
+        .getOne();
+      
+      const email = aIdea.user.email;
+      // const email = idea.user['email'];
+
       // temporary solution
       const result = await this.ideaRepository
         .createQueryBuilder('idea')
