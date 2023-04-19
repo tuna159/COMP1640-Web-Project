@@ -88,8 +88,8 @@ export class DepartmentService {
 
     const department = await departmentRepository
       .createQueryBuilder('department')
-      .innerJoinAndSelect('department.manager', 'manager')
-      .innerJoinAndSelect('manager.userDetail', 'managerDetail')
+      .leftJoinAndSelect('department.manager', 'manager')
+      .leftJoinAndSelect('manager.userDetail', 'managerDetail')
       .leftJoinAndSelect('department.users', 'users')
       .leftJoinAndSelect('users.userDetail', 'memberDetail')
       .where('department.department_id = :department_id', { department_id })
@@ -114,11 +114,11 @@ export class DepartmentService {
       };
     });
 
-    const manager = department.manager.userDetail;
+    const manager = department.manager?.userDetail;
     return {
       department_id: department.department_id,
       name: department.name,
-      manager: {
+      manager: manager == null ? null : {
         manager_id: manager.user_id,
         nick_name: manager.nick_name,
         full_name: manager.full_name,
@@ -269,7 +269,22 @@ export class DepartmentService {
     const department = await this.getDepartmentDetails(department_id);
     if (department.members.length != 0) {
       throw new HttpException(
-        ErrorMessage.DEPARTMENT_NOT_EMPTY,
+        ErrorMessage.DEPARTMENT_STILL_CONTAINS_MEMBERS,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (department.manager !== null) {
+      throw new HttpException(
+        ErrorMessage.DEPARTMENT_HAS_MANAGER,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const events = await this.eventService.getEventsByDepartment(department_id);
+    if (events.length != 0) {
+      throw new HttpException(
+        ErrorMessage.DEPARTMENT_STILL_CONTAINS_EVENTS,
         HttpStatus.BAD_REQUEST,
       );
     }
