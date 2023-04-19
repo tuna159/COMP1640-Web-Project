@@ -331,13 +331,15 @@ export class IdeaEventComponent implements OnInit {
         Id: this.Id,
       },
     });
-    this.ref.onClose.subscribe((result) => {
+    this.ref.onClose.subscribe(
+      (result) => {
       if (result) {
         this.showMessage('Add success: ', result);
         this.getAllIdeaByEvent();
       }
       this.getAllIdeaByEvent();
-    });
+    }
+    );
   }
 
   getListFile() {

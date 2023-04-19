@@ -102,8 +102,9 @@ export class PostComponent implements OnInit {
       })
       .subscribe(
         (result: any) => {
-          this.showMessage('Add success: ', result);
-          this.router.navigateByUrl('/event/ideas', { state: { Id: this.Id } });
+          this.showMessage('Add success: ', 'Add idea success');
+          this.ref.close();
+          // this.router.navigateByUrl('/event/ideas', { state: { Id: this.Id } });
         },
         (err) => {
           this.showMessage('error', err.error.message);
