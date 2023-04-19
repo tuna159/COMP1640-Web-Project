@@ -118,14 +118,17 @@ export class DepartmentService {
     return {
       department_id: department.department_id,
       name: department.name,
-      manager: manager == null ? null : {
-        manager_id: manager.user_id,
-        nick_name: manager.nick_name,
-        full_name: manager.full_name,
-        gender: manager.gender,
-        birthday: manager.birthday,
-        avatar_url: manager.avatar_url,
-      },
+      manager:
+        manager == null
+          ? null
+          : {
+              manager_id: manager.user_id,
+              nick_name: manager.nick_name,
+              full_name: manager.full_name,
+              gender: manager.gender,
+              birthday: manager.birthday,
+              avatar_url: manager.avatar_url,
+            },
       members,
     };
   }
@@ -371,7 +374,7 @@ export class DepartmentService {
   }
 
   async getDepartmentStaffReaction(department_id: number, userData: IUserData) {
-    if (userData.role_id != EUserRole.ADMIN) {
+    if (userData.role_id != EUserRole.QA_MANAGER) {
       throw new HttpException(
         ErrorMessage.GENERAL_PERMISSION,
         HttpStatus.BAD_REQUEST,
