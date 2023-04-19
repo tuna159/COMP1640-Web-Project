@@ -90,8 +90,8 @@ export class AddEventComponent implements OnInit {
               new Date(this.formGroup.controls.closureDate.value),
               'yyyy-MM-ddThh:mm:ssZ'
             ),
-            department_id:
-              this.formGroup.controls.department.value['department_id'],
+            department_id: this.formGroup.controls.department.value != null ? this.formGroup.controls.department.value['department_id'] : null
+              ,
             final_closure_date: this.datepipe.transform(
               new Date(this.formGroup.controls.finalDate.value),
               'yyyy-MM-ddThh:mm:ssZ'
