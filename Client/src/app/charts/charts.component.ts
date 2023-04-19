@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./charts.component.css'],
 })
 export class ChartsComponent implements OnInit {
-  apiUrlStaffDepartment: string = 'http://52.199.43.174:3009/api/event/';
+  apiUrlStaffDepartment: string = 'http://localhost:3009/api/event/';
   xStaffDepartment: any;
   dataStaffDepartment: any;
 
@@ -66,9 +66,8 @@ export class ChartsComponent implements OnInit {
     this.getListYear();
 
     this.role = this.authService.getRole();
-    
   }
-  
+
   getDataUser() {
     if (this.authService.getRole() != 1) {
       this.http
@@ -85,7 +84,6 @@ export class ChartsComponent implements OnInit {
         });
     }
   }
-
 
   ngOnInit(): void {}
 
@@ -106,7 +104,7 @@ export class ChartsComponent implements OnInit {
 
   getListDepartment() {
     this.http
-      .get<any>('http://52.199.43.174:3009/api/department', {
+      .get<any>('http://localhost:3009/api/department', {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },
@@ -123,7 +121,7 @@ export class ChartsComponent implements OnInit {
   getStaffEvent(id: any) {
     this.http
       .get<any>(
-        'http://52.199.43.174:3009/api/department/' +
+        'http://localhost:3009/api/department/' +
           id +
           '/dashboard/staff-contribution',
         {
@@ -150,7 +148,7 @@ export class ChartsComponent implements OnInit {
   getIdeaDepartment(id: any) {
     this.http
       .get<any>(
-        'http://52.199.43.174:3009/api/event/dashboard/staff-contribution?year=' +
+        'http://localhost:3009/api/event/dashboard/staff-contribution?year=' +
           id,
         {
           headers: {
@@ -180,7 +178,7 @@ export class ChartsComponent implements OnInit {
 
   getListEvent() {
     this.http
-      .get<any>('http://52.199.43.174:3009/api/event', {
+      .get<any>('http://localhost:3009/api/event', {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },
@@ -197,7 +195,7 @@ export class ChartsComponent implements OnInit {
   getEvent(id: number) {
     this.http
       .get<any>(
-        'http://52.199.43.174:3009/api/event/' +
+        'http://localhost:3009/api/event/' +
           id +
           '/dashboard/staff-contribution',
         {
@@ -226,9 +224,7 @@ export class ChartsComponent implements OnInit {
   getReactDepartment(id: any) {
     this.http
       .get<any>(
-        'http://52.199.43.174:3009/api/department/' +
-          id +
-          '/dashboard/reaction',
+        'http://localhost:3009/api/department/' + id + '/dashboard/reaction',
         {
           headers: {
             Authorization: 'Bearer ' + this.authService.getToken(),

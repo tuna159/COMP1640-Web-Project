@@ -16,7 +16,7 @@ import { MessageService } from 'primeng/api';
   styleUrls: ['./post.component.css'],
 })
 export class PostComponent implements OnInit {
-  apiUrl: string = 'http://52.199.43.174:3009/api/event/';
+  apiUrl: string = 'http://localhost:3009/api/event/';
   categories = [];
   uploadedFiles: any[] = [];
   Id;
@@ -47,7 +47,7 @@ export class PostComponent implements OnInit {
 
   getListCategory() {
     this.http
-      .get<any>('http://52.199.43.174:3009/api/category', {
+      .get<any>('http://localhost:3009/api/category', {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },
@@ -67,7 +67,7 @@ export class PostComponent implements OnInit {
         formData.append('files', this.listFile[i], this.listFile[i].name);
       }
       await this.http
-        .post<any>('http://52.199.43.174:3009/api/upload/files', formData, {
+        .post<any>('http://localhost:3009/api/upload/files', formData, {
           headers: { Authorization: 'Bearer ' + this.authService.getToken() },
         })
         .subscribe(

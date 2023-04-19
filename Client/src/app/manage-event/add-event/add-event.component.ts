@@ -17,7 +17,7 @@ import { MessageService } from 'primeng/api';
   providers: [DatePipe, MessageService],
 })
 export class AddEventComponent implements OnInit {
-  apiUrl: string = 'http://52.199.43.174:3009/api/event';
+  apiUrl: string = 'http://localhost:3009/api/event';
   data: any;
   listDepartments = [];
   formGroup: FormGroup<{
@@ -148,7 +148,7 @@ export class AddEventComponent implements OnInit {
 
   getAllDepartment() {
     this.http
-      .get<any>('http://52.199.43.174:3009/api/department', {
+      .get<any>('http://localhost:3009/api/department', {
         headers: {
           Authorization: 'Bearer ' + this.authService.getToken(),
         },

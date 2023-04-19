@@ -16,7 +16,7 @@ import { MessageService } from 'primeng/api';
   styleUrls: ['./add-department.component.css'],
 })
 export class AddDepartmentComponent implements OnInit {
-  apiUrl: string = 'http://52.199.43.174:3009/api/department';
+  apiUrl: string = 'http://localhost:3009/api/department';
   data: any;
   formGroup: FormGroup<{
     name: FormControl<string>;

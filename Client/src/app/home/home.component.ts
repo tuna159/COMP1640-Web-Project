@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit {
     endDate: FormControl<Date>;
     sort: FormControl<any>;
   }>;
-  apiUrl = 'http://52.199.43.174:3009/api/idea';
+  apiUrl = 'http://localhost:3009/api/idea';
   constructor(
     private dialogService: DialogService,
     private http: HttpClient,
@@ -88,7 +88,7 @@ export class HomeComponent implements OnInit {
   }
 
   SaveSort() {
-    let api = 'http://52.199.43.174:3009/api/idea';
+    let api = 'http://localhost:3009/api/idea';
     if (
       this.formGroup.controls.startDate.value &&
       this.formGroup.controls.endDate.value &&
