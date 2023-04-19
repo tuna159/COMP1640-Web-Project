@@ -80,7 +80,7 @@ export class PostComponent implements OnInit {
           }
         );
     } else {
-      this.save('');
+      this.save([]);
     }
     this.closeDialog();
   }

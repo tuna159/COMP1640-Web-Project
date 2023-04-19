@@ -106,6 +106,7 @@ export class ProfileComponent implements OnInit {
         this.date = result.data.birthday;
         this.email = result.data.email;
         this.avatar_url = result.data.avatar_url;
+        this.url = result.data.avatar_url;
       });
   }
 
@@ -142,22 +143,20 @@ export class ProfileComponent implements OnInit {
     let dateBirth = '';
     if (this.formGroup.controls.birthday.value == null) {
       this.showMessage('error', 'birthday must less than current date ');
-      return;
+      return
     }
     if (this.formGroup.controls.birthday.value.getMonth() + 1 <= 9) {
-      dateBirth =
-        this.formGroup.controls.birthday.value.getFullYear() +
-        '-0' +
-        (this.formGroup.controls.birthday.value.getMonth() + 1) +
-        '-' +
-        this.formGroup.controls.birthday.value.getDate();
+      dateBirth = this.formGroup.controls.birthday.value.getFullYear() +
+  '-0' + (this.formGroup.controls.birthday.value.getMonth() + 1) +
+        '-' + 
+        (this.formGroup.controls.birthday.value.getDate() < 10 ? ('0' + this.formGroup.controls.birthday.value.getDate()): this.formGroup.controls.birthday.value.getDate());
     } else {
       dateBirth =
         this.formGroup.controls.birthday.value.getFullYear() +
         '-' +
         this.formGroup.controls.birthday.value.getMonth() +
         '-' +
-        this.formGroup.controls.birthday.value.getDate();
+        (this.formGroup.controls.birthday.value.getDate() < 10 ? ('0' + this.formGroup.controls.birthday.value.getDate()): this.formGroup.controls.birthday.value.getDate());
     }
     let bodyData = {
       nick_name: this.formGroup.controls.name.value,

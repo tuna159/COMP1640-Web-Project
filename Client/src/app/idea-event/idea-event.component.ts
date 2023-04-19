@@ -336,6 +336,7 @@ export class IdeaEventComponent implements OnInit {
         this.showMessage('Add success: ', result);
         this.getAllIdeaByEvent();
       }
+      this.getAllIdeaByEvent();
     });
   }
 
