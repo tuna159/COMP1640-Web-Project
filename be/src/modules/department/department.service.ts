@@ -95,7 +95,15 @@ export class DepartmentService {
       .where('department.department_id = :department_id', { department_id })
       .getOne();
 
-    if (!department) {
+    // if (!department) {
+    //   throw new HttpException(
+    //     ErrorMessage.DEPARTMENT_NOT_EXISTS,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
+
+    const departmentCheck = await this.departmentExists(department_id);
+    if (!departmentCheck) {
       throw new HttpException(
         ErrorMessage.DEPARTMENT_NOT_EXISTS,
         HttpStatus.BAD_REQUEST,
@@ -270,6 +278,14 @@ export class DepartmentService {
     if (department.members.length != 0) {
       throw new HttpException(
         ErrorMessage.DEPARTMENT_NOT_EMPTY,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const departmentCheck = await this.departmentExists(department_id);
+    if (!departmentCheck) {
+      throw new HttpException(
+        ErrorMessage.DEPARTMENT_NOT_EXISTS,
         HttpStatus.BAD_REQUEST,
       );
     }
