@@ -117,7 +117,10 @@ export class ManageCategoryComponent implements OnInit {
         }
       );
   }
-
+  logout() {
+    this.authService.logout();
+    this.router.navigateByUrl('/login');
+  }
   showMessage(severity: string, detail: string) {
     this.messageService.add({
       severity: severity,
